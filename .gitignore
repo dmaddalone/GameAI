@@ -1,0 +1,43 @@
+# Compiled Object files
+*.slo
+*.lo
+*.o
+*.obj
+
+# Precompiled Headers
+*.gch
+*.pch
+
+# Compiled Dynamic libraries
+*.so
+*.dylib
+*.dll
+
+# Fortran module files
+*.mod
+
+# Compiled Static libraries
+*.lai
+*.la
+*.a
+*.lib
+
+# Executables
+*.exe
+*.app
+
+# Misc files
+*.csv
+*.out
+*~
+*.txt
+*.original
+
+# Code::Blocks
+*.depend
+*.layout
+*_build_log.html
+
+# Directories
+/obj
+/bin
