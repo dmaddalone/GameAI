@@ -286,6 +286,5 @@ bool ConnectFour::ValidMove(const int y, const int x) const
 
 int ConnectFour::PreferredMove(const int nMove) const
 {
-
     return std::abs(nMove - 4);
 }
