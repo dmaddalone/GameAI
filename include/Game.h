@@ -26,7 +26,7 @@ class Game
         virtual bool GameEnded() = 0; //YES
         //virtual bool ValidMove(const int y, const int x) = 0;
         virtual std::vector<int> GenerateMoves() const = 0; //YES
-        virtual int  EvaluateGameState(const int nPlayer) const = 0; //YES
+        virtual int  EvaluateGameState(const int nPlayer) = 0; //YES
 
         static std::unique_ptr<Game> MakeGame(GameType ecGameType);
 

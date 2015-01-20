@@ -22,9 +22,11 @@ int Minimax::MinimaxMove(int nPlayer, Game &cGame, int nDepth)
     std::vector<int> vMoves = cGame.GenerateMoves();
     int nBestMove = vMoves[0];
     int nBestScore = {INT_MIN};
-
     for (int nMove : vMoves)
+
     {
+        //std::cout << "\r" << Spin() << std::flush;
+
         int nResult = cGame.ApplyMove(m_nPlayerNumber, nMove + 1);
         int nScore = MinMove(1 - nPlayer + 2, cGame, nDepth);
 
@@ -52,6 +54,8 @@ int Minimax::MinimaxMove(int nPlayer, Game &cGame, int nDepth)
 
 int Minimax::MinMove(int nPlayer, Game &cGame, int nDepth)
 {
+    //std::cout << "\r" << Spin() << std::flush;
+
     if (cGame.GameEnded() || nDepth == 0)
         return cGame.EvaluateGameState(1 - nPlayer + 2) * (nDepth + 1);
 
@@ -77,6 +81,8 @@ int Minimax::MinMove(int nPlayer, Game &cGame, int nDepth)
 
 int Minimax::MaxMove(int nPlayer, Game &cGame, int nDepth)
 {
+    //std::cout << "\r" << Spin() << std::flush;
+
     if (cGame.GameEnded() || nDepth == 0)
         return cGame.EvaluateGameState(nPlayer) * (nDepth + 1);
 

@@ -82,15 +82,42 @@ std::vector<int> ConnectFour::GenerateMoves() const
     return vMoves;
 }
 
-int ConnectFour::EvaluateGameState(const int nPlayer) const
+int ConnectFour::EvaluateGameState(const int nPlayer)
 {
-    if (nPlayer == m_nWinner)
-        return 1;
+    if (m_nWinner == nPlayer)
+        return 1000000;
+
+    if (m_nWinner == (1 - nPlayer + 2))
+        return -1000000;
 
     if (m_nWinner == 0)
-        return 0;
+    {
+        if (CheckOrthogonal(1 - nPlayer + 2, 3))
+            return -200;
 
-    return -1;
+        if (CheckDiagonal(1 - nPlayer + 2, 3))
+            return -200;
+
+        if (CheckOrthogonal(nPlayer, 3))
+            return 100;
+
+        if (CheckDiagonal(nPlayer, 3))
+            return 100;
+
+        if (CheckOrthogonal(1 - nPlayer + 2, 2))
+            return -20;
+
+        if (CheckDiagonal(1 - nPlayer + 2, 2))
+            return -20;
+
+        if (CheckOrthogonal(nPlayer, 2))
+            return 10;
+
+        if (CheckDiagonal(nPlayer, 2))
+            return 10;
+    }
+
+    return 0;
 }
 
 int ConnectFour::FindBottom(const int x) const
@@ -107,27 +134,27 @@ int ConnectFour::FindBottom(const int x) const
 bool ConnectFour::GameEnded()
 {
     m_nWinner = 0;
-    m_sWinBy.assign("Horizontal");
+    m_sWinBy.assign("nothing");
 
-    if (CheckOrthogonal(m_kPlayer1))
+    if (CheckOrthogonal(m_kPlayer1, 4))
     {
         m_nWinner = m_kPlayer1;
         return true;
     }
 
-    if (CheckOrthogonal(m_kPlayer2))
+    if (CheckOrthogonal(m_kPlayer2, 4))
     {
         m_nWinner = m_kPlayer2;
         return true;
     }
 
-    if (CheckDiagonal(m_kPlayer1))
+    if (CheckDiagonal(m_kPlayer1, 4))
     {
         m_nWinner = m_kPlayer1;
         return true;
     }
 
-    if (CheckDiagonal(m_kPlayer2))
+    if (CheckDiagonal(m_kPlayer2, 4))
     {
         m_nWinner = m_kPlayer2;
         return true;
@@ -143,19 +170,20 @@ bool ConnectFour::GameEnded()
     return false;
 }
 
-bool ConnectFour::CheckOrthogonal(const int nPlayer) //const
+bool ConnectFour::CheckOrthogonal(const int nPlayer, int nConnect) //const
 {
-    bool bConnectFour = false;
+    bool bConnect = false;
 
     for (int yyy = 0; yyy < m_kY; ++yyy)
     {
         for (int xxx = 0; xxx < m_kX; ++xxx)
         {
-            if (CheckHorizontal(nPlayer, yyy, xxx) == 4)
+            if (CheckHorizontal(nPlayer, yyy, xxx) == nConnect)
             {
               //      std::cout << "Game ended - Horizontal Player " << nPlayer << std::endl; // DEBUG
-                bConnectFour = true;
-                m_sWinBy.assign("Horizontal");
+                bConnect = true;
+                if (nConnect == 4)
+                    m_sWinBy.assign("Horizontal");
                 //std::string sHorizontal("Horizontal");
                 //m_sWinBy = sHorizontal;
                 //m_nWinBy = 1;
@@ -163,32 +191,33 @@ bool ConnectFour::CheckOrthogonal(const int nPlayer) //const
             }
         }
 
-        if (bConnectFour)
+        if (bConnect)
             break;
     }
 
-    if (!bConnectFour)
+    if (!bConnect)
     {
         for (int yyy = 0; yyy < m_kY; ++yyy)
         {
             for (int xxx = 0; xxx < m_kX; ++xxx)
             {
-                if (CheckVertical(nPlayer, yyy, xxx) == 4)
+                if (CheckVertical(nPlayer, yyy, xxx) == nConnect)
                 {
             //    std::cout << "Game ended - Vertical Player " << nPlayer << std::endl; // DEBUG
-                    bConnectFour = true;
-                    m_sWinBy.assign("Horizontal");
+                    bConnect = true;
+                    if (nConnect == 4)
+                        m_sWinBy.assign("Horizontal");
                     //m_nWinBy = 2;
                     break;
                 }
             }
 
-            if (bConnectFour)
+            if (bConnect)
                 break;
         }
     }
 
-    return bConnectFour;
+    return bConnect;
 }
 
 int ConnectFour::CheckHorizontal(const int nPlayer, const int y, const int x) //const
@@ -211,46 +240,48 @@ int ConnectFour::CheckVertical(const int nPlayer, const int y, const int x) //co
         return 0;
 }
 
-bool ConnectFour::CheckDiagonal(const int nPlayer) //const
+bool ConnectFour::CheckDiagonal(const int nPlayer, int nConnect) //const
 {
-    bool bConnectFour = false;
+    bool bConnect = false;
 
     for (int yyy = 0; yyy < m_kY; ++yyy)
     {
         for (int xxx = 0; xxx < m_kX; ++xxx)
         {
-            if (CheckDiagonalUpperLeftLowerRight(nPlayer, yyy, xxx) == 4)
+            if (CheckDiagonalUpperLeftLowerRight(nPlayer, yyy, xxx) == nConnect)
             {
-                bConnectFour = true;
-                m_sWinBy.assign("DiagonalULLR");
+                bConnect = true;
+                if (nConnect == 4)
+                    m_sWinBy.assign("DiagonalULLR");
                 break;
             }
         }
 
-        if (bConnectFour)
+        if (bConnect)
             break;
     }
 
-    if (!bConnectFour)
+    if (!bConnect)
     {
         for (int yyy = 0; yyy < m_kY; ++yyy)
         {
             for (int xxx = m_kX - 1; xxx >= 0; --xxx)
             {
-                if (CheckDiagonalUpperRightLowerLeft(nPlayer, yyy, xxx) == 4)
+                if (CheckDiagonalUpperRightLowerLeft(nPlayer, yyy, xxx) == nConnect)
                 {
-                    bConnectFour = true;
-                    m_sWinBy.assign("DiagonalURLL");
+                    bConnect = true;
+                    if (nConnect == 4)
+                        m_sWinBy.assign("DiagonalURLL");
                     break;
                 }
             }
 
-            if (bConnectFour)
+            if (bConnect)
                 break;
         }
     }
 
-    return bConnectFour;
+    return bConnect;
 }
 
 int ConnectFour::CheckDiagonalUpperLeftLowerRight(const int nPlayer, const int y, const int x) //const

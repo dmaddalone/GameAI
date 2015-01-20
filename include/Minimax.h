@@ -10,6 +10,7 @@ class Minimax: public Player
 {
     public:
         Minimax(PlayerType ecPlayerType) : Player(ecPlayerType) {};
+        // Minimax(PlayerType ecPlayerType) : Player(ecPlayerType), m_acSpin{"\\|-/-"} {};
         ~Minimax() {};
 
         bool Move(Game &cGame);
@@ -20,6 +21,12 @@ class Minimax: public Player
         int MinimaxMove(int nPlayer, Game &cGame, int nDepth);
         int MinMove(int nPlayer, Game &cGame, int nDepth);
         int MaxMove(int nPlayer, Game &cGame, int nDepth);
+
+        //char m_acSpin[4] = {'|', '/', '--', '\\'};
+        //char m_acSpin[] = "\\|-/-";
+        //char m_acSpin[6];
+        //int  m_nSpinIndex {0};
+        //char Spin() { ++m_nSpinIndex; if (m_nSpinIndex > 5) m_nSpinIndex = 0; return m_acSpin[m_nSpinIndex]; }
 
         //int m_nDepth = 2;
 };

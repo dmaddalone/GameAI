@@ -19,16 +19,16 @@ class ConnectFour : public Game
         bool GameEnded();
 
         std::vector<int> GenerateMoves() const;
-        int  EvaluateGameState(const int nPlayer) const;
+        int  EvaluateGameState(const int nPlayer);
 
         std::string Title() { return "ConnectFour"; }
 
     private:
         int  FindBottom(const int x) const;
-        bool CheckOrthogonal(const int nPlayer) ;//const;
+        bool CheckOrthogonal(const int nPlayer, int nConnect) ;//const;
         int  CheckHorizontal(const int nPlayer, const int y, const int x) ;//const;
         int  CheckVertical(const int nPlayer, const int y, const int x) ;//const;
-        bool CheckDiagonal(const int nPlayer) ;//const;
+        bool CheckDiagonal(const int nPlayer, int nConnect) ;//const;
         int  CheckDiagonalUpperLeftLowerRight(const int nPlayer, const int y, const int x) ;//const;
         int  CheckDiagonalUpperRightLowerLeft(const int nPlayer, const int y, const int x) ;//const;
         bool ValidMove(const int y, const int x) const;

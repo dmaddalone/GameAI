@@ -193,6 +193,16 @@ int main(int argc, char* argv[])
 
     std::cout << "Playing " << upGame->Title() << std::endl;
 
+    for (int iii = 0; iii < 2; ++iii)
+    {
+        std::cout << "Player " << iii + 1 << ": " << vPlayers[iii]->TypeName();
+        if (vPlayers[iii]->Type() != PlayerType::TYPE_HUMAN)
+        {
+            std::cout << " Plies: " << vPlayers[iii]->Plies();
+        }
+        std::cout << std::endl;
+    }
+
     while(true)
     {
         if (!vPlayers[0]->Move(*upGame))

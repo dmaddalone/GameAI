@@ -26,7 +26,8 @@ class Player
         virtual std::string TypeName()  = 0;
         PlayerType Type() { return m_ecPlayerType; }
 
-        void SetPlies(int nPlies)       { m_nDepth = nPlies; }
+        void SetPlies(int nPlies) { m_nDepth = nPlies; }
+        int  Plies()              { return m_nDepth; }
 
     protected:
         int m_nMove               {0};
