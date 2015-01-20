@@ -82,6 +82,27 @@ std::vector<int> ConnectFour::GenerateMoves() const
     return vMoves;
 }
 
+void ConnectFour::CountSequence(int nSequence, SequenceCounts &stSequenceCounts)
+{
+    switch (nSequence)
+    {
+        case 0:
+            break;
+        case 1:
+            ++stSequenceCounts.nCount1;
+            break;
+        case 2:
+            ++stSequenceCounts.nCount2;
+            break;
+        case 3:
+            ++stSequenceCounts.nCount3;
+            break;
+        default:
+            break; // TODO - should not get here
+    }
+    return;
+}
+
 int ConnectFour::EvaluateGameState(const int nPlayer)
 {
     if (m_nWinner == nPlayer)
@@ -90,8 +111,30 @@ int ConnectFour::EvaluateGameState(const int nPlayer)
     if (m_nWinner == (1 - nPlayer + 2))
         return -1000000;
 
+    m_stMyCounts = {};
+    m_stOpponentCounts = {};
+
     if (m_nWinner == 0)
     {
+        for (int yyy = 0; yyy < m_kY; ++yyy)
+        {
+            for (int xxx = 0; xxx < m_kX; ++xxx)
+            {
+                CountSequence(CheckHorizontal(nPlayer, yyy, xxx), m_stMyCounts);
+                CountSequence(CheckHorizontal(1 - nPlayer + 2, yyy, xxx), m_stOpponentCounts);
+                CountSequence(CheckVertical(nPlayer, yyy, xxx), m_stMyCounts);
+                CountSequence(CheckVertical(1 - nPlayer + 2, yyy, xxx), m_stOpponentCounts);
+                CountSequence(CheckDiagonalUpperLeftLowerRight(nPlayer, yyy, xxx), m_stMyCounts);
+                CountSequence(CheckDiagonalUpperLeftLowerRight(1 - nPlayer + 2, yyy, xxx), m_stOpponentCounts);
+                CountSequence(CheckDiagonalUpperRightLowerLeft(nPlayer, yyy, xxx), m_stMyCounts);
+                CountSequence(CheckDiagonalUpperRightLowerLeft(1 - nPlayer + 2, yyy, xxx), m_stOpponentCounts);
+            }
+        }
+
+        return ( ((m_stMyCounts.nCount2 - m_stOpponentCounts.nCount2) * 10) +
+                 ((m_stMyCounts.nCount3 - m_stOpponentCounts.nCount3) * 100) );
+
+/*
         if (CheckOrthogonal(1 - nPlayer + 2, 3))
             return -200;
 
@@ -115,6 +158,7 @@ int ConnectFour::EvaluateGameState(const int nPlayer)
 
         if (CheckDiagonal(nPlayer, 2))
             return 10;
+*/
     }
 
     return 0;

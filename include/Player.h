@@ -26,14 +26,16 @@ class Player
         virtual std::string TypeName()  = 0;
         PlayerType Type() { return m_ecPlayerType; }
 
+        void SetVerbose()         { m_bVerbose = true; }
         void SetPlies(int nPlies) { m_nDepth = nPlies; }
         int  Plies()              { return m_nDepth; }
 
     protected:
-        int m_nMove               {0};
+        int  m_nMove              {0};
         PlayerType m_ecPlayerType {PlayerType::TYPE_NONE};
-        int m_nPlayerNumber       {0};
-        int m_nDepth              {6};  // For AI
+        int  m_nPlayerNumber      {0};
+        int  m_nDepth             {6};     // For AI
+        bool m_bVerbose           {false}; // For AI
 
     private:
         static int m_nPlayerCount;

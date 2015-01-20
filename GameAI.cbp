@@ -11,7 +11,7 @@
 				<Option object_output="obj/Debug/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
-				<Option parameters="-1 minimax -2 human -p 5 -g connectfour" />
+				<Option parameters="-1 human -2 minimax -p 2 -g connectfour" />
 				<Compiler>
 					<Add option="-g" />
 					<Add directory="include" />
@@ -35,7 +35,6 @@
 			<Add option="-Wall" />
 			<Add option="-fexceptions" />
 		</Compiler>
-		<Unit filename="include/AlphaBeta.h" />
 		<Unit filename="include/ConnectFour.h" />
 		<Unit filename="include/Game.h" />
 		<Unit filename="include/GameAIException.h" />
@@ -44,7 +43,6 @@
 		<Unit filename="include/Minimax.h" />
 		<Unit filename="include/Player.h" />
 		<Unit filename="main.cpp" />
-		<Unit filename="src/AlphaBeta.cpp" />
 		<Unit filename="src/ConnectFour.cpp" />
 		<Unit filename="src/Game.cpp" />
 		<Unit filename="src/Human.cpp" />

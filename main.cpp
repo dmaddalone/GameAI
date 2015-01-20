@@ -34,9 +34,10 @@ static void ShowUsage(std::string sName)
               << "    -g GAME,  --game=GAME     play GAME"
               << "\nNon Required Options:\n"
               << "    -h,       --help          display this help message and exit\n"
-              << "    -v,       --version       display version and exit\n"
+              << "    -v        --verbose       display non-human potential moves scores"
+              << "    -V,       --version       display version and exit\n"
               << "\n"
-              << "TYPE is either human, minimax, or alphabeta\n"
+              << "TYPE is either human or minimax\n"
               << "PLIES are from 1 to 9.  The default is 6."
               << "GAME is either ttt or connectfour"
               << std::endl;
@@ -78,8 +79,14 @@ static std::unique_ptr<Game> SetGame(char* pcGame)
     return nullptr;
 }
 
-static void SetPlies(int nPlies, int nPlies1, int nPlies2, vector<std::unique_ptr<Player>> &vPlayers)
+static void SetPlayers(int nPlies, int nPlies1, int nPlies2, bool bVerbose, vector<std::unique_ptr<Player>> &vPlayers)
 {
+    if (bVerbose)
+    {
+        vPlayers[0]->SetVerbose();
+        vPlayers[1]->SetVerbose();
+    }
+
     if (nPlies > 0 && nPlies < 9)
     {
         vPlayers[0]->SetPlies(nPlies);
@@ -108,9 +115,10 @@ int main(int argc, char* argv[])
 {
     vector<std::unique_ptr<Player>> vPlayers;
     std::unique_ptr<Game> upGame {};
-    int nPlies  {-1};
-    int nPlies1 {-1};
-    int nPlies2 {-1};
+    int  nPlies   {-1};
+    int  nPlies1  {-1};
+    int  nPlies2  {-1};
+    bool bVerbose {false};
 
     // Check for command line arguments
     if (argc < 2)
@@ -129,13 +137,14 @@ int main(int argc, char* argv[])
         {"plies2",  required_argument, nullptr, 'y'},
         {"game",    required_argument, nullptr, 'g'},
         {"help",    no_argument,       nullptr, 'h'},
-        {"version", no_argument,       nullptr, 'v'},
+        {"verbose", no_argument,       nullptr, 'v'},
+        {"version", no_argument,       nullptr, 'V'},
         {NULL,      0,                 nullptr,  0}
     };
 
     int nC = 0;
     int nOptionIndex = 0;
-    while ((nC = getopt_long(argc, argv, "1:2:p:g:x:y:hv", stLongOptions, &nOptionIndex)) != -1)
+    while ((nC = getopt_long(argc, argv, "1:2:p:g:x:y:hvV", stLongOptions, &nOptionIndex)) != -1)
     {
         switch (nC)
         {
@@ -144,6 +153,9 @@ int main(int argc, char* argv[])
                 exit(EXIT_SUCCESS);
                 break;
             case 'v':
+                bVerbose = true;
+                break;
+            case 'V':
                 ShowVersion();
                 exit(EXIT_SUCCESS);
                 break;
@@ -189,7 +201,7 @@ int main(int argc, char* argv[])
         exit(EXIT_FAILURE);
     }
 
-    SetPlies(nPlies, nPlies1, nPlies2, vPlayers);
+    SetPlayers(nPlies, nPlies1, nPlies2, bVerbose, vPlayers);
 
     std::cout << "Playing " << upGame->Title() << std::endl;
 

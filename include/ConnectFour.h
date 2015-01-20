@@ -33,6 +33,7 @@ class ConnectFour : public Game
         int  CheckDiagonalUpperRightLowerLeft(const int nPlayer, const int y, const int x) ;//const;
         bool ValidMove(const int y, const int x) const;
 
+
         static const int m_kY = 6;
         static const int m_kX = 7;
         static const int m_kClear = 0;
@@ -40,6 +41,14 @@ class ConnectFour : public Game
         static const int m_kPlayer2 = 2;
 
         int m_anGrid[m_kY][m_kX] {{m_kClear}};
+
+        struct SequenceCounts {
+            int nCount1 {0};
+            int nCount2 {0};
+            int nCount3 {0};
+        } m_stMyCounts, m_stOpponentCounts;
+
+        void CountSequence(int nSequence, SequenceCounts &stSequenceCounts);
 };
 
 #endif // CONNECTFOUR_H

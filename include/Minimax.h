@@ -19,8 +19,10 @@ class Minimax: public Player
 
     private:
         int MinimaxMove(int nPlayer, Game &cGame, int nDepth);
-        int MinMove(int nPlayer, Game &cGame, int nDepth);
-        int MaxMove(int nPlayer, Game &cGame, int nDepth);
+        //int MinMove(int nPlayer, Game &cGame, int nDepth);
+        //int MaxMove(int nPlayer, Game &cGame, int nDepth);
+        int MinMove(int nPlayer, Game &cGame, int nDepth, int nAlpha, int nBeta);
+        int MaxMove(int nPlayer, Game &cGame, int nDepth, int nAlpha, int nBeta);
 
         //char m_acSpin[4] = {'|', '/', '--', '\\'};
         //char m_acSpin[] = "\\|-/-";
