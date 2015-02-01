@@ -1,19 +1,19 @@
-#ifndef CONNECTFOUR_H
-#define CONNECTFOUR_H
+#ifndef TTT_H
+#define TTT_H
 
 #include <iostream>
 #include "Game.h"
 
-class ConnectFour : public Game
+class TTT : public Game
 {
     public:
-        ConnectFour(GameType ecGameType) : Game(ecGameType) {}
-        ~ConnectFour() {}
+        TTT(GameType ecGameType) : Game(ecGameType) {}
+        ~TTT() {}
 
-        void Display(const bool bDisplayCoordinates = false) const;
+        void Display(const bool bDisplayLines = false) const;
         void DisplayValidMoves() const;
         //virtual void Reset() = 0;
-        int  ApplyMove(const int nPlayer, const int nX, const int nY);
+        int  ApplyMove(const int nPlayer, const int nMove);
         bool RetractMove(const int nPlayer, const int nMove);
         int  PreferredMove(const int nMove) const;
         bool GameEnded();
@@ -21,10 +21,10 @@ class ConnectFour : public Game
         std::vector<int> GenerateMoves() const;
         int  EvaluateGameState(const int nPlayer);
 
-        std::string Title() { return "ConnectFour"; }
+        std::string Title() { return "Tic-Tac-Toe"; }
 
     private:
-        int  FindBottom(const int x) const;
+
         bool CheckOrthogonal(const int nPlayer, int nConnect) ;//const;
         int  CheckHorizontal(const int nPlayer, const int y, const int x) ;//const;
         int  CheckVertical(const int nPlayer, const int y, const int x) ;//const;
@@ -34,8 +34,8 @@ class ConnectFour : public Game
         bool ValidMove(const int y, const int x) const;
 
 
-        static const int m_kY = 6;
-        static const int m_kX = 7;
+        static const int m_kY = 3;
+        static const int m_kX = 3;
         static const int m_kClear = 0;
         static const int m_kPlayer1 = 1;
         static const int m_kPlayer2 = 2;
@@ -51,4 +51,4 @@ class ConnectFour : public Game
         void CountSequence(int nSequence, SequenceCounts &stSequenceCounts);
 };
 
-#endif // CONNECTFOUR_H
+#endif // TTT_H

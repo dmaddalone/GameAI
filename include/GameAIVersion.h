@@ -6,7 +6,7 @@
 namespace GameAIVersion
 {
 	//Date Version Types
-	static const std::string DATE {"19"};
+	static const std::string DATE {"21"};
 	static const std::string MONTH {"01"};
 	static const std::string YEAR {"2015"};
 	std::string DateVersion() {return (YEAR+MONTH+DATE); }
@@ -29,7 +29,7 @@ namespace GameAIVersion
 	// MINOR version when you add functionality in a backwards-compatible manner, and
 	// PATCH version when you make backwards-compatible bug fixes.
 	static const int MAJOR = 0;
-	static const int MINOR = 1;
+	static const int MINOR = 2;
 	static const int PATCH = 0;
 	std::string SemanticVersion() { return (std::to_string(MAJOR) + "." + std::to_string(MINOR) + "." + std::to_string(PATCH)); }
 };

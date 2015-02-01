@@ -4,6 +4,8 @@
 #include <memory>
 #include <vector>
 
+#include "Move.h"
+
 enum class GameType
 {
     TYPE_NONE,
@@ -20,7 +22,7 @@ class Game
         virtual void Display(const bool bDisplayCoordinates = false) const  = 0;
         virtual void DisplayValidMoves() const = 0;;
         //virtual void Reset() = 0;
-        virtual int  ApplyMove(const int nPlayer, const int nMove) = 0; //YES
+        virtual int  ApplyMove(const int nPlayer, const int nMoveX, const int nMoveY) = 0; //YES
         virtual bool RetractMove(const int nPlayer, const int nMove) = 0; //YES
         virtual int  PreferredMove(const int nMove) const = 0;
         virtual bool GameEnded() = 0; //YES

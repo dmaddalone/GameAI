@@ -75,8 +75,10 @@ static std::unique_ptr<Game> SetGame(char* pcGame)
     std::string sGame(pcGame);
     if (sGame == "connectfour")
         return Game::MakeGame(GameType::TYPE_CONNECT_FOUR);
-
-    return nullptr;
+    else if (sGame == "ttt")
+        return Game::MakeGame(GameType::TYPE_TTT);
+    else
+        return nullptr;
 }
 
 static void SetPlayers(int nPlies, int nPlies1, int nPlies2, bool bVerbose, vector<std::unique_ptr<Player>> &vPlayers)

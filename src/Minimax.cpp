@@ -29,14 +29,18 @@ int Minimax::MinimaxMove(int nPlayer, Game &cGame, int nDepth)
     {
         //std::cout << "\r" << Spin() << std::flush;
 
+        // TODO: how to capture result of move in m_stMove structure?
+        // TODO: change ApplyMove to use m_stMove
         int nResult = cGame.ApplyMove(m_nPlayerNumber, nMove + 1);
         //int nScore = MinMove(1 - nPlayer + 2, cGame, nDepth - 1);
         int nScore = MinMove(1 - nPlayer + 2, cGame, nDepth - 1, nAlpha, nBeta);
 
+        // TODO: have game provide verbose output?
         if (m_bVerbose) std::cout << "\tMinimaxMove Move=" << nMove + 1 << " Score=" << nScore << std::endl;
 
         if (nScore == nBestScore)
         {
+            // TODO: update to use m_stMove
             if (cGame.PreferredMove(nMove + 1) < cGame.PreferredMove(nBestMove + 1))
             {
                 nBestMove = nMove;

@@ -1,34 +1,30 @@
-#include "ConnectFour.h"
+#include "TTT.h"
 
-void ConnectFour::Display(const bool bDisplayCoordinates) const
+void TTT::Display(const bool bDisplayLines) const
 {
-    if (bDisplayCoordinates)
-    {
-        std::cout << "   ";
-        for (int xxx = 0; xxx < m_kX; ++xxx)
-        {
-            std::cout << xxx + 1 << "   ";
-        }
-        std::cout << std::endl << std::endl;;
-    }
-
     for (int yyy = 0; yyy < m_kY; ++yyy)
     {
-        if (bDisplayCoordinates)
-        {
-            std::cout << yyy + 1 << "  ";
-        }
-
         for (int xxx = 0; xxx < m_kX; ++xxx)
         {
-            std::cout << m_anGrid[yyy][xxx] << "   ";
+            std::cout << m_anGrid[yyy][xxx];
+            if (bDisplayLines && xxx < m_kX - 1)
+                std::cout << " | ";
+            else
+                std::cout << "   ";
         }
 
-        std::cout << std::endl << std::endl;
+        std::cout << std::endl;'
+
+        if (bDisplayLines && yyy < m_kY - 1)
+            std::cout << "---------------" << std::endl;
+        else
+            std::cout << std::endl;
+
+        //std::cout << std::endl << std::endl;
     }
 }
 
-void ConnectFour::DisplayValidMoves() const
+void TTT::DisplayValidMoves() const
 {
     std::vector<int> vMoves = GenerateMoves();
     for (int iii : vMoves)
@@ -38,9 +34,10 @@ void ConnectFour::DisplayValidMoves() const
     std::cout << std::endl;
 }
 
-int ConnectFour::ApplyMove(const int nPlayer, const int nX, const int nY)
+int TTT::ApplyMove(const int nPlayer, const int x, const int y)
 {
-    int nAdjustedX = nX - 1;
+    int nAdjustedX = x - 1;
+    int nAdjustedY = y - 1;
 
     if ((nPlayer != m_kPlayer1) && (nPlayer != m_kPlayer2))
         return -1;
@@ -48,12 +45,7 @@ int ConnectFour::ApplyMove(const int nPlayer, const int nX, const int nY)
     if ((nAdjustedX > m_kX - 1) || (nAdjustedX < 0))
         return -1;
 
-    if (m_anGrid[0][nAdjustedX] != 0)
-        return -1;
-
-    int y = FindBottom(nAdjustedX);
-
-    if (y == -1)
+    if (m_anGrid[nAdjustedY][nAdjustedX] != 0)
         return -1;
 
     m_anGrid[y][nAdjustedX] = nPlayer;
@@ -62,14 +54,14 @@ int ConnectFour::ApplyMove(const int nPlayer, const int nX, const int nY)
     return y;
 }
 
-bool ConnectFour::RetractMove(const int y, const int x)
+bool TTT::RetractMove(const int y, const int x)
 {
     m_anGrid[y][x] = 0;
     --m_nNumberOfMoves;
     return true;
 }
 
-std::vector<int> ConnectFour::GenerateMoves() const
+std::vector<int> TTT::GenerateMoves() const
 {
     std::vector<int> vMoves {};
 
@@ -82,7 +74,7 @@ std::vector<int> ConnectFour::GenerateMoves() const
     return vMoves;
 }
 
-void ConnectFour::CountSequence(int nSequence, SequenceCounts &stSequenceCounts)
+void TTT::CountSequence(int nSequence, SequenceCounts &stSequenceCounts)
 {
     switch (nSequence)
     {
@@ -103,7 +95,7 @@ void ConnectFour::CountSequence(int nSequence, SequenceCounts &stSequenceCounts)
     return;
 }
 
-int ConnectFour::EvaluateGameState(const int nPlayer)
+int TTT::EvaluateGameState(const int nPlayer)
 {
     if (m_nWinner == nPlayer)
         return 1000000;
@@ -164,18 +156,7 @@ int ConnectFour::EvaluateGameState(const int nPlayer)
     return 0;
 }
 
-int ConnectFour::FindBottom(const int x) const
-{
-    for (int yyy = m_kY - 1; yyy >= 0; --yyy)
-    {
-        if (m_anGrid[yyy][x] == 0)
-            return yyy;
-    }
-
-    return -1;
-}
-
-bool ConnectFour::GameEnded()
+bool TTT::GameEnded()
 {
     m_nWinner = 0;
     m_sWinBy.assign("nothing");
@@ -214,7 +195,7 @@ bool ConnectFour::GameEnded()
     return false;
 }
 
-bool ConnectFour::CheckOrthogonal(const int nPlayer, int nConnect) //const
+bool TTT::CheckOrthogonal(const int nPlayer, int nConnect) //const
 {
     bool bConnect = false;
 
@@ -264,7 +245,7 @@ bool ConnectFour::CheckOrthogonal(const int nPlayer, int nConnect) //const
     return bConnect;
 }
 
-int ConnectFour::CheckHorizontal(const int nPlayer, const int y, const int x) //const
+int TTT::CheckHorizontal(const int nPlayer, const int y, const int x) //const
 {
     if (!ValidMove(y, x)) return 0;
 
@@ -274,7 +255,7 @@ int ConnectFour::CheckHorizontal(const int nPlayer, const int y, const int x) //
         return 0;
 }
 
-int ConnectFour::CheckVertical(const int nPlayer, const int y, const int x) //const
+int TTT::CheckVertical(const int nPlayer, const int y, const int x) //const
 {
     if (!ValidMove(y, x)) return 0;
 
@@ -284,7 +265,7 @@ int ConnectFour::CheckVertical(const int nPlayer, const int y, const int x) //co
         return 0;
 }
 
-bool ConnectFour::CheckDiagonal(const int nPlayer, int nConnect) //const
+bool TTT::CheckDiagonal(const int nPlayer, int nConnect) //const
 {
     bool bConnect = false;
 
@@ -328,7 +309,7 @@ bool ConnectFour::CheckDiagonal(const int nPlayer, int nConnect) //const
     return bConnect;
 }
 
-int ConnectFour::CheckDiagonalUpperLeftLowerRight(const int nPlayer, const int y, const int x) //const
+int TTT::CheckDiagonalUpperLeftLowerRight(const int nPlayer, const int y, const int x) //const
 {
     if (!ValidMove(y, x)) return 0;
 
@@ -338,7 +319,7 @@ int ConnectFour::CheckDiagonalUpperLeftLowerRight(const int nPlayer, const int y
         return 0;
 }
 
-int ConnectFour::CheckDiagonalUpperRightLowerLeft(const int nPlayer, const int y, const int x) //const
+int TTT::CheckDiagonalUpperRightLowerLeft(const int nPlayer, const int y, const int x) //const
 {
     if (!ValidMove(y, x)) return 0;
 
@@ -348,7 +329,7 @@ int ConnectFour::CheckDiagonalUpperRightLowerLeft(const int nPlayer, const int y
         return 0;
 }
 
-bool ConnectFour::ValidMove(const int y, const int x) const
+bool TTT::ValidMove(const int y, const int x) const
 {
     if ((y >= m_kY) || (y < 0))
         return false;
@@ -359,7 +340,7 @@ bool ConnectFour::ValidMove(const int y, const int x) const
     return true;
 }
 
-int ConnectFour::PreferredMove(const int nMove) const
+int TTT::PreferredMove(const int nMove) const
 {
     return std::abs(nMove - 4);
 }
