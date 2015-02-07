@@ -1,3 +1,22 @@
+/*
+    Copyright 2014 Dom Maddalone
+
+    This file is part of GameAI.
+
+    GameAI is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    GameAI is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with GameAI.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
 #include <cassert>
 #include <cstdlib>
 #include <getopt.h>
@@ -8,7 +27,6 @@
 #include "GameAIException.h"
 #include "GameAIVersion.h"
 #include "Player.h"
-//#include "Human.h"
 #include "Game.h"
 
 using namespace std;
@@ -34,12 +52,16 @@ static void ShowUsage(std::string sName)
               << "    -g GAME,  --game=GAME     play GAME"
               << "\nNon Required Options:\n"
               << "    -h,       --help          display this help message and exit\n"
-              << "    -v        --verbose       display non-human potential moves scores"
+              << "    -v LEVEL  --verbose=LEVEL display game information\n"
               << "    -V,       --version       display version and exit\n"
               << "\n"
               << "TYPE is either human or minimax\n"
               << "PLIES are from 1 to 9.  The default is 6."
               << "GAME is either ttt or connectfour"
+              << "LEVEL is an integer 0 to 2.  The default is 1."
+              << "    0 = display start and ending announcements"
+              << "    1 = display game move-by-move"
+              << "    2 = display AI scoring of moves"
               << std::endl;
 }
 
@@ -81,12 +103,12 @@ static std::unique_ptr<Game> SetGame(char* pcGame)
         return nullptr;
 }
 
-static void SetPlayers(int nPlies, int nPlies1, int nPlies2, bool bVerbose, vector<std::unique_ptr<Player>> &vPlayers)
+static void SetPlayers(int nPlies, int nPlies1, int nPlies2, int nVerbosity, vector<std::unique_ptr<Player>> &vPlayers)
 {
-    if (bVerbose)
+    if (nVerbosity >= 0 && nVerbosity <= 2)
     {
-        vPlayers[0]->SetVerbose();
-        vPlayers[1]->SetVerbose();
+        vPlayers[0]->SetVerbosity(nVerbosity);
+        vPlayers[1]->SetVerbosity(nVerbosity);
     }
 
     if (nPlies > 0 && nPlies < 9)
@@ -117,10 +139,10 @@ int main(int argc, char* argv[])
 {
     vector<std::unique_ptr<Player>> vPlayers;
     std::unique_ptr<Game> upGame {};
-    int  nPlies   {-1};
-    int  nPlies1  {-1};
-    int  nPlies2  {-1};
-    bool bVerbose {false};
+    int  nPlies     {-1};
+    int  nPlies1    {-1};
+    int  nPlies2    {-1};
+    bool nVerbosity {1};
 
     // Check for command line arguments
     if (argc < 2)
@@ -139,7 +161,7 @@ int main(int argc, char* argv[])
         {"plies2",  required_argument, nullptr, 'y'},
         {"game",    required_argument, nullptr, 'g'},
         {"help",    no_argument,       nullptr, 'h'},
-        {"verbose", no_argument,       nullptr, 'v'},
+        {"verbose", optional_argument, nullptr, 'v'},
         {"version", no_argument,       nullptr, 'V'},
         {NULL,      0,                 nullptr,  0}
     };
@@ -155,7 +177,8 @@ int main(int argc, char* argv[])
                 exit(EXIT_SUCCESS);
                 break;
             case 'v':
-                bVerbose = true;
+                //bVerbose = true;
+                nVerbosity = atoi(optarg);
                 break;
             case 'V':
                 ShowVersion();
@@ -203,7 +226,7 @@ int main(int argc, char* argv[])
         exit(EXIT_FAILURE);
     }
 
-    SetPlayers(nPlies, nPlies1, nPlies2, bVerbose, vPlayers);
+    SetPlayers(nPlies, nPlies1, nPlies2, nVerbosity, vPlayers);
 
     std::cout << "Playing " << upGame->Title() << std::endl;
 
