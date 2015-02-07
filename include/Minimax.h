@@ -5,6 +5,7 @@
 #include <iostream>
 #include "Player.h"
 #include "Game.h"
+#include "GameAIException.h"
 
 class Minimax: public Player
 {
@@ -18,9 +19,7 @@ class Minimax: public Player
         std::string TypeName() { return "Minimax"; }
 
     private:
-        int MinimaxMove(int nPlayer, Game &cGame, int nDepth);
-        //int MinMove(int nPlayer, Game &cGame, int nDepth);
-        //int MaxMove(int nPlayer, Game &cGame, int nDepth);
+        GameMove MinimaxMove(int nPlayer, Game &cGame, int nDepth);
         int MinMove(int nPlayer, Game &cGame, int nDepth, int nAlpha, int nBeta);
         int MaxMove(int nPlayer, Game &cGame, int nDepth, int nAlpha, int nBeta);
 
@@ -29,8 +28,6 @@ class Minimax: public Player
         //char m_acSpin[6];
         //int  m_nSpinIndex {0};
         //char Spin() { ++m_nSpinIndex; if (m_nSpinIndex > 5) m_nSpinIndex = 0; return m_acSpin[m_nSpinIndex]; }
-
-        //int m_nDepth = 2;
 };
 
 #endif // MINIMAX_H

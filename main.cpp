@@ -8,7 +8,7 @@
 #include "GameAIException.h"
 #include "GameAIVersion.h"
 #include "Player.h"
-#include "Human.h"
+//#include "Human.h"
 #include "Game.h"
 
 using namespace std;

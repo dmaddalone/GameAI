@@ -30,56 +30,75 @@ void ConnectFour::Display(const bool bDisplayCoordinates) const
 
 void ConnectFour::DisplayValidMoves() const
 {
-    std::vector<int> vMoves = GenerateMoves();
-    for (int iii : vMoves)
+    std::vector<GameMove> vGameMoves = GenerateMoves();
+    for (GameMove cGameMove : vGameMoves)
     {
-        std::cout << iii + 1 << " ";
+        std::cout << cGameMove.ToX() + 1 << " ";
     }
     std::cout << std::endl;
 }
 
-int ConnectFour::ApplyMove(const int nPlayer, const int nX, const int nY)
+std::vector<GameMove> ConnectFour::GenerateMoves() const
 {
-    int nAdjustedX = nX - 1;
+    std::vector<GameMove> vGameMoves {};
 
+    for (int xxx = 0; xxx < m_kX; ++xxx)
+    {
+        if (FindBottom(xxx) >= 0)
+        {
+            vGameMoves.emplace_back(0,0,xxx,0);
+        }
+    }
+
+    return vGameMoves;
+}
+
+
+GameMove ConnectFour::GetMove() const
+{
+    int nMove {};
+    GameMove cGameMove;
+
+    std::cin >> nMove;
+    cGameMove.SetToX(nMove - 1);
+
+    return cGameMove;
+}
+
+void ConnectFour::AnnounceMove(const int nPlayer, const GameMove &cGameMove)
+{
+    std::cout << "Player " << nPlayer << " moves: " << cGameMove.ToX() + 1 << std::endl;;
+}
+
+int ConnectFour::ApplyMove(const int nPlayer, GameMove &cGameMove)
+{
     if ((nPlayer != m_kPlayer1) && (nPlayer != m_kPlayer2))
         return -1;
 
-    if ((nAdjustedX > m_kX - 1) || (nAdjustedX < 0))
+    if ((cGameMove.ToX() > m_kX - 1) || (cGameMove.ToX() < 0))
         return -1;
 
-    if (m_anGrid[0][nAdjustedX] != 0)
+    if (m_anGrid[0][cGameMove.ToX()] != 0)
         return -1;
 
-    int y = FindBottom(nAdjustedX);
+    int y = FindBottom(cGameMove.ToX());
 
     if (y == -1)
         return -1;
 
-    m_anGrid[y][nAdjustedX] = nPlayer;
+    cGameMove.SetToY(y);
+
+    m_anGrid[cGameMove.ToY()][cGameMove.ToX()] = nPlayer;
     ++m_nNumberOfMoves;
 
     return y;
 }
 
-bool ConnectFour::RetractMove(const int y, const int x)
+bool ConnectFour::RetractMove(const int nPlayer, const GameMove &cGameMove)
 {
-    m_anGrid[y][x] = 0;
+    m_anGrid[cGameMove.ToY()][cGameMove.ToX()] = 0;
     --m_nNumberOfMoves;
     return true;
-}
-
-std::vector<int> ConnectFour::GenerateMoves() const
-{
-    std::vector<int> vMoves {};
-
-    for (int xxx = 0; xxx < m_kX; ++xxx)
-    {
-        if (FindBottom(xxx) >= 0)
-            vMoves.push_back(xxx);
-    }
-
-    return vMoves;
 }
 
 void ConnectFour::CountSequence(int nSequence, SequenceCounts &stSequenceCounts)
@@ -133,32 +152,6 @@ int ConnectFour::EvaluateGameState(const int nPlayer)
 
         return ( ((m_stMyCounts.nCount2 - m_stOpponentCounts.nCount2) * 10) +
                  ((m_stMyCounts.nCount3 - m_stOpponentCounts.nCount3) * 100) );
-
-/*
-        if (CheckOrthogonal(1 - nPlayer + 2, 3))
-            return -200;
-
-        if (CheckDiagonal(1 - nPlayer + 2, 3))
-            return -200;
-
-        if (CheckOrthogonal(nPlayer, 3))
-            return 100;
-
-        if (CheckDiagonal(nPlayer, 3))
-            return 100;
-
-        if (CheckOrthogonal(1 - nPlayer + 2, 2))
-            return -20;
-
-        if (CheckDiagonal(1 - nPlayer + 2, 2))
-            return -20;
-
-        if (CheckOrthogonal(nPlayer, 2))
-            return 10;
-
-        if (CheckDiagonal(nPlayer, 2))
-            return 10;
-*/
     }
 
     return 0;
@@ -204,10 +197,9 @@ bool ConnectFour::GameEnded()
         return true;
     }
 
-    std::vector<int> vMoves = GenerateMoves();
-    if (vMoves.empty())
+    std::vector<GameMove> vGameMoves = GenerateMoves();
+    if (vGameMoves.empty())
     {
-    //std::cout << "Game ended - no more moves" << std::endl; // DEBUG
         return true;
     }
 
@@ -224,13 +216,9 @@ bool ConnectFour::CheckOrthogonal(const int nPlayer, int nConnect) //const
         {
             if (CheckHorizontal(nPlayer, yyy, xxx) == nConnect)
             {
-              //      std::cout << "Game ended - Horizontal Player " << nPlayer << std::endl; // DEBUG
                 bConnect = true;
                 if (nConnect == 4)
                     m_sWinBy.assign("Horizontal");
-                //std::string sHorizontal("Horizontal");
-                //m_sWinBy = sHorizontal;
-                //m_nWinBy = 1;
                 break;
             }
         }
@@ -247,11 +235,9 @@ bool ConnectFour::CheckOrthogonal(const int nPlayer, int nConnect) //const
             {
                 if (CheckVertical(nPlayer, yyy, xxx) == nConnect)
                 {
-            //    std::cout << "Game ended - Vertical Player " << nPlayer << std::endl; // DEBUG
                     bConnect = true;
                     if (nConnect == 4)
                         m_sWinBy.assign("Horizontal");
-                    //m_nWinBy = 2;
                     break;
                 }
             }
@@ -359,7 +345,7 @@ bool ConnectFour::ValidMove(const int y, const int x) const
     return true;
 }
 
-int ConnectFour::PreferredMove(const int nMove) const
+int ConnectFour::PreferredMove(const GameMove &cGameMove) const
 {
-    return std::abs(nMove - 4);
+    return std::abs(cGameMove.ToX() - 4);
 }

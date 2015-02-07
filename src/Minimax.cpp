@@ -7,82 +7,70 @@ bool Minimax::Move(Game &cGame)
     std::cout << "Valid moves: ";
     cGame.DisplayValidMoves();
 
-    int nMove = MinimaxMove(m_nPlayerNumber, cGame, m_nDepth);
+    GameMove cGameMove = MinimaxMove(m_nPlayerNumber, cGame, m_nDepth);
 
-    std::cout << "Player " << m_nPlayerNumber << " moves: " << nMove << std::endl;
+    cGame.AnnounceMove(m_nPlayerNumber, cGameMove);
 
-    if ( cGame.ApplyMove(m_nPlayerNumber, nMove) == -1 )
+     if ( cGame.ApplyMove(m_nPlayerNumber, cGameMove) == -1 )
         return false;
 
     return true;
 }
 
-int Minimax::MinimaxMove(int nPlayer, Game &cGame, int nDepth)
+GameMove Minimax::MinimaxMove(int nPlayer, Game &cGame, int nDepth)
 {
-    std::vector<int> vMoves = cGame.GenerateMoves();
-    int nBestMove = vMoves[0];
+    std::vector<GameMove> vGameMoves = cGame.GenerateMoves();
+    GameMove cBestMove = vGameMoves[0];
     int nBestScore = {INT_MIN};
     int nAlpha {INT_MIN};
     int nBeta {INT_MAX};
 
-    for (int nMove : vMoves)
+    for (GameMove cGameMove : vGameMoves)
     {
-        //std::cout << "\r" << Spin() << std::flush;
-
-        // TODO: how to capture result of move in m_stMove structure?
-        // TODO: change ApplyMove to use m_stMove
-        int nResult = cGame.ApplyMove(m_nPlayerNumber, nMove + 1);
-        //int nScore = MinMove(1 - nPlayer + 2, cGame, nDepth - 1);
+        if ( cGame.ApplyMove(m_nPlayerNumber, cGameMove) == -1 )
+        {
+            cGame.AnnounceMove(m_nPlayerNumber, cGameMove);
+            throw GameAIException("Invalid move");
+        }
         int nScore = MinMove(1 - nPlayer + 2, cGame, nDepth - 1, nAlpha, nBeta);
 
         // TODO: have game provide verbose output?
-        if (m_bVerbose) std::cout << "\tMinimaxMove Move=" << nMove + 1 << " Score=" << nScore << std::endl;
+        if (m_bVerbose) std::cout << "\tMinimaxMove Move=" << cGameMove.ToX() << " Score=" << nScore << std::endl;
 
         if (nScore == nBestScore)
         {
-            // TODO: update to use m_stMove
-            if (cGame.PreferredMove(nMove + 1) < cGame.PreferredMove(nBestMove + 1))
+            if (cGame.PreferredMove(cGameMove) < cGame.PreferredMove(cBestMove))
             {
-                nBestMove = nMove;
+                cBestMove = cGameMove;
             }
         }
 
         if (nScore > nBestScore)
         {
-            nBestMove = nMove;
+            cBestMove = cGameMove;
             nBestScore = nScore;
         }
 
-        cGame.RetractMove(nResult, nMove);
+        cGame.RetractMove(m_nPlayerNumber, cGameMove);
     }
 
-    return nBestMove + 1;
+    return cBestMove;
 }
 
-//int Minimax::MinMove(int nPlayer, Game &cGame, int nDepth)
 int Minimax::MinMove(int nPlayer, Game &cGame, int nDepth, int nAlpha, int nBeta)
 {
-    //std::cout << "\r" << Spin() << std::flush;
-
     if (cGame.GameEnded() || nDepth == 0)
         return cGame.EvaluateGameState(1 - nPlayer + 2) * (nDepth + 1);
-        //return cGame.EvaluateGameState(1 - nPlayer + 2);
 
-    std::vector<int> vMoves = cGame.GenerateMoves();
-    //int nBestScore = {INT_MAX};
-    for (int nMove : vMoves)
+    std::vector<GameMove> vGameMoves = cGame.GenerateMoves();
+
+    for (GameMove cGameMove : vGameMoves)
     {
-        int nResult = cGame.ApplyMove(nPlayer, nMove + 1);
+
+        int nResult = cGame.ApplyMove(nPlayer, cGameMove);
         int nScore = MaxMove(1- nPlayer + 2, cGame, nDepth - 1, nAlpha, nBeta);
 
-        //std::cout << "MinMove     Move=" << nMove << " Score=" << nScore << std::endl;
-/*
-        if (nScore < nBestScore)
-        {
-            nBestScore = nScore;
-        }
-*/
-        cGame.RetractMove(nResult, nMove);
+        cGame.RetractMove(nResult, cGameMove);
 
         if (nScore <= nAlpha)
             return nAlpha; // fail hard alpha-cutoff
@@ -91,35 +79,23 @@ int Minimax::MinMove(int nPlayer, Game &cGame, int nDepth, int nAlpha, int nBeta
             nBeta = nScore; // nBeta acts like min
     }
 
-    //return nBestScore;
     return nBeta;
 }
 
-//int Minimax::MaxMove(int nPlayer, Game &cGame, int nDepth)
 int Minimax::MaxMove(int nPlayer, Game &cGame, int nDepth, int nAlpha, int nBeta)
 {
-    //std::cout << "\r" << Spin() << std::flush;
-
     if (cGame.GameEnded() || nDepth == 0)
         return cGame.EvaluateGameState(nPlayer) * (nDepth + 1);
-        //return cGame.EvaluateGameState(nPlayer);
 
-    std::vector<int> vMoves = cGame.GenerateMoves();
-    //int nBestScore {INT_MIN};
-    for (int nMove : vMoves)
+    std::vector<GameMove> vGameMoves = cGame.GenerateMoves();
+
+    for (GameMove cGameMove : vGameMoves)
     {
-        int nResult = cGame.ApplyMove(nPlayer, nMove + 1);
-        //int nScore = MinMove(1 - nPlayer + 2, cGame, nDepth -1);
+        int nResult = cGame.ApplyMove(nPlayer, cGameMove);
+
         int nScore = MinMove(1 - nPlayer + 2, cGame, nDepth -1, nAlpha, nBeta);
 
-        //std::cout << "MaxMove     Move=" << nMove << " Score=" << nScore << std::endl;
-/*
-        if (nScore > nBestScore)
-        {
-            nBestScore = nScore;
-        }
-*/
-        cGame.RetractMove(nResult, nMove);
+        cGame.RetractMove(nResult, cGameMove);
 
         if (nScore >= nBeta)
             return nBeta; // fail hard beta-cutoff
@@ -128,6 +104,5 @@ int Minimax::MaxMove(int nPlayer, Game &cGame, int nDepth, int nAlpha, int nBeta
             nAlpha = nScore; // nAlpha acts like a max
     }
 
-    //return nBestScore;
     return nAlpha;
 }

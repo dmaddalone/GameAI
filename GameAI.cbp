@@ -39,12 +39,14 @@
 		<Unit filename="include/Game.h" />
 		<Unit filename="include/GameAIException.h" />
 		<Unit filename="include/GameAIVersion.h" />
+		<Unit filename="include/GameMove.h" />
 		<Unit filename="include/Human.h" />
 		<Unit filename="include/Minimax.h" />
 		<Unit filename="include/Player.h" />
 		<Unit filename="main.cpp" />
 		<Unit filename="src/ConnectFour.cpp" />
 		<Unit filename="src/Game.cpp" />
+		<Unit filename="src/GameMove.cpp" />
 		<Unit filename="src/Human.cpp" />
 		<Unit filename="src/Minimax.cpp" />
 		<Unit filename="src/Player.cpp" />

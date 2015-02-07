@@ -4,6 +4,7 @@
 #include <iostream>
 #include "Player.h"
 #include "Game.h"
+#include "GameMove.h"
 
 class Human: public Player
 {
@@ -14,6 +15,8 @@ class Human: public Player
         bool Move(Game &cGame);
 
         std::string TypeName() { return "Human"; }
+
+    private:
 };
 
 #endif // HUMAN_H

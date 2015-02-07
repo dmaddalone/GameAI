@@ -12,13 +12,18 @@ class ConnectFour : public Game
 
         void Display(const bool bDisplayCoordinates = false) const;
         void DisplayValidMoves() const;
-        //virtual void Reset() = 0;
-        int  ApplyMove(const int nPlayer, const int nX, const int nY);
-        bool RetractMove(const int nPlayer, const int nMove);
-        int  PreferredMove(const int nMove) const;
+
+        GameMove GetMove() const;
+        virtual void AnnounceMove(const int nPlayer, const GameMove &cGameMove);
+
+        int  ApplyMove(const int nPlayer, GameMove &cGameMove);
+
+        bool RetractMove(const int nPlayer, const GameMove &cGameMove);
+
+        int  PreferredMove(const GameMove &cGameMove) const;
         bool GameEnded();
 
-        std::vector<int> GenerateMoves() const;
+        std::vector<GameMove> GenerateMoves() const;
         int  EvaluateGameState(const int nPlayer);
 
         std::string Title() { return "ConnectFour"; }
