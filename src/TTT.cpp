@@ -1,5 +1,16 @@
 #include "TTT.h"
 
+void TTT::ClearBoard()
+{
+    for (int xxx = 0; xxx < m_kX; ++xxx)
+    {
+        for (int yyy = 0; yyy < m_kY; ++yyy)
+        {
+            m_acGrid[yyy][xxx] = m_kClear;
+        }
+    }
+}
+
 void TTT::Display(const bool bDisplayCoordinates) const
 {
     if (bDisplayCoordinates)
@@ -25,10 +36,13 @@ void TTT::Display(const bool bDisplayCoordinates) const
                 std::cout << " | ";
 
             //std::cout << m_anGrid[yyy][xxx] << "   ";
-            std::cout << m_acGrid[yyy][xxx];
+            std::cout << static_cast<char>(m_acGrid[yyy][xxx]);
         }
 
-        std::cout << std::endl << "  -----------" << std::endl;
+        if (yyy < m_kY - 1)
+            std::cout << std::endl << "  -----------" << std::endl;
+        else
+            std::cout << std::endl << std::endl;
     }
 }
 
@@ -37,7 +51,7 @@ void TTT::DisplayValidMoves() const
     std::vector<GameMove> vGameMoves = GenerateMoves();
     for (GameMove cGameMove : vGameMoves)
     {
-        std::cout << cGameMove.ToY() + 1 << "," << cGameMove.ToX() + 1 << "; ";
+        std::cout << cGameMove.ToX() + 1 << m_kDelimeter << cGameMove.ToY() + 1 << " ";
     }
     std::cout << std::endl;
 }
@@ -61,11 +75,19 @@ std::vector<GameMove> TTT::GenerateMoves() const
 
 GameMove TTT::GetMove() const
 {
-    int nMove {};
+    std::string sMove {};
     GameMove cGameMove;
 
-    std::cin >> nMove;
-    cGameMove.SetToX(nMove - 1);
+    std::cin >> sMove;
+
+    std::string sToken = sMove.substr(0,sMove.find(m_kDelimeter));
+    int xxx = atoi(sToken.c_str());
+
+    sToken = sMove.substr(sMove.find(m_kDelimeter) + 1,sMove.length() );
+    int yyy = atoi(sToken.c_str());
+
+    cGameMove.SetToX(xxx - 1);
+    cGameMove.SetToY(yyy - 1);
 
     return cGameMove;
 }
@@ -81,6 +103,9 @@ int TTT::ApplyMove(const int nPlayer, GameMove &cGameMove)
         return -1;
 
     if ((cGameMove.ToX() > m_kX - 1) || (cGameMove.ToX() < 0))
+        return -1;
+
+    if ((cGameMove.ToY() > m_kY - 1) || (cGameMove.ToY() < 0))
         return -1;
 
     //if (m_anGrid[cGameMove.ToY()][cGameMove.ToX()] != 0)
@@ -170,43 +195,30 @@ int TTT::EvaluateGameState(const int nPlayer)
     return 0;
 }
 
-/*
-int TTT::FindBottom(const int x) const
-{
-    for (int yyy = m_kY - 1; yyy >= 0; --yyy)
-    {
-        if (m_anGrid[yyy][x] == 0)
-            return yyy;
-    }
-
-    return -1;
-}
-*/
-
 bool TTT::GameEnded()
 {
     m_nWinner = 0;
     m_sWinBy.assign("nothing");
 
-    if (CheckOrthogonal(m_kPlayer1, 4))
+    if (CheckOrthogonal(m_kPlayer1, 3))
     {
         m_nWinner = m_kPlayer1;
         return true;
     }
 
-    if (CheckOrthogonal(m_kPlayer2, 4))
+    if (CheckOrthogonal(m_kPlayer2, 3))
     {
         m_nWinner = m_kPlayer2;
         return true;
     }
 
-    if (CheckDiagonal(m_kPlayer1, 4))
+    if (CheckDiagonal(m_kPlayer1, 3))
     {
         m_nWinner = m_kPlayer1;
         return true;
     }
 
-    if (CheckDiagonal(m_kPlayer2, 4))
+    if (CheckDiagonal(m_kPlayer2, 3))
     {
         m_nWinner = m_kPlayer2;
         return true;
@@ -232,7 +244,7 @@ bool TTT::CheckOrthogonal(const int nPlayer, int nConnect) //const
             if (CheckHorizontal(nPlayer, yyy, xxx) == nConnect)
             {
                 bConnect = true;
-                if (nConnect == 4)
+                if (nConnect == 3)
                     m_sWinBy.assign("Horizontal");
                 break;
             }
@@ -251,7 +263,7 @@ bool TTT::CheckOrthogonal(const int nPlayer, int nConnect) //const
                 if (CheckVertical(nPlayer, yyy, xxx) == nConnect)
                 {
                     bConnect = true;
-                    if (nConnect == 4)
+                    if (nConnect == 3)
                         m_sWinBy.assign("Horizontal");
                     break;
                 }
@@ -298,7 +310,7 @@ bool TTT::CheckDiagonal(const int nPlayer, int nConnect) //const
             if (CheckDiagonalUpperLeftLowerRight(nPlayer, yyy, xxx) == nConnect)
             {
                 bConnect = true;
-                if (nConnect == 4)
+                if (nConnect == 3)
                     m_sWinBy.assign("DiagonalULLR");
                 break;
             }
@@ -317,7 +329,7 @@ bool TTT::CheckDiagonal(const int nPlayer, int nConnect) //const
                 if (CheckDiagonalUpperRightLowerLeft(nPlayer, yyy, xxx) == nConnect)
                 {
                     bConnect = true;
-                    if (nConnect == 4)
+                    if (nConnect == 3)
                         m_sWinBy.assign("DiagonalURLL");
                     break;
                 }

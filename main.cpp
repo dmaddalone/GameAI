@@ -102,7 +102,8 @@ static std::unique_ptr<Game> SetGame(char* pcGame)
         return nullptr;
 }
 
-static void SetPlayers(std::string sName, int nPlies, int nPlies1, int nPlies2, int nVerbosity, std::vector<std::unique_ptr<Player>> &vPlayers)
+//static void SetPlayers(std::string sName, int nPlies, int nPlies1, int nPlies2, int nVerbosity, std::vector<std::unique_ptr<Player>> &vPlayers)
+static void SetPlayers(std::string sName, int nPlies1, int nPlies2, int nVerbosity, std::vector<std::unique_ptr<Player>> &vPlayers)
 {
     if (nVerbosity >= 0 && nVerbosity <= 2)
     {
@@ -114,8 +115,8 @@ static void SetPlayers(std::string sName, int nPlies, int nPlies1, int nPlies2, 
         ShowUsage(sName);
         exit (EXIT_FAILURE);
     }
-
-    if (nPlies > 0 && nPlies < 9)
+/*
+    if (nPlies > 0 && nPlies <= 9)
     {
         vPlayers[0]->SetPlies(nPlies);
         vPlayers[1]->SetPlies(nPlies);
@@ -125,8 +126,8 @@ static void SetPlayers(std::string sName, int nPlies, int nPlies1, int nPlies2, 
         ShowUsage(sName);
         exit (EXIT_FAILURE);
     }
-
-    if (nPlies1 > 0 && nPlies1 < 9)
+*/
+    if (nPlies1 > 0 && nPlies1 <= 9)
     {
         vPlayers[0]->SetPlies(nPlies1);
     }
@@ -136,7 +137,7 @@ static void SetPlayers(std::string sName, int nPlies, int nPlies1, int nPlies2, 
         exit (EXIT_FAILURE);
     }
 
-    if (nPlies2 > 0 && nPlies2 < 9)
+    if (nPlies2 > 0 && nPlies2 <= 9)
     {
         vPlayers[1]->SetPlies(nPlies2);
     }
@@ -158,7 +159,7 @@ int main(int argc, char* argv[])
 {
     std::vector<std::unique_ptr<Player>> vPlayers;
     std::unique_ptr<Game> upGame {};
-    int  nPlies     {4};
+    //int  nPlies     {4};
     int  nPlies1    {4};
     int  nPlies2    {4};
     int  nVerbosity {1};
@@ -229,7 +230,9 @@ int main(int argc, char* argv[])
                 }
                 break;
             case 'p':
-                nPlies = atoi(optarg);
+                //nPlies = atoi(optarg);
+                nPlies1 = nPlies2 = atoi(optarg);
+                //nPlies2 = nPlies;
                 break;
             case 'x':
                 nPlies1 = atoi(optarg);
@@ -256,7 +259,7 @@ int main(int argc, char* argv[])
         exit(EXIT_FAILURE);
     }
 
-    SetPlayers(argv[0], nPlies, nPlies1, nPlies2, nVerbosity, vPlayers);
+    SetPlayers(argv[0], nPlies1, nPlies2, nVerbosity, vPlayers);
 
     std::cout << "Playing " << upGame->Title() << std::endl;
 

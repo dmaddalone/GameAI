@@ -7,7 +7,7 @@
 class TTT : public Game
 {
     public:
-        TTT(GameType ecGameType) : Game(ecGameType) {}
+        TTT(GameType ecGameType) : Game(ecGameType) { ClearBoard(); }
         ~TTT() {}
 
         void Display(const bool bDisplayCoordinates = false) const;
@@ -29,7 +29,7 @@ class TTT : public Game
         std::string Title() { return "Tic-Tac-Toe"; }
 
     private:
-        void  ResetBoard();
+        void  ClearBoard();
         //int  FindBottom(const int x) const;
         bool CheckOrthogonal(const int nPlayer, int nConnect) ;//const;
         int  CheckHorizontal(const int nPlayer, const int y, const int x) ;//const;
@@ -48,9 +48,11 @@ class TTT : public Game
         static const int m_kPlayer2 = 2;
 
         //int m_anGrid[m_kY][m_kX] {{m_kClear}};
-        int m_acGrid[m_kY][m_kX] {{m_kClear}};
+        int m_acGrid[m_kY][m_kX] {{}};
 
+        static const char m_kDelimeter {','};
         char m_kTokens[3] {m_kClear,'X','O'};
+
 
         struct SequenceCounts {
             int nCount1 {0};

@@ -5,13 +5,20 @@
 		<Option title="GameAI" />
 		<Option pch_mode="2" />
 		<Option compiler="gcc" />
+		<Option show_notes="0">
+			<notes>
+				<![CDATA[TODO: Genericize the Checkxxxx functions into Game.cpp or GridGame.cpp
+
+TODO: Comments]]>
+			</notes>
+		</Option>
 		<Build>
 			<Target title="Debug">
 				<Option output="bin/Debug/GameAI" prefix_auto="1" extension_auto="1" />
 				<Option object_output="obj/Debug/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
-				<Option parameters="-1 human -2 human -g ttt" />
+				<Option parameters="-1 minimax -2 minimax --plies1=9 -g ttt" />
 				<Compiler>
 					<Add option="-std=c++11" />
 					<Add option="-Wextra" />
