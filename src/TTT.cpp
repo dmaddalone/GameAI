@@ -1,77 +1,113 @@
 #include "TTT.h"
 
-void TTT::Display(const bool bDisplayLines) const
+void TTT::Display(const bool bDisplayCoordinates) const
 {
-    for (int yyy = 0; yyy < m_kY; ++yyy)
+    if (bDisplayCoordinates)
     {
+        std::cout << "   ";
         for (int xxx = 0; xxx < m_kX; ++xxx)
         {
-            std::cout << m_anGrid[yyy][xxx];
-            if (bDisplayLines && xxx < m_kX - 1)
-                std::cout << " | ";
-            else
-                std::cout << "   ";
+            std::cout << xxx + 1 << "   ";
+        }
+        std::cout << std::endl << std::endl;;
+    }
+
+    for (int yyy = 0; yyy < m_kY; ++yyy)
+    {
+        if (bDisplayCoordinates)
+        {
+            std::cout << yyy + 1 << "  ";
         }
 
-        std::cout << std::endl;'
+        for (int xxx = 0; xxx < m_kX; ++xxx)
+        {
+            if (xxx > 0)
+                std::cout << " | ";
 
-        if (bDisplayLines && yyy < m_kY - 1)
-            std::cout << "---------------" << std::endl;
-        else
-            std::cout << std::endl;
+            //std::cout << m_anGrid[yyy][xxx] << "   ";
+            std::cout << m_acGrid[yyy][xxx];
+        }
 
-        //std::cout << std::endl << std::endl;
+        std::cout << std::endl << "  -----------" << std::endl;
     }
 }
 
 void TTT::DisplayValidMoves() const
 {
-    std::vector<int> vMoves = GenerateMoves();
-    for (int iii : vMoves)
+    std::vector<GameMove> vGameMoves = GenerateMoves();
+    for (GameMove cGameMove : vGameMoves)
     {
-        std::cout << iii + 1 << " ";
+        std::cout << cGameMove.ToY() + 1 << "," << cGameMove.ToX() + 1 << "; ";
     }
     std::cout << std::endl;
 }
 
-int TTT::ApplyMove(const int nPlayer, const int x, const int y)
+std::vector<GameMove> TTT::GenerateMoves() const
 {
-    int nAdjustedX = x - 1;
-    int nAdjustedY = y - 1;
-
-    if ((nPlayer != m_kPlayer1) && (nPlayer != m_kPlayer2))
-        return -1;
-
-    if ((nAdjustedX > m_kX - 1) || (nAdjustedX < 0))
-        return -1;
-
-    if (m_anGrid[nAdjustedY][nAdjustedX] != 0)
-        return -1;
-
-    m_anGrid[y][nAdjustedX] = nPlayer;
-    ++m_nNumberOfMoves;
-
-    return y;
-}
-
-bool TTT::RetractMove(const int y, const int x)
-{
-    m_anGrid[y][x] = 0;
-    --m_nNumberOfMoves;
-    return true;
-}
-
-std::vector<int> TTT::GenerateMoves() const
-{
-    std::vector<int> vMoves {};
+    std::vector<GameMove> vGameMoves {};
 
     for (int xxx = 0; xxx < m_kX; ++xxx)
     {
-        if (FindBottom(xxx) >= 0)
-            vMoves.push_back(xxx);
+        for (int yyy = 0; yyy < m_kY; ++yyy)
+        {
+            if (m_acGrid[yyy][xxx] == m_kClear)
+                vGameMoves.emplace_back(0,0,xxx,yyy);
+        }
     }
 
-    return vMoves;
+    return vGameMoves;
+}
+
+
+GameMove TTT::GetMove() const
+{
+    int nMove {};
+    GameMove cGameMove;
+
+    std::cin >> nMove;
+    cGameMove.SetToX(nMove - 1);
+
+    return cGameMove;
+}
+
+void TTT::AnnounceMove(const int nPlayer, const GameMove &cGameMove)
+{
+    std::cout << "Move number " << m_nNumberOfMoves + 1 << " -- Player " << nPlayer << " moves: " << cGameMove.ToX() + 1 << std::endl;;
+}
+
+int TTT::ApplyMove(const int nPlayer, GameMove &cGameMove)
+{
+    if ((nPlayer != m_kPlayer1) && (nPlayer != m_kPlayer2))
+        return -1;
+
+    if ((cGameMove.ToX() > m_kX - 1) || (cGameMove.ToX() < 0))
+        return -1;
+
+    //if (m_anGrid[cGameMove.ToY()][cGameMove.ToX()] != 0)
+    if (m_acGrid[cGameMove.ToY()][cGameMove.ToX()] != m_kClear)
+        return -1;
+
+    //int y = FindBottom(cGameMove.ToX()); //TODO: remove
+
+    //if (y == -1)
+    //    return -1;
+
+    //cGameMove.SetToY(y);
+
+    //m_anGrid[cGameMove.ToY()][cGameMove.ToX()] = nPlayer;
+    m_acGrid[cGameMove.ToY()][cGameMove.ToX()] = m_kTokens[nPlayer];
+    ++m_nNumberOfMoves;
+
+    return 1;
+}
+
+bool TTT::RetractMove(const int nPlayer, const GameMove &cGameMove)
+{
+    //m_anGrid[cGameMove.ToY()][cGameMove.ToX()] = 0;
+    m_acGrid[cGameMove.ToY()][cGameMove.ToX()] = m_kClear;
+    --m_nNumberOfMoves;
+
+    return true;
 }
 
 void TTT::CountSequence(int nSequence, SequenceCounts &stSequenceCounts)
@@ -122,39 +158,30 @@ int TTT::EvaluateGameState(const int nPlayer)
                 CountSequence(CheckDiagonalUpperRightLowerLeft(1 - nPlayer + 2, yyy, xxx), m_stOpponentCounts);
             }
         }
-
+/*
         return ( ((m_stMyCounts.nCount2 - m_stOpponentCounts.nCount2) * 10) +
                  ((m_stMyCounts.nCount3 - m_stOpponentCounts.nCount3) * 100) );
+ */
 
-/*
-        if (CheckOrthogonal(1 - nPlayer + 2, 3))
-            return -200;
-
-        if (CheckDiagonal(1 - nPlayer + 2, 3))
-            return -200;
-
-        if (CheckOrthogonal(nPlayer, 3))
-            return 100;
-
-        if (CheckDiagonal(nPlayer, 3))
-            return 100;
-
-        if (CheckOrthogonal(1 - nPlayer + 2, 2))
-            return -20;
-
-        if (CheckDiagonal(1 - nPlayer + 2, 2))
-            return -20;
-
-        if (CheckOrthogonal(nPlayer, 2))
-            return 10;
-
-        if (CheckDiagonal(nPlayer, 2))
-            return 10;
-*/
+        return ( (m_stMyCounts.nCount2 * 10) - (m_stOpponentCounts.nCount2 * 100) +
+                 (m_stMyCounts.nCount3 * 1000) - (m_stOpponentCounts.nCount3 * 10000) );
     }
 
     return 0;
 }
+
+/*
+int TTT::FindBottom(const int x) const
+{
+    for (int yyy = m_kY - 1; yyy >= 0; --yyy)
+    {
+        if (m_anGrid[yyy][x] == 0)
+            return yyy;
+    }
+
+    return -1;
+}
+*/
 
 bool TTT::GameEnded()
 {
@@ -185,10 +212,9 @@ bool TTT::GameEnded()
         return true;
     }
 
-    std::vector<int> vMoves = GenerateMoves();
-    if (vMoves.empty())
+    std::vector<GameMove> vGameMoves = GenerateMoves();
+    if (vGameMoves.empty())
     {
-    //std::cout << "Game ended - no more moves" << std::endl; // DEBUG
         return true;
     }
 
@@ -205,13 +231,9 @@ bool TTT::CheckOrthogonal(const int nPlayer, int nConnect) //const
         {
             if (CheckHorizontal(nPlayer, yyy, xxx) == nConnect)
             {
-              //      std::cout << "Game ended - Horizontal Player " << nPlayer << std::endl; // DEBUG
                 bConnect = true;
                 if (nConnect == 4)
                     m_sWinBy.assign("Horizontal");
-                //std::string sHorizontal("Horizontal");
-                //m_sWinBy = sHorizontal;
-                //m_nWinBy = 1;
                 break;
             }
         }
@@ -228,11 +250,9 @@ bool TTT::CheckOrthogonal(const int nPlayer, int nConnect) //const
             {
                 if (CheckVertical(nPlayer, yyy, xxx) == nConnect)
                 {
-            //    std::cout << "Game ended - Vertical Player " << nPlayer << std::endl; // DEBUG
                     bConnect = true;
                     if (nConnect == 4)
                         m_sWinBy.assign("Horizontal");
-                    //m_nWinBy = 2;
                     break;
                 }
             }
@@ -249,7 +269,8 @@ int TTT::CheckHorizontal(const int nPlayer, const int y, const int x) //const
 {
     if (!ValidMove(y, x)) return 0;
 
-    if (m_anGrid[y][x] == nPlayer)
+    //if (m_anGrid[y][x] == nPlayer)
+    if (m_acGrid[y][x] == m_kTokens[nPlayer])
         return (1 + CheckHorizontal(nPlayer, y, x+1));
     else
         return 0;
@@ -259,7 +280,8 @@ int TTT::CheckVertical(const int nPlayer, const int y, const int x) //const
 {
     if (!ValidMove(y, x)) return 0;
 
-    if (m_anGrid[y][x] == nPlayer)
+    //if (m_anGrid[y][x] == nPlayer)
+    if (m_acGrid[y][x] == m_kTokens[nPlayer])
         return (1 + CheckVertical(nPlayer, y+1, x));
     else
         return 0;
@@ -313,7 +335,8 @@ int TTT::CheckDiagonalUpperLeftLowerRight(const int nPlayer, const int y, const 
 {
     if (!ValidMove(y, x)) return 0;
 
-    if (m_anGrid[y][x] == nPlayer)
+    //if (m_anGrid[y][x] == nPlayer)
+    if (m_acGrid[y][x] == m_kTokens[nPlayer])
         return (1 + CheckDiagonalUpperLeftLowerRight(nPlayer, y+1, x+1));
     else
         return 0;
@@ -323,7 +346,8 @@ int TTT::CheckDiagonalUpperRightLowerLeft(const int nPlayer, const int y, const 
 {
     if (!ValidMove(y, x)) return 0;
 
-    if (m_anGrid[y][x] == nPlayer)
+    //if (m_anGrid[y][x] == nPlayer)
+    if (m_acGrid[y][x] == m_kTokens[nPlayer])
         return (1 + CheckDiagonalUpperRightLowerLeft(nPlayer, y+1, x-1));
     else
         return 0;
@@ -340,7 +364,8 @@ bool TTT::ValidMove(const int y, const int x) const
     return true;
 }
 
-int TTT::PreferredMove(const int nMove) const
+int TTT::PreferredMove(const GameMove &cGameMove) const
 {
-    return std::abs(nMove - 4);
+    //return std::abs(cGameMove.ToX() - 3);
+    return 0;
 }

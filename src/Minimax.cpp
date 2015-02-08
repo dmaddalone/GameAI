@@ -53,7 +53,7 @@ GameMove Minimax::MinimaxMove(int nPlayer, Game &cGame, int nDepth)
 
         int nScore = MinMove(1 - nPlayer + 2, cGame, nDepth - 1, nAlpha, nBeta);
 
-        if (m_nVerbosity >= 2) std::cout << "\tMinimaxMove Move=" << cGameMove.ToX() << " Score=" << nScore << std::endl;
+        if (m_nVerbosity >= 2) std::cout << "\tMinimaxMove Move=" << cGameMove.ToX() + 1 << " Score=" << nScore << std::endl;
 
         if (nScore == nBestScore)
         {
@@ -78,7 +78,8 @@ GameMove Minimax::MinimaxMove(int nPlayer, Game &cGame, int nDepth)
 int Minimax::MinMove(int nPlayer, Game &cGame, int nDepth, int nAlpha, int nBeta)
 {
     if (cGame.GameEnded() || nDepth == 0)
-        return cGame.EvaluateGameState(1 - nPlayer + 2) * (nDepth + 1);
+        //return cGame.EvaluateGameState(1 - nPlayer + 2) * (nDepth + 1);
+        return cGame.EvaluateGameState(1 - nPlayer + 2);
 
     std::vector<GameMove> vGameMoves = cGame.GenerateMoves();
 
@@ -103,7 +104,8 @@ int Minimax::MinMove(int nPlayer, Game &cGame, int nDepth, int nAlpha, int nBeta
 int Minimax::MaxMove(int nPlayer, Game &cGame, int nDepth, int nAlpha, int nBeta)
 {
     if (cGame.GameEnded() || nDepth == 0)
-        return cGame.EvaluateGameState(nPlayer) * (nDepth + 1);
+        //return cGame.EvaluateGameState(nPlayer) * (nDepth + 1);
+        return cGame.EvaluateGameState(nPlayer);
 
     std::vector<GameMove> vGameMoves = cGame.GenerateMoves();
 

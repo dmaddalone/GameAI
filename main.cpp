@@ -18,6 +18,7 @@
 */
 
 #include <cassert>
+#include <cctype>
 #include <cstdlib>
 #include <getopt.h>
 #include <iostream>
@@ -29,7 +30,7 @@
 #include "Player.h"
 #include "Game.h"
 
-using namespace std;
+//using namespace std;
 
 /**
   * ShowUsage
@@ -47,21 +48,21 @@ static void ShowUsage(std::string sName)
               << "    -1 TYPE,  --player1=TYPE  assign TYPE of player to Player 1\n"
               << "    -2 TYPE,  --player2=TYPE  assign TYPE of player to Player 2\n"
               << "    -p PLIES, --plies=PLIES   assign the number of PLIES that non-human players will use\n"
-              << "              --plies1=PLIES  assign the number of PLIES to Player 1\n"
-              << "              --plies2=PLIES  assign the number of PLIES to Player 2\n"
+              << "              --plies1=PLIES  assign the number of PLIES to Player 1, if non-human\n"
+              << "              --plies2=PLIES  assign the number of PLIES to Player 2, if non-human\n"
               << "    -g GAME,  --game=GAME     play GAME"
               << "\nNon Required Options:\n"
               << "    -h,       --help          display this help message and exit\n"
-              << "    -v LEVEL  --verbose=LEVEL display game information\n"
+              << "    -v LEVEL, --verbose=LEVEL display game information\n"
               << "    -V,       --version       display version and exit\n"
               << "\n"
               << "TYPE is either human or minimax\n"
-              << "PLIES are from 1 to 9.  The default is 6."
-              << "GAME is either ttt or connectfour"
-              << "LEVEL is an integer 0 to 2.  The default is 1."
-              << "    0 = display start and ending announcements"
-              << "    1 = display game move-by-move"
-              << "    2 = display AI scoring of moves"
+              << "PLIES are from 1 to 9.  The default is 4.\n"
+              << "GAME is either ttt or connectfour.\n"
+              << "LEVEL is an integer 0 to 2.  The default is 1.\n"
+              << "    0 = display start and ending announcements\n"
+              << "    1 = display game move-by-move\n"
+              << "    2 = display AI scoring of moves\n"
               << std::endl;
 }
 
@@ -77,15 +78,13 @@ static void ShowVersion()
     std::cerr << "Game AI version " << GameAIVersion::SemanticVersion() << " " << GameAIVersion::DateVersion() << std::endl;
 }
 
-static bool SetPlayerType(char* pcType, vector<std::unique_ptr<Player>> &vPlayers)
+static bool SetPlayerType(char* pcType, std::vector<std::unique_ptr<Player>> &vPlayers)
 {
     std::string sType(pcType);
     if (sType == "human")
         vPlayers.emplace_back(Player::MakePlayer(PlayerType::TYPE_HUMAN));
     else if (sType == "minimax")
         vPlayers.emplace_back(Player::MakePlayer(PlayerType::TYPE_MINIMAX));
-    else if (sType == "alphabeta")
-        vPlayers.emplace_back(Player::MakePlayer(PlayerType::TYPE_ALPHA_BETA));
     else
         return false;
 
@@ -103,12 +102,17 @@ static std::unique_ptr<Game> SetGame(char* pcGame)
         return nullptr;
 }
 
-static void SetPlayers(int nPlies, int nPlies1, int nPlies2, int nVerbosity, vector<std::unique_ptr<Player>> &vPlayers)
+static void SetPlayers(std::string sName, int nPlies, int nPlies1, int nPlies2, int nVerbosity, std::vector<std::unique_ptr<Player>> &vPlayers)
 {
     if (nVerbosity >= 0 && nVerbosity <= 2)
     {
         vPlayers[0]->SetVerbosity(nVerbosity);
         vPlayers[1]->SetVerbosity(nVerbosity);
+    }
+    else
+    {
+        ShowUsage(sName);
+        exit (EXIT_FAILURE);
     }
 
     if (nPlies > 0 && nPlies < 9)
@@ -116,15 +120,30 @@ static void SetPlayers(int nPlies, int nPlies1, int nPlies2, int nVerbosity, vec
         vPlayers[0]->SetPlies(nPlies);
         vPlayers[1]->SetPlies(nPlies);
     }
+    else
+    {
+        ShowUsage(sName);
+        exit (EXIT_FAILURE);
+    }
 
     if (nPlies1 > 0 && nPlies1 < 9)
     {
         vPlayers[0]->SetPlies(nPlies1);
     }
+    else
+    {
+        ShowUsage(sName);
+        exit (EXIT_FAILURE);
+    }
 
     if (nPlies2 > 0 && nPlies2 < 9)
     {
         vPlayers[1]->SetPlies(nPlies2);
+    }
+    else
+    {
+        ShowUsage(sName);
+        exit (EXIT_FAILURE);
     }
 }
 
@@ -137,12 +156,12 @@ static void SetPlayers(int nPlies, int nPlies1, int nPlies2, int nVerbosity, vec
 
 int main(int argc, char* argv[])
 {
-    vector<std::unique_ptr<Player>> vPlayers;
+    std::vector<std::unique_ptr<Player>> vPlayers;
     std::unique_ptr<Game> upGame {};
-    int  nPlies     {-1};
-    int  nPlies1    {-1};
-    int  nPlies2    {-1};
-    bool nVerbosity {1};
+    int  nPlies     {4};
+    int  nPlies1    {4};
+    int  nPlies2    {4};
+    int  nVerbosity {1};
 
     // Check for command line arguments
     if (argc < 2)
@@ -161,14 +180,14 @@ int main(int argc, char* argv[])
         {"plies2",  required_argument, nullptr, 'y'},
         {"game",    required_argument, nullptr, 'g'},
         {"help",    no_argument,       nullptr, 'h'},
-        {"verbose", optional_argument, nullptr, 'v'},
+        {"verbose", required_argument, nullptr, 'v'},
         {"version", no_argument,       nullptr, 'V'},
         {NULL,      0,                 nullptr,  0}
     };
 
     int nC = 0;
     int nOptionIndex = 0;
-    while ((nC = getopt_long(argc, argv, "1:2:p:g:x:y:hvV", stLongOptions, &nOptionIndex)) != -1)
+    while ((nC = getopt_long(argc, argv, "1:2:p:g:x:y:hv:V", stLongOptions, &nOptionIndex)) != -1)
     {
         switch (nC)
         {
@@ -178,7 +197,18 @@ int main(int argc, char* argv[])
                 break;
             case 'v':
                 //bVerbose = true;
-                nVerbosity = atoi(optarg);
+                if (optarg)
+                {
+                    if (isdigit(optarg[0]))
+                    {
+                        nVerbosity = atoi(optarg);
+                    }
+                    else
+                    {
+                        ShowUsage(argv[0]);
+                        exit (EXIT_FAILURE);
+                    }
+                }
                 break;
             case 'V':
                 ShowVersion();
@@ -226,7 +256,7 @@ int main(int argc, char* argv[])
         exit(EXIT_FAILURE);
     }
 
-    SetPlayers(nPlies, nPlies1, nPlies2, nVerbosity, vPlayers);
+    SetPlayers(argv[0], nPlies, nPlies1, nPlies2, nVerbosity, vPlayers);
 
     std::cout << "Playing " << upGame->Title() << std::endl;
 

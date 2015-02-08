@@ -86,7 +86,7 @@ GameMove ConnectFour::GetMove() const
 
 void ConnectFour::AnnounceMove(const int nPlayer, const GameMove &cGameMove)
 {
-    std::cout << "Player " << nPlayer << " moves: " << cGameMove.ToX() + 1 << std::endl;;
+    std::cout << "Move number " << m_nNumberOfMoves + 1 << " -- Player " << nPlayer << " moves: " << cGameMove.ToX() + 1 << std::endl;;
 }
 
 int ConnectFour::ApplyMove(const int nPlayer, GameMove &cGameMove)
@@ -117,6 +117,7 @@ bool ConnectFour::RetractMove(const int nPlayer, const GameMove &cGameMove)
 {
     m_anGrid[cGameMove.ToY()][cGameMove.ToX()] = 0;
     --m_nNumberOfMoves;
+
     return true;
 }
 
@@ -168,9 +169,13 @@ int ConnectFour::EvaluateGameState(const int nPlayer)
                 CountSequence(CheckDiagonalUpperRightLowerLeft(1 - nPlayer + 2, yyy, xxx), m_stOpponentCounts);
             }
         }
-
+/*
         return ( ((m_stMyCounts.nCount2 - m_stOpponentCounts.nCount2) * 10) +
                  ((m_stMyCounts.nCount3 - m_stOpponentCounts.nCount3) * 100) );
+ */
+
+        return ( (m_stMyCounts.nCount2 * 10) - (m_stOpponentCounts.nCount2 * 100) +
+                 (m_stMyCounts.nCount3 * 1000) - (m_stOpponentCounts.nCount3 * 10000) );
     }
 
     return 0;
@@ -366,5 +371,5 @@ bool ConnectFour::ValidMove(const int y, const int x) const
 
 int ConnectFour::PreferredMove(const GameMove &cGameMove) const
 {
-    return std::abs(cGameMove.ToX() - 4);
+    return std::abs(cGameMove.ToX() - 3);
 }

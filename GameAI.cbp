@@ -11,8 +11,11 @@
 				<Option object_output="obj/Debug/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
-				<Option parameters="-1 human -2 minimax -p 2 -g connectfour" />
+				<Option parameters="-1 human -2 human -g ttt" />
 				<Compiler>
+					<Add option="-std=c++11" />
+					<Add option="-Wextra" />
+					<Add option="-Wall" />
 					<Add option="-g" />
 					<Add directory="include" />
 				</Compiler>
@@ -24,6 +27,9 @@
 				<Option compiler="gcc" />
 				<Compiler>
 					<Add option="-O2" />
+					<Add option="-std=c++11" />
+					<Add option="-Wextra" />
+					<Add option="-Wall" />
 					<Add directory="include" />
 				</Compiler>
 				<Linker>
@@ -43,6 +49,7 @@
 		<Unit filename="include/Human.h" />
 		<Unit filename="include/Minimax.h" />
 		<Unit filename="include/Player.h" />
+		<Unit filename="include/TTT.h" />
 		<Unit filename="main.cpp" />
 		<Unit filename="src/ConnectFour.cpp" />
 		<Unit filename="src/Game.cpp" />
@@ -50,6 +57,7 @@
 		<Unit filename="src/Human.cpp" />
 		<Unit filename="src/Minimax.cpp" />
 		<Unit filename="src/Player.cpp" />
+		<Unit filename="src/TTT.cpp" />
 		<Extensions>
 			<code_completion />
 			<debugger />

@@ -34,8 +34,7 @@ enum class PlayerType
 {
     TYPE_NONE,
     TYPE_HUMAN,
-    TYPE_MINIMAX,
-    TYPE_ALPHA_BETA
+    TYPE_MINIMAX
 };
 
 class Player
@@ -59,7 +58,7 @@ class Player
         int  m_nMove              {0};
         PlayerType m_ecPlayerType {PlayerType::TYPE_NONE};
         int  m_nPlayerNumber      {0};
-        int  m_nDepth             {6}; // For AI
+        int  m_nDepth             {4}; // For AI
         int  m_nVerbosity         {1};
 
     private:
