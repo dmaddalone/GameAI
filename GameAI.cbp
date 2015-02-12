@@ -54,6 +54,7 @@ TODO: Comments]]>
 		<Unit filename="include/GameAIVersion.h" />
 		<Unit filename="include/GameMove.h" />
 		<Unit filename="include/Human.h" />
+		<Unit filename="include/LinearGame.h" />
 		<Unit filename="include/Minimax.h" />
 		<Unit filename="include/Player.h" />
 		<Unit filename="include/TTT.h" />
@@ -62,6 +63,7 @@ TODO: Comments]]>
 		<Unit filename="src/Game.cpp" />
 		<Unit filename="src/GameMove.cpp" />
 		<Unit filename="src/Human.cpp" />
+		<Unit filename="src/LinearGame.cpp" />
 		<Unit filename="src/Minimax.cpp" />
 		<Unit filename="src/Player.cpp" />
 		<Unit filename="src/TTT.cpp" />

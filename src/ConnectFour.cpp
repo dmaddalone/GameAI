@@ -115,7 +115,7 @@ int ConnectFour::ApplyMove(const int nPlayer, GameMove &cGameMove)
 
 bool ConnectFour::RetractMove(const int nPlayer, const GameMove &cGameMove)
 {
-    m_anGrid[cGameMove.ToY()][cGameMove.ToX()] = 0;
+    m_anGrid[cGameMove.ToY()][cGameMove.ToX()] = m_kClear;
     --m_nNumberOfMoves;
 
     return true;

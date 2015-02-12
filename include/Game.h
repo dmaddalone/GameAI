@@ -49,7 +49,6 @@ class Game
 
         virtual GameMove GetMove() const = 0;
         virtual void AnnounceMove(const int nPlayer, const GameMove &cGameMove) = 0;
-        //virtual void Reset() = 0;
 
         virtual int  ApplyMove(const int nPlayer, GameMove &cGameMove) = 0;
 

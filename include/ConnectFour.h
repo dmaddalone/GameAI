@@ -35,23 +35,23 @@ class ConnectFour : public Game
         ConnectFour(GameType ecGameType) : Game(ecGameType) {}
         ~ConnectFour() {}
 
-        void Display(const bool bDisplayCoordinates = false) const;
-        void DisplayValidMoves() const;
+        void Display(const bool bDisplayCoordinates = false) const override;
+        void DisplayValidMoves() const override;
 
-        GameMove GetMove() const;
-        virtual void AnnounceMove(const int nPlayer, const GameMove &cGameMove);
+        GameMove GetMove() const override;
+        void AnnounceMove(const int nPlayer, const GameMove &cGameMove) override;
 
-        int  ApplyMove(const int nPlayer, GameMove &cGameMove);
+        int  ApplyMove(const int nPlayer, GameMove &cGameMove) override;
 
-        bool RetractMove(const int nPlayer, const GameMove &cGameMove);
+        bool RetractMove(const int nPlayer, const GameMove &cGameMove) override;
 
-        int  PreferredMove(const GameMove &cGameMove) const;
-        bool GameEnded();
+        int  PreferredMove(const GameMove &cGameMove) const override;
+        bool GameEnded() override;
 
-        std::vector<GameMove> GenerateMoves() const;
-        int  EvaluateGameState(const int nPlayer);
+        std::vector<GameMove> GenerateMoves() const override;
+        int  EvaluateGameState(const int nPlayer) override;
 
-        std::string Title() { return "ConnectFour"; }
+        std::string Title() override { return "ConnectFour"; }
 
     private:
         int  FindBottom(const int x) const;
@@ -62,7 +62,6 @@ class ConnectFour : public Game
         int  CheckDiagonalUpperLeftLowerRight(const int nPlayer, const int y, const int x) ;//const;
         int  CheckDiagonalUpperRightLowerLeft(const int nPlayer, const int y, const int x) ;//const;
         bool ValidMove(const int y, const int x) const;
-
 
         static const int m_kY = 6;
         static const int m_kX = 7;
