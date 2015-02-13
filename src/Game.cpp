@@ -20,6 +20,7 @@
 #include "Game.h"
 #include "ConnectFour.h"
 #include "TTT.h"
+#include "Reversi.h"
 
 std::unique_ptr<Game> Game::MakeGame(GameType ecGameType)
 {
@@ -29,6 +30,8 @@ std::unique_ptr<Game> Game::MakeGame(GameType ecGameType)
             return std::unique_ptr<Game>(new ConnectFour(ecGameType));
         case GameType::TYPE_TTT:
             return std::unique_ptr<Game>(new TTT(ecGameType));
+        case GameType::TYPE_REVERSI:
+            return std::unique_ptr<Game>(new Reversi(ecGameType));
         default:
             return nullptr;
     }

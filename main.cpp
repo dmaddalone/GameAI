@@ -58,7 +58,7 @@ static void ShowUsage(std::string sName)
               << "\n"
               << "TYPE is either human or minimax\n"
               << "PLIES are from 1 to 9.  The default is 4.\n"
-              << "GAME is either ttt or connectfour.\n"
+              << "GAME is ttt, connectfour, or reversi.\n"
               << "LEVEL is an integer 0 to 2.  The default is 1.\n"
               << "    0 = display start and ending announcements\n"
               << "    1 = display game move-by-move\n"
@@ -98,6 +98,8 @@ static std::unique_ptr<Game> SetGame(char* pcGame)
         return Game::MakeGame(GameType::TYPE_CONNECT_FOUR);
     else if (sGame == "ttt")
         return Game::MakeGame(GameType::TYPE_TTT);
+    else if (sGame == "reversi")
+        return Game::MakeGame(GameType::TYPE_REVERSI);
     else
         return nullptr;
 }

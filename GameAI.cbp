@@ -9,7 +9,15 @@
 			<notes>
 				<![CDATA[TODO: Comments
 
-TODO: Add Reversi]]>
+TODO: Add Reversi
+
+TODO: Make Display part of LinearGame; turn on or off grid lines
+
+TODO: Consider using alhpa characters for one of the corrdinates
+
+TODO: Make DisplayValidMoves  and AnnounceMove  part of LinearGame with flags to use x, y, or both
+
+]]>
 			</notes>
 		</Option>
 		<Build>
@@ -57,6 +65,7 @@ TODO: Add Reversi]]>
 		<Unit filename="include/LinearGame.h" />
 		<Unit filename="include/Minimax.h" />
 		<Unit filename="include/Player.h" />
+		<Unit filename="include/Reversi.h" />
 		<Unit filename="include/TTT.h" />
 		<Unit filename="main.cpp" />
 		<Unit filename="src/ConnectFour.cpp" />
@@ -66,6 +75,7 @@ TODO: Add Reversi]]>
 		<Unit filename="src/LinearGame.cpp" />
 		<Unit filename="src/Minimax.cpp" />
 		<Unit filename="src/Player.cpp" />
+		<Unit filename="src/Reversi.cpp" />
 		<Unit filename="src/TTT.cpp" />
 		<Extensions>
 			<code_completion />

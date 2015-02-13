@@ -35,7 +35,8 @@ enum class GameType
 {
     TYPE_NONE,
     TYPE_CONNECT_FOUR,
-    TYPE_TTT
+    TYPE_TTT,
+    TYPE_REVERSI
 };
 
 class Game

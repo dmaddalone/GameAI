@@ -22,6 +22,7 @@ class LinearGame : public Game
     protected:
         void SetTokens() { m_acTokens[0] = m_kClear; m_acTokens[1] = m_kToken1; m_acTokens[2] = m_kToken2; }
         void ClearBoard();
+        void SetBoard() { return; };
         bool CheckOrthogonal(const int nPlayer, int nConnect) ;//const;
         int  CheckHorizontal(const int nPlayer, const int y, const int x) ;//const;
         int  CheckVertical(const int nPlayer, const int y, const int x) ;//const;
@@ -38,7 +39,9 @@ class LinearGame : public Game
         const int m_kPlayer1 = 1;
         const int m_kPlayer2 = 2;
 
-        int m_acGrid[100][100] {{}};
+        static const int m_kMaxX {8};
+        static const int m_kMaxY {8};
+        int m_acGrid[m_kMaxY][m_kMaxX] {{}};
 
         const char m_kDelimeter {','}; // TTT specific?
 

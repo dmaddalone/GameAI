@@ -1,17 +1,5 @@
 #include "LinearGame.h"
 
-/*
-LinearGame::LinearGame()
-{
-    //ctor
-}
-
-LinearGame::~LinearGame()
-{
-    //dtor
-}
-*/
-
 void LinearGame::ClearBoard()
 {
     for (int xxx = 0; xxx < m_kX; ++xxx)
@@ -21,6 +9,8 @@ void LinearGame::ClearBoard()
             m_acGrid[yyy][xxx] = m_kClear;
         }
     }
+
+    SetBoard();
 }
 
 int LinearGame::EvaluateGameState(const int nPlayer) //TODO: may be game specific
