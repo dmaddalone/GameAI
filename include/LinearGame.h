@@ -6,12 +6,21 @@
 class LinearGame : public Game
 {
     public:
-        LinearGame(GameType ecGameType) : Game(ecGameType) {  ClearBoard(); }
+        LinearGame(GameType ecGameType, int nX, int nY, char cClear, char cToken1, char cToken2) :
+            Game(ecGameType),
+            m_kX(nX),
+            m_kY(nY),
+            m_kClear(cClear),
+            m_kToken1(cToken1),
+            m_kToken2(cToken2)
+            {  SetTokens(); ClearBoard(); }
+
         ~LinearGame() {}
 
-        int  EvaluateGameState(const int nPlayer) override;
+        virtual int  EvaluateGameState(const int nPlayer) override;
 
     protected:
+        void SetTokens() { m_acTokens[0] = m_kClear; m_acTokens[1] = m_kToken1; m_acTokens[2] = m_kToken2; }
         void ClearBoard();
         bool CheckOrthogonal(const int nPlayer, int nConnect) ;//const;
         int  CheckHorizontal(const int nPlayer, const int y, const int x) ;//const;
@@ -21,18 +30,19 @@ class LinearGame : public Game
         int  CheckDiagonalUpperRightLowerLeft(const int nPlayer, const int y, const int x) ;//const;
         bool ValidMove(const int y, const int x) const;
 
-        static const int m_kY = 3;           // TTT specific
-        //static const int m_kY;// = 3;           // TTT specific
-        //static int m_kY;// = 3;           // TTT specific
-        static const int m_kX  = 3;           // TTT specific
-        const char m_kClear = ' ';    // TTT specific?
-        static const int m_kPlayer1 = 1;
-        static const int m_kPlayer2 = 2;
+        const int m_kX;
+        const int m_kY;
+        const char m_kClear;
+        const char m_kToken1;
+        const char m_kToken2;
+        const int m_kPlayer1 = 1;
+        const int m_kPlayer2 = 2;
 
-        int m_acGrid[m_kY][m_kX] {{}};
+        int m_acGrid[100][100] {{}};
 
-        static const char m_kDelimeter {','}; // TTT specific?
-        char m_kTokens[3] {m_kClear,'X','O'}; // TTT specific?
+        const char m_kDelimeter {','}; // TTT specific?
+
+        char m_acTokens[3];
 
         struct SequenceCounts {
             int nCount1 {0};

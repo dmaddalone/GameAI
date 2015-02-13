@@ -28,56 +28,36 @@
 
 #include <iostream>
 #include "Game.h"
+#include "LinearGame.h"
 
-class ConnectFour : public Game
+class ConnectFour : public LinearGame
 {
     public:
-        ConnectFour(GameType ecGameType) : Game(ecGameType) {}
+        ConnectFour(GameType ecGameType) : LinearGame(ecGameType, 7, 6, '0', '1', '2') {}
         ~ConnectFour() {}
 
-        void Display(const bool bDisplayCoordinates = false) const override;
-        void DisplayValidMoves() const override;
+        virtual void Display(const bool bDisplayCoordinates = false) const override;
+        virtual void DisplayValidMoves() const override;
 
-        GameMove GetMove() const override;
-        void AnnounceMove(const int nPlayer, const GameMove &cGameMove) override;
+        virtual GameMove GetMove() const override;
+        virtual void AnnounceMove(const int nPlayer, const GameMove &cGameMove) override;
 
-        int  ApplyMove(const int nPlayer, GameMove &cGameMove) override;
+        virtual int  ApplyMove(const int nPlayer, GameMove &cGameMove) override;
 
-        bool RetractMove(const int nPlayer, const GameMove &cGameMove) override;
+        virtual bool RetractMove(const int nPlayer, const GameMove &cGameMove) override;
 
-        int  PreferredMove(const GameMove &cGameMove) const override;
-        bool GameEnded() override;
+        virtual int  PreferredMove(const GameMove &cGameMove) const override;
+        virtual bool GameEnded() override;
 
-        std::vector<GameMove> GenerateMoves() const override;
-        int  EvaluateGameState(const int nPlayer) override;
+        virtual std::vector<GameMove> GenerateMoves() const override;
+        //virtual int  EvaluateGameState(const int nPlayer) override;
 
-        std::string Title() override { return "ConnectFour"; }
+        virtual std::string Title() override { return "ConnectFour"; }
 
     private:
         int  FindBottom(const int x) const;
-        bool CheckOrthogonal(const int nPlayer, int nConnect) ;//const;
-        int  CheckHorizontal(const int nPlayer, const int y, const int x) ;//const;
-        int  CheckVertical(const int nPlayer, const int y, const int x) ;//const;
-        bool CheckDiagonal(const int nPlayer, int nConnect) ;//const;
-        int  CheckDiagonalUpperLeftLowerRight(const int nPlayer, const int y, const int x) ;//const;
-        int  CheckDiagonalUpperRightLowerLeft(const int nPlayer, const int y, const int x) ;//const;
-        bool ValidMove(const int y, const int x) const;
 
-        static const int m_kY = 6;
-        static const int m_kX = 7;
-        static const int m_kClear = 0;
-        static const int m_kPlayer1 = 1;
-        static const int m_kPlayer2 = 2;
-
-        int m_anGrid[m_kY][m_kX] {{m_kClear}};
-
-        struct SequenceCounts {
-            int nCount1 {0};
-            int nCount2 {0};
-            int nCount3 {0};
-        } m_stMyCounts, m_stOpponentCounts;
-
-        void CountSequence(int nSequence, SequenceCounts &stSequenceCounts);
+        const int m_kWin {4};
 };
 
 #endif // CONNECTFOUR_H

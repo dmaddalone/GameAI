@@ -8,25 +8,28 @@
 class TTT : public LinearGame
 {
     public:
-        TTT(GameType ecGameType) : LinearGame(ecGameType) {}
+        TTT(GameType ecGameType) : LinearGame(ecGameType, 3, 3, ' ', 'X', 'O') {}
         ~TTT() {}
 
-        void Display(const bool bDisplayCoordinates = false) const override;
-        void DisplayValidMoves() const override;
+        virtual void Display(const bool bDisplayCoordinates = false) const override;
+        virtual void DisplayValidMoves() const override;
 
-        GameMove GetMove() const override;
-        void AnnounceMove(const int nPlayer, const GameMove &cGameMove) override;
+        virtual GameMove GetMove() const override;
+        virtual void AnnounceMove(const int nPlayer, const GameMove &cGameMove) override;
 
-        int  ApplyMove(const int nPlayer, GameMove &cGameMove) override;
+        virtual int  ApplyMove(const int nPlayer, GameMove &cGameMove) override;
 
-        bool RetractMove(const int nPlayer, const GameMove &cGameMove) override;
+        virtual bool RetractMove(const int nPlayer, const GameMove &cGameMove) override;
 
-        int  PreferredMove(const GameMove &cGameMove) const override;
-        bool GameEnded() override;
+        virtual int  PreferredMove(const GameMove &cGameMove) const override;
+        virtual bool GameEnded() override;
 
-        std::vector<GameMove> GenerateMoves() const override;
+        virtual std::vector<GameMove> GenerateMoves() const override;
 
-        std::string Title() override { return "Tic-Tac-Toe"; }
+        virtual std::string Title() override { return "Tic-Tac-Toe"; }
+
+    private:
+        const int m_kWin {3};
 };
 
 #endif // TTT_H

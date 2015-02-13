@@ -90,7 +90,7 @@ bool LinearGame::CheckOrthogonal(const int nPlayer, int nConnect) //const
             if (CheckHorizontal(nPlayer, yyy, xxx) == nConnect)
             {
                 bWin = true;
-                if (nConnect == 3)
+                //if (nConnect == 3)
                     m_sWinBy.assign("Horizontal");
                 break;
             }
@@ -109,8 +109,8 @@ bool LinearGame::CheckOrthogonal(const int nPlayer, int nConnect) //const
                 if (CheckVertical(nPlayer, yyy, xxx) == nConnect)
                 {
                     bWin = true;
-                    if (nConnect == 3)
-                        m_sWinBy.assign("Horizontal");
+                    //if (nConnect == 3)
+                        m_sWinBy.assign("Vertical");
                     break;
                 }
             }
@@ -127,7 +127,7 @@ int LinearGame::CheckHorizontal(const int nPlayer, const int y, const int x) //c
 {
     if (!ValidMove(y, x)) return 0;
 
-    if (m_acGrid[y][x] == m_kTokens[nPlayer])
+    if (m_acGrid[y][x] == m_acTokens[nPlayer])
         return (1 + CheckHorizontal(nPlayer, y, x+1));
     else
         return 0;
@@ -137,7 +137,7 @@ int LinearGame::CheckVertical(const int nPlayer, const int y, const int x) //con
 {
     if (!ValidMove(y, x)) return 0;
 
-    if (m_acGrid[y][x] == m_kTokens[nPlayer])
+    if (m_acGrid[y][x] == m_acTokens[nPlayer])
         return (1 + CheckVertical(nPlayer, y+1, x));
     else
         return 0;
@@ -154,7 +154,7 @@ bool LinearGame::CheckDiagonal(const int nPlayer, int nConnect) //const
             if (CheckDiagonalUpperLeftLowerRight(nPlayer, yyy, xxx) == nConnect)
             {
                 bWin = true;
-                if (nConnect == 3)
+                //if (nConnect == 3)
                     m_sWinBy.assign("DiagonalULLR");
                 break;
             }
@@ -173,7 +173,7 @@ bool LinearGame::CheckDiagonal(const int nPlayer, int nConnect) //const
                 if (CheckDiagonalUpperRightLowerLeft(nPlayer, yyy, xxx) == nConnect)
                 {
                     bWin = true;
-                    if (bWin == 3)
+                    //if (bWin == 3)
                         m_sWinBy.assign("DiagonalURLL");
                     break;
                 }
@@ -191,7 +191,7 @@ int LinearGame::CheckDiagonalUpperLeftLowerRight(const int nPlayer, const int y,
 {
     if (!ValidMove(y, x)) return 0;
 
-    if (m_acGrid[y][x] == m_kTokens[nPlayer])
+    if (m_acGrid[y][x] == m_acTokens[nPlayer])
         return (1 + CheckDiagonalUpperLeftLowerRight(nPlayer, y+1, x+1));
     else
         return 0;
@@ -201,7 +201,7 @@ int LinearGame::CheckDiagonalUpperRightLowerLeft(const int nPlayer, const int y,
 {
     if (!ValidMove(y, x)) return 0;
 
-    if (m_acGrid[y][x] == m_kTokens[nPlayer])
+    if (m_acGrid[y][x] == m_acTokens[nPlayer])
         return (1 + CheckDiagonalUpperRightLowerLeft(nPlayer, y+1, x-1));
     else
         return 0;

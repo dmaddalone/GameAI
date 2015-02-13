@@ -99,7 +99,7 @@ int TTT::ApplyMove(const int nPlayer, GameMove &cGameMove)
     if (m_acGrid[cGameMove.ToY()][cGameMove.ToX()] != m_kClear)
         return -1;
 
-    m_acGrid[cGameMove.ToY()][cGameMove.ToX()] = m_kTokens[nPlayer];
+    m_acGrid[cGameMove.ToY()][cGameMove.ToX()] = m_acTokens[nPlayer];
     ++m_nNumberOfMoves;
 
     return 1;
@@ -118,25 +118,25 @@ bool TTT::GameEnded()
     m_nWinner = 0;
     m_sWinBy.assign("nothing");
 
-    if (CheckOrthogonal(m_kPlayer1, 3))
+    if (CheckOrthogonal(m_kPlayer1, m_kWin))
     {
         m_nWinner = m_kPlayer1;
         return true;
     }
 
-    if (CheckOrthogonal(m_kPlayer2, 3))
+    if (CheckOrthogonal(m_kPlayer2, m_kWin))
     {
         m_nWinner = m_kPlayer2;
         return true;
     }
 
-    if (CheckDiagonal(m_kPlayer1, 3))
+    if (CheckDiagonal(m_kPlayer1, m_kWin))
     {
         m_nWinner = m_kPlayer1;
         return true;
     }
 
-    if (CheckDiagonal(m_kPlayer2, 3))
+    if (CheckDiagonal(m_kPlayer2, m_kWin))
     {
         m_nWinner = m_kPlayer2;
         return true;

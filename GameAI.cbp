@@ -7,9 +7,9 @@
 		<Option compiler="gcc" />
 		<Option show_notes="0">
 			<notes>
-				<![CDATA[TODO: Genericize the Checkxxxx functions into Game.cpp or GridGame.cpp
+				<![CDATA[TODO: Comments
 
-TODO: Comments]]>
+TODO: Add Reversi]]>
 			</notes>
 		</Option>
 		<Build>
@@ -18,7 +18,7 @@ TODO: Comments]]>
 				<Option object_output="obj/Debug/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
-				<Option parameters="-1 minimax -2 minimax --plies1=9 -g ttt" />
+				<Option parameters="-1 minimax -2 human  --plies1=9 -g ttt" />
 				<Compiler>
 					<Add option="-std=c++11" />
 					<Add option="-Wextra" />
