@@ -33,24 +33,17 @@
 class ConnectFour : public LinearGame
 {
     public:
-        ConnectFour(GameType ecGameType) : LinearGame(ecGameType, 7, 6, '0', '1', '2') {}
+        ConnectFour(GameType ecGameType) : LinearGame(ecGameType, 7, 6, '0', '1', '2', false) {}
         ~ConnectFour() {}
 
-        virtual void Display(const bool bDisplayCoordinates = false) const override;
-        virtual void DisplayValidMoves() const override;
-
         virtual GameMove GetMove() const override;
-        virtual void AnnounceMove(const int nPlayer, const GameMove &cGameMove) override;
 
         virtual int  ApplyMove(const int nPlayer, GameMove &cGameMove) override;
-
-        virtual bool RetractMove(const int nPlayer, const GameMove &cGameMove) override;
 
         virtual int  PreferredMove(const GameMove &cGameMove) const override;
         virtual bool GameEnded() override;
 
         virtual std::vector<GameMove> GenerateMoves() const override;
-        //virtual int  EvaluateGameState(const int nPlayer) override;
 
         virtual std::string Title() override { return "ConnectFour"; }
 

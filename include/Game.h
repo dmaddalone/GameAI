@@ -64,15 +64,24 @@ class Game
         static std::unique_ptr<Game> MakeGame(GameType ecGameType);
 
         virtual std::string Title() = 0;
-        int  Winner() { return m_nWinner; };
+
+        int  Winner()        { return m_nWinner; };
         int  NumberOfMoves() { return m_nNumberOfMoves; }
-        std::string WinBy() { return m_sWinBy; }
+        std::string WinBy()  { return m_sWinBy; }
 
     protected:
+        void UpdatePlayerTurn() { if (m_nPlayerTurn == m_kPlayer1) m_nPlayerTurn = m_kPlayer2; else m_nPlayerTurn = m_kPlayer1; }
+
+        const int m_kPlayer1  {1};
+        const int m_kPlayer2  {2};
+
+        int m_nPlayerTurn     {m_kPlayer1};
+
         GameType m_ecGameType {GameType::TYPE_NONE};
-        int m_nWinner {0};
-        int m_nNumberOfMoves {0};
-        std::string m_sWinBy {};
+
+        int m_nWinner         {0};
+        int m_nNumberOfMoves  {0};
+        std::string m_sWinBy  {};
 };
 
 #endif // GAME_H

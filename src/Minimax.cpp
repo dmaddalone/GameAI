@@ -31,9 +31,10 @@ bool Minimax::Move(Game &cGame)
 
     GameMove cGameMove = MinimaxMove(m_nPlayerNumber, cGame, m_nDepth);
 
-    if (m_nVerbosity >= 1) cGame.AnnounceMove(m_nPlayerNumber, cGameMove);
+    if (m_nVerbosity >= 1)
+        cGame.AnnounceMove(m_nPlayerNumber, cGameMove);
 
-     if ( cGame.ApplyMove(m_nPlayerNumber, cGameMove) == -1 )
+     if (cGame.ApplyMove(m_nPlayerNumber, cGameMove) == -1)
         return false;
 
     return true;

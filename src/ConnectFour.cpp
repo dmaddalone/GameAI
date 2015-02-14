@@ -19,54 +19,15 @@
 
 #include "ConnectFour.h"
 
-
-void ConnectFour::Display(const bool bDisplayCoordinates) const
-{
-    if (bDisplayCoordinates)
-    {
-        std::cout << "   ";
-        for (int xxx = 0; xxx < m_kX; ++xxx)
-        {
-            std::cout << xxx + 1 << "   ";
-        }
-        std::cout << std::endl << std::endl;;
-    }
-
-    for (int yyy = 0; yyy < m_kY; ++yyy)
-    {
-        if (bDisplayCoordinates)
-        {
-            std::cout << yyy + 1 << "  ";
-        }
-
-        for (int xxx = 0; xxx < m_kX; ++xxx)
-        {
-            std::cout << static_cast<char>(m_acGrid[yyy][xxx]) << "   ";
-        }
-
-        std::cout << std::endl << std::endl;
-    }
-}
-
-void ConnectFour::DisplayValidMoves() const
-{
-    std::vector<GameMove> vGameMoves = GenerateMoves();
-    for (GameMove cGameMove : vGameMoves)
-    {
-        std::cout << cGameMove.ToX() + 1 << " ";
-    }
-    std::cout << std::endl;
-}
-
 std::vector<GameMove> ConnectFour::GenerateMoves() const
 {
     std::vector<GameMove> vGameMoves {};
 
-    for (int xxx = 0; xxx < m_kX; ++xxx)
+    for (int xxx = 0; xxx < m_knX; ++xxx)
     {
         if (FindBottom(xxx) >= 0)
         {
-            vGameMoves.emplace_back(0,0,xxx,0);
+            vGameMoves.emplace_back(-1,-1,xxx,-1,false);
         }
     }
 
@@ -85,20 +46,15 @@ GameMove ConnectFour::GetMove() const
     return cGameMove;
 }
 
-void ConnectFour::AnnounceMove(const int nPlayer, const GameMove &cGameMove)
-{
-    std::cout << "Move number " << m_nNumberOfMoves + 1 << " -- Player " << nPlayer << " moves: " << cGameMove.ToX() + 1 << std::endl;;
-}
-
 int ConnectFour::ApplyMove(const int nPlayer, GameMove &cGameMove)
 {
     if ((nPlayer != m_kPlayer1) && (nPlayer != m_kPlayer2))
         return -1;
 
-    if ((cGameMove.ToX() > m_kX - 1) || (cGameMove.ToX() < 0))
+    if ((cGameMove.ToX() > m_knX - 1) || (cGameMove.ToX() < 0))
         return -1;
 
-    if (m_acGrid[0][cGameMove.ToX()] != m_kClear)
+    if (m_acGrid[0][cGameMove.ToX()] != m_kcClear)
         return -1;
 
     int y = FindBottom(cGameMove.ToX());
@@ -110,23 +66,16 @@ int ConnectFour::ApplyMove(const int nPlayer, GameMove &cGameMove)
 
     m_acGrid[cGameMove.ToY()][cGameMove.ToX()] = m_acTokens[nPlayer];
     ++m_nNumberOfMoves;
+    UpdatePlayerTurn();
 
     return y;
 }
 
-bool ConnectFour::RetractMove(const int nPlayer, const GameMove &cGameMove)
-{
-    m_acGrid[cGameMove.ToY()][cGameMove.ToX()] = m_kClear;
-    --m_nNumberOfMoves;
-
-    return true;
-}
-
 int ConnectFour::FindBottom(const int x) const
 {
-    for (int yyy = m_kY - 1; yyy >= 0; --yyy)
+    for (int yyy = m_knY - 1; yyy >= 0; --yyy)
     {
-        if (m_acGrid[yyy][x] == m_kClear)
+        if (m_acGrid[yyy][x] == m_kcClear)
             return yyy;
     }
 

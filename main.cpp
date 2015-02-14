@@ -42,7 +42,7 @@
 
 static void ShowUsage(std::string sName)
 {
-    std::cerr << "Usage: " << sName << " [OPTIONS] [FILE]\n"
+    std::cerr << "Usage: " << sName << " OPTIONS\n"
               << "Run a Game AI program\n\n"
               << "Required Options:\n"
               << "    -1 TYPE,  --player1=TYPE  assign TYPE of player to Player 1\n"
@@ -104,7 +104,6 @@ static std::unique_ptr<Game> SetGame(char* pcGame)
         return nullptr;
 }
 
-//static void SetPlayers(std::string sName, int nPlies, int nPlies1, int nPlies2, int nVerbosity, std::vector<std::unique_ptr<Player>> &vPlayers)
 static void SetPlayers(std::string sName, int nPlies1, int nPlies2, int nVerbosity, std::vector<std::unique_ptr<Player>> &vPlayers)
 {
     if (nVerbosity >= 0 && nVerbosity <= 2)
@@ -117,18 +116,7 @@ static void SetPlayers(std::string sName, int nPlies1, int nPlies2, int nVerbosi
         ShowUsage(sName);
         exit (EXIT_FAILURE);
     }
-/*
-    if (nPlies > 0 && nPlies <= 9)
-    {
-        vPlayers[0]->SetPlies(nPlies);
-        vPlayers[1]->SetPlies(nPlies);
-    }
-    else
-    {
-        ShowUsage(sName);
-        exit (EXIT_FAILURE);
-    }
-*/
+
     if (nPlies1 > 0 && nPlies1 <= 9)
     {
         vPlayers[0]->SetPlies(nPlies1);

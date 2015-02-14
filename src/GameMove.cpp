@@ -19,3 +19,15 @@
 
 #include "GameMove.h"
 
+std::string GameMove::AnnounceToMove() const
+{
+    std::string sMove;
+
+    if (m_bAnnounceY)
+        sMove = std::to_string(m_nToX + 1) + "," + std::to_string(m_nToY + 1);
+    else
+        sMove = std::to_string(m_nToX + 1);
+
+    return sMove;
+}
+

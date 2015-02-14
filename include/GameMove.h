@@ -26,15 +26,19 @@
 #ifndef GAMEMOVE_H
 #define GAMEMOVE_H
 
+#include <string>
+
 class GameMove
 {
     public:
-        GameMove(int nFromX=0, int nFromY=0, int nToX=0, int nToY=0) :
+        GameMove(int nFromX=-1, int nFromY=-1, int nToX=-1, int nToY=-1, bool bAnnounceY=true) :
             m_nFromX(nFromX),
             m_nFromY(nFromY),
             m_nToX(nToX),
-            m_nToY(nToY)
+            m_nToY(nToY),
+            m_bAnnounceY(bAnnounceY)
         {}
+
         virtual ~GameMove() {};
 
         void SetFromX(int nX) { m_nFromX = nX; }
@@ -42,18 +46,22 @@ class GameMove
         void SetToX(int nX)   { m_nToX = nX; }
         void SetToY(int nY)   { m_nToY = nY; }
 
-        int FromX() const { return m_nFromX; }
-        int FromY() const { return m_nFromY; }
-        int ToX()   const { return m_nToX; }
-        int ToY()   const { return m_nToY; }
+        int FromX() const     { return m_nFromX; }
+        int FromY() const     { return m_nFromY; }
+        int ToX()   const     { return m_nToX; }
+        int ToY()   const     { return m_nToY; }
 
-        bool ValidMove() { return m_bValidMove; }
+        bool ValidMove()      { return m_bValidMove; }
+
+        std::string AnnounceToMove() const;
 
     private:
-        int m_nFromX {0};
-        int m_nFromY {0};
-        int m_nToX   {0};
-        int m_nToY   {0};
+        int m_nFromX {-1};
+        int m_nFromY {-1};
+        int m_nToX   {-1};
+        int m_nToY   {-1};
+
+        bool m_bAnnounceY{true};
 
         bool m_bValidMove {false};
 };

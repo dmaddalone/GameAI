@@ -8,18 +8,12 @@
 class Reversi : public LinearGame
 {
     public:
-        Reversi(GameType ecGameType) : LinearGame(ecGameType, 8, 8, ' ', 'D', 'L') { SetBoard(); }
+        Reversi(GameType ecGameType) : LinearGame(ecGameType, 8, 8, ' ', 'D', 'L', true) { SetBoard(); }
         ~Reversi() {}
 
-        virtual void Display(const bool bDisplayCoordinates = false) const override;
-        virtual void DisplayValidMoves() const override;
-
         virtual GameMove GetMove() const override;
-        virtual void AnnounceMove(const int nPlayer, const GameMove &cGameMove) override;
 
         virtual int  ApplyMove(const int nPlayer, GameMove &cGameMove) override;
-
-        virtual bool RetractMove(const int nPlayer, const GameMove &cGameMove) override;
 
         virtual int  PreferredMove(const GameMove &cGameMove) const override;
         virtual bool GameEnded() override;
