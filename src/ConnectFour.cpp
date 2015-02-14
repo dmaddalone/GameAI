@@ -19,7 +19,7 @@
 
 #include "ConnectFour.h"
 
-std::vector<GameMove> ConnectFour::GenerateMoves() const
+std::vector<GameMove> ConnectFour::GenerateMoves(int nPlayer, int nOpponent) const
 {
     std::vector<GameMove> vGameMoves {};
 
@@ -35,7 +35,7 @@ std::vector<GameMove> ConnectFour::GenerateMoves() const
 }
 
 
-GameMove ConnectFour::GetMove() const
+GameMove ConnectFour::GetMove(int nPlayer, int nOpponent) const
 {
     int nMove {};
     GameMove cGameMove;
@@ -46,9 +46,9 @@ GameMove ConnectFour::GetMove() const
     return cGameMove;
 }
 
-int ConnectFour::ApplyMove(const int nPlayer, GameMove &cGameMove)
+int ConnectFour::ApplyMove(int nPlayer, GameMove &cGameMove)
 {
-    if ((nPlayer != m_kPlayer1) && (nPlayer != m_kPlayer2))
+    if ((nPlayer != m_knPlayer1) && (nPlayer != m_knPlayer2))
         return -1;
 
     if ((cGameMove.ToX() > m_knX - 1) || (cGameMove.ToX() < 0))
@@ -71,7 +71,7 @@ int ConnectFour::ApplyMove(const int nPlayer, GameMove &cGameMove)
     return y;
 }
 
-int ConnectFour::FindBottom(const int x) const
+int ConnectFour::FindBottom(int x) const
 {
     for (int yyy = m_knY - 1; yyy >= 0; --yyy)
     {
@@ -82,36 +82,36 @@ int ConnectFour::FindBottom(const int x) const
     return -1;
 }
 
-bool ConnectFour::GameEnded()
+bool ConnectFour::GameEnded(int nPlayer, int nOpponent)
 {
     m_nWinner = 0;
     m_sWinBy.assign("nothing");
 
-    if (CheckOrthogonal(m_kPlayer1, m_kWin))
+    if (CheckOrthogonal(m_knPlayer1, m_kWin))
     {
-        m_nWinner = m_kPlayer1;
+        m_nWinner = m_knPlayer1;
         return true;
     }
 
-    if (CheckOrthogonal(m_kPlayer2, m_kWin))
+    if (CheckOrthogonal(m_knPlayer2, m_kWin))
     {
-        m_nWinner = m_kPlayer2;
+        m_nWinner = m_knPlayer2;
         return true;
     }
 
-    if (CheckDiagonal(m_kPlayer1, m_kWin))
+    if (CheckDiagonal(m_knPlayer1, m_kWin))
     {
-        m_nWinner = m_kPlayer1;
+        m_nWinner = m_knPlayer1;
         return true;
     }
 
-    if (CheckDiagonal(m_kPlayer2, m_kWin))
+    if (CheckDiagonal(m_knPlayer2, m_kWin))
     {
-        m_nWinner = m_kPlayer2;
+        m_nWinner = m_knPlayer2;
         return true;
     }
 
-    std::vector<GameMove> vGameMoves = GenerateMoves();
+    std::vector<GameMove> vGameMoves = GenerateMoves(nPlayer, nOpponent);
     if (vGameMoves.empty())
     {
         return true;

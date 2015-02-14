@@ -11,14 +11,14 @@ class TTT : public LinearGame
         TTT(GameType ecGameType) : LinearGame(ecGameType, 3, 3, ' ', 'X', 'O', true) {}
         ~TTT() {}
 
-        virtual GameMove GetMove() const override;
+        virtual GameMove GetMove(int nPlayer, int nOpponent) const override;
 
-        virtual int  ApplyMove(const int nPlayer, GameMove &cGameMove) override;
+        virtual int  ApplyMove(int nPlayer, GameMove &cGameMove) override;
 
         virtual int  PreferredMove(const GameMove &cGameMove) const override;
-        virtual bool GameEnded() override;
+        virtual bool GameEnded(int nPlayer, int nOpponent) override;
 
-        virtual std::vector<GameMove> GenerateMoves() const override;
+        virtual std::vector<GameMove> GenerateMoves(int nPlayer, int nOpponent) const override;
 
         virtual std::string Title() override { return "Tic-Tac-Toe"; }
 

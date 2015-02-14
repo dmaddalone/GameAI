@@ -8,9 +8,8 @@ void Reversi::SetBoard()
     m_acGrid[(m_knY / 2)][(m_knX / 2)]         = m_acTokens[2];
 }
 
-std::vector<GameMove> Reversi::GenerateMoves() const
+std::vector<GameMove> Reversi::GenerateMoves(int nPlayer, int nOpponent) const
 {
-    static bool bOpponetPeiceAdjacent = false;
     std::vector<GameMove> vGameMoves {};
 
     for (int xxx = 0; xxx < m_knX; ++xxx)
@@ -19,7 +18,7 @@ std::vector<GameMove> Reversi::GenerateMoves() const
         {
             if (m_acGrid[yyy][xxx] == m_kcClear)
             {
-                if (true) // Check valid move
+                if (Adjacent(xxx, yyy, nPlayer, int nOpponent)) // Check valid move
                 {
                     vGameMoves.emplace_back(0,0,xxx,yyy);
                 }
@@ -30,30 +29,48 @@ std::vector<GameMove> Reversi::GenerateMoves() const
     return vGameMoves;
 }
 
-
-bool Reversi::InpsectAdjacentUp(int nX, int nY) const
+bool Reversi::Adjacent(int nX, int nY, int nPlayer, int nOpponent) const
 {
+    if (AdjacentUp(nX, nY, nPlayer, nOpponent))
+        return true;
+
+    return false;
+}
+
+bool Reversi::AdjacentUp(int nX, int nY, int nPlayer, int nOpponent) const
+{
+    static bool bOpponentPeiceAdjacent = false;
+
     ++nY;
 
     if (!ValidMove(nY, nX))
         return false;
 
-    if (m_acGrid[nY][nX] == m_acTokens[m_nOpponentNumber])
+    if (m_acGrid[nY][nX] == m_kcClear)
+        return false;
+
+    if (m_acGrid[nY][nX] == m_acTokens[nOpponent])
     {
         bOpponetPeiceAdjacent = true;
-        if (m_acGrid[nY][nX] == m_acTokens[m_nPlayerNumber])
+        AdjacentUp(nX, nY);
     }
+
+    if (m_acGrid[nY][nX] == m_acTokens[nPlayerNumber])
+    {
+        if (bOpponentPeiceAdjacent)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    return false;  // Should not get here
 }
 
-/*
-bool InspectAbove(int nX, int nY)
-{
-
-}
-*/
-
-
-GameMove Reversi::GetMove() const
+GameMove Reversi::GetMove(int nPlayer, int nOpponent) const
 {
     std::string sMove {};
     GameMove cGameMove;
@@ -73,7 +90,7 @@ GameMove Reversi::GetMove() const
 }
 
 
-int Reversi::ApplyMove(const int nPlayer, GameMove &cGameMove)
+int Reversi::ApplyMove(int nPlayer, GameMove &cGameMove)
 {
     if ((nPlayer != m_kPlayer1) && (nPlayer != m_kPlayer2))
         return -1;
@@ -94,7 +111,7 @@ int Reversi::ApplyMove(const int nPlayer, GameMove &cGameMove)
     return 1;
 }
 
-bool Reversi::GameEnded()
+bool Reversi::GameEnded(int nPlayer, int nOpponent)
 {
     m_nWinner = 0;
     m_sWinBy.assign("nothing");

@@ -45,26 +45,28 @@ class Game
         Game(GameType ecGameType) { m_ecGameType = ecGameType; }
         virtual ~Game() {};
 
-        virtual void Display(const bool bDisplayCoordinates = false) const  = 0;
-        virtual void DisplayValidMoves() const = 0;
+        virtual void Display(bool bDisplayCoordinates = false) const  = 0;
+        virtual void DisplayValidMoves(int nPlayer, int nOpponent) const = 0;
 
-        virtual GameMove GetMove() const = 0;
-        virtual void AnnounceMove(const int nPlayer, const GameMove &cGameMove) = 0;
+        virtual GameMove GetMove(int nPlayer, int nOpponent) const = 0;
+        virtual void AnnounceMove(int nPlayer, const GameMove &cGameMove) = 0;
 
-        virtual int  ApplyMove(const int nPlayer, GameMove &cGameMove) = 0;
+        virtual int  ApplyMove(int nPlayer, GameMove &cGameMove) = 0;
 
-        virtual bool RetractMove(const int nPlayer, const GameMove &cGameMove) = 0;
+        virtual bool RetractMove(int nPlayer, const GameMove &cGameMove) = 0;
 
         virtual int  PreferredMove(const GameMove &cGameMove) const = 0;
-        virtual bool GameEnded() = 0;
+        virtual bool GameEnded(int nPlayer, int nOpponent) = 0;
 
-        virtual std::vector<GameMove> GenerateMoves() const = 0;
-        virtual int  EvaluateGameState(const int nPlayer) = 0;
+        virtual std::vector<GameMove> GenerateMoves(int nPlayer, int nOpponent) const = 0;
+        virtual int  EvaluateGameState(int nPlayer) = 0;
 
         static std::unique_ptr<Game> MakeGame(GameType ecGameType);
 
         virtual std::string Title() = 0;
 
+        int  Player1()       { return m_knPlayer1; }
+        int  Player2()       { return m_knPlayer2; }
         int  Winner()        { return m_nWinner; };
         int  NumberOfMoves() { return m_nNumberOfMoves; }
         std::string WinBy()  { return m_sWinBy; }
@@ -72,8 +74,8 @@ class Game
     protected:
         //void UpdatePlayerTurn() { if (m_nPlayerTurn == m_kPlayer1) m_nPlayerTurn = m_kPlayer2; else m_nPlayerTurn = m_kPlayer1; }
 
-        const int m_kPlayer1  {1};
-        const int m_kPlayer2  {2};
+        const int m_knPlayer1  {1};
+        const int m_knPlayer2  {2};
 
         //int m_nPlayerTurn     {m_kPlayer1};
 

@@ -1,6 +1,6 @@
 #include "TTT.h"
 
-std::vector<GameMove> TTT::GenerateMoves() const
+std::vector<GameMove> TTT::GenerateMoves(int nPlayer, int nOpponent) const
 {
     std::vector<GameMove> vGameMoves {};
 
@@ -17,7 +17,7 @@ std::vector<GameMove> TTT::GenerateMoves() const
 }
 
 
-GameMove TTT::GetMove() const
+GameMove TTT::GetMove(int nPlayer, int nOpponent) const
 {
     std::string sMove {};
     GameMove cGameMove;
@@ -36,7 +36,7 @@ GameMove TTT::GetMove() const
     return cGameMove;
 }
 
-int TTT::ApplyMove(const int nPlayer, GameMove &cGameMove)
+int TTT::ApplyMove(int nPlayer, GameMove &cGameMove)
 {
     if ((nPlayer != m_kPlayer1) && (nPlayer != m_kPlayer2))
         return -1;
@@ -57,7 +57,7 @@ int TTT::ApplyMove(const int nPlayer, GameMove &cGameMove)
     return 1;
 }
 
-bool TTT::GameEnded()
+bool TTT::GameEnded(int nPlayer, int nOpponent)
 {
     m_nWinner = 0;
     m_sWinBy.assign("nothing");
@@ -86,7 +86,7 @@ bool TTT::GameEnded()
         return true;
     }
 
-    std::vector<GameMove> vGameMoves = GenerateMoves();
+    std::vector<GameMove> vGameMoves = GenerateMoves(nPlayer, nOpponent);
     if (vGameMoves.empty())
     {
         return true;

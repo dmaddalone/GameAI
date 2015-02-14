@@ -27,7 +27,7 @@ bool Human::Move(Game &cGame)
     {
         cGame.Display(true);
         std::cout << "Valid moves: ";
-        cGame.DisplayValidMoves();
+        cGame.DisplayValidMoves(m_nPlayerNumber, m_nOpponentNumber);
     }
 
     do
@@ -35,7 +35,7 @@ bool Human::Move(Game &cGame)
         // TODO: prompt player for move?  cGame.PromptPlayerForMove(m_nPlayerNumber);  OR not ?
         std::cout << "Player " << m_nPlayerNumber << ", enter move: ";
 
-        cGameMove = cGame.GetMove();
+        cGameMove = cGame.GetMove(m_nPlayerNumber, m_nOpponentNumber);
 
         if (cGame.ApplyMove(m_nPlayerNumber, cGameMove) == -1)
         {

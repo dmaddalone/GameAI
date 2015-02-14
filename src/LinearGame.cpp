@@ -13,7 +13,7 @@ void LinearGame::ClearBoard()
     SetBoard();
 }
 
-void LinearGame::Display(const bool bDisplayCoordinates) const
+void LinearGame::Display(bool bDisplayCoordinates) const
 {
     if (bDisplayCoordinates)
     {
@@ -58,9 +58,9 @@ void LinearGame::Display(const bool bDisplayCoordinates) const
     }
 }
 
-void LinearGame::DisplayValidMoves() const
+void LinearGame::DisplayValidMoves(int nPlayer, int nOpponent) const
 {
-    std::vector<GameMove> vGameMoves = GenerateMoves();
+    std::vector<GameMove> vGameMoves = GenerateMoves(nPlayer, nOpponent);
     for (GameMove cGameMove : vGameMoves)
     {
         std::cout << cGameMove.AnnounceToMove() << " ";
@@ -68,13 +68,13 @@ void LinearGame::DisplayValidMoves() const
     std::cout << std::endl;
 }
 
-void LinearGame::AnnounceMove(const int nPlayer, const GameMove &cGameMove)
+void LinearGame::AnnounceMove(int nPlayer, const GameMove &cGameMove)
 {
     std::cout << "Move number: " << m_nNumberOfMoves + 1 << "  Player: " << nPlayer << "  Moves To: " << cGameMove.AnnounceToMove() << std::endl;;
 }
 
 
-bool LinearGame::RetractMove(const int nPlayer, const GameMove &cGameMove)
+bool LinearGame::RetractMove(int nPlayer, const GameMove &cGameMove)
 {
     m_acGrid[cGameMove.ToY()][cGameMove.ToX()] = m_kcClear;
     --m_nNumberOfMoves;
@@ -83,7 +83,7 @@ bool LinearGame::RetractMove(const int nPlayer, const GameMove &cGameMove)
     return true;
 }
 
-int LinearGame::EvaluateGameState(const int nPlayer) //TODO: may be game specific
+int LinearGame::EvaluateGameState(int nPlayer) //TODO: may be game specific
 {
     if (m_nWinner == nPlayer)
         return 1000000;
@@ -139,7 +139,7 @@ void LinearGame::CountSequence(int nSequence, SequenceCounts &stSequenceCounts)
     return;
 }
 
-bool LinearGame::CheckOrthogonal(const int nPlayer, int nConnect) //const
+bool LinearGame::CheckOrthogonal(int nPlayer, int nConnect) //const
 {
     bool bWin = false;
 
@@ -183,7 +183,7 @@ bool LinearGame::CheckOrthogonal(const int nPlayer, int nConnect) //const
     return bWin;
 }
 
-int LinearGame::CheckHorizontal(const int nPlayer, const int y, const int x) //const
+int LinearGame::CheckHorizontal(int nPlayer, int y, int x) //const
 {
     if (!ValidMove(y, x)) return 0;
 
@@ -193,7 +193,7 @@ int LinearGame::CheckHorizontal(const int nPlayer, const int y, const int x) //c
         return 0;
 }
 
-int LinearGame::CheckVertical(const int nPlayer, const int y, const int x) //const
+int LinearGame::CheckVertical(int nPlayer, int y, int x) //const
 {
     if (!ValidMove(y, x)) return 0;
 
@@ -203,7 +203,7 @@ int LinearGame::CheckVertical(const int nPlayer, const int y, const int x) //con
         return 0;
 }
 
-bool LinearGame::CheckDiagonal(const int nPlayer, int nConnect) //const
+bool LinearGame::CheckDiagonal(int nPlayer, int nConnect) //const
 {
     bool bWin = false;
 
@@ -247,7 +247,7 @@ bool LinearGame::CheckDiagonal(const int nPlayer, int nConnect) //const
     return bWin;
 }
 
-int LinearGame::CheckDiagonalUpperLeftLowerRight(const int nPlayer, const int y, const int x) //const
+int LinearGame::CheckDiagonalUpperLeftLowerRight(int nPlayer, int y, int x) //const
 {
     if (!ValidMove(y, x)) return 0;
 
@@ -257,7 +257,7 @@ int LinearGame::CheckDiagonalUpperLeftLowerRight(const int nPlayer, const int y,
         return 0;
 }
 
-int LinearGame::CheckDiagonalUpperRightLowerLeft(const int nPlayer, const int y, const int x) //const
+int LinearGame::CheckDiagonalUpperRightLowerLeft(int nPlayer, int y, int x) //const
 {
     if (!ValidMove(y, x)) return 0;
 
@@ -267,7 +267,7 @@ int LinearGame::CheckDiagonalUpperRightLowerLeft(const int nPlayer, const int y,
         return 0;
 }
 
-bool LinearGame::ValidMove(const int y, const int x) const
+bool LinearGame::ValidMove(int y, int x) const
 {
     if ((y >= m_knY) || (y < 0))
         return false;

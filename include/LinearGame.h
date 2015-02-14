@@ -20,23 +20,23 @@ class LinearGame : public Game
 
         ~LinearGame() {}
 
-        virtual void Display(const bool bDisplayCoordinates = false) const override;
-        virtual void DisplayValidMoves() const override;
-        virtual void AnnounceMove(const int nPlayer, const GameMove &cGameMove) override;
-        virtual bool RetractMove(const int nPlayer, const GameMove &cGameMove) override;
-        virtual int  EvaluateGameState(const int nPlayer) override;
+        virtual void Display(bool bDisplayCoordinates = false) const override;
+        virtual void DisplayValidMoves(int nPlayer, int nOpponent) const override;
+        virtual void AnnounceMove(int nPlayer, const GameMove &cGameMove) override;
+        virtual bool RetractMove(int nPlayer, const GameMove &cGameMove) override;
+        virtual int  EvaluateGameState(int nPlayer) override;
 
     protected:
         void SetTokens() { m_acTokens[0] = m_kcClear; m_acTokens[1] = m_kcToken1; m_acTokens[2] = m_kcToken2; }
         void ClearBoard();
         void SetBoard() { return; };
-        bool CheckOrthogonal(const int nPlayer, int nConnect) ;//const;
-        int  CheckHorizontal(const int nPlayer, const int y, const int x) ;//const;
-        int  CheckVertical(const int nPlayer, const int y, const int x) ;//const;
-        bool CheckDiagonal(const int nPlayer, int nConnect) ;//const;
-        int  CheckDiagonalUpperLeftLowerRight(const int nPlayer, const int y, const int x) ;//const;
-        int  CheckDiagonalUpperRightLowerLeft(const int nPlayer, const int y, const int x) ;//const;
-        bool ValidMove(const int y, const int x) const;
+        bool CheckOrthogonal(int nPlayer, int nConnect) ;//const;
+        int  CheckHorizontal(int nPlayer, int y, int x) ;//const;
+        int  CheckVertical(int nPlayer, int y, int x) ;//const;
+        bool CheckDiagonal(int nPlayer, int nConnect) ;//const;
+        int  CheckDiagonalUpperLeftLowerRight(int nPlayer, int y, int x) ;//const;
+        int  CheckDiagonalUpperRightLowerLeft(int nPlayer, int y, int x) ;//const;
+        bool ValidMove(int y, int x) const;
 
         const int  m_knX;
         const int  m_knY;

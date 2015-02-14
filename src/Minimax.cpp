@@ -26,7 +26,7 @@ bool Minimax::Move(Game &cGame)
         cGame.Display(true);
 
         std::cout << "Valid moves: ";
-        cGame.DisplayValidMoves();
+        cGame.DisplayValidMoves(m_nPlayerNumber, m_nOpponentNumber);
     }
 
     GameMove cGameMove = MinimaxMove(m_nPlayerNumber, cGame, m_nDepth);
