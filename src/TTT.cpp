@@ -52,7 +52,7 @@ int TTT::ApplyMove(const int nPlayer, GameMove &cGameMove)
 
     m_acGrid[cGameMove.ToY()][cGameMove.ToX()] = m_acTokens[nPlayer];
     ++m_nNumberOfMoves;
-    UpdatePlayerTurn();
+    //UpdatePlayerTurn();
 
     return 1;
 }

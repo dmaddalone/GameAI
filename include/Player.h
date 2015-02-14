@@ -40,7 +40,7 @@ enum class PlayerType
 class Player
 {
     public:
-        Player(PlayerType ecPlayerType) { m_ecPlayerType = ecPlayerType; m_nPlayerNumber = m_nPlayerCount; }
+        Player(PlayerType ecPlayerType) { m_ecPlayerType = ecPlayerType; m_nPlayerNumber = m_nPlayerCount; m_nOpponetNumber = 2 - m_nPlayerNumber + 1; }
         virtual ~Player() {};
 
         static std::unique_ptr<Player> MakePlayer(PlayerType ecPlayerType);
@@ -58,6 +58,7 @@ class Player
         int  m_nMove              {0};
         PlayerType m_ecPlayerType {PlayerType::TYPE_NONE};
         int  m_nPlayerNumber      {0};
+        int  m_nOpponetNumber     {0};
         int  m_nDepth             {4}; // For AI
         int  m_nVerbosity         {1};
 

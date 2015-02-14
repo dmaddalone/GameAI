@@ -70,12 +70,12 @@ class Game
         std::string WinBy()  { return m_sWinBy; }
 
     protected:
-        void UpdatePlayerTurn() { if (m_nPlayerTurn == m_kPlayer1) m_nPlayerTurn = m_kPlayer2; else m_nPlayerTurn = m_kPlayer1; }
+        //void UpdatePlayerTurn() { if (m_nPlayerTurn == m_kPlayer1) m_nPlayerTurn = m_kPlayer2; else m_nPlayerTurn = m_kPlayer1; }
 
         const int m_kPlayer1  {1};
         const int m_kPlayer2  {2};
 
-        int m_nPlayerTurn     {m_kPlayer1};
+        //int m_nPlayerTurn     {m_kPlayer1};
 
         GameType m_ecGameType {GameType::TYPE_NONE};
 

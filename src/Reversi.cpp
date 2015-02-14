@@ -10,6 +10,7 @@ void Reversi::SetBoard()
 
 std::vector<GameMove> Reversi::GenerateMoves() const
 {
+    static bool bOpponetPeiceAdjacent = false;
     std::vector<GameMove> vGameMoves {};
 
     for (int xxx = 0; xxx < m_knX; ++xxx)
@@ -29,7 +30,7 @@ std::vector<GameMove> Reversi::GenerateMoves() const
     return vGameMoves;
 }
 
-/*
+
 bool Reversi::InpsectAdjacentUp(int nX, int nY) const
 {
     ++nY;
@@ -37,13 +38,12 @@ bool Reversi::InpsectAdjacentUp(int nX, int nY) const
     if (!ValidMove(nY, nX))
         return false;
 
-    if (m_acGrid[nY][nX] == m_acTokens[m_nPlayerTurn])
-
+    if (m_acGrid[nY][nX] == m_acTokens[m_nOpponentNumber])
     {
-        if (m_acGrid[nY][nX] == m_acTokens[m_nPlayerTurn])
+        bOpponetPeiceAdjacent = true;
+        if (m_acGrid[nY][nX] == m_acTokens[m_nPlayerNumber])
     }
 }
-*/
 
 /*
 bool InspectAbove(int nX, int nY)
@@ -89,7 +89,7 @@ int Reversi::ApplyMove(const int nPlayer, GameMove &cGameMove)
 
     m_acGrid[cGameMove.ToY()][cGameMove.ToX()] = m_acTokens[nPlayer];
     ++m_nNumberOfMoves;
-    UpdatePlayerTurn();
+    //UpdatePlayerTurn();
 
     return 1;
 }

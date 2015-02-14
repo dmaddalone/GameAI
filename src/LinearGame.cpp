@@ -78,7 +78,7 @@ bool LinearGame::RetractMove(const int nPlayer, const GameMove &cGameMove)
 {
     m_acGrid[cGameMove.ToY()][cGameMove.ToX()] = m_kcClear;
     --m_nNumberOfMoves;
-    UpdatePlayerTurn();
+    //UpdatePlayerTurn();
 
     return true;
 }
