@@ -271,7 +271,7 @@ int main(int argc, char* argv[])
             exit(EXIT_FAILURE);
         }
 
-        if (upGame->GameEnded(upGame->Player1(), upGame->Player2()))
+        if (upGame->GameEnded(upGame->Player1()))
             break;
 
         if (!vPlayers[1]->Move(*upGame))
@@ -280,11 +280,11 @@ int main(int argc, char* argv[])
             exit(EXIT_FAILURE);
         }
 
-        if (upGame->GameEnded(upGame->Player2(), upGame->Player1()))
+        if (upGame->GameEnded(upGame->Player2()))
             break;
     }
 
-    upGame->Display(true);
+    upGame->Display();
 
     if (upGame->Winner() == 0)
     {

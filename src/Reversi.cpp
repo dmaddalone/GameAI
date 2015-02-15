@@ -8,7 +8,7 @@ void Reversi::SetBoard()
     m_acGrid[(m_knY / 2)][(m_knX / 2)]         = m_acTokens[2];
 }
 
-std::vector<GameMove> Reversi::GenerateMoves(int nPlayer, int nOpponent) const
+std::vector<GameMove> Reversi::GenerateMoves(int nPlayer) const
 {
     std::vector<GameMove> vGameMoves {};
 
@@ -16,9 +16,9 @@ std::vector<GameMove> Reversi::GenerateMoves(int nPlayer, int nOpponent) const
     {
         for (int yyy = 0; yyy < m_knY; ++yyy)
         {
-            if (m_acGrid[yyy][xxx] == m_kcClear)
+             if (m_acGrid[yyy][xxx] == m_kcClear)
             {
-                if (Adjacent(xxx, yyy, nPlayer, int nOpponent)) // Check valid move
+                if (Contiguous(xxx, yyy, nPlayer)) // Check valid move
                 {
                     vGameMoves.emplace_back(0,0,xxx,yyy);
                 }
@@ -29,128 +29,441 @@ std::vector<GameMove> Reversi::GenerateMoves(int nPlayer, int nOpponent) const
     return vGameMoves;
 }
 
-bool Reversi::Adjacent(int nX, int nY, int nPlayer, int nOpponent) const
+bool Reversi::ApplyMove(int nPlayer, GameMove &cGameMove)
 {
-    if (AdjacentUp(nX, nY, nPlayer, nOpponent))
+    bool bValidMove = false;
+    std::vector<GameMove> vGameMoves = GenerateMoves(nPlayer);
+
+    if (!LinearGame::ApplyMove(nPlayer, cGameMove))
+        return false;
+
+    for (GameMove cValidGameMove : vGameMoves)
+    {
+        if (cValidGameMove.SameTo(cGameMove))
+        {
+            UpdateTable(nPlayer, cGameMove);
+            bValidMove = true;
+            break;
+        }
+    }
+
+    if (!bValidMove)
+        RetractMove(nPlayer, cGameMove);
+
+    return bValidMove;
+}
+
+void Reversi::UpdateTable(int nPlayer, const GameMove &cGameMove)
+{
+    FlipUp(cGameMove.ToX(), cGameMove.ToY(), nPlayer);
+    FlipUpRight(cGameMove.ToX(), cGameMove.ToY(), nPlayer);
+    FlipRight(cGameMove.ToX(), cGameMove.ToY(), nPlayer);
+    FlipDownRight(cGameMove.ToX(), cGameMove.ToY(), nPlayer);
+    FlipDown(cGameMove.ToX(), cGameMove.ToY(), nPlayer);
+    FlipDownLeft(cGameMove.ToX(), cGameMove.ToY(), nPlayer);
+    FlipLeft(cGameMove.ToX(), cGameMove.ToY(), nPlayer);
+    FlipUpLeft(cGameMove.ToX(), cGameMove.ToY(), nPlayer);
+
+    return;
+}
+
+void Reversi::FlipUp(int nX, int nY, int nPlayer)
+{
+    if (ContiguousUp(nX, nY, nPlayer))
+    {
+        while (true)
+        {
+            --nY;
+
+            if (m_acGrid[nY][nX] != m_acTokens[nPlayer])
+                m_acGrid[nY][nX] = m_acTokens[nPlayer];
+            else
+                break;
+        }
+    }
+}
+
+void Reversi::FlipUpRight(int nX, int nY, int nPlayer)
+{
+    if (ContiguousUpRight(nX, nY, nPlayer))
+    {
+        while (true)
+        {
+            ++nX;
+            --nY;
+
+            if (m_acGrid[nY][nX] != m_acTokens[nPlayer])
+                m_acGrid[nY][nX] = m_acTokens[nPlayer];
+            else
+                break;
+        }
+    }
+}
+
+void Reversi::FlipRight(int nX, int nY, int nPlayer)
+{
+    if (ContiguousRight(nX, nY, nPlayer))
+    {
+        while (true)
+        {
+            ++nX;
+
+            if (m_acGrid[nY][nX] != m_acTokens[nPlayer])
+                m_acGrid[nY][nX] = m_acTokens[nPlayer];
+            else
+                break;
+        }
+    }
+}
+
+void Reversi::FlipDownRight(int nX, int nY, int nPlayer)
+{
+    if (ContiguousDownRight(nX, nY, nPlayer))
+    {
+        while (true)
+        {
+            ++nX;
+            ++nY;
+
+            if (m_acGrid[nY][nX] != m_acTokens[nPlayer])
+                m_acGrid[nY][nX] = m_acTokens[nPlayer];
+            else
+                break;
+        }
+    }
+}
+
+void Reversi::FlipDown(int nX, int nY, int nPlayer)
+{
+    if (ContiguousDown(nX, nY, nPlayer))
+    {
+        while (true)
+        {
+            ++nY;
+
+            if (m_acGrid[nY][nX] != m_acTokens[nPlayer])
+                m_acGrid[nY][nX] = m_acTokens[nPlayer];
+            else
+                break;
+        }
+    }
+}
+
+void Reversi::FlipDownLeft(int nX, int nY, int nPlayer)
+{
+    if (ContiguousDownLeft(nX, nY, nPlayer))
+    {
+        while (true)
+        {
+            --nX;
+            ++nY;
+
+            if (m_acGrid[nY][nX] != m_acTokens[nPlayer])
+                m_acGrid[nY][nX] = m_acTokens[nPlayer];
+            else
+                break;
+        }
+    }
+}
+
+void Reversi::FlipLeft(int nX, int nY, int nPlayer)
+{
+    if (ContiguousLeft(nX, nY, nPlayer))
+    {
+        while (true)
+        {
+            --nX;
+
+            if (m_acGrid[nY][nX] != m_acTokens[nPlayer])
+                m_acGrid[nY][nX] = m_acTokens[nPlayer];
+            else
+                break;
+        }
+    }
+}
+
+void Reversi::FlipUpLeft(int nX, int nY, int nPlayer)
+{
+    if (ContiguousUpLeft(nX, nY, nPlayer))
+    {
+        while (true)
+        {
+            --nX;
+            --nY;
+
+            if (m_acGrid[nY][nX] != m_acTokens[nPlayer])
+                m_acGrid[nY][nX] = m_acTokens[nPlayer];
+            else
+                break;
+        }
+    }
+}
+
+bool Reversi::Contiguous(int nX, int nY, int nPlayer) const
+{
+    if (ContiguousUp(nX, nY, nPlayer))
+        return true;
+
+    if (ContiguousUpRight(nX, nY, nPlayer))
+        return true;
+
+    if (ContiguousRight(nX, nY, nPlayer))
+        return true;
+
+    if (ContiguousDownRight(nX, nY, nPlayer))
+        return true;
+
+    if (ContiguousDown(nX, nY, nPlayer))
+        return true;
+
+    if (ContiguousDownLeft(nX, nY, nPlayer))
+        return true;
+
+    if (ContiguousLeft(nX, nY, nPlayer))
+        return true;
+
+    if (ContiguousUpLeft(nX, nY, nPlayer))
         return true;
 
     return false;
 }
 
-bool Reversi::AdjacentUp(int nX, int nY, int nPlayer, int nOpponent) const
+bool Reversi::ContiguousUp(int nX, int nY, int nPlayer) const
 {
-    static bool bOpponentPeiceAdjacent = false;
+    bool bOpponentPieceAdjacent = false;
 
-    ++nY;
-
-    if (!ValidMove(nY, nX))
-        return false;
-
-    if (m_acGrid[nY][nX] == m_kcClear)
-        return false;
-
-    if (m_acGrid[nY][nX] == m_acTokens[nOpponent])
+    while (true)
     {
-        bOpponetPeiceAdjacent = true;
-        AdjacentUp(nX, nY);
+        --nY;
+
+        if (CheckContiguous(nX, nY, nPlayer, bOpponentPieceAdjacent))
+            return true;
+        else
+        {
+            if (!bOpponentPieceAdjacent)
+                return false;
+        }
     }
 
-    if (m_acGrid[nY][nX] == m_acTokens[nPlayerNumber])
+    return false;
+}
+
+bool Reversi::ContiguousUpRight(int nX, int nY, int nPlayer) const
+{
+    bool bOpponentPieceAdjacent = false;
+
+    while (true)
     {
-        if (bOpponentPeiceAdjacent)
+        ++nX;
+        --nY;
+
+        if (CheckContiguous(nX, nY, nPlayer, bOpponentPieceAdjacent))
+            return true;
+        else
+        {
+            if (!bOpponentPieceAdjacent)
+                return false;
+        }
+    }
+
+    return false;
+}
+
+bool Reversi::ContiguousRight(int nX, int nY, int nPlayer) const
+{
+    bool bOpponentPieceAdjacent = false;
+
+    while (true)
+    {
+        ++nX;
+
+        if (CheckContiguous(nX, nY, nPlayer, bOpponentPieceAdjacent))
+            return true;
+        else
+        {
+            if (!bOpponentPieceAdjacent)
+                return false;
+        }
+    }
+
+    return false;
+}
+
+bool Reversi::ContiguousDownRight(int nX, int nY, int nPlayer) const
+{
+    bool bOpponentPieceAdjacent = false;
+
+    while (true)
+    {
+        ++nX;
+        ++nY;
+
+        if (CheckContiguous(nX, nY, nPlayer, bOpponentPieceAdjacent))
+            return true;
+        else
+        {
+            if (!bOpponentPieceAdjacent)
+                return false;
+        }
+    }
+
+    return false;
+}
+
+bool Reversi::ContiguousDown(int nX, int nY, int nPlayer) const
+{
+    bool bOpponentPieceAdjacent = false;
+
+    while (true)
+    {
+        ++nY;
+
+        if (CheckContiguous(nX, nY, nPlayer, bOpponentPieceAdjacent))
+            return true;
+        else
+        {
+            if (!bOpponentPieceAdjacent)
+                return false;
+        }
+    }
+
+    return false;
+}
+
+bool Reversi::ContiguousDownLeft(int nX, int nY, int nPlayer) const
+{
+    bool bOpponentPieceAdjacent = false;
+
+    while (true)
+    {
+        --nX;
+        ++nY;
+
+        if (CheckContiguous(nX, nY, nPlayer, bOpponentPieceAdjacent))
+            return true;
+        else
+        {
+            if (!bOpponentPieceAdjacent)
+                return false;
+        }
+    }
+
+    return false;
+}
+
+bool Reversi::ContiguousLeft(int nX, int nY, int nPlayer) const
+{
+    bool bOpponentPieceAdjacent = false;
+
+    while (true)
+    {
+        --nX;
+
+        if (CheckContiguous(nX, nY, nPlayer, bOpponentPieceAdjacent))
+            return true;
+        else
+        {
+            if (!bOpponentPieceAdjacent)
+                return false;
+        }
+    }
+
+    return false;
+}
+
+bool Reversi::ContiguousUpLeft(int nX, int nY, int nPlayer) const
+{
+    bool bOpponentPieceAdjacent = false;
+
+    while (true)
+    {
+        --nX;
+        --nY;
+
+        if (CheckContiguous(nX, nY, nPlayer, bOpponentPieceAdjacent))
         {
             return true;
         }
         else
         {
-            return false;
+            if (!bOpponentPieceAdjacent)
+                return false;
         }
     }
 
-    return false;  // Should not get here
+    return false;
 }
 
-GameMove Reversi::GetMove(int nPlayer, int nOpponent) const
+bool Reversi::CheckContiguous(int nX, int nY, int nPlayer, bool &bOpponentPieceAdjacent) const
 {
-    std::string sMove {};
-    GameMove cGameMove;
+    if (!ValidMove(nX, nY))
+    {
+        bOpponentPieceAdjacent = false;
+        return false;
+    }
 
-    std::cin >> sMove;
+    if (m_acGrid[nY][nX] == m_kcClear)
+    {
+        bOpponentPieceAdjacent = false;
+        return false;
+    }
 
-    std::string sToken = sMove.substr(0,sMove.find(m_kDelimeter));
-    int xxx = atoi(sToken.c_str());
+    if (m_acGrid[nY][nX] == m_acTokens[2 - nPlayer + 1])
+    {
+        bOpponentPieceAdjacent = true;
+        return false;
+    }
 
-    sToken = sMove.substr(sMove.find(m_kDelimeter) + 1,sMove.length() );
-    int yyy = atoi(sToken.c_str());
+    if (m_acGrid[nY][nX] == m_acTokens[nPlayer])
+    {
+        if (bOpponentPieceAdjacent)
+            return true;
+        else
+            return false;
+    }
 
-    cGameMove.SetToX(xxx - 1);
-    cGameMove.SetToY(yyy - 1);
-
-    return cGameMove;
+    bOpponentPieceAdjacent = false;
+    return false;
 }
 
-
-int Reversi::ApplyMove(int nPlayer, GameMove &cGameMove)
+int Reversi::EvaluateGameState(int nPlayer)
 {
-    if ((nPlayer != m_kPlayer1) && (nPlayer != m_kPlayer2))
-        return -1;
+    if (m_nWinner == nPlayer)
+        return 1000000;
 
-    if ((cGameMove.ToX() > m_knX - 1) || (cGameMove.ToX() < 0))
-        return -1;
+    if (m_nWinner == (1 - nPlayer + 2))
+        return -1000000;
 
-    if ((cGameMove.ToY() > m_knY - 1) || (cGameMove.ToY() < 0))
-        return -1;
 
-    if (m_acGrid[cGameMove.ToY()][cGameMove.ToX()] != m_kcClear)
-        return -1;
-
-    m_acGrid[cGameMove.ToY()][cGameMove.ToX()] = m_acTokens[nPlayer];
-    ++m_nNumberOfMoves;
-    //UpdatePlayerTurn();
-
-    return 1;
+    return Count(nPlayer) - Count(2 - nPlayer + 1);
 }
 
-bool Reversi::GameEnded(int nPlayer, int nOpponent)
+int Reversi::Count(int nPlayer) const
+{
+    int nCount = 0;
+
+    for (int xxx = 0; xxx < m_knX; ++xxx)
+    {
+        for (int yyy = 0; yyy < m_knY; ++yyy)
+        {
+            if (m_acGrid[yyy][xxx] == m_acTokens[nPlayer])
+                ++nCount;
+        }
+    }
+
+    return nCount;
+}
+
+bool Reversi::GameEnded(int nPlayer)
 {
     m_nWinner = 0;
     m_sWinBy.assign("nothing");
 
-    if (CheckOrthogonal(m_kPlayer1, m_kWin))
-    {
-        m_nWinner = m_kPlayer1;
-        return true;
-    }
-
-    if (CheckOrthogonal(m_kPlayer2, m_kWin))
-    {
-        m_nWinner = m_kPlayer2;
-        return true;
-    }
-
-    if (CheckDiagonal(m_kPlayer1, m_kWin))
-    {
-        m_nWinner = m_kPlayer1;
-        return true;
-    }
-
-    if (CheckDiagonal(m_kPlayer2, m_kWin))
-    {
-        m_nWinner = m_kPlayer2;
-        return true;
-    }
-
-    std::vector<GameMove> vGameMoves = GenerateMoves();
+    std::vector<GameMove> vGameMoves = GenerateMoves(nPlayer);
     if (vGameMoves.empty())
     {
         return true;
     }
 
     return false;
-}
-
-int Reversi::PreferredMove(const GameMove &cGameMove) const
-{
-    //return std::abs(cGameMove.ToX() - 3);
-    return 0;
 }

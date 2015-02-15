@@ -23,10 +23,10 @@ bool Minimax::Move(Game &cGame)
 {
     if (m_nVerbosity >= 1)
     {
-        cGame.Display(true);
+        cGame.Display();
 
         std::cout << "Valid moves: ";
-        cGame.DisplayValidMoves(m_nPlayerNumber, m_nOpponentNumber);
+        cGame.DisplayValidMoves(m_nPlayerNumber);
     }
 
     GameMove cGameMove = MinimaxMove(m_nPlayerNumber, cGame, m_nDepth);
@@ -34,7 +34,7 @@ bool Minimax::Move(Game &cGame)
     if (m_nVerbosity >= 1)
         cGame.AnnounceMove(m_nPlayerNumber, cGameMove);
 
-     if (cGame.ApplyMove(m_nPlayerNumber, cGameMove) == -1)
+     if (!cGame.ApplyMove(m_nPlayerNumber, cGameMove))
         return false;
 
     return true;
@@ -42,7 +42,7 @@ bool Minimax::Move(Game &cGame)
 
 GameMove Minimax::MinimaxMove(int nPlayer, Game &cGame, int nDepth)
 {
-    std::vector<GameMove> vGameMoves = cGame.GenerateMoves();
+    std::vector<GameMove> vGameMoves = cGame.GenerateMoves(nPlayer);
     GameMove cBestMove = vGameMoves[0];
     int nBestScore = {INT_MIN};
     int nAlpha {INT_MIN};
@@ -78,11 +78,11 @@ GameMove Minimax::MinimaxMove(int nPlayer, Game &cGame, int nDepth)
 
 int Minimax::MinMove(int nPlayer, Game &cGame, int nDepth, int nAlpha, int nBeta)
 {
-    if (cGame.GameEnded() || nDepth == 0)
+    if (cGame.GameEnded(nPlayer) || nDepth == 0)
         //return cGame.EvaluateGameState(1 - nPlayer + 2) * (nDepth + 1);
         return cGame.EvaluateGameState(1 - nPlayer + 2);
 
-    std::vector<GameMove> vGameMoves = cGame.GenerateMoves();
+    std::vector<GameMove> vGameMoves = cGame.GenerateMoves(nPlayer);
 
     for (GameMove cGameMove : vGameMoves)
     {
@@ -104,11 +104,11 @@ int Minimax::MinMove(int nPlayer, Game &cGame, int nDepth, int nAlpha, int nBeta
 
 int Minimax::MaxMove(int nPlayer, Game &cGame, int nDepth, int nAlpha, int nBeta)
 {
-    if (cGame.GameEnded() || nDepth == 0)
+    if (cGame.GameEnded(nPlayer) || nDepth == 0)
         //return cGame.EvaluateGameState(nPlayer) * (nDepth + 1);
         return cGame.EvaluateGameState(nPlayer);
 
-    std::vector<GameMove> vGameMoves = cGame.GenerateMoves();
+    std::vector<GameMove> vGameMoves = cGame.GenerateMoves(nPlayer);
 
     for (GameMove cGameMove : vGameMoves)
     {

@@ -13,23 +13,31 @@ void LinearGame::ClearBoard()
     SetBoard();
 }
 
-void LinearGame::Display(bool bDisplayCoordinates) const
+void LinearGame::Display() const
 {
-    if (bDisplayCoordinates)
+    if (m_kbDisplayXCoordinates)
     {
+        char c = m_kcXCoordinate;
+
         std::cout << "   ";
         for (int xxx = 0; xxx < m_knX; ++xxx)
         {
-            std::cout << xxx + 1 << "   ";
+            //std::cout << xxx + 1 << "   ";
+            std::cout << c << "   ";
+            ++c;
         }
         std::cout << std::endl << std::endl;;
     }
 
     for (int yyy = 0; yyy < m_knY; ++yyy)
     {
-        if (bDisplayCoordinates)
+        if (m_kbDisplayYCoordinates)
         {
             std::cout << yyy + 1 << "  ";
+        }
+        else
+        {
+            std::cout << "   ";
         }
 
         for (int xxx = 0; xxx < m_knX; ++xxx)
@@ -58,14 +66,54 @@ void LinearGame::Display(bool bDisplayCoordinates) const
     }
 }
 
-void LinearGame::DisplayValidMoves(int nPlayer, int nOpponent) const
+void LinearGame::DisplayValidMoves(int nPlayer) const
 {
-    std::vector<GameMove> vGameMoves = GenerateMoves(nPlayer, nOpponent);
+    std::vector<GameMove> vGameMoves = GenerateMoves(nPlayer);
     for (GameMove cGameMove : vGameMoves)
     {
         std::cout << cGameMove.AnnounceToMove() << " ";
     }
     std::cout << std::endl;
+}
+
+GameMove LinearGame::GetMove(int nPlayer) const
+{
+    (void)nPlayer;
+
+    std::string sMove {};
+    GameMove cGameMove;
+
+    std::cin >> sMove;
+
+    int xxx = sMove[0] - m_kcXCoordinate;
+
+    std::string sToken = sMove.substr(sMove.find(m_kDelimeter) + 1,sMove.length() );
+    int yyy = atoi(sToken.c_str());
+
+    cGameMove.SetToX(xxx);
+    cGameMove.SetToY(yyy - 1);
+
+    return cGameMove;
+}
+
+bool LinearGame::ApplyMove(int nPlayer, GameMove &cGameMove)
+{
+    if ((nPlayer != m_knPlayer1) && (nPlayer != m_knPlayer2))
+        return false;
+
+    if ((cGameMove.ToX() > m_knX - 1) || (cGameMove.ToX() < 0))
+        return false;
+
+    if ((cGameMove.ToY() > m_knY - 1) || (cGameMove.ToY() < 0))
+        return false;
+
+    if (m_acGrid[cGameMove.ToY()][cGameMove.ToX()] != m_kcClear)
+        return false;
+
+    m_acGrid[cGameMove.ToY()][cGameMove.ToX()] = m_acTokens[nPlayer];
+    ++m_nNumberOfMoves;
+
+    return true;
 }
 
 void LinearGame::AnnounceMove(int nPlayer, const GameMove &cGameMove)
@@ -76,14 +124,15 @@ void LinearGame::AnnounceMove(int nPlayer, const GameMove &cGameMove)
 
 bool LinearGame::RetractMove(int nPlayer, const GameMove &cGameMove)
 {
+    (void)nPlayer;
+
     m_acGrid[cGameMove.ToY()][cGameMove.ToX()] = m_kcClear;
     --m_nNumberOfMoves;
-    //UpdatePlayerTurn();
 
     return true;
 }
 
-int LinearGame::EvaluateGameState(int nPlayer) //TODO: may be game specific
+int LinearGame::EvaluateGameState(int nPlayer)
 {
     if (m_nWinner == nPlayer)
         return 1000000;
@@ -185,7 +234,7 @@ bool LinearGame::CheckOrthogonal(int nPlayer, int nConnect) //const
 
 int LinearGame::CheckHorizontal(int nPlayer, int y, int x) //const
 {
-    if (!ValidMove(y, x)) return 0;
+    if (!ValidMove(x, y)) return 0;
 
     if (m_acGrid[y][x] == m_acTokens[nPlayer])
         return (1 + CheckHorizontal(nPlayer, y, x+1));
@@ -195,7 +244,7 @@ int LinearGame::CheckHorizontal(int nPlayer, int y, int x) //const
 
 int LinearGame::CheckVertical(int nPlayer, int y, int x) //const
 {
-    if (!ValidMove(y, x)) return 0;
+    if (!ValidMove(x, y)) return 0;
 
     if (m_acGrid[y][x] == m_acTokens[nPlayer])
         return (1 + CheckVertical(nPlayer, y+1, x));
@@ -249,7 +298,7 @@ bool LinearGame::CheckDiagonal(int nPlayer, int nConnect) //const
 
 int LinearGame::CheckDiagonalUpperLeftLowerRight(int nPlayer, int y, int x) //const
 {
-    if (!ValidMove(y, x)) return 0;
+    if (!ValidMove(x, y)) return 0;
 
     if (m_acGrid[y][x] == m_acTokens[nPlayer])
         return (1 + CheckDiagonalUpperLeftLowerRight(nPlayer, y+1, x+1));
@@ -259,7 +308,7 @@ int LinearGame::CheckDiagonalUpperLeftLowerRight(int nPlayer, int y, int x) //co
 
 int LinearGame::CheckDiagonalUpperRightLowerLeft(int nPlayer, int y, int x) //const
 {
-    if (!ValidMove(y, x)) return 0;
+    if (!ValidMove(x, y)) return 0;
 
     if (m_acGrid[y][x] == m_acTokens[nPlayer])
         return (1 + CheckDiagonalUpperRightLowerLeft(nPlayer, y+1, x-1));
@@ -267,13 +316,58 @@ int LinearGame::CheckDiagonalUpperRightLowerLeft(int nPlayer, int y, int x) //co
         return 0;
 }
 
-bool LinearGame::ValidMove(int y, int x) const
+bool LinearGame::ValidMove(int x, int y) const
 {
-    if ((y >= m_knY) || (y < 0))
-        return false;
-
     if ((x >= m_knX) || (x < 0))
         return false;
 
+    if ((y >= m_knY) || (y < 0))
+        return false;
+
     return true;
+}
+
+int LinearGame::PreferredMove(const GameMove &cGameMove) const
+{
+    //(void)GameMove;
+
+    return 0;
+}
+
+bool LinearGame::GameEnded(int nPlayer)
+{
+    m_nWinner = 0;
+    m_sWinBy.assign("nothing");
+
+    if (CheckOrthogonal(m_knPlayer1, m_knWin))
+    {
+        m_nWinner = m_knPlayer1;
+        return true;
+    }
+
+    if (CheckOrthogonal(m_knPlayer2, m_knWin))
+    {
+        m_nWinner = m_knPlayer2;
+        return true;
+    }
+
+    if (CheckDiagonal(m_knPlayer1, m_knWin))
+    {
+        m_nWinner = m_knPlayer1;
+        return true;
+    }
+
+    if (CheckDiagonal(m_knPlayer2, m_knWin))
+    {
+        m_nWinner = m_knPlayer2;
+        return true;
+    }
+
+    std::vector<GameMove> vGameMoves = GenerateMoves(nPlayer);
+    if (vGameMoves.empty())
+    {
+        return true;
+    }
+
+    return false;
 }

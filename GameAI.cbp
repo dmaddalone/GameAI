@@ -11,15 +11,13 @@
 
 TODO: Add Reversi
 
-DONE: Make Display part of LinearGame; turn on or off grid lines
-
-TODO: Consider using alpha characters for one of the corrdinates
-
-DONE: Make DisplayValidMoves  and AnnounceMove  part of LinearGame with flags to use x, y, or both
+DONE: Consider using alpha characters for one of the coordinates
 
 TODO: Consider changing the EvaluateGame score depending on how many moves it takes for a losing position (e.g., one move to lose is wrose than 10 moves to lose)
 
 TODO: Consider chaning PreferredMove to take two GameMove arguments
+
+TODO: Change ValidMove from (y, x) to (x, y); change name from ValidMove to OnBoard?
 
 ]]>
 			</notes>
@@ -30,7 +28,7 @@ TODO: Consider chaning PreferredMove to take two GameMove arguments
 				<Option object_output="obj/Debug/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
-				<Option parameters="-1 human -2 minimax -g connectfour" />
+				<Option parameters="-1 human -2 human -g reversi" />
 				<Compiler>
 					<Add option="-std=c++11" />
 					<Add option="-Wextra" />

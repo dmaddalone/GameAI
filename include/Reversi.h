@@ -8,27 +8,41 @@
 class Reversi : public LinearGame
 {
     public:
-        Reversi(GameType ecGameType) : LinearGame(ecGameType, 8, 8, ' ', 'D', 'L', true) { SetBoard(); }
+        Reversi(GameType ecGameType) : LinearGame(ecGameType, 8, 8, ' ', 'D', 'L', 0, true, true, true) { SetBoard(); }
         ~Reversi() {}
 
-        virtual GameMove GetMove(int nPlayer, int nOpponent) const override;
-
-        virtual int  ApplyMove(int nPlayer, GameMove &cGameMove) override;
-
-        virtual int  PreferredMove(const GameMove &cGameMove) const override;
-        virtual bool GameEnded(int nPlayer, int nOpponent) override;
-
-        virtual std::vector<GameMove> GenerateMoves(int nPlayer, int nOpponent) const override;
+        virtual bool ApplyMove(int nPlayer, GameMove &cGameMove) override;
+        virtual int  EvaluateGameState(int nPlayer) override;
+        virtual bool GameEnded(int nPlayer) override;
+        virtual std::vector<GameMove> GenerateMoves(int nPlayer) const override;
 
         virtual std::string Title() override { return "Reversi"; }
 
     private:
         void SetBoard();
 
-        bool Adjacent(int nX, int nY) const;
-        bool AdjacentUp(int nX, int nY) const;
+        bool Contiguous(int nX, int nY, int nPlayer) const;
+        bool ContiguousUp(int nX, int nY, int nPlayer) const;
+        bool ContiguousUpRight(int nX, int nY, int nPlayer) const;
+        bool ContiguousRight(int nX, int nY, int nPlayer) const;
+        bool ContiguousDownRight(int nX, int nY, int nPlayer) const;
+        bool ContiguousDown(int nX, int nY, int nPlayer) const;
+        bool ContiguousDownLeft(int nX, int nY, int nPlayer) const;
+        bool ContiguousLeft(int nX, int nY, int nPlayer) const;
+        bool ContiguousUpLeft(int nX, int nY, int nPlayer) const;
+        bool CheckContiguous(int nX, int nY, int nPlayer, bool &bOpponentPieceAdjacent) const;
 
-        const int m_kWin {0};
+        void UpdateTable(int nPlayer, const GameMove &cGameMove);
+        void FlipUp(int nX, int nY, int nPlayer);
+        void FlipUpRight(int nX, int nY, int nPlayer);
+        void FlipRight(int nX, int nY, int nPlayer);
+        void FlipDownRight(int nX, int nY, int nPlayer);
+        void FlipDown(int nX, int nY, int nPlayer);
+        void FlipDownLeft(int nX, int nY, int nPlayer);
+        void FlipLeft(int nX, int nY, int nPlayer);
+        void FlipUpLeft(int nX, int nY, int nPlayer);
+
+        int  Count(int nPlayer) const;
 };
 
 #endif // REVERSI_H

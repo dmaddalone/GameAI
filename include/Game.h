@@ -45,20 +45,20 @@ class Game
         Game(GameType ecGameType) { m_ecGameType = ecGameType; }
         virtual ~Game() {};
 
-        virtual void Display(bool bDisplayCoordinates = false) const  = 0;
-        virtual void DisplayValidMoves(int nPlayer, int nOpponent) const = 0;
+        virtual void Display() const  = 0;
+        virtual void DisplayValidMoves(int nPlayer) const = 0;
 
-        virtual GameMove GetMove(int nPlayer, int nOpponent) const = 0;
+        virtual GameMove GetMove(int nPlayer) const = 0;
         virtual void AnnounceMove(int nPlayer, const GameMove &cGameMove) = 0;
 
-        virtual int  ApplyMove(int nPlayer, GameMove &cGameMove) = 0;
+        virtual bool ApplyMove(int nPlayer, GameMove &cGameMove) = 0;
 
         virtual bool RetractMove(int nPlayer, const GameMove &cGameMove) = 0;
 
         virtual int  PreferredMove(const GameMove &cGameMove) const = 0;
-        virtual bool GameEnded(int nPlayer, int nOpponent) = 0;
+        virtual bool GameEnded(int nPlayer) = 0;
 
-        virtual std::vector<GameMove> GenerateMoves(int nPlayer, int nOpponent) const = 0;
+        virtual std::vector<GameMove> GenerateMoves(int nPlayer) const = 0;
         virtual int  EvaluateGameState(int nPlayer) = 0;
 
         static std::unique_ptr<Game> MakeGame(GameType ecGameType);

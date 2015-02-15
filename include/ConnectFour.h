@@ -33,24 +33,24 @@
 class ConnectFour : public LinearGame
 {
     public:
-        ConnectFour(GameType ecGameType) : LinearGame(ecGameType, 7, 6, '0', '1', '2', false) {}
+        ConnectFour(GameType ecGameType) : LinearGame(ecGameType, 7, 6, '0', '1', '2', 4, false, true, false) {}
         ~ConnectFour() {}
 
-        virtual GameMove GetMove(int nPlayer, int nOpponent) const override;
+        virtual GameMove GetMove(int nPlayer) const override;
 
-        virtual int  ApplyMove(int nPlayer, GameMove &cGameMove) override;
+        //virtual int  ApplyMove(int nPlayer, GameMove &cGameMove) override;
 
         virtual int  PreferredMove(const GameMove &cGameMove) const override;
-        virtual bool GameEnded(int nPlayer, int nOpponent) override;
+        //virtual bool GameEnded(int nPlayer) override;
 
-        virtual std::vector<GameMove> GenerateMoves(int nPlayer, int nOpponent) const override;
+        virtual std::vector<GameMove> GenerateMoves(int nPlayer) const override;
 
-        virtual std::string Title() override { return "ConnectFour"; }
+        virtual std::string Title() override { return "Connect Four"; }
 
     private:
         int  FindBottom(int x) const;
 
-        const int m_kWin {4};
+        //const int m_kWin {4};
 };
 
 #endif // CONNECTFOUR_H

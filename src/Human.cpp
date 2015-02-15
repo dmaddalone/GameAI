@@ -25,9 +25,9 @@ bool Human::Move(Game &cGame)
 
     if (m_nVerbosity >= 1)
     {
-        cGame.Display(true);
+        cGame.Display();
         std::cout << "Valid moves: ";
-        cGame.DisplayValidMoves(m_nPlayerNumber, m_nOpponentNumber);
+        cGame.DisplayValidMoves(m_nPlayerNumber);
     }
 
     do
@@ -35,9 +35,9 @@ bool Human::Move(Game &cGame)
         // TODO: prompt player for move?  cGame.PromptPlayerForMove(m_nPlayerNumber);  OR not ?
         std::cout << "Player " << m_nPlayerNumber << ", enter move: ";
 
-        cGameMove = cGame.GetMove(m_nPlayerNumber, m_nOpponentNumber);
+        cGameMove = cGame.GetMove(m_nPlayerNumber);
 
-        if (cGame.ApplyMove(m_nPlayerNumber, cGameMove) == -1)
+        if (!cGame.ApplyMove(m_nPlayerNumber, cGameMove))
         {
             std::cout << "Invalid move" << std::endl;
         }

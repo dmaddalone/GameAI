@@ -8,23 +8,30 @@
 class LinearGame : public Game
 {
     public:
-        LinearGame(GameType ecGameType, int nX, int nY, char cClear, char cToken1, char cToken2, bool bDisplayGrid) :
+        LinearGame(GameType ecGameType, int nX, int nY, char cClear, char cToken1, char cToken2, int nWin, bool bDisplayGrid, bool bDisplayXCoordinates, bool bDisplayYCoordinates) :
             Game(ecGameType),
             m_knX(nX),
             m_knY(nY),
             m_kcClear(cClear),
             m_kcToken1(cToken1),
             m_kcToken2(cToken2),
-            m_kbDisplayGrid(bDisplayGrid)
+            m_knWin(nWin),
+            m_kbDisplayGrid(bDisplayGrid),
+            m_kbDisplayXCoordinates(bDisplayXCoordinates),
+            m_kbDisplayYCoordinates(bDisplayYCoordinates)
             {  SetTokens(); ClearBoard(); }
 
         ~LinearGame() {}
 
-        virtual void Display(bool bDisplayCoordinates = false) const override;
-        virtual void DisplayValidMoves(int nPlayer, int nOpponent) const override;
+        virtual void Display() const override;
+        virtual void DisplayValidMoves(int nPlayer) const override;
+        virtual GameMove GetMove(int nPlayer) const override;
+        virtual int  PreferredMove(const GameMove &cGameMove) const override;
+        virtual bool ApplyMove(int nPlayer, GameMove &cGameMove) override;
         virtual void AnnounceMove(int nPlayer, const GameMove &cGameMove) override;
         virtual bool RetractMove(int nPlayer, const GameMove &cGameMove) override;
         virtual int  EvaluateGameState(int nPlayer) override;
+        virtual bool GameEnded(int nPlayer) override;
 
     protected:
         void SetTokens() { m_acTokens[0] = m_kcClear; m_acTokens[1] = m_kcToken1; m_acTokens[2] = m_kcToken2; }
@@ -43,7 +50,11 @@ class LinearGame : public Game
         const char m_kcClear;
         const char m_kcToken1;
         const char m_kcToken2;
+        const int m_knWin;
         const bool m_kbDisplayGrid;
+        const bool m_kbDisplayXCoordinates;
+        const bool m_kbDisplayYCoordinates;
+        const char m_kcXCoordinate {'a'};
 
         static const int m_kMaxX {8};
         static const int m_kMaxY {8};

@@ -19,8 +19,10 @@
 
 #include "ConnectFour.h"
 
-std::vector<GameMove> ConnectFour::GenerateMoves(int nPlayer, int nOpponent) const
+std::vector<GameMove> ConnectFour::GenerateMoves(int nPlayer) const
 {
+    (void)nPlayer;
+
     std::vector<GameMove> vGameMoves {};
 
     for (int xxx = 0; xxx < m_knX; ++xxx)
@@ -34,19 +36,22 @@ std::vector<GameMove> ConnectFour::GenerateMoves(int nPlayer, int nOpponent) con
     return vGameMoves;
 }
 
-
-GameMove ConnectFour::GetMove(int nPlayer, int nOpponent) const
+GameMove ConnectFour::GetMove(int nPlayer) const
 {
-    int nMove {};
+    (void)nPlayer;
+
+    char     cMove {};
     GameMove cGameMove;
 
-    std::cin >> nMove;
-    cGameMove.SetToX(nMove - 1);
+    std::cin >> cMove;
+
+    cGameMove.SetToX(cMove - m_kcXCoordinate);
 
     return cGameMove;
 }
 
-int ConnectFour::ApplyMove(int nPlayer, GameMove &cGameMove)
+/*
+ bool ConnectFour::ApplyMove(int nPlayer, GameMove &cGameMove)
 {
     if ((nPlayer != m_knPlayer1) && (nPlayer != m_knPlayer2))
         return -1;
@@ -66,10 +71,10 @@ int ConnectFour::ApplyMove(int nPlayer, GameMove &cGameMove)
 
     m_acGrid[cGameMove.ToY()][cGameMove.ToX()] = m_acTokens[nPlayer];
     ++m_nNumberOfMoves;
-    //UpdatePlayerTurn();
 
     return y;
 }
+*/
 
 int ConnectFour::FindBottom(int x) const
 {
@@ -82,7 +87,8 @@ int ConnectFour::FindBottom(int x) const
     return -1;
 }
 
-bool ConnectFour::GameEnded(int nPlayer, int nOpponent)
+/*
+bool ConnectFour::GameEnded(int nPlayer)
 {
     m_nWinner = 0;
     m_sWinBy.assign("nothing");
@@ -111,7 +117,7 @@ bool ConnectFour::GameEnded(int nPlayer, int nOpponent)
         return true;
     }
 
-    std::vector<GameMove> vGameMoves = GenerateMoves(nPlayer, nOpponent);
+    std::vector<GameMove> vGameMoves = GenerateMoves(nPlayer);
     if (vGameMoves.empty())
     {
         return true;
@@ -119,6 +125,7 @@ bool ConnectFour::GameEnded(int nPlayer, int nOpponent)
 
     return false;
 }
+*/
 
 int ConnectFour::PreferredMove(const GameMove &cGameMove) const
 {

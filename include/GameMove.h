@@ -53,6 +53,8 @@ class GameMove
 
         bool ValidMove()      { return m_bValidMove; }
 
+        bool SameTo(const GameMove &cGameMove) { if ((cGameMove.ToX() == m_nToX) && (cGameMove.ToY() == m_nToY)) return true; else return false;}
+
         std::string AnnounceToMove() const;
 
     private:
