@@ -50,32 +50,6 @@ GameMove ConnectFour::GetMove(int nPlayer) const
     return cGameMove;
 }
 
-/*
- bool ConnectFour::ApplyMove(int nPlayer, GameMove &cGameMove)
-{
-    if ((nPlayer != m_knPlayer1) && (nPlayer != m_knPlayer2))
-        return -1;
-
-    if ((cGameMove.ToX() > m_knX - 1) || (cGameMove.ToX() < 0))
-        return -1;
-
-    if (m_acGrid[0][cGameMove.ToX()] != m_kcClear)
-        return -1;
-
-    int y = FindBottom(cGameMove.ToX());
-
-    if (y == -1)
-        return -1;
-
-    cGameMove.SetToY(y);
-
-    m_acGrid[cGameMove.ToY()][cGameMove.ToX()] = m_acTokens[nPlayer];
-    ++m_nNumberOfMoves;
-
-    return y;
-}
-*/
-
 int ConnectFour::FindBottom(int x) const
 {
     for (int yyy = m_knY - 1; yyy >= 0; --yyy)
@@ -86,46 +60,6 @@ int ConnectFour::FindBottom(int x) const
 
     return -1;
 }
-
-/*
-bool ConnectFour::GameEnded(int nPlayer)
-{
-    m_nWinner = 0;
-    m_sWinBy.assign("nothing");
-
-    if (CheckOrthogonal(m_knPlayer1, m_kWin))
-    {
-        m_nWinner = m_knPlayer1;
-        return true;
-    }
-
-    if (CheckOrthogonal(m_knPlayer2, m_kWin))
-    {
-        m_nWinner = m_knPlayer2;
-        return true;
-    }
-
-    if (CheckDiagonal(m_knPlayer1, m_kWin))
-    {
-        m_nWinner = m_knPlayer1;
-        return true;
-    }
-
-    if (CheckDiagonal(m_knPlayer2, m_kWin))
-    {
-        m_nWinner = m_knPlayer2;
-        return true;
-    }
-
-    std::vector<GameMove> vGameMoves = GenerateMoves(nPlayer);
-    if (vGameMoves.empty())
-    {
-        return true;
-    }
-
-    return false;
-}
-*/
 
 int ConnectFour::PreferredMove(const GameMove &cGameMove) const
 {

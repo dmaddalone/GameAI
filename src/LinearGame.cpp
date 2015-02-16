@@ -121,7 +121,6 @@ void LinearGame::AnnounceMove(int nPlayer, const GameMove &cGameMove)
     std::cout << "Move number: " << m_nNumberOfMoves + 1 << "  Player: " << nPlayer << "  Moves To: " << cGameMove.AnnounceToMove() << std::endl;;
 }
 
-
 bool LinearGame::RetractMove(int nPlayer, const GameMove &cGameMove)
 {
     (void)nPlayer;
