@@ -29,6 +29,7 @@
 #include <memory>
 
 #include "Game.h"
+#include "Logger.h"
 
 enum class PlayerType
 {
@@ -45,12 +46,12 @@ class Player
 
         static std::unique_ptr<Player> MakePlayer(PlayerType ecPlayerType);
 
-        virtual bool Move(Game &upGame) = 0;
+        virtual bool Move(Game &pcGame) = 0;
 
         virtual std::string TypeName()  = 0;
         PlayerType Type() { return m_ecPlayerType; }
 
-        void SetVerbosity(int n)  { m_nVerbosity = n; }
+        void SetVerbosity(int n)  { m_cLogger.SetLevel(n); m_cLogger.UseTimeStamp(false); m_cLogger.UseTag(false); m_cLogger.UseLevelIndent(true); }
         void SetPlies(int nPlies) { m_nDepth = nPlies; }
         int  Plies()              { return m_nDepth; }
 
@@ -58,9 +59,11 @@ class Player
         int  m_nMove              {0};
         PlayerType m_ecPlayerType {PlayerType::TYPE_NONE};
         int  m_nPlayerNumber      {0};
-        int  m_nOpponentNumber     {0};
+        int  m_nOpponentNumber    {0};
         int  m_nDepth             {4}; // For AI
-        int  m_nVerbosity         {1};
+        //int  m_nVerbosity         {1};
+
+        Logger m_cLogger;
 
     private:
         static int m_nPlayerCount;

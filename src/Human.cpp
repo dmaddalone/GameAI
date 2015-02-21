@@ -23,11 +23,10 @@ bool Human::Move(Game &cGame)
 {
     GameMove cGameMove;
 
-    if (m_nVerbosity >= 1)
+    if (m_cLogger.Level() >= 1)
     {
         cGame.Display();
-        std::cout << "Valid moves: ";
-        cGame.DisplayValidMoves(m_nPlayerNumber);
+        std::cout << "Valid moves: " << cGame.ValidMoves(m_nPlayerNumber) << std::endl;
     }
 
     do

@@ -24,14 +24,18 @@ class LinearGame : public Game
         ~LinearGame() {}
 
         virtual void Display() const override;
-        virtual void DisplayValidMoves(int nPlayer) const override;
+        //virtual void DisplayValidMoves(int nPlayer) const override;
+        virtual std::string ValidMoves(int nPlayer) const override;
         virtual GameMove GetMove(int nPlayer) const override;
         virtual int  PreferredMove(const GameMove &cGameMove) const override;
         virtual bool ApplyMove(int nPlayer, GameMove &cGameMove) override;
-        virtual void AnnounceMove(int nPlayer, const GameMove &cGameMove) override;
-        virtual bool RetractMove(int nPlayer, const GameMove &cGameMove) override;
+        //virtual void AnnounceMove(int nPlayer, const GameMove &cGameMove) override;
+        virtual std::string AnnounceMove(int nPlayer, const GameMove &cGameMove) override;
+        //virtual bool RetractMove(int nPlayer, const GameMove &cGameMove) override;
         virtual int  EvaluateGameState(int nPlayer) override;
         virtual bool GameEnded(int nPlayer) override;
+
+        virtual std::unique_ptr<Game> Clone() const = 0;
 
     protected:
         void SetTokens() { m_acTokens[0] = m_kcClear; m_acTokens[1] = m_kcToken1; m_acTokens[2] = m_kcToken2; }
@@ -56,13 +60,14 @@ class LinearGame : public Game
         const bool m_kbDisplayYCoordinates;
         const char m_kcXCoordinate {'a'};
 
-        static const int m_kMaxX {8};
-        static const int m_kMaxY {8};
-        int m_acGrid[m_kMaxY][m_kMaxX] {{}};
+        static const int m_knMaxX {8};
+        static const int m_knMaxY {8};
+        int m_acGrid[m_knMaxY][m_knMaxX] {{}};
 
         const char m_kDelimeter {','}; // TTT specific?
 
-        char m_acTokens[3];
+        static const int m_knTokens {3};
+        char m_acTokens[m_knTokens];
 
         struct SequenceCounts {
             int nCount1 {0};

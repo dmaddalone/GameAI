@@ -21,18 +21,20 @@
 
 bool Minimax::Move(Game &cGame)
 {
-    if (m_nVerbosity >= 1)
-    {
+    std::string sMessage;
+
+    if (m_cLogger.Level() >= 1)
         cGame.Display();
 
-        std::cout << "Valid moves: ";
-        cGame.DisplayValidMoves(m_nPlayerNumber);
-    }
+    sMessage = "Valid moves: " + cGame.ValidMoves(m_nPlayerNumber);
+    m_cLogger.LogInfo(sMessage, 3);
 
     GameMove cGameMove = MinimaxMove(m_nPlayerNumber, cGame, m_nDepth);
 
-    if (m_nVerbosity >= 1)
-        cGame.AnnounceMove(m_nPlayerNumber, cGameMove);
+    m_cLogger.LogInfo(cGame.AnnounceMove(m_nPlayerNumber, cGameMove),1);
+
+    if (cGameMove.NoMove())
+        return true;
 
      if (!cGame.ApplyMove(m_nPlayerNumber, cGameMove))
         return false;
@@ -42,23 +44,40 @@ bool Minimax::Move(Game &cGame)
 
 GameMove Minimax::MinimaxMove(int nPlayer, Game &cGame, int nDepth)
 {
-    std::vector<GameMove> vGameMoves = cGame.GenerateMoves(nPlayer);
-    GameMove cBestMove = vGameMoves[0];
     int nBestScore = {INT_MIN};
     int nAlpha {INT_MIN};
     int nBeta {INT_MAX};
 
+    std::string sMessage;
+
+    std::vector<GameMove> vGameMoves = cGame.GenerateMoves(nPlayer);
+
+    if (vGameMoves.empty())
+    {
+        GameMove cNoMove = GameMove();
+        cNoMove.SetNoMove(true);
+        return cNoMove;
+    }
+
+    GameMove cBestMove = vGameMoves[0];
+
     for (GameMove cGameMove : vGameMoves)
     {
-        cGame.ApplyMove(m_nPlayerNumber, cGameMove);
+        std::unique_ptr<Game> pcGameClone = cGame.Clone();
 
-        int nScore = MinMove(1 - nPlayer + 2, cGame, nDepth - 1, nAlpha, nBeta);
+        sMessage = "MinimaxMove Player=" + std::to_string(nPlayer) + " Evaluate Move=" + cGameMove.AnnounceToMove();
+        m_cLogger.LogInfo(sMessage,3);
 
-        if (m_nVerbosity >= 2) std::cout << "\tMinimaxMove Move=" << cGameMove.ToX() + 1 << " Score=" << nScore << std::endl;
+        pcGameClone->ApplyMove(nPlayer, cGameMove);
+
+        int nScore = MinMove(1 - nPlayer + 2, *pcGameClone, nDepth - 1, nAlpha, nBeta);
+
+        sMessage = "MinimaxMove Move=" + cGameMove.AnnounceToMove() + " Score=" + std::to_string(nScore);
+        m_cLogger.LogInfo(sMessage, 2);
 
         if (nScore == nBestScore)
         {
-            if (cGame.PreferredMove(cGameMove) < cGame.PreferredMove(cBestMove))
+            if (pcGameClone->PreferredMove(cGameMove) < pcGameClone->PreferredMove(cBestMove))
             {
                 cBestMove = cGameMove;
             }
@@ -70,7 +89,7 @@ GameMove Minimax::MinimaxMove(int nPlayer, Game &cGame, int nDepth)
             nBestScore = nScore;
         }
 
-        cGame.RetractMove(m_nPlayerNumber, cGameMove);
+        //cGame.RetractMove(m_nPlayerNumber, cGameMove);
     }
 
     return cBestMove;
@@ -78,19 +97,32 @@ GameMove Minimax::MinimaxMove(int nPlayer, Game &cGame, int nDepth)
 
 int Minimax::MinMove(int nPlayer, Game &cGame, int nDepth, int nAlpha, int nBeta)
 {
+    std::string sMessage;
+
     if (cGame.GameEnded(nPlayer) || nDepth == 0)
         //return cGame.EvaluateGameState(1 - nPlayer + 2) * (nDepth + 1);
         return cGame.EvaluateGameState(1 - nPlayer + 2);
 
     std::vector<GameMove> vGameMoves = cGame.GenerateMoves(nPlayer);
 
+    sMessage = "MinMove Depth=" + std::to_string(nDepth) + " Player=" + std::to_string(nPlayer) + " Valid moves: " + cGame.ValidMoves(nPlayer);
+    m_cLogger.LogInfo(sMessage,3);
+
     for (GameMove cGameMove : vGameMoves)
     {
+        std::unique_ptr<Game> pcGameClone = cGame.Clone();
 
-        cGame.ApplyMove(nPlayer, cGameMove);
-        int nScore = MaxMove(1- nPlayer + 2, cGame, nDepth - 1, nAlpha, nBeta);
+        sMessage = "MinMove Player=" + std::to_string(nPlayer) + " Evaluate Move= " + cGameMove.AnnounceToMove();
+        m_cLogger.LogInfo(sMessage,3);
 
-        cGame.RetractMove(nPlayer, cGameMove);
+        pcGameClone->ApplyMove(nPlayer, cGameMove);
+
+        int nScore = MaxMove(1 - nPlayer + 2, *pcGameClone, nDepth - 1, nAlpha, nBeta);
+
+        sMessage = "MinMove Depth=" + std::to_string(nDepth) + " Player=" + std::to_string(nPlayer) + " Move=" + cGameMove.AnnounceToMove() + " Score=" + std::to_string(nScore);
+        m_cLogger.LogInfo(sMessage,3);
+
+        //cGame.RetractMove(nPlayer, cGameMove);
 
         if (nScore <= nAlpha)
             return nAlpha; // fail hard alpha-cutoff
@@ -104,19 +136,31 @@ int Minimax::MinMove(int nPlayer, Game &cGame, int nDepth, int nAlpha, int nBeta
 
 int Minimax::MaxMove(int nPlayer, Game &cGame, int nDepth, int nAlpha, int nBeta)
 {
+    std::string sMessage;
+
     if (cGame.GameEnded(nPlayer) || nDepth == 0)
         //return cGame.EvaluateGameState(nPlayer) * (nDepth + 1);
         return cGame.EvaluateGameState(nPlayer);
 
     std::vector<GameMove> vGameMoves = cGame.GenerateMoves(nPlayer);
 
+    sMessage = "MaxMove Depth=" + std::to_string(nDepth) + " Player=" + std::to_string(nPlayer) + " Valid moves: " + cGame.ValidMoves(nPlayer);
+    m_cLogger.LogInfo(sMessage,3);
+
     for (GameMove cGameMove : vGameMoves)
     {
-        cGame.ApplyMove(nPlayer, cGameMove);
+        std::unique_ptr<Game> pcGameClone = cGame.Clone();
 
-        int nScore = MinMove(1 - nPlayer + 2, cGame, nDepth -1, nAlpha, nBeta);
+        sMessage = "MaxMove Player=" + std::to_string(nPlayer) + " Evaluate Move= " + cGameMove.AnnounceToMove();
+        m_cLogger.LogInfo(sMessage,3);
 
-        cGame.RetractMove(nPlayer, cGameMove);
+        pcGameClone->ApplyMove(nPlayer, cGameMove);
+        int nScore = MinMove(1 - nPlayer + 2, *pcGameClone, nDepth -1, nAlpha, nBeta);
+
+        sMessage = "MaxMove Depth=" + std::to_string(nDepth) + " Player=" + std::to_string(nPlayer) + " Move=" + cGameMove.AnnounceToMove() + " Score=" + std::to_string(nScore);
+        m_cLogger.LogInfo(sMessage,3);
+
+        //cGame.RetractMove(nPlayer, cGameMove);
 
         if (nScore >= nBeta)
             return nBeta; // fail hard beta-cutoff

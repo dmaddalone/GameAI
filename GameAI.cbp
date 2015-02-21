@@ -28,7 +28,7 @@ TODO: Change ValidMove from (y, x) to (x, y); change name from ValidMove to OnBo
 				<Option object_output="obj/Debug/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
-				<Option parameters="-1 human -2 human -g reversi" />
+				<Option parameters="-1 minimax -2 minimax -g reversi -v 1" />
 				<Compiler>
 					<Add option="-std=c++11" />
 					<Add option="-Wextra" />
@@ -65,6 +65,7 @@ TODO: Change ValidMove from (y, x) to (x, y); change name from ValidMove to OnBo
 		<Unit filename="include/GameMove.h" />
 		<Unit filename="include/Human.h" />
 		<Unit filename="include/LinearGame.h" />
+		<Unit filename="include/Logger.h" />
 		<Unit filename="include/Minimax.h" />
 		<Unit filename="include/Player.h" />
 		<Unit filename="include/Reversi.h" />
@@ -75,6 +76,7 @@ TODO: Change ValidMove from (y, x) to (x, y); change name from ValidMove to OnBo
 		<Unit filename="src/GameMove.cpp" />
 		<Unit filename="src/Human.cpp" />
 		<Unit filename="src/LinearGame.cpp" />
+		<Unit filename="src/Logger.cpp" />
 		<Unit filename="src/Minimax.cpp" />
 		<Unit filename="src/Player.cpp" />
 		<Unit filename="src/Reversi.cpp" />

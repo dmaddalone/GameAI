@@ -22,7 +22,7 @@
 #include "TTT.h"
 #include "Reversi.h"
 
-std::unique_ptr<Game> Game::MakeGame(GameType ecGameType)
+std::unique_ptr<Game> Game::Make(GameType ecGameType)
 {
     switch (ecGameType)
     {

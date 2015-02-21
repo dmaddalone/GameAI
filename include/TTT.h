@@ -11,9 +11,9 @@ class TTT : public LinearGame
         TTT(GameType ecGameType) : LinearGame(ecGameType, 3, 3, ' ', 'X', 'O', 3, true, true, true) {}
         ~TTT() {}
 
-        //virtual bool GameEnded(int nPlayer) override;
-
         virtual std::vector<GameMove> GenerateMoves(int nPlayer) const override;
+
+        virtual std::unique_ptr<Game> Clone() const override { return std::unique_ptr<Game>(new TTT(*this)); }
 
         virtual std::string Title() override { return "Tic-Tac-Toe"; }
 

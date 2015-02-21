@@ -12,9 +12,12 @@ class Reversi : public LinearGame
         ~Reversi() {}
 
         virtual bool ApplyMove(int nPlayer, GameMove &cGameMove) override;
+        //virtual bool RetractMove(int nPlayer, const GameMove &cGameMove) override;
         virtual int  EvaluateGameState(int nPlayer) override;
         virtual bool GameEnded(int nPlayer) override;
         virtual std::vector<GameMove> GenerateMoves(int nPlayer) const override;
+
+        virtual std::unique_ptr<Game> Clone() const override { return std::unique_ptr<Game>(new Reversi(*this)); }
 
         virtual std::string Title() override { return "Reversi"; }
 
@@ -32,7 +35,7 @@ class Reversi : public LinearGame
         bool ContiguousUpLeft(int nX, int nY, int nPlayer) const;
         bool CheckContiguous(int nX, int nY, int nPlayer, bool &bOpponentPieceAdjacent) const;
 
-        void UpdateTable(int nPlayer, const GameMove &cGameMove);
+        void Flip(int nPlayer, const GameMove &cGameMove);
         void FlipUp(int nX, int nY, int nPlayer);
         void FlipUpRight(int nX, int nY, int nPlayer);
         void FlipRight(int nX, int nY, int nPlayer);

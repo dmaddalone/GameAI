@@ -38,12 +38,13 @@ class ConnectFour : public LinearGame
 
         virtual GameMove GetMove(int nPlayer) const override;
 
-        //virtual int  ApplyMove(int nPlayer, GameMove &cGameMove) override;
-
         virtual int  PreferredMove(const GameMove &cGameMove) const override;
-        //virtual bool GameEnded(int nPlayer) override;
+
+        virtual bool ApplyMove(int nPlayer, GameMove &cGameMove) override;
 
         virtual std::vector<GameMove> GenerateMoves(int nPlayer) const override;
+
+        virtual std::unique_ptr<Game> Clone() const override { return std::unique_ptr<Game>(new ConnectFour(*this)); }
 
         virtual std::string Title() override { return "Connect Four"; }
 

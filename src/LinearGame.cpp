@@ -66,6 +66,7 @@ void LinearGame::Display() const
     }
 }
 
+/*
 void LinearGame::DisplayValidMoves(int nPlayer) const
 {
     std::vector<GameMove> vGameMoves = GenerateMoves(nPlayer);
@@ -74,6 +75,22 @@ void LinearGame::DisplayValidMoves(int nPlayer) const
         std::cout << cGameMove.AnnounceToMove() << " ";
     }
     std::cout << std::endl;
+}
+*/
+
+std::string LinearGame::ValidMoves(int nPlayer) const
+{
+    std::string sValidMoves {};
+
+    std::vector<GameMove> vGameMoves = GenerateMoves(nPlayer);
+    for (GameMove cGameMove : vGameMoves)
+    {
+        //std::cout << cGameMove.AnnounceToMove() << " ";
+        sValidMoves += cGameMove.AnnounceToMove() + " ";
+    }
+    //std::cout << std::endl;
+
+    return sValidMoves;
 }
 
 GameMove LinearGame::GetMove(int nPlayer) const
@@ -104,6 +121,7 @@ bool LinearGame::ApplyMove(int nPlayer, GameMove &cGameMove)
     if ((cGameMove.ToX() > m_knX - 1) || (cGameMove.ToX() < 0))
         return false;
 
+
     if ((cGameMove.ToY() > m_knY - 1) || (cGameMove.ToY() < 0))
         return false;
 
@@ -116,11 +134,14 @@ bool LinearGame::ApplyMove(int nPlayer, GameMove &cGameMove)
     return true;
 }
 
-void LinearGame::AnnounceMove(int nPlayer, const GameMove &cGameMove)
+std::string LinearGame::AnnounceMove(int nPlayer, const GameMove &cGameMove)
 {
-    std::cout << "Move number: " << m_nNumberOfMoves + 1 << "  Player: " << nPlayer << "  Moves To: " << cGameMove.AnnounceToMove() << std::endl;;
+    std::string sMessage = "Move number: " + std::to_string(m_nNumberOfMoves + 1) + "  Player: " + std::to_string(nPlayer) + "  Moves To: " + cGameMove.AnnounceToMove();
+
+    return sMessage;
 }
 
+/*
 bool LinearGame::RetractMove(int nPlayer, const GameMove &cGameMove)
 {
     (void)nPlayer;
@@ -130,6 +151,7 @@ bool LinearGame::RetractMove(int nPlayer, const GameMove &cGameMove)
 
     return true;
 }
+*/
 
 int LinearGame::EvaluateGameState(int nPlayer)
 {
@@ -328,7 +350,7 @@ bool LinearGame::ValidMove(int x, int y) const
 
 int LinearGame::PreferredMove(const GameMove &cGameMove) const
 {
-    //(void)GameMove;
+    (void)cGameMove;
 
     return 0;
 }

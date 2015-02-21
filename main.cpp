@@ -29,8 +29,7 @@
 #include "GameAIVersion.h"
 #include "Player.h"
 #include "Game.h"
-
-//using namespace std;
+#include "Logger.h"
 
 /**
   * ShowUsage
@@ -59,10 +58,11 @@ static void ShowUsage(std::string sName)
               << "TYPE is either human or minimax\n"
               << "PLIES are from 1 to 9.  The default is 4.\n"
               << "GAME is ttt, connectfour, or reversi.\n"
-              << "LEVEL is an integer 0 to 2.  The default is 1.\n"
+              << "LEVEL is an integer 0 to 3.  The default is 1.\n"
               << "    0 = display start and ending announcements\n"
               << "    1 = display game move-by-move\n"
               << "    2 = display AI scoring of moves\n"
+              << "    3 = display AI evaluation of moves\n"
               << std::endl;
 }
 
@@ -95,18 +95,18 @@ static std::unique_ptr<Game> SetGame(char* pcGame)
 {
     std::string sGame(pcGame);
     if (sGame == "connectfour")
-        return Game::MakeGame(GameType::TYPE_CONNECT_FOUR);
+        return Game::Make(GameType::TYPE_CONNECT_FOUR);
     else if (sGame == "ttt")
-        return Game::MakeGame(GameType::TYPE_TTT);
+        return Game::Make(GameType::TYPE_TTT);
     else if (sGame == "reversi")
-        return Game::MakeGame(GameType::TYPE_REVERSI);
+        return Game::Make(GameType::TYPE_REVERSI);
     else
         return nullptr;
 }
 
 static void SetPlayers(std::string sName, int nPlies1, int nPlies2, int nVerbosity, std::vector<std::unique_ptr<Player>> &vPlayers)
 {
-    if (nVerbosity >= 0 && nVerbosity <= 2)
+    if (nVerbosity >= 0 && nVerbosity <= 3)
     {
         vPlayers[0]->SetVerbosity(nVerbosity);
         vPlayers[1]->SetVerbosity(nVerbosity);
@@ -148,7 +148,7 @@ static void SetPlayers(std::string sName, int nPlies1, int nPlies2, int nVerbosi
 int main(int argc, char* argv[])
 {
     std::vector<std::unique_ptr<Player>> vPlayers;
-    std::unique_ptr<Game> upGame {};
+    std::unique_ptr<Game> pcGame {};
     //int  nPlies     {4};
     int  nPlies1    {4};
     int  nPlies2    {4};
@@ -231,7 +231,7 @@ int main(int argc, char* argv[])
                 nPlies2 = atoi(optarg);
                 break;
             case 'g':
-                upGame = SetGame(optarg);
+                pcGame = SetGame(optarg);
                 break;
             case '?':
                 ShowUsage(argv[0]);
@@ -243,7 +243,7 @@ int main(int argc, char* argv[])
         }
     }
 
-    if ((vPlayers.size() != 2) || (upGame == nullptr))
+    if ((vPlayers.size() != 2) || (pcGame == nullptr))
     {
         ShowUsage(argv[0]);
         exit(EXIT_FAILURE);
@@ -251,7 +251,7 @@ int main(int argc, char* argv[])
 
     SetPlayers(argv[0], nPlies1, nPlies2, nVerbosity, vPlayers);
 
-    std::cout << "Playing " << upGame->Title() << std::endl;
+    std::cout << "Playing " << pcGame->Title() << std::endl;
 
     for (int iii = 0; iii < 2; ++iii)
     {
@@ -265,36 +265,36 @@ int main(int argc, char* argv[])
 
     while(true)
     {
-        if (!vPlayers[0]->Move(*upGame))
+        if (!vPlayers[0]->Move(*pcGame))
         {
             std::cerr << "Invalid move.  Exiting." << std::endl;
             exit(EXIT_FAILURE);
         }
 
-        if (upGame->GameEnded(upGame->Player1()))
+        if (pcGame->GameEnded(pcGame->Player2()))
             break;
 
-        if (!vPlayers[1]->Move(*upGame))
+        if (!vPlayers[1]->Move(*pcGame))
         {
             std::cerr << "Invalid move.  Exiting." << std::endl;
             exit(EXIT_FAILURE);
         }
 
-        if (upGame->GameEnded(upGame->Player2()))
+        if (pcGame->GameEnded(pcGame->Player1()))
             break;
     }
 
-    upGame->Display();
+    pcGame->Display();
 
-    if (upGame->Winner() == 0)
+    if (pcGame->Winner() == 0)
     {
         std::cout << "Game drawn" << std::endl;
     }
     else
     {
-        std::cout << "Game won by Player " << upGame->Winner() << std::endl;
-        std::cout << "Game won with " << upGame->WinBy() << std::endl;
+        std::cout << "Game won by Player " << pcGame->Winner() << std::endl;
+        std::cout << "Game won with " << pcGame->WinBy() << std::endl;
     }
 
-    std::cout << "Total number of moves: " << upGame->NumberOfMoves() << std::endl;
+    std::cout << "Total number of moves: " << pcGame->NumberOfMoves() << std::endl;
 }

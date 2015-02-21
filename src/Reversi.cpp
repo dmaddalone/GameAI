@@ -37,23 +37,20 @@ bool Reversi::ApplyMove(int nPlayer, GameMove &cGameMove)
     if (!LinearGame::ApplyMove(nPlayer, cGameMove))
         return false;
 
-    for (GameMove cValidGameMove : vGameMoves)
+    for (GameMove &cValidGameMove : vGameMoves)
     {
         if (cValidGameMove.SameTo(cGameMove))
         {
-            UpdateTable(nPlayer, cGameMove);
+            Flip(nPlayer, cGameMove);
             bValidMove = true;
             break;
         }
     }
 
-    if (!bValidMove)
-        RetractMove(nPlayer, cGameMove);
-
     return bValidMove;
 }
 
-void Reversi::UpdateTable(int nPlayer, const GameMove &cGameMove)
+void Reversi::Flip(int nPlayer, const GameMove &cGameMove)
 {
     FlipUp(cGameMove.ToX(), cGameMove.ToY(), nPlayer);
     FlipUpRight(cGameMove.ToX(), cGameMove.ToY(), nPlayer);
@@ -456,13 +453,17 @@ int Reversi::Count(int nPlayer) const
 
 bool Reversi::GameEnded(int nPlayer)
 {
+    (void)nPlayer;
+
     m_nWinner = 0;
     m_sWinBy.assign("nothing");
 
-    std::vector<GameMove> vGameMoves = GenerateMoves(nPlayer);
-    if (vGameMoves.empty())
+    std::vector<GameMove> vGameMovesPlayer1 = GenerateMoves(m_knPlayer1);
+    if (vGameMovesPlayer1.empty())
     {
-        return true;
+        std::vector<GameMove> vGameMovesPlayer2 = GenerateMoves(m_knPlayer2);
+        if (vGameMovesPlayer2.empty())
+            return true;
     }
 
     return false;

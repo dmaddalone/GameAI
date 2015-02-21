@@ -31,41 +31,48 @@
 class GameMove
 {
     public:
-        GameMove(int nFromX=-1, int nFromY=-1, int nToX=-1, int nToY=-1, bool bAnnounceY=true) :
+        GameMove(int nFromX=-1, int nFromY=-1, int nToX=-1, int nToY=-1, bool bUseY=true) :
             m_nFromX(nFromX),
             m_nFromY(nFromY),
             m_nToX(nToX),
             m_nToY(nToY),
-            m_bAnnounceY(bAnnounceY)
+            m_bUseY(bUseY)
         {}
 
         virtual ~GameMove() {};
 
-        void SetFromX(int nX) { m_nFromX = nX; }
-        void SetFromY(int nY) { m_nFromX = nY; }
-        void SetToX(int nX)   { m_nToX = nX; }
-        void SetToY(int nY)   { m_nToY = nY; }
+        void SetFromX(int nX)  { m_nFromX = nX; }
+        void SetFromY(int nY)  { m_nFromX = nY; }
+        void SetToX(int nX)    { m_nToX = nX; }
+        void SetToY(int nY)    { m_nToY = nY; }
 
-        int FromX() const     { return m_nFromX; }
-        int FromY() const     { return m_nFromY; }
-        int ToX()   const     { return m_nToX; }
-        int ToY()   const     { return m_nToY; }
+        int FromX() const      { return m_nFromX; }
+        int FromY() const      { return m_nFromY; }
+        int ToX()   const      { return m_nToX; }
+        int ToY()   const      { return m_nToY; }
 
-        bool ValidMove()      { return m_bValidMove; }
+        bool UseY() const      { return m_bUseY; }
+
+        void SetNoMove(bool b) { m_bNoMove = b; }
+        bool NoMove()          { return m_bNoMove; }
+
+        //bool ValidMove()      { return m_bValidMove; }
 
         bool SameTo(const GameMove &cGameMove) { if ((cGameMove.ToX() == m_nToX) && (cGameMove.ToY() == m_nToY)) return true; else return false;}
 
         std::string AnnounceToMove() const;
 
     private:
-        int m_nFromX {-1};
-        int m_nFromY {-1};
-        int m_nToX   {-1};
-        int m_nToY   {-1};
+        int m_nFromX;
+        int m_nFromY;
+        int m_nToX;
+        int m_nToY;
 
-        bool m_bAnnounceY{true};
+        bool m_bUseY;
 
-        bool m_bValidMove {false};
+        //bool m_bValidMove;
+
+        bool m_bNoMove {false};
 };
 
 #endif // GAMEMOVE_H

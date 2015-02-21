@@ -50,6 +50,13 @@ GameMove ConnectFour::GetMove(int nPlayer) const
     return cGameMove;
 }
 
+bool ConnectFour::ApplyMove(int nPlayer, GameMove &cGameMove)
+{
+    cGameMove.SetToY(FindBottom(cGameMove.ToX()));
+
+    return LinearGame::ApplyMove(nPlayer, cGameMove);
+}
+
 int ConnectFour::FindBottom(int x) const
 {
     for (int yyy = m_knY - 1; yyy >= 0; --yyy)

@@ -24,17 +24,17 @@ std::string GameMove::AnnounceToMove() const
     char c = 'a';
     std::string sMove;
 
-    if (m_bAnnounceY)
+    if (m_bNoMove)
     {
-        //sMove = std::to_string(m_nToX + 1) + "," + std::to_string(m_nToY + 1);
-        //sMove = static_cast<char>(m_nToX + c) + "," + std::to_string(m_nToY + 1);
+        sMove = "NO MOVE";
+    }
+    else if (m_bUseY)
+    {
         sMove = static_cast<char>(m_nToX + c);
         sMove.append("," + std::to_string(m_nToY + 1));
     }
     else
     {
-        //sMove = std::to_string(m_nToX + 1);
-        //sMove = std::to_string(static_cast<char>(m_nToX + c));
         sMove = static_cast<char>(m_nToX + c);
     }
 
