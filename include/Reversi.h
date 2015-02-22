@@ -14,6 +14,7 @@ class Reversi : public LinearGame
         virtual bool ApplyMove(int nPlayer, GameMove &cGameMove) override;
         //virtual bool RetractMove(int nPlayer, const GameMove &cGameMove) override;
         virtual int  EvaluateGameState(int nPlayer) override;
+        virtual std::string GameScore() const override;
         virtual bool GameEnded(int nPlayer) override;
         virtual std::vector<GameMove> GenerateMoves(int nPlayer) const override;
 

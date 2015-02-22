@@ -271,6 +271,8 @@ int main(int argc, char* argv[])
             exit(EXIT_FAILURE);
         }
 
+        std::cout << "Score: " << pcGame->GameScore() << std::endl;
+
         if (pcGame->GameEnded(pcGame->Player2()))
             break;
 
@@ -279,6 +281,8 @@ int main(int argc, char* argv[])
             std::cerr << "Invalid move.  Exiting." << std::endl;
             exit(EXIT_FAILURE);
         }
+
+        std::cout << "Score: " << pcGame->GameScore() << std::endl;
 
         if (pcGame->GameEnded(pcGame->Player1()))
             break;

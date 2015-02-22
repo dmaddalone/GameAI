@@ -65,6 +65,7 @@ class Game
         //virtual bool RetractMove(int nPlayer, const GameMove &cGameMove) = 0;
 
         virtual int  PreferredMove(const GameMove &cGameMove) const = 0;
+        virtual std::string GameScore() const = 0;
         virtual bool GameEnded(int nPlayer) = 0;
 
         virtual std::vector<GameMove> GenerateMoves(int nPlayer) const = 0;

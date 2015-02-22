@@ -28,6 +28,7 @@ class LinearGame : public Game
         virtual std::string ValidMoves(int nPlayer) const override;
         virtual GameMove GetMove(int nPlayer) const override;
         virtual int  PreferredMove(const GameMove &cGameMove) const override;
+        virtual std::string GameScore() const override;
         virtual bool ApplyMove(int nPlayer, GameMove &cGameMove) override;
         //virtual void AnnounceMove(int nPlayer, const GameMove &cGameMove) override;
         virtual std::string AnnounceMove(int nPlayer, const GameMove &cGameMove) override;

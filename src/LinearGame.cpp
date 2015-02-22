@@ -355,6 +355,11 @@ int LinearGame::PreferredMove(const GameMove &cGameMove) const
     return 0;
 }
 
+std::string LinearGame::GameScore() const
+{
+    return "";
+}
+
 bool LinearGame::GameEnded(int nPlayer)
 {
     m_nWinner = 0;

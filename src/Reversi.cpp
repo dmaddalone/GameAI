@@ -451,6 +451,13 @@ int Reversi::Count(int nPlayer) const
     return nCount;
 }
 
+std::string Reversi::GameScore() const
+{
+    std::string sScore = "Player 1=" + std::to_string(Count(m_knPlayer1)) +
+                         " Player 2=" + std::to_string(Count(m_knPlayer2));
+    return sScore;
+}
+
 bool Reversi::GameEnded(int nPlayer)
 {
     (void)nPlayer;
