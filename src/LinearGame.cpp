@@ -66,18 +66,6 @@ void LinearGame::Display() const
     }
 }
 
-/*
-void LinearGame::DisplayValidMoves(int nPlayer) const
-{
-    std::vector<GameMove> vGameMoves = GenerateMoves(nPlayer);
-    for (GameMove cGameMove : vGameMoves)
-    {
-        std::cout << cGameMove.AnnounceToMove() << " ";
-    }
-    std::cout << std::endl;
-}
-*/
-
 std::string LinearGame::ValidMoves(int nPlayer) const
 {
     std::string sValidMoves {};
@@ -85,10 +73,8 @@ std::string LinearGame::ValidMoves(int nPlayer) const
     std::vector<GameMove> vGameMoves = GenerateMoves(nPlayer);
     for (GameMove cGameMove : vGameMoves)
     {
-        //std::cout << cGameMove.AnnounceToMove() << " ";
         sValidMoves += cGameMove.AnnounceToMove() + " ";
     }
-    //std::cout << std::endl;
 
     return sValidMoves;
 }
@@ -102,10 +88,10 @@ GameMove LinearGame::GetMove(int nPlayer) const
 
     std::cin >> sMove;
 
-    int xxx = sMove[0] - m_kcXCoordinate;
+    int xxx = tolower(sMove[0]) - m_kcXCoordinate;
 
-    std::string sToken = sMove.substr(sMove.find(m_kDelimeter) + 1,sMove.length() );
-    int yyy = atoi(sToken.c_str());
+    sMove.erase(0,1);
+    int yyy = std::stoi(sMove, nullptr);
 
     cGameMove.SetToX(xxx);
     cGameMove.SetToY(yyy - 1);

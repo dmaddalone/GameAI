@@ -19,7 +19,7 @@
 
 #include "Human.h"
 
-bool Human::Move(Game &cGame)
+bool Human::Move(Game &cGame)  //TODO: If no valid moves, do what?
 {
     GameMove cGameMove;
 

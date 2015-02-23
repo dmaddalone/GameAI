@@ -271,7 +271,7 @@ int main(int argc, char* argv[])
             exit(EXIT_FAILURE);
         }
 
-        std::cout << "Score: " << pcGame->GameScore() << std::endl;
+        std::cout << pcGame->GameScore() << std::endl;
 
         if (pcGame->GameEnded(pcGame->Player2()))
             break;
@@ -282,7 +282,7 @@ int main(int argc, char* argv[])
             exit(EXIT_FAILURE);
         }
 
-        std::cout << "Score: " << pcGame->GameScore() << std::endl;
+        std::cout << pcGame->GameScore() << std::endl;
 
         if (pcGame->GameEnded(pcGame->Player1()))
             break;

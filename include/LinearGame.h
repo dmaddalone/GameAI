@@ -1,7 +1,9 @@
 #ifndef LINEARGAME_H
 #define LINEARGAME_H
 
+#include <cctype>
 #include <iostream>
+#include <string>
 
 #include "Game.h"
 

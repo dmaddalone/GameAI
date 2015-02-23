@@ -9,7 +9,7 @@
 			<notes>
 				<![CDATA[TODO: Comments
 
-TODO: Add Reversi
+DONE: Add Reversi
 
 DONE: Consider using alpha characters for one of the coordinates
 
@@ -17,7 +17,7 @@ TODO: Consider changing the EvaluateGame score depending on how many moves it ta
 
 TODO: Consider chaning PreferredMove to take two GameMove arguments
 
-TODO: Change ValidMove from (y, x) to (x, y); change name from ValidMove to OnBoard?
+DONE: Change ValidMove from (y, x) to (x, y); change name from ValidMove to OnBoard?
 
 ]]>
 			</notes>

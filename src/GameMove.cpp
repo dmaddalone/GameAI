@@ -31,7 +31,7 @@ std::string GameMove::AnnounceToMove() const
     else if (m_bUseY)
     {
         sMove = static_cast<char>(m_nToX + c);
-        sMove.append("," + std::to_string(m_nToY + 1));
+        sMove.append(std::to_string(m_nToY + 1));
     }
     else
     {
