@@ -462,8 +462,19 @@ bool Reversi::GameEnded(int nPlayer)
 {
     (void)nPlayer;
 
-    m_nWinner = 0;
-    m_sWinBy.assign("nothing");
+    int nCountPlayer1 = Count(m_knPlayer1);
+    int nCountPlayer2 = Count(m_knPlayer2);
+
+    m_sWinBy = "a difference of " + std::to_string(abs(nCountPlayer1 - nCountPlayer2));
+
+    if (nCountPlayer1 > nCountPlayer2)
+    {
+        m_nWinner = m_knPlayer1;
+    }
+    else
+    {
+        m_nWinner = m_knPlayer2;
+    }
 
     std::vector<GameMove> vGameMovesPlayer1 = GenerateMoves(m_knPlayer1);
     if (vGameMovesPlayer1.empty())

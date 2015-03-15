@@ -1,6 +1,7 @@
 #ifndef REVERSI_H
 #define REVERSI_H
 
+#include <cstdlib>
 #include <iostream>
 #include "Game.h"
 #include "LinearGame.h"
