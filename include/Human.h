@@ -1,5 +1,5 @@
 /*
-    Copyright 2014 Dom Maddalone
+    Copyright 2015 Dom Maddalone
 
     This file is part of GameAI.
 
@@ -30,18 +30,22 @@
 #include "Player.h"
 #include "Game.h"
 #include "GameMove.h"
+#include "Logger.h"
 
 class Human: public Player
 {
     public:
+        // Construct a human player
         Human(PlayerType ecPlayerType) : Player(ecPlayerType) {};
+
+        // Destructor
         ~Human() {};
 
+        // Generate the next game move
         bool Move(Game &cGame);
 
+        // Announce the type pf player
         std::string TypeName() { return "Human"; }
-
-    private:
 };
 
 #endif // HUMAN_H

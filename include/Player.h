@@ -1,5 +1,5 @@
 /*
-    Copyright 2014 Dom Maddalone
+    Copyright 2015 Dom Maddalone
 
     This file is part of GameAI.
 
@@ -31,6 +31,7 @@
 #include "Game.h"
 #include "Logger.h"
 
+// Used to identify the type of player
 enum class PlayerType
 {
     TYPE_NONE,
@@ -41,31 +42,54 @@ enum class PlayerType
 class Player
 {
     public:
-        Player(PlayerType ecPlayerType) { m_ecPlayerType = ecPlayerType; m_nPlayerNumber = m_nPlayerCount; m_nOpponentNumber = 2 - m_nPlayerNumber + 1; }
+        // Construct a player of ecPlayerType and provide it with an identifying number
+        ////Player(PlayerType ecPlayerType) { m_ecPlayerType = ecPlayerType; m_nPlayerNumber = m_nPlayerCount; m_nOpponentNumber = 2 - m_nPlayerNumber + 1; }
+        Player(PlayerType ecPlayerType) { m_ecPlayerType = ecPlayerType; m_nPlayerNumber = m_nPlayerCount; }
+
+        //
+        // Virtual functions to be defined by child classes
+        //
+
+        // Destructor
         virtual ~Player() {};
 
-        static std::unique_ptr<Player> MakePlayer(PlayerType ecPlayerType);
-
+        // Player provides a move
         virtual bool Move(Game &pcGame) = 0;
 
+        // Return the type of player as a string
         virtual std::string TypeName()  = 0;
+
+
+        // Make a player
+        static std::unique_ptr<Player> MakePlayer(PlayerType ecPlayerType);
+
+        // Return the type of player
         PlayerType Type() { return m_ecPlayerType; }
 
+        // Set the level of logging
         void SetVerbosity(int n)  { m_cLogger.SetLevel(n); m_cLogger.UseTimeStamp(false); m_cLogger.UseTag(false); m_cLogger.UseLevelIndent(true); }
+
+        // Set the number of plies a machine player will use to make a move
         void SetPlies(int nPlies) { m_nDepth = nPlies; }
+
+        // Return the number of plies
         int  Plies()              { return m_nDepth; }
 
     protected:
-        int  m_nMove              {0};
+        //int  m_nMove              {0};
+        // Set the default player type to none
         PlayerType m_ecPlayerType {PlayerType::TYPE_NONE};
+        // Set the player number to zero
         int  m_nPlayerNumber      {0};
-        int  m_nOpponentNumber    {0};
+        //int  m_nOpponentNumber    {0};
+        // Set the depth of plies to four
         int  m_nDepth             {4}; // For AI
-        //int  m_nVerbosity         {1};
 
+        // Create a Logger object
         Logger m_cLogger;
 
     private:
+        // Used to create unique player identifier numbers
         static int m_nPlayerCount;
 };
 

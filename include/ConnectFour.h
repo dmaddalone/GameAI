@@ -1,5 +1,5 @@
 /*
-    Copyright 2014 Dom Maddalone
+    Copyright 2015 Dom Maddalone
 
     This file is part of GameAI.
 
@@ -33,25 +33,33 @@
 class ConnectFour : public LinearGame
 {
     public:
+        // Constructor
         ConnectFour(GameType ecGameType) : LinearGame(ecGameType, 7, 6, '0', '1', '2', 4, false, true, false) {}
+
+        // Destructor
         ~ConnectFour() {}
 
+        // Get the move from the designated player
         virtual GameMove GetMove(int nPlayer) const override;
 
+        // Provide a preferred move
         virtual int  PreferredMove(const GameMove &cGameMove) const override;
 
+        // Apply the move to the game
         virtual bool ApplyMove(int nPlayer, GameMove &cGameMove) override;
 
+        // Generate a vector of valis moves
         virtual std::vector<GameMove> GenerateMoves(int nPlayer) const override;
 
+        // Clone the current game
         virtual std::unique_ptr<Game> Clone() const override { return std::unique_ptr<Game>(new ConnectFour(*this)); }
 
+        // Return the title of the game
         virtual std::string Title() override { return "Connect Four"; }
 
     private:
+        // Return the bottom row in the Connect Four grid
         int  FindBottom(int x) const;
-
-        //const int m_kWin {4};
 };
 
 #endif // CONNECTFOUR_H

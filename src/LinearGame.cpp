@@ -1,3 +1,28 @@
+/*
+    Copyright 2015 Dom Maddalone
+
+    This file is part of GameAI.
+
+    GameAI is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    GameAI is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with GameAI.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+/**
+  * Clear the board.
+  *
+  * Run through every space on the board and assign a clear token to it.
+  */
+
 #include "LinearGame.h"
 
 void LinearGame::ClearBoard()
@@ -13,6 +38,13 @@ void LinearGame::ClearBoard()
     SetBoard();
 }
 
+/**
+  * Display the game board.
+  *
+  * Run through every space on the board and display it's token.  Also display
+  * coordinates and grid lines, depending on settings.
+  */
+
 void LinearGame::Display() const
 {
     if (m_kbDisplayXCoordinates)
@@ -21,8 +53,7 @@ void LinearGame::Display() const
 
         std::cout << "   ";
         for (int xxx = 0; xxx < m_knX; ++xxx)
-        {
-            //std::cout << xxx + 1 << "   ";
+
             std::cout << c << "   ";
             ++c;
         }
@@ -65,6 +96,16 @@ void LinearGame::Display() const
             std::cout << std::endl << std::endl;
     }
 }
+
+/**
+  * Return a string of valid moves.
+  *
+  * Call GenerateMoves and collect information into a string.
+  *
+  * \param nPlayer The player whose turn it is.
+  *
+  * \return A string of valid moves.
+  */
 
 std::string LinearGame::ValidMoves(int nPlayer) const
 {

@@ -1,5 +1,5 @@
 /*
-    Copyright 2014 Dom Maddalone
+    Copyright 2015 Dom Maddalone
 
     This file is part of GameAI.
 
@@ -19,6 +19,18 @@
 
 #include "ConnectFour.h"
 
+/**
+  * Return a vector of valid game moves.
+  *
+  * Review and collect all valid moves for a player into a vector.  For
+  * Connect Four, the nPlayer is ignored because valid moves are the same
+  * between both players.
+  *
+  * \param nPlayer The player whose turn it is.
+  *
+  * \return A vector of valid moves.
+  */
+
 std::vector<GameMove> ConnectFour::GenerateMoves(int nPlayer) const
 {
     (void)nPlayer;
@@ -36,6 +48,18 @@ std::vector<GameMove> ConnectFour::GenerateMoves(int nPlayer) const
     return vGameMoves;
 }
 
+
+/**
+  * Get the player's next move.
+  *
+  * Using std::cin, capture the player's move, create a GameMove object, and
+  * return it.
+  *
+  * \param nPlayer The player whose turn it is.
+  *
+  * \return A GameMove object.
+  */
+
 GameMove ConnectFour::GetMove(int nPlayer) const
 {
     (void)nPlayer;
@@ -50,12 +74,37 @@ GameMove ConnectFour::GetMove(int nPlayer) const
     return cGameMove;
 }
 
+
+/**
+  * Apply the move to the game.
+  *
+  * Find the bottom of the grid for the selected move, update the GameMove
+  * object with that location, and pass it to LinearGame for application.
+  *
+  * \param nPlayer The player whose turn it is.
+  * \param cGameMove The game move
+  *
+  * \return True if the move is valid, false otherwise
+  */
+
 bool ConnectFour::ApplyMove(int nPlayer, GameMove &cGameMove)
 {
     cGameMove.SetToY(FindBottom(cGameMove.ToX()));
 
     return LinearGame::ApplyMove(nPlayer, cGameMove);
 }
+
+/**
+  * Find the bottom of the Connect Four grid.
+  *
+  * For the selected Connect Four vertical slot (X-coordinate), review all locations beginning
+  * from the bottom, and stopping when a location is clear (no piece exists in
+  * that location.)
+  *
+  * \param x The slot (X-coordinate) of the Conect Four grid.
+  *
+  * \return The Y-coordinate of the clear location for the selected slot.
+  */
 
 int ConnectFour::FindBottom(int x) const
 {
@@ -67,6 +116,16 @@ int ConnectFour::FindBottom(int x) const
 
     return -1;
 }
+
+/**
+  * Return a preferred move.
+  *
+  * Prefer a move located near the center of the grid.
+  *
+  * \param cGameMove The game move.
+  *
+  * \return An absolute distance from the center slot of the Connect Four grid.
+  */
 
 int ConnectFour::PreferredMove(const GameMove &cGameMove) const
 {

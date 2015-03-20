@@ -1,5 +1,5 @@
 /*
-    Copyright 2014 Dom Maddalone
+    Copyright 2015 Dom Maddalone
 
     This file is part of GameAI.
 
@@ -19,7 +19,7 @@
 
 /** \file
  *
- * \brief The Game class represents a virtual game.
+ * \brief The Game class represents a virtual game, with two players.
  *
  */
 
@@ -30,8 +30,8 @@
 #include <vector>
 
 #include "GameMove.h"
-//#include "Logger.h"
 
+// Used to identify the type of game
 enum class GameType
 {
     TYPE_NONE,
@@ -43,6 +43,7 @@ enum class GameType
 class Game
 {
     public:
+        // Construct a game of ecGameType and two players
         Game(GameType ecGameType) :
         m_knPlayer1(1),
         m_knPlayer2(2),
@@ -50,35 +51,55 @@ class Game
         m_nNumberOfMoves(0)
         { m_ecGameType = ecGameType; }
 
+        //
+        // Virtual functions to be defined by child classes
+        //
+
+        // Destructor
         virtual ~Game() {};
 
+        // Display the game board
         virtual void Display() const  = 0;
-        //virtual void DisplayValidMoves(int nPlayer) const = 0;
+
+        // Return a list of valid moves in string format
         virtual std::string ValidMoves(int nPlayer) const = 0;
 
+        // Get the move from the designated player
         virtual GameMove GetMove(int nPlayer) const = 0;
-        //virtual void AnnounceMove(int nPlayer, const GameMove &cGameMove) = 0;
+
+        // Announce the move made
         virtual std::string AnnounceMove(int nPlayer, const GameMove &cGameMove) = 0;
 
+        // Apply the move to the game
         virtual bool ApplyMove(int nPlayer, GameMove &cGameMove) = 0;
 
-        //virtual bool RetractMove(int nPlayer, const GameMove &cGameMove) = 0;
-
+        // Provide a preferred move
         virtual int  PreferredMove(const GameMove &cGameMove) const = 0;
+
+        // Return the score of the game
         virtual std::string GameScore() const = 0;
+
+        // Check to see if the game has ended
         virtual bool GameEnded(int nPlayer) = 0;
 
+        // Generate a vector of valis moves
         virtual std::vector<GameMove> GenerateMoves(int nPlayer) const = 0;
+
+        // Evaluate the game state from the perspective of the nPlayer
         virtual int  EvaluateGameState(int nPlayer) = 0;
 
-        static std::unique_ptr<Game> Make(GameType ecGameType);
-
+        // Clone the current game
         virtual std::unique_ptr<Game> Clone() const = 0;
 
+        // Return the title of the game
         virtual std::string Title() = 0;
 
-        //void SetVerbosity(int n)  { m_cLogger.SetLevel(n); }
 
+        // Make a game of ecGameType
+        static std::unique_ptr<Game> Make(GameType ecGameType);
+
+
+        // Return game information
         GameType Type()      { return m_ecGameType; }
         int  Player1()       { return m_knPlayer1; }
         int  Player2()       { return m_knPlayer2; }
@@ -87,20 +108,19 @@ class Game
         std::string WinBy()  { return m_sWinBy; }
 
     protected:
-        //void UpdatePlayerTurn() { if (m_nPlayerTurn == m_kPlayer1) m_nPlayerTurn = m_kPlayer2; else m_nPlayerTurn = m_kPlayer1; }
-
+        // Player numbers, defined in the Constructor
         const int m_knPlayer1;//  {1};
         const int m_knPlayer2;//  {2};
 
-        //int m_nPlayerTurn     {m_kPlayer1};
-
+        // Default game type
         GameType m_ecGameType {GameType::TYPE_NONE};
 
+        // Current winning players
         int m_nWinner;//         {0};
+        // Number of moves
         int m_nNumberOfMoves;//  {0};
+        // How the winner won
         std::string m_sWinBy  {};
-
-        //Logger m_cLogger;
 };
 
 #endif // GAME_H

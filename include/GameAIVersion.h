@@ -1,5 +1,5 @@
 /*
-    Copyright 2014 Dom Maddalone
+    Copyright 2015 Dom Maddalone
 
     This file is part of GameAI.
 
@@ -16,6 +16,12 @@
     You should have received a copy of the GNU General Public License
     along with GameAI.  If not, see <http://www.gnu.org/licenses/>.
 */
+
+/** \file
+ *
+ * \brief Provides version information.
+ *
+ */
 
 #ifndef GAMEAIVERSION_H
 #define GAMEAIVERSION_H

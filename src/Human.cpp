@@ -1,5 +1,5 @@
 /*
-    Copyright 2014 Dom Maddalone
+    Copyright 2015 Dom Maddalone
 
     This file is part of GameAI.
 
@@ -19,10 +19,21 @@
 
 #include "Human.h"
 
+/**
+  * Generate the next game move.
+  *
+  * Use GameMove to collect the next game move from a human player.
+  *
+  * \param cGame The game.
+  *
+  * \return True, if a move has been made.
+  */
+
 bool Human::Move(Game &cGame)  //TODO: If no valid moves, do what?
 {
     GameMove cGameMove;
 
+    // Show valid moves at proper logging level.
     if (m_cLogger.Level() >= 1)
     {
         cGame.Display();
@@ -34,8 +45,10 @@ bool Human::Move(Game &cGame)  //TODO: If no valid moves, do what?
         // TODO: prompt player for move?  cGame.PromptPlayerForMove(m_nPlayerNumber);  OR not ?
         std::cout << "Player " << m_nPlayerNumber << ", enter move: ";
 
+        // Get move from human player.
         cGameMove = cGame.GetMove(m_nPlayerNumber);
 
+        // Test move for validity.
         if (!cGame.ApplyMove(m_nPlayerNumber, cGameMove))
         {
             std::cout << "Invalid move" << std::endl;

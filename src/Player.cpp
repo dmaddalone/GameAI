@@ -1,5 +1,5 @@
 /*
-    Copyright 2014 Dom Maddalone
+    Copyright 2015 Dom Maddalone
 
     This file is part of GameAI.
 
@@ -21,7 +21,18 @@
 #include "Human.h"
 #include "Minimax.h"
 
+// Initial static int to zero; used to generate unique identifier numbers for players
 int Player::m_nPlayerCount {0};
+
+/**
+  * Make a player.
+  *
+  * Based on the type of player, create the player and return a unique pointer to it.
+  *
+  * \param ecPlayerType The type of player.
+  *
+  * \return A unique pointer to a player object.  Default is nullptr.
+  */
 
 std::unique_ptr<Player> Player::MakePlayer(PlayerType ecPlayerType)
 {

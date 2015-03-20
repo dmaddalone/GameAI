@@ -30,7 +30,6 @@
 *.csv
 *.out
 *~
-*.txt
 *.original
 
 # Code::Blocks

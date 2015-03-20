@@ -9,13 +9,9 @@
 			<notes>
 				<![CDATA[TODO: Comments
 
-DONE: Add Reversi
-
-DONE: Consider using alpha characters for one of the coordinates
-
 TODO: Consider changing the EvaluateGame score depending on how many moves it takes for a losing position (e.g., one move to lose is wrose than 10 moves to lose)
 
-TODO: Consider chaning PreferredMove to take two GameMove arguments
+TODO: Consider changing PreferredMove to take two GameMove arguments
 
 DONE: Change ValidMove from (y, x) to (x, y); change name from ValidMove to OnBoard?
 

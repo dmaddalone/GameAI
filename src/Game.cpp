@@ -1,5 +1,5 @@
 /*
-    Copyright 2014 Dom Maddalone
+    Copyright 2015 Dom Maddalone
 
     This file is part of GameAI.
 
@@ -21,6 +21,16 @@
 #include "ConnectFour.h"
 #include "TTT.h"
 #include "Reversi.h"
+
+/**
+  * Make a game.
+  *
+  * Based on the type of game, create the game and return a unique pointer to it.
+  *
+  * \param ecGameType The type of game.
+  *
+  * \return A unique pointer to a game object.  Default is nullptr.
+  */
 
 std::unique_ptr<Game> Game::Make(GameType ecGameType)
 {

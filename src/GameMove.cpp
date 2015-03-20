@@ -1,5 +1,5 @@
 /*
-    Copyright 2014 Dom Maddalone
+    Copyright 2015 Dom Maddalone
 
     This file is part of GameAI.
 
@@ -18,6 +18,14 @@
 */
 
 #include "GameMove.h"
+
+/**
+  * Announce the to-move.
+  *
+  * Construct a string containing the to-move.
+  *
+  * \return A string containing the to-move.
+  */
 
 std::string GameMove::AnnounceToMove() const
 {
