@@ -36,24 +36,35 @@
 class Minimax: public Player
 {
     public:
+        // Construct a Minimax object
         Minimax(PlayerType ecPlayerType) : Player(ecPlayerType) {};
-        // Minimax(PlayerType ecPlayerType) : Player(ecPlayerType), m_acSpin{"\\|-/-"} {};
+
+        //// TODO: Consider an rotating icon to indicate "thinking"
+        //// Minimax(PlayerType ecPlayerType) : Player(ecPlayerType), m_acSpin{"\\|-/-"} {};
+
+        // Destructor
         ~Minimax() {};
 
+        // Generate the next game move
         bool Move(Game &cGame);
 
+        // Announce the type pf player
         std::string TypeName() { return "Minimax"; }
 
     private:
+        // Generate the best move using the minimax algorithm
         GameMove MinimaxMove(int nPlayer, Game &cGame, int nDepth);
+        // Generate a move by the opponent player
         int MinMove(int nPlayer, Game &cGame, int nDepth, int nAlpha, int nBeta);
+        // Generate a move for the player
         int MaxMove(int nPlayer, Game &cGame, int nDepth, int nAlpha, int nBeta);
 
-        //char m_acSpin[4] = {'|', '/', '--', '\\'};
-        //char m_acSpin[] = "\\|-/-";
-        //char m_acSpin[6];
-        //int  m_nSpinIndex {0};
-        //char Spin() { ++m_nSpinIndex; if (m_nSpinIndex > 5) m_nSpinIndex = 0; return m_acSpin[m_nSpinIndex]; }
+        //// TODO: Variables for rotating icon
+        ////char m_acSpin[4] = {'|', '/', '--', '\\'};
+        ////char m_acSpin[] = "\\|-/-";
+        ////char m_acSpin[6];
+        ////int  m_nSpinIndex {0};
+        ////char Spin() { ++m_nSpinIndex; if (m_nSpinIndex > 5) m_nSpinIndex = 0; return m_acSpin[m_nSpinIndex]; }
 };
 
 #endif // MINIMAX_H

@@ -67,7 +67,7 @@ class LinearGame : public Game
         // Apply the move to the game
         virtual bool ApplyMove(int nPlayer, GameMove &cGameMove) override;
         // Announce the move made
-        virtual std::string AnnounceMove(int nPlayer, const GameMove &cGameMove) override;
+        virtual std::string AnnounceMove(int nPlayer, const GameMove &cGameMove) const override;
         // Evaluate the game state from the perspective of the nPlayer
         virtual int  EvaluateGameState(int nPlayer) override;
         // Check to see if the game has ended
@@ -83,12 +83,12 @@ class LinearGame : public Game
         // Set up the board
         void SetBoard() { return; };
         // Check to see if a players tokens are connected linearly
-        bool CheckOrthogonal(int nPlayer, int nConnect) ;//const;
-        int  CheckHorizontal(int nPlayer, int y, int x) ;//const;
-        int  CheckVertical(int nPlayer, int y, int x) ;//const;
-        bool CheckDiagonal(int nPlayer, int nConnect) ;//const;
-        int  CheckDiagonalUpperLeftLowerRight(int nPlayer, int y, int x) ;//const;
-        int  CheckDiagonalUpperRightLowerLeft(int nPlayer, int y, int x) ;//const;
+        bool CheckOrthogonal(int nPlayer, int nConnect);
+        int  CheckHorizontal(int nPlayer, int y, int x) const;
+        int  CheckVertical(int nPlayer, int y, int x) const;
+        bool CheckDiagonal(int nPlayer, int nConnect);
+        int  CheckDiagonalUpperLeftLowerRight(int nPlayer, int y, int x) const;
+        int  CheckDiagonalUpperRightLowerLeft(int nPlayer, int y, int x) const;
         // Check for whether a X- and Y-coordinate are valid (on the board)
         bool ValidMove(int y, int x) const;
 

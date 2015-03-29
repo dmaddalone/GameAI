@@ -19,10 +19,18 @@
 
 #include "Logger.h"
 
+/**
+  * Return a string representing the current time.
+  *
+  * Construct a time stamp in the form of YYYY-MM-DD HH:MM:SS
+  *
+  * \return A string time stamp
+  */
+
 std::string Logger::TimeStamp()
 {
     std::string sTimeStamp {};
-    int nBufLen = 25;
+    int         nBufLen    {25};
 
     if (m_bUseTimeStamp)
     {
@@ -36,10 +44,22 @@ std::string Logger::TimeStamp()
     return sTimeStamp;
 }
 
+/**
+  * Write a log message to std::cout
+  *
+  * Create a log message.
+  *
+  * \param sTag The log tag (e.g., INFO, WARN) to use in the message
+  * \param sMessage The log message
+  * \param nLevel The logging level
+  */
+
 void Logger::Log(const std::string sTag, const std::string sMessage, int nLevel)
 {
+    // Generate a time stamp
     std::string sLog(TimeStamp());
 
+    // Construct the tag
     if (m_bUseTag)
     {
         sLog.append(" ");
@@ -47,6 +67,7 @@ void Logger::Log(const std::string sTag, const std::string sMessage, int nLevel)
         sLog.append(" ");
     }
 
+    // Generate indentations
     if (m_bUseLevelIndent)
     {
         sLog.insert(0,4 * (nLevel -1), ' ');
@@ -55,6 +76,15 @@ void Logger::Log(const std::string sTag, const std::string sMessage, int nLevel)
     std::cout << sLog << sMessage << std::endl;
 }
 
+/**
+  * Write an INFO log message
+  *
+  * Call Logger:Log with tag, message, and logging level
+  *
+  * \param sMessage The log message
+  * \param nLevel The logging level, defaulted to zero
+  */
+
 void Logger::LogInfo(const std::string sMessage, int nLevel=0)
 {
     if (m_nLevel >= nLevel)
@@ -62,22 +92,54 @@ void Logger::LogInfo(const std::string sMessage, int nLevel=0)
 
 }
 
+/**
+  * Write an WARN log message
+  *
+  * Call Logger:Log with tag, message, and logging level
+  *
+  * \param sMessage The log message
+  */
+
 void Logger::LogWarn(const std::string sMessage)
 {
-    Log("WARN:", sMessage,0);
+    Log("WARN:", sMessage, 0);
 }
+
+/**
+  * Write an ERROR log message
+  *
+  * Call Logger:Log with tag, message, and logging level
+  *
+  * \param sMessage The log message
+  */
 
 void Logger::LogError(const std::string sMessage)
 {
-    Log("ERROR:", sMessage,0);
+    Log("ERROR:", sMessage, 0);
 }
+
+/**
+  * Write an FATAL log message
+  *
+  * Call Logger:Log with tag, message, and logging level
+  *
+  * \param sMessage The log message
+  */
 
 void Logger::LogFatal(const std::string sMessage)
 {
-    Log("FATAL:", sMessage,0);
+    Log("FATAL:", sMessage, 0);
 }
+
+/**
+  * Write an DEBUG log message
+  *
+  * Call Logger:Log with tag, message, and logging level
+  *
+  * \param sMessage The log message
+  */
 
 void Logger::LogDebug(const std::string sMessage)
 {
-    Log("DEBUG:", sMessage,0);
+    Log("DEBUG:", sMessage, 0);
 }

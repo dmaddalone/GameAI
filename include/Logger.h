@@ -19,11 +19,11 @@
 
 /** \file
  *
- * \brief The Game class represents a virtual game.
+ * \brief The Logger class provides simple logging capabilities.
  *
  */
 
- #ifndef LOGGER_H
+#ifndef LOGGER_H
 #define LOGGER_H
 
 #include <ctime>
@@ -33,15 +33,19 @@
 class Logger
 {
     public:
+        // Construct a Logger class with default logging level of zero
         Logger()           : m_nLevel(0) {}
+        // Construct a Logger class with logging level set as a parameter
         Logger(int nLevel) : m_nLevel(nLevel) {}
 
+        // Set and return the logging level
         void SetLevel(int nLevel)   { m_nLevel = nLevel; }
         int  Level() const          { return m_nLevel; }
+        // Booleans to use a time stamp, use a logging tag, and indenting the log message
         void UseTimeStamp(bool b)   { m_bUseTimeStamp = b; }
         void UseTag(bool b)         { m_bUseTag = b; }
         void UseLevelIndent(bool b) { m_bUseLevelIndent = b; }
-
+        // Calls for different types of logging
         void LogInfo(const std::string sMessage, int nLevel);
         void LogWarn(const std::string sMessage);
         void LogError(const std::string sMessage);
@@ -49,12 +53,18 @@ class Logger
         void LogDebug(const std::string sMessage);
 
     private:
+        // Generate a time stamp
         std::string TimeStamp();
+        // Write the logging message
         void Log(const std::string sTag, const std::string sMessage, int nLevel);
 
+        // The logging level
         int  m_nLevel;
+        // Use indentation in the log message
         bool m_bUseLevelIndent{false};
+        // Use a time stamp in the log message
         bool m_bUseTimeStamp {false};
+        // Use a tag in the log message
         bool m_bUseTag {true};
 };
 

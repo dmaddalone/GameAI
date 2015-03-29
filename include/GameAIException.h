@@ -19,7 +19,7 @@
 
 /** \file
  *
- * \brief Provides a custom exception class derived from logic_error.
+ * \brief Provides a custom exception class derived from std::logic_error.
  *
  */
 

@@ -68,7 +68,7 @@ class Game
         virtual GameMove GetMove(int nPlayer) const = 0;
 
         // Announce the move made
-        virtual std::string AnnounceMove(int nPlayer, const GameMove &cGameMove) = 0;
+        virtual std::string AnnounceMove(int nPlayer, const GameMove &cGameMove) const = 0;
 
         // Apply the move to the game
         virtual bool ApplyMove(int nPlayer, GameMove &cGameMove) = 0;
