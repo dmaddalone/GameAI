@@ -212,7 +212,7 @@ std::string LinearGame::AnnounceMove(int nPlayer, const GameMove &cGameMove) con
   * Evaluate the game state.
   *
   * From a player's perspective, return a value cooresponding to the player's
-  * standking in the game.  If the player has won the game, return a large,
+  * standing in the game.  If the player has won the game, return a large,
   * positive integer.  If winning, a smaller, positive integer. If lost or
   * losing, a negative integer.
   *

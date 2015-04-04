@@ -74,7 +74,6 @@ GameMove ConnectFour::GetMove(int nPlayer) const
     return cGameMove;
 }
 
-
 /**
   * Apply the move to the game.
   *

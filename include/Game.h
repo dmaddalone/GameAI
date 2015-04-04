@@ -82,7 +82,7 @@ class Game
         // Check to see if the game has ended
         virtual bool GameEnded(int nPlayer) = 0;
 
-        // Generate a vector of valis moves
+        // Generate a vector of valid moves
         virtual std::vector<GameMove> GenerateMoves(int nPlayer) const = 0;
 
         // Evaluate the game state from the perspective of the nPlayer
