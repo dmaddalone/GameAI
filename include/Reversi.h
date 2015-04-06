@@ -19,7 +19,7 @@
 
 /** \file
  *
- * \brief The Game class represents a virtual game.
+ * \brief The Reversi class represents a Reversi game.
  *
  */
 

@@ -19,8 +19,7 @@
 
 /** \file
  *
- * \brief TODO: The Simulation class gathers Strategies at one table and runs
- * simulations.
+ * \brief The TTT class represents a Tic-Tac-Toe game.
  *
  */
 
@@ -34,17 +33,19 @@
 class TTT : public LinearGame
 {
     public:
+        // Constructor
         TTT(GameType ecGameType) : LinearGame(ecGameType, 3, 3, ' ', 'X', 'O', 3, true, true, true) {}
+        // Destructor
         ~TTT() {}
 
+        // Generate a vector of valis moves
         virtual std::vector<GameMove> GenerateMoves(int nPlayer) const override;
-
+        // Clone the current game
         virtual std::unique_ptr<Game> Clone() const override { return std::unique_ptr<Game>(new TTT(*this)); }
-
+        // Return the title of the game
         virtual std::string Title() override { return "Tic-Tac-Toe"; }
 
     private:
-        //const int m_kWin {3};
 };
 
 #endif // TTT_H

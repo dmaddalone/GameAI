@@ -40,9 +40,9 @@ OBJDIR_RELEASE = obj\\Release
 DEP_RELEASE = 
 OUT_RELEASE = bin\\Release\\GameAI.exe
 
-OBJ_DEBUG = $(OBJDIR_DEBUG)\\src\\TTT.o $(OBJDIR_DEBUG)\\src\\Reversi.o $(OBJDIR_DEBUG)\\src\\Player.o $(OBJDIR_DEBUG)\\src\\Minimax.o $(OBJDIR_DEBUG)\\src\\LinearGame.o $(OBJDIR_DEBUG)\\src\\Human.o $(OBJDIR_DEBUG)\\src\\GameMove.o $(OBJDIR_DEBUG)\\src\\Game.o $(OBJDIR_DEBUG)\\src\\ConnectFour.o $(OBJDIR_DEBUG)\\main.o
+OBJ_DEBUG = $(OBJDIR_DEBUG)\\src\\TTT.o $(OBJDIR_DEBUG)\\src\\Reversi.o $(OBJDIR_DEBUG)\\src\\Player.o $(OBJDIR_DEBUG)\\src\\Minimax.o $(OBJDIR_DEBUG)\\src\\Logger.o $(OBJDIR_DEBUG)\\src\\LinearGame.o $(OBJDIR_DEBUG)\\src\\Human.o $(OBJDIR_DEBUG)\\src\\GameMove.o $(OBJDIR_DEBUG)\\src\\Game.o $(OBJDIR_DEBUG)\\src\\ConnectFour.o $(OBJDIR_DEBUG)\\main.o
 
-OBJ_RELEASE = $(OBJDIR_RELEASE)\\src\\TTT.o $(OBJDIR_RELEASE)\\src\\Reversi.o $(OBJDIR_RELEASE)\\src\\Player.o $(OBJDIR_RELEASE)\\src\\Minimax.o $(OBJDIR_RELEASE)\\src\\LinearGame.o $(OBJDIR_RELEASE)\\src\\Human.o $(OBJDIR_RELEASE)\\src\\GameMove.o $(OBJDIR_RELEASE)\\src\\Game.o $(OBJDIR_RELEASE)\\src\\ConnectFour.o $(OBJDIR_RELEASE)\\main.o
+OBJ_RELEASE = $(OBJDIR_RELEASE)\\src\\TTT.o $(OBJDIR_RELEASE)\\src\\Reversi.o $(OBJDIR_RELEASE)\\src\\Player.o $(OBJDIR_RELEASE)\\src\\Minimax.o $(OBJDIR_RELEASE)\\src\\Logger.o $(OBJDIR_RELEASE)\\src\\LinearGame.o $(OBJDIR_RELEASE)\\src\\Human.o $(OBJDIR_RELEASE)\\src\\GameMove.o $(OBJDIR_RELEASE)\\src\\Game.o $(OBJDIR_RELEASE)\\src\\ConnectFour.o $(OBJDIR_RELEASE)\\main.o
 
 all: debug release
 
@@ -71,6 +71,9 @@ $(OBJDIR_DEBUG)\\src\\Player.o: src\\Player.cpp
 
 $(OBJDIR_DEBUG)\\src\\Minimax.o: src\\Minimax.cpp
 	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c src\\Minimax.cpp -o $(OBJDIR_DEBUG)\\src\\Minimax.o
+
+$(OBJDIR_DEBUG)\\src\\Logger.o: src\\Logger.cpp
+	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c src\\Logger.cpp -o $(OBJDIR_DEBUG)\\src\\Logger.o
 
 $(OBJDIR_DEBUG)\\src\\LinearGame.o: src\\LinearGame.cpp
 	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c src\\LinearGame.cpp -o $(OBJDIR_DEBUG)\\src\\LinearGame.o
@@ -119,6 +122,9 @@ $(OBJDIR_RELEASE)\\src\\Player.o: src\\Player.cpp
 
 $(OBJDIR_RELEASE)\\src\\Minimax.o: src\\Minimax.cpp
 	$(CXX) $(CFLAGS_RELEASE) $(INC_RELEASE) -c src\\Minimax.cpp -o $(OBJDIR_RELEASE)\\src\\Minimax.o
+
+$(OBJDIR_RELEASE)\\src\\Logger.o: src\\Logger.cpp
+	$(CXX) $(CFLAGS_RELEASE) $(INC_RELEASE) -c src\\Logger.cpp -o $(OBJDIR_RELEASE)\\src\\Logger.o
 
 $(OBJDIR_RELEASE)\\src\\LinearGame.o: src\\LinearGame.cpp
 	$(CXX) $(CFLAGS_RELEASE) $(INC_RELEASE) -c src\\LinearGame.cpp -o $(OBJDIR_RELEASE)\\src\\LinearGame.o

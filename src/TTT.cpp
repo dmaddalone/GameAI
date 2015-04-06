@@ -19,6 +19,18 @@
 
 #include "TTT.h"
 
+/**
+  * Return a vector of valid game moves.
+  *
+  * Review and collect all valid moves for a player into a vector.  For
+  * Tic-Tac-Toe, the nPlayer is ignored because valid moves are the same
+  * between both players.
+  *
+  * \param nPlayer The player whose turn it is.
+  *
+  * \return A vector of valid moves.
+  */
+
 std::vector<GameMove> TTT::GenerateMoves(int nPlayer) const
 {
     (void)nPlayer;

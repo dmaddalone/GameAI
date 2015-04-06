@@ -784,10 +784,11 @@ bool Reversi::GameEnded(int nPlayer)
     // nPlayer not used in this override
     (void)nPlayer;
 
-    // Count the number of tokens for wach player
+    // Count the number of tokens for each player
     int nCountPlayer1 = Count(m_knPlayer1);
     int nCountPlayer2 = Count(m_knPlayer2);
 
+    // Create a string for the winning player
     m_sWinBy = "a difference of " + std::to_string(abs(nCountPlayer1 - nCountPlayer2));
 
     if (nCountPlayer1 > nCountPlayer2)
@@ -799,6 +800,7 @@ bool Reversi::GameEnded(int nPlayer)
         m_nWinner = m_knPlayer2;
     }
 
+    // If nor more moves are available for either player, the game is over; return true
     std::vector<GameMove> vGameMovesPlayer1 = GenerateMoves(m_knPlayer1);
     if (vGameMovesPlayer1.empty())
     {
@@ -807,5 +809,6 @@ bool Reversi::GameEnded(int nPlayer)
             return true;
     }
 
+    // Return false - the game has not ended
     return false;
 }
