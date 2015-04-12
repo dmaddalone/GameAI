@@ -1,0 +1,151 @@
+GameI v0.4.0 April 12, 2015
+
+CONTENTS
+---------------------------------------
+
+* Introduction
+* Installation
+* Operating Instructions
+* File Manifest
+* Copyright and Licensing
+* Known Bugs
+* Credits and Acknowledgements
+* Contact Information
+
+Introduction
+---------------------------------------
+GameAI is a set of linear board games written in C++.  The games include 
+Tic-Tac-Toe, Connect Four, and Reversi.  Each game may be played by two players,
+either human or computer.  The computer player is engineered on the 
+Minimax algorithm with Alpha-beta pruning enabled.
+
+The key to the Minimax algorithm are the heuristics measuring the advantage of
+one player over the other.  These heuristics are contained in the 
+EvaluateGameState method of the games.  Improvements in these methods will 
+improve the AI.
+
+Specific future improvements to EvaluateGameState:
+- Evaluate board state with a weighted sum of diffefrent measures, including
+    peice location, control of position, ande calculation of momentum 
+- Implement a learning mode, where the weights of the different measures are
+  compared to the win or loss of a game and adjusted accordingly 
+  ("hill climbing")
+
+
+Installation
+---------------------------------------
+Requirements:
+* C+11 compiler
+* Make utility
+
+1) Install source code (see File Manifest below) to a folder.
+2) Run make using GameAI.cbp.mak.* where * is the operating system
+
+
+
+
+Operating Instructions
+---------------------------------------
+Run GameAI:
+
+Usage: ./GameAI OPTIONS
+Run a Game AI program
+
+Required Options:
+    -1 TYPE,  --player1=TYPE  assign TYPE of player to Player 1
+    -2 TYPE,  --player2=TYPE  assign TYPE of player to Player 2
+    -p PLIES, --plies=PLIES   assign the number of PLIES that non-human players will use
+              --plies1=PLIES  assign the number of PLIES to Player 1, if non-human
+              --plies2=PLIES  assign the number of PLIES to Player 2, if non-human
+    -g GAME,  --game=GAME     play GAME
+Non Required Options:
+    -h,       --help          display this help message and exit
+    -v LEVEL, --verbose=LEVEL display game information
+    -V,       --version       display version and exit
+
+TYPE is either human or minimax
+PLIES are from 1 to 9.  The default is 4.
+GAME is ttt, connectfour, or reversi.
+LEVEL is an integer 0 to 3.  The default is 1.
+    0 = display start and ending announcements
+    1 = display game move-by-move
+    2 = display AI scoring of moves
+    3 = display AI evaluation of moves
+
+
+
+
+
+File Manifest
+---------------------------------------
+GameAI/GameAI.cbp                 -- Code::Blocks project file
+GameAI/GameAI.cbp.mak.mac         -- Make file for Mac
+GameAI/GameAI.cbp.mak.unix        -- Make file for UNIX
+GameAI/GameAI.cbp.mak.windows     -- Make file for Windows
+
+GameAI/main.cpp                   -- Run the game
+
+GameAI/src/ConnectFour.cpp        -- Connect Four game
+GameAI/src/Game.cpp               -- Virtual game class
+GameAI/src/GameMove.cpp           -- Game move 
+GameAI/src/Human.cpp              -- Human player
+GameAI/src/LinearGame.cpp         -- Virtual linear game
+GameAI/src/Logger.cpp             -- Support logging
+GameAI/src/Minimax.cpp            -- The computer player
+GameAI/src/Player.cpp             -- Virtual game player
+GameAI/src/Reversi.cpp            -- Reversi game
+GameAI/src/TTT.cpp                -- Tic-Tac-Toe game
+
+GameAI/include/ConnectFour.h              
+GameAI/include/GameAIException.h  -- Custom exception
+GameAI/include/GameAIVersion.h    -- Version information
+GameAI/include/Game.h
+GameAI/include/GameMove.h
+GameAI/include/Human.h
+GameAI/include/LinearGame.h
+GameAI/include/Logger.h
+GameAI/include/Minimax.h
+GameAI/include/Player.h
+GameAI/include/Reversi.h
+GameAI/include/TTT.h
+
+
+
+
+Copyright and Licensing
+---------------------------------------
+GameAI is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+GameAI is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with GameAI.  If not, see <http://www.gnu.org/licenses/>.
+
+
+
+
+Known Bugs
+---------------------------------------
+No known bugs.
+
+
+
+
+Credits and Acknowledgements
+---------------------------------------
+Luger, George F., Stubblefield, William A.  "Artifical Intelligence and the 
+  Design of Expert Systems"  New Mexico: The Benjamin/Cummings Publishing 
+  Company, 1989.
+
+
+
+
+Contact Information
+---------------------------------------
+Dom Maddalone dominick dot maddalone at gmail dot com
