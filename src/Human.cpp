@@ -26,10 +26,10 @@
   *
   * \param cGame The game.
   *
-  * \return True, if a move has been made.
+  * \return True, if a move has been made or no move to make.
   */
 
-bool Human::Move(Game &cGame)  //TODO: If no valid moves, do what?
+bool Human::Move(Game &cGame)
 {
     GameMove cGameMove;
 
@@ -40,9 +40,17 @@ bool Human::Move(Game &cGame)  //TODO: If no valid moves, do what?
         std::cout << "Valid moves: " << cGame.ValidMoves(m_nPlayerNumber) << std::endl;
     }
 
+    // Generate all possible valid moves for this player
+    std::vector<GameMove> vGameMoves = cGame.GenerateMoves(m_nPlayerNumber);
+
+    // If no valid moves are possible, return true
+    if (vGameMoves.empty())
+    {
+        return true;
+    }
+
     do
     {
-        // TODO: prompt player for move?  cGame.PromptPlayerForMove(m_nPlayerNumber);  OR not ?
         std::cout << "Player " << m_nPlayerNumber << ", enter move: ";
 
         // Get move from human player.

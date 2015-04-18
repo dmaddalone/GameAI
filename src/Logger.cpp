@@ -70,7 +70,7 @@ void Logger::Log(const std::string sTag, const std::string sMessage, int nLevel)
     // Generate indentations
     if (m_bUseLevelIndent)
     {
-        sLog.insert(0,4 * (nLevel -1), ' ');
+        sLog.insert(0,2 * (nLevel -1), ' ');
     }
 
     std::cout << sLog << sMessage << std::endl;

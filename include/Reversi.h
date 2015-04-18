@@ -35,7 +35,7 @@ class Reversi : public LinearGame
 {
     public:
         // Construct a Reversi game, and set up the board
-        Reversi(GameType ecGameType) : LinearGame(ecGameType, 8, 8, ' ', 'D', 'L', 0, true, true, true) { SetBoard(); }
+        Reversi(GameType ecGameType) : LinearGame(ecGameType, m_kiDimension, m_kiDimension, ' ', 'D', 'L', 0, true, true, true) { SetBoard(); }
         // Deconstructor
         ~Reversi() {}
 
@@ -82,7 +82,27 @@ class Reversi : public LinearGame
         void FlipUpLeft(int nX, int nY, int nPlayer);
 
         // Count the number of tokens for nPlayer
-        int  Count(int nPlayer) const;
+        int  CountEvaluation(int nPlayer) const;
+        // Count the positional value of tokens for nPlayer
+        int  SquareEvaluation(int nPlayer) const;
+        // Count the number of valid moves for nPlayer
+        int  MobilityEvaluation(int nPlayer) const;
+
+        // Board dimension
+        static const int m_kiDimension = 8;
+
+        // Static evaluation table
+        const int m_kaiEvalTable[m_kiDimension][m_kiDimension] =
+        {
+            { 99,  -8,  8,  6,  6,  8,  -8, 99 },
+            { -8, -24, -4, -3, -3, -4, -24, -8 },
+            {  8,  -4,  7,  4,  4,  7,  -4,  8 },
+            {  6,  -3,  4,  0,  0,  4,  -3,  6 },
+            {  6,  -3,  4,  0,  0,  4,  -3,  6 },
+            {  8   -4,  7,  4,  4,  7,  -4,  8 },
+            { -8, -24, -4, -3, -3, -4, -24, -8 },
+            { 99,  -8,  8,  6,  6,  8,  -8, 99 }
+        };
 };
 
 #endif // REVERSI_H

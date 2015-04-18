@@ -64,6 +64,7 @@ std::vector<GameMove> Reversi::GenerateMoves(int nPlayer) const
     return vGameMoves;
 }
 
+
 /**
   * Apply the move to the game.
   *
@@ -728,8 +729,15 @@ int Reversi::EvaluateGameState(int nPlayer)
     if (m_nWinner == (1 - nPlayer + 2))
         return -1000000;
 
-    // Calculate a number based on the number of tokens for each player.
-    return Count(nPlayer) - Count(2 - nPlayer + 1);
+    // Evaluate the number of tokens for each player. "Greedy evaluation."
+    int nCountEval  = CountEvaluation(nPlayer)  - CountEvaluation(2 - nPlayer + 1);
+    // Evaluate  the value of the occupied positions.
+    int nSquareEval = SquareEvaluation(nPlayer) - SquareEvaluation(2 - nPlayer + 1);
+    // Evaluate the number of moves available.
+    int nMobilityEval = MobilityEvaluation(nPlayer) - MobilityEvaluation(2 - nPlayer + 1);
+
+    return (nCountEval * 10) + (nSquareEval * 25) + (nMobilityEval * 50);
+
 }
 
 /**
@@ -740,20 +748,62 @@ int Reversi::EvaluateGameState(int nPlayer)
   * \return An integer representing the number of tokens for this player.
   */
 
-int Reversi::Count(int nPlayer) const
+int Reversi::CountEvaluation(int nPlayer) const
 {
-    int nCount = 0;
+    int nEval = 0;
 
     for (int xxx = 0; xxx < m_knX; ++xxx)
     {
         for (int yyy = 0; yyy < m_knY; ++yyy)
         {
             if (m_acGrid[yyy][xxx] == m_acTokens[nPlayer])
-                ++nCount;
+                ++nEval;
         }
     }
 
-    return nCount;
+    return nEval;
+}
+
+/**
+  * Evaluate the square positions occurpied by the player.  Use a static
+  * table of square values.
+  *
+  * \param nPlayer The player whose turn it is.
+  *
+  * \return An integer representing the position values occupied by the player.
+  */
+
+int Reversi::SquareEvaluation(int nPlayer) const
+{
+    int nEval = 0;
+
+    for (int xxx = 0; xxx < m_knX; ++xxx)
+    {
+        for (int yyy = 0; yyy < m_knY; ++yyy)
+        {
+            if (m_acGrid[yyy][xxx] == m_acTokens[nPlayer])
+                nEval += m_kaiEvalTable[yyy][xxx];
+        }
+    }
+
+    return nEval;
+}
+
+/**
+  * Evaluate the number of valid moves for the player.
+  *
+  * \param nPlayer The player whose turn it is.
+  *
+  * \return An integer representing the number of valid moves for the player.
+  */
+
+int Reversi::MobilityEvaluation(int nPlayer) const
+{
+
+    // Generate all possible valid moves for this player
+    std::vector<GameMove> vGameMoves = GenerateMoves(nPlayer);
+
+    return vGameMoves.size();
 }
 
 /**
@@ -764,8 +814,8 @@ int Reversi::Count(int nPlayer) const
 
 std::string Reversi::GameScore() const
 {
-    std::string sScore = "Score: Player 1=" + std::to_string(Count(m_knPlayer1)) +
-                         " Player 2=" + std::to_string(Count(m_knPlayer2));
+    std::string sScore = "Score: Player 1=" + std::to_string(CountEvaluation(m_knPlayer1)) +
+                         " Player 2=" + std::to_string(CountEvaluation(m_knPlayer2));
     return sScore;
 }
 
@@ -785,8 +835,8 @@ bool Reversi::GameEnded(int nPlayer)
     (void)nPlayer;
 
     // Count the number of tokens for each player
-    int nCountPlayer1 = Count(m_knPlayer1);
-    int nCountPlayer2 = Count(m_knPlayer2);
+    int nCountPlayer1 = CountEvaluation(m_knPlayer1);
+    int nCountPlayer2 = CountEvaluation(m_knPlayer2);
 
     // Create a string for the winning player
     m_sWinBy = "a difference of " + std::to_string(abs(nCountPlayer1 - nCountPlayer2));
@@ -810,5 +860,6 @@ bool Reversi::GameEnded(int nPlayer)
     }
 
     // Return false - the game has not ended
+    m_nWinner = 0;
     return false;
 }

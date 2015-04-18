@@ -116,9 +116,17 @@ std::string LinearGame::ValidMoves(int nPlayer) const
     std::string sValidMoves {};
 
     std::vector<GameMove> vGameMoves = GenerateMoves(nPlayer);
-    for (GameMove cGameMove : vGameMoves)
+
+    if (vGameMoves.empty())
     {
-        sValidMoves += cGameMove.AnnounceToMove() + " ";
+        sValidMoves = "NO VALID MOVE";
+    }
+    else
+    {
+        for (GameMove cGameMove : vGameMoves)
+        {
+            sValidMoves += cGameMove.AnnounceToMove() + " ";
+        }
     }
 
     return sValidMoves;
@@ -143,13 +151,26 @@ GameMove LinearGame::GetMove(int nPlayer) const
 
     std::cin >> sMove;
 
-    int xxx = tolower(sMove[0]) - m_kcXCoordinate;
+    cGameMove.SetToX(tolower(sMove[0]) - m_kcXCoordinate);
 
     sMove.erase(0,1);
-    int yyy = std::stoi(sMove, nullptr);
 
-    cGameMove.SetToX(xxx);
-    cGameMove.SetToY(yyy - 1);
+    if (sMove.length() > 0)
+    {
+        try
+        {
+            cGameMove.SetToY(std::stoi(sMove, nullptr) - 1);
+        }
+        catch (...)
+        {
+            cGameMove.SetFromY(-1);
+        }
+
+    }
+    else
+    {
+        cGameMove.SetToY(-1);
+    }
 
     return cGameMove;
 }

@@ -78,6 +78,18 @@ static void ShowVersion()
     std::cerr << "Game AI version " << GameAIVersion::SemanticVersion() << " " << GameAIVersion::DateVersion() << std::endl;
 }
 
+/**
+  * Create the player.
+  *
+  * Depending on the player type, generate a player and push them onto the
+  * players vector.
+  *
+  * \param pcType   Char string of player type
+  * \param vPlayers Vector of players
+  *
+  * \return True if player type known.  False otherwise.
+  */
+
 static bool SetPlayerType(char* pcType, std::vector<std::unique_ptr<Player>> &vPlayers)
 {
     std::string sType(pcType);
@@ -91,6 +103,16 @@ static bool SetPlayerType(char* pcType, std::vector<std::unique_ptr<Player>> &vP
     return true;
 }
 
+/**
+  * Create the game.
+  *
+  * Depending on the game type, generate a game and return a pointer to it.
+  *
+  * \param pcGame   Char string of game type
+  *
+  * \return unique_ptr to the game, if game type known.  nullptr otherwise.
+  */
+
 static std::unique_ptr<Game> SetGame(char* pcGame)
 {
     std::string sGame(pcGame);
@@ -103,6 +125,19 @@ static std::unique_ptr<Game> SetGame(char* pcGame)
     else
         return nullptr;
 }
+
+/**
+  * Set player parameters.
+  *
+  * Set the name, look-ahead (plies), verbosity of the players.
+  *
+  * \param sName      Name of the executable
+  * \param nPlies1    Plies (moves to look ahead) for player number 1
+  * \param nPlies2    Plies for plyer number 2
+  * \param nVerbosity Level of logging
+  * \param vPlayers   Vector of players
+  *
+  */
 
 static void SetPlayers(std::string sName, int nPlies1, int nPlies2, int nVerbosity, std::vector<std::unique_ptr<Player>> &vPlayers)
 {
@@ -141,7 +176,9 @@ static void SetPlayers(std::string sName, int nPlies1, int nPlies2, int nVerbosi
 /**
   * Main
   *
-  * TODO
+  * Gather options, generate players and the game, and
+  * call each player to make their move.  Evaluate game for an end state
+  * and declare a winner when game ended.
   *
   */
 
@@ -149,7 +186,6 @@ int main(int argc, char* argv[])
 {
     std::vector<std::unique_ptr<Player>> vPlayers;
     std::unique_ptr<Game> pcGame {};
-    //int  nPlies     {4};
     int  nPlies1    {4};
     int  nPlies2    {4};
     int  nVerbosity {1};
@@ -161,7 +197,7 @@ int main(int argc, char* argv[])
         exit (EXIT_FAILURE);
     }
 
-    // Set up and execute getopt_long
+    // Set up getopt_long
     static struct option stLongOptions[] =
     {
         {"player1", required_argument, nullptr, '1'},
@@ -176,18 +212,20 @@ int main(int argc, char* argv[])
         {NULL,      0,                 nullptr,  0}
     };
 
+    // Execute getopt_long
     int nC = 0;
     int nOptionIndex = 0;
     while ((nC = getopt_long(argc, argv, "1:2:p:g:x:y:hv:V", stLongOptions, &nOptionIndex)) != -1)
     {
         switch (nC)
         {
+            // Help
             case 'h':
                 ShowUsage(argv[0]);
                 exit(EXIT_SUCCESS);
                 break;
+            // Verbosity
             case 'v':
-                //bVerbose = true;
                 if (optarg)
                 {
                     if (isdigit(optarg[0]))
@@ -201,10 +239,12 @@ int main(int argc, char* argv[])
                     }
                 }
                 break;
+            // Version
             case 'V':
                 ShowVersion();
                 exit(EXIT_SUCCESS);
                 break;
+            // Player 1
             case '1':
                 if (!SetPlayerType(optarg, vPlayers))
                 {
@@ -212,6 +252,7 @@ int main(int argc, char* argv[])
                     exit(EXIT_FAILURE);
                 }
                 break;
+            // Player 2
             case '2':
                 if (!SetPlayerType(optarg, vPlayers))
                 {
@@ -219,40 +260,46 @@ int main(int argc, char* argv[])
                     exit(EXIT_FAILURE);
                 }
                 break;
+            // Plies for player 1 and player 2
             case 'p':
-                //nPlies = atoi(optarg);
                 nPlies1 = nPlies2 = atoi(optarg);
-                //nPlies2 = nPlies;
                 break;
+            // Plies for player 1
             case 'x':
                 nPlies1 = atoi(optarg);
                 break;
+            // Plies for player 3
             case 'y':
                 nPlies2 = atoi(optarg);
                 break;
+            // Game
             case 'g':
                 pcGame = SetGame(optarg);
                 break;
+            // Help
             case '?':
                 ShowUsage(argv[0]);
                 exit(EXIT_SUCCESS);
                 break;
+            // Unkown option
             default:
                 throw GameAIException("main getopt returned character code ", std::to_string(nC));
                 break;
         }
     }
 
+    // Ensure two players and a game are generated
     if ((vPlayers.size() != 2) || (pcGame == nullptr))
     {
         ShowUsage(argv[0]);
         exit(EXIT_FAILURE);
     }
 
+    // Set player parameters
     SetPlayers(argv[0], nPlies1, nPlies2, nVerbosity, vPlayers);
 
+    // Announce game
     std::cout << "Playing " << pcGame->Title() << std::endl;
-
     for (int iii = 0; iii < 2; ++iii)
     {
         std::cout << "Player " << iii + 1 << ": " << vPlayers[iii]->TypeName();
@@ -263,33 +310,42 @@ int main(int argc, char* argv[])
         std::cout << std::endl;
     }
 
+    // Have each player play in turn
     while(true)
     {
+        // Player 1 move
         if (!vPlayers[0]->Move(*pcGame))
         {
             std::cerr << "Invalid move.  Exiting." << std::endl;
             exit(EXIT_FAILURE);
         }
 
+        // Announce game score
         std::cout << pcGame->GameScore() << std::endl;
 
+        // Evaluate game state from player 2 perspective
         if (pcGame->GameEnded(pcGame->Player2()))
             break;
 
+        // Player 2 move
         if (!vPlayers[1]->Move(*pcGame))
         {
             std::cerr << "Invalid move.  Exiting." << std::endl;
             exit(EXIT_FAILURE);
         }
 
+        // Announce game score
         std::cout << pcGame->GameScore() << std::endl;
 
+        // Evaluate game state from player 1 perspective
         if (pcGame->GameEnded(pcGame->Player1()))
             break;
     }
 
+    // Display game
     pcGame->Display();
 
+    // Summarize game
     if (pcGame->Winner() == 0)
     {
         std::cout << "Game drawn" << std::endl;

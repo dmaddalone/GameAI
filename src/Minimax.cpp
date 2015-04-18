@@ -87,7 +87,7 @@ GameMove Minimax::MinimaxMove(int nPlayer, Game &cGame, int nDepth)
     // Generate all possible valid moves for this player
     std::vector<GameMove> vGameMoves = cGame.GenerateMoves(nPlayer);
 
-    // If nor valid moves are possible, return a "no move"
+    // If no valid moves are possible, return a "no move"
     if (vGameMoves.empty())
     {
         GameMove cNoMove = GameMove();
