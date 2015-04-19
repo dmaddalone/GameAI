@@ -721,13 +721,13 @@ bool Reversi::CheckContiguous(int nX, int nY, int nPlayer, bool &bOpponentPieceA
 
 int Reversi::EvaluateGameState(int nPlayer)
 {
-    // If won, return largest positive integer // TODO: make these constants
+    // If won, return largest positive integer
     if (m_nWinner == nPlayer)
-        return 1000000;
+        return INT_MAX;
 
-    // If lost, return largest negative integer // TODO: make these constants
+    // If lost, return largest negative integer
     if (m_nWinner == (1 - nPlayer + 2))
-        return -1000000;
+        return INT_MIN;
 
     // Evaluate the number of tokens for each player. "Greedy evaluation."
     int nCountEval  = CountEvaluation(nPlayer)  - CountEvaluation(2 - nPlayer + 1);
@@ -736,7 +736,7 @@ int Reversi::EvaluateGameState(int nPlayer)
     // Evaluate the number of moves available.
     int nMobilityEval = MobilityEvaluation(nPlayer) - MobilityEvaluation(2 - nPlayer + 1);
 
-    return (nCountEval * 10) + (nSquareEval * 25) + (nMobilityEval * 50);
+    return (nCountEval * 10) + (nSquareEval * 15) + (nMobilityEval * 5);
 
 }
 

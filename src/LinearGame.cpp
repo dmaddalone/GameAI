@@ -246,11 +246,11 @@ int LinearGame::EvaluateGameState(int nPlayer)
 {
     // If won, return largest positive integer // TODO: make these constants
     if (m_nWinner == nPlayer)
-        return 1000000;
+        return INT_MAX;
 
     // If lost, return largest negative integer // TODO: make these constants
     if (m_nWinner == (1 - nPlayer + 2))
-        return -1000000;
+        return INT_MIN;
 
     // Clear structs for game state; one for player and one for opponent
     m_stMyCounts = {};

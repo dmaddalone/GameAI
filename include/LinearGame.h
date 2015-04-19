@@ -29,6 +29,7 @@
 #define LINEARGAME_H
 
 #include <cctype>
+#include <climits>
 #include <iostream>
 #include <string>
 
