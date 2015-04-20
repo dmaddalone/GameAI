@@ -29,7 +29,9 @@
 #include "GameAIVersion.h"
 #include "Player.h"
 #include "Game.h"
-#include "Logger.h"
+//#include "Logger.h"
+#include "Server.h"
+#include "Client.h"
 
 /**
   * ShowUsage
@@ -61,7 +63,7 @@ static void ShowUsage(std::string sName)
               << "LEVEL is an integer 0 to 3.  The default is 1.\n"
               << "    0 = display start and ending announcements\n"
               << "    1 = display game move-by-move\n"
-              << "    2 = display AI scoring of moves\n"
+              << "    2 = display AI scoring of moves and basic network communications\n"
               << "    3 = display AI evaluation of moves\n"
               << std::endl;
 }
@@ -97,6 +99,10 @@ static bool SetPlayerType(char* pcType, std::vector<std::unique_ptr<Player>> &vP
         vPlayers.emplace_back(Player::MakePlayer(PlayerType::TYPE_HUMAN));
     else if (sType == "minimax")
         vPlayers.emplace_back(Player::MakePlayer(PlayerType::TYPE_MINIMAX));
+    else if (sType == "server")
+        vPlayers.emplace_back(Player::MakePlayer(PlayerType::TYPE_CLIENT));
+    else if (sType == "client")
+        vPlayers.emplace_back(Player::MakePlayer(PlayerType::TYPE_SERVER));
     else
         return false;
 
@@ -139,7 +145,7 @@ static std::unique_ptr<Game> SetGame(char* pcGame)
   *
   */
 
-static void SetPlayers(std::string sName, int nPlies1, int nPlies2, int nVerbosity, std::vector<std::unique_ptr<Player>> &vPlayers)
+static void SetPlayers(std::string sName, int nPlies1, int nPlies2, int nVerbosity, std::string sGameTitle, std::vector<std::unique_ptr<Player>> &vPlayers)
 {
     if (nVerbosity >= 0 && nVerbosity <= 3)
     {
@@ -149,7 +155,7 @@ static void SetPlayers(std::string sName, int nPlies1, int nPlies2, int nVerbosi
     else
     {
         ShowUsage(sName);
-        exit (EXIT_FAILURE);
+        exit(EXIT_FAILURE);
     }
 
     if (nPlies1 > 0 && nPlies1 <= 9)
@@ -159,7 +165,7 @@ static void SetPlayers(std::string sName, int nPlies1, int nPlies2, int nVerbosi
     else
     {
         ShowUsage(sName);
-        exit (EXIT_FAILURE);
+        exit(EXIT_FAILURE);
     }
 
     if (nPlies2 > 0 && nPlies2 <= 9)
@@ -169,8 +175,11 @@ static void SetPlayers(std::string sName, int nPlies1, int nPlies2, int nVerbosi
     else
     {
         ShowUsage(sName);
-        exit (EXIT_FAILURE);
+        exit(EXIT_FAILURE);
     }
+
+    vPlayers[0]->SetGameTitle(sGameTitle);
+    vPlayers[1]->SetGameTitle(sGameTitle);
 }
 
 /**
@@ -196,6 +205,8 @@ int main(int argc, char* argv[])
         ShowUsage(argv[0]);
         exit (EXIT_FAILURE);
     }
+
+    ShowVersion();
 
     // Set up getopt_long
     static struct option stLongOptions[] =
@@ -296,17 +307,22 @@ int main(int argc, char* argv[])
     }
 
     // Set player parameters
-    SetPlayers(argv[0], nPlies1, nPlies2, nVerbosity, vPlayers);
+    SetPlayers(argv[0], nPlies1, nPlies2, nVerbosity, pcGame->Title(), vPlayers);
+
+    // Initialize players
+    vPlayers[0]->Initialize();
+    vPlayers[1]->Initialize();
 
     // Announce game
     std::cout << "Playing " << pcGame->Title() << std::endl;
     for (int iii = 0; iii < 2; ++iii)
     {
         std::cout << "Player " << iii + 1 << ": " << vPlayers[iii]->TypeName();
-        if (vPlayers[iii]->Type() != PlayerType::TYPE_HUMAN)
+        if (vPlayers[iii]->Type() == PlayerType::TYPE_MINIMAX)
         {
             std::cout << " Plies: " << vPlayers[iii]->Plies();
         }
+
         std::cout << std::endl;
     }
 

@@ -20,6 +20,8 @@
 #include "Player.h"
 #include "Human.h"
 #include "Minimax.h"
+#include "Server.h"
+#include "Client.h"
 
 // Initial static int to zero; used to generate unique identifier numbers for players
 int Player::m_nPlayerCount {0};
@@ -44,6 +46,10 @@ std::unique_ptr<Player> Player::MakePlayer(PlayerType ecPlayerType)
             return std::unique_ptr<Player>(new Human(ecPlayerType));
         case PlayerType::TYPE_MINIMAX:
             return std::unique_ptr<Player>(new Minimax(ecPlayerType));
+        case PlayerType::TYPE_SERVER:
+            return std::unique_ptr<Player>(new Server(ecPlayerType, 60000));
+        case PlayerType::TYPE_CLIENT:
+            return std::unique_ptr<Player>(new Client(ecPlayerType, "127.0.0.1", 60000));
         default:
             return nullptr;
     }

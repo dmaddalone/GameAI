@@ -24,7 +24,7 @@ DONE: Change ValidMove from (y, x) to (x, y); change name from ValidMove to OnBo
 				<Option object_output="obj/Debug/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
-				<Option parameters="-1 minimax -2 minimax -g reversi -v 1" />
+				<Option parameters="-1 client  -2 human -g ttt " />
 				<Compiler>
 					<Add option="-std=c++11" />
 					<Add option="-Wextra" />
@@ -54,19 +54,25 @@ DONE: Change ValidMove from (y, x) to (x, y); change name from ValidMove to OnBo
 			<Add option="-Wall" />
 			<Add option="-fexceptions" />
 		</Compiler>
+		<Unit filename="include/Client.h" />
 		<Unit filename="include/ConnectFour.h" />
 		<Unit filename="include/Game.h" />
 		<Unit filename="include/GameAIException.h" />
 		<Unit filename="include/GameAIVersion.h" />
 		<Unit filename="include/GameMove.h" />
+		<Unit filename="include/GameVocabulary.h" />
 		<Unit filename="include/Human.h" />
 		<Unit filename="include/LinearGame.h" />
 		<Unit filename="include/Logger.h" />
 		<Unit filename="include/Minimax.h" />
 		<Unit filename="include/Player.h" />
 		<Unit filename="include/Reversi.h" />
+		<Unit filename="include/Server.h" />
+		<Unit filename="include/Socket.h" />
+		<Unit filename="include/SocketException.h" />
 		<Unit filename="include/TTT.h" />
 		<Unit filename="main.cpp" />
+		<Unit filename="src/Client.cpp" />
 		<Unit filename="src/ConnectFour.cpp" />
 		<Unit filename="src/Game.cpp" />
 		<Unit filename="src/GameMove.cpp" />
@@ -76,6 +82,8 @@ DONE: Change ValidMove from (y, x) to (x, y); change name from ValidMove to OnBo
 		<Unit filename="src/Minimax.cpp" />
 		<Unit filename="src/Player.cpp" />
 		<Unit filename="src/Reversi.cpp" />
+		<Unit filename="src/Server.cpp" />
+		<Unit filename="src/Socket.cpp" />
 		<Unit filename="src/TTT.cpp" />
 		<Extensions>
 			<code_completion />

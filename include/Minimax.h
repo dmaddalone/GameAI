@@ -45,8 +45,11 @@ class Minimax: public Player
         // Destructor
         ~Minimax() {};
 
+        // Initializer
+        virtual void Initialize() override {};
+
         // Generate the next game move
-        bool Move(Game &cGame);
+        virtual bool Move(Game &cGame) override;
 
         // Announce the type pf player
         std::string TypeName() { return "Minimax"; }

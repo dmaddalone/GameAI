@@ -17,38 +17,7 @@
     along with GameAI.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-/** \file
- *
- * \brief The Human class represents a human game player.
- *
- */
+#include "GameVocabulary.h"
 
-#ifndef HUMAN_H
-#define HUMAN_H
-
-#include <iostream>
-#include "Player.h"
-#include "Game.h"
-#include "GameMove.h"
-#include "Logger.h"
-
-class Human: public Player
-{
-    public:
-        // Construct a human player
-        Human(PlayerType ecPlayerType) : Player(ecPlayerType) {};
-
-        // Destructor
-        ~Human() {};
-
-        // Initializer
-        virtual void Initialize() override {};
-
-        // Generate the next game move
-        virtual bool Move(Game &cGame) override;
-
-        // Announce the type pf player
-        std::string TypeName() { return "Human"; }
-};
-
-#endif // HUMAN_H
+std::string GameVocabulary::ParseCommand(std::string sText)  { return sText.substr(0, sText.find(GameVocabulary::DELIMETER));  }
+std::string GameVocabulary::ParseArgument(std::string sText) { return sText.substr(sText.find(GameVocabulary::DELIMETER) + 1); }

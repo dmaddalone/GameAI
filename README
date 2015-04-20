@@ -85,8 +85,11 @@ GameAI/GameAI.cbp.mak.windows     -- Make file for Windows
 
 GameAI/main.cpp                   -- Run the game
 
+
+GameAI/src/Client.cpp        -- Client player (proxy for server)
 GameAI/src/ConnectFour.cpp        -- Connect Four game
 GameAI/src/Game.cpp               -- Virtual game class
+GameAI/src/GameVocabulary.cpp           -- Game vocabulary between server and client 
 GameAI/src/GameMove.cpp           -- Game move 
 GameAI/src/Human.cpp              -- Human player
 GameAI/src/LinearGame.cpp         -- Virtual linear game
@@ -94,19 +97,25 @@ GameAI/src/Logger.cpp             -- Support logging
 GameAI/src/Minimax.cpp            -- The computer player
 GameAI/src/Player.cpp             -- Virtual game player
 GameAI/src/Reversi.cpp            -- Reversi game
+GameAI/src/Server.cpp            -- Server player (proxy for client)
+GameAI/src/Socket.cpp            -- Socket parent class for Server and Client
 GameAI/src/TTT.cpp                -- Tic-Tac-Toe game
 
+GameAI/include/Client.h       
 GameAI/include/ConnectFour.h              
 GameAI/include/GameAIException.h  -- Custom exception
 GameAI/include/GameAIVersion.h    -- Version information
 GameAI/include/Game.h
 GameAI/include/GameMove.h
+GameAI/include/GameVocabulary.h
 GameAI/include/Human.h
 GameAI/include/LinearGame.h
 GameAI/include/Logger.h
 GameAI/include/Minimax.h
 GameAI/include/Player.h
 GameAI/include/Reversi.h
+GameAI/include/Server.h
+GameAI/include/Socket.h
 GameAI/include/TTT.h
 
 
@@ -132,7 +141,7 @@ along with GameAI.  If not, see <http://www.gnu.org/licenses/>.
 
 Known Bugs
 ---------------------------------------
-No known bugs.
+Currently a work in progress.
 
 
 
@@ -142,6 +151,9 @@ Credits and Acknowledgements
 Luger, George F., Stubblefield, William A.  "Artifical Intelligence and the 
   Design of Expert Systems"  New Mexico: The Benjamin/Cummings Publishing 
   Company, 1989.
+
+Tougher, Rob "Linux Socket Programming in C++", Linux Gazette, Issue 74, 
+  January 2002
 
 
 

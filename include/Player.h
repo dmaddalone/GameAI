@@ -36,14 +36,15 @@ enum class PlayerType
 {
     TYPE_NONE,
     TYPE_HUMAN,
-    TYPE_MINIMAX
+    TYPE_MINIMAX,
+    TYPE_SERVER,
+    TYPE_CLIENT
 };
 
 class Player
 {
     public:
         // Construct a player of ecPlayerType and provide it with an identifying number
-        ////Player(PlayerType ecPlayerType) { m_ecPlayerType = ecPlayerType; m_nPlayerNumber = m_nPlayerCount; m_nOpponentNumber = 2 - m_nPlayerNumber + 1; }
         Player(PlayerType ecPlayerType) { m_ecPlayerType = ecPlayerType; m_nPlayerNumber = m_nPlayerCount; }
 
         //
@@ -53,12 +54,14 @@ class Player
         // Destructor
         virtual ~Player() {};
 
+        // Player initialization
+        virtual void Initialize() = 0;
+
         // Player provides a move
         virtual bool Move(Game &pcGame) = 0;
 
         // Return the type of player as a string
         virtual std::string TypeName()  = 0;
-
 
         // Make a player
         static std::unique_ptr<Player> MakePlayer(PlayerType ecPlayerType);
@@ -75,15 +78,19 @@ class Player
         // Return the number of plies
         int  Plies()              { return m_nDepth; }
 
+        void SetGameTitle(std::string sTitle) { m_sGameTitle = sTitle; }
+        std::string GameTitle()               { return m_sGameTitle; }
+
     protected:
-        //int  m_nMove              {0};
         // Set the default player type to none
         PlayerType m_ecPlayerType {PlayerType::TYPE_NONE};
         // Set the player number to zero
         int  m_nPlayerNumber      {0};
-        //int  m_nOpponentNumber    {0};
+
         // Set the depth of plies to four
         int  m_nDepth             {4}; // For AI
+
+        std::string m_sGameTitle  {""};
 
         // Create a Logger object
         Logger m_cLogger;

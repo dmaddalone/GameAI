@@ -39,6 +39,7 @@ class GameAIException : public std::logic_error
             m_sArg(sArg)
         { }
 
+    //private:
         const std::string m_sArg;
 };
 

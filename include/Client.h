@@ -17,38 +17,41 @@
     along with GameAI.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#ifndef CLIENT_H
+#define CLIENT_H
+
 /** \file
  *
- * \brief The Human class represents a human game player.
+ * \brief The Client class represents a client game player.
  *
  */
 
-#ifndef HUMAN_H
-#define HUMAN_H
-
-#include <iostream>
 #include "Player.h"
+#include "Socket.h"
+#include "SocketException.h"
 #include "Game.h"
 #include "GameMove.h"
 #include "Logger.h"
+#include "GameVocabulary.h"
+#include "GameAIException.h"
 
-class Human: public Player
+class Client: private Socket, public Player
 {
     public:
-        // Construct a human player
-        Human(PlayerType ecPlayerType) : Player(ecPlayerType) {};
+        // Construct a client player
+        Client(PlayerType ecPlayerType, std::string sHost, int nPort);
 
         // Destructor
-        ~Human() {};
+        ~Client() {};
 
         // Initializer
-        virtual void Initialize() override {};
+        virtual void Initialize() override;
 
         // Generate the next game move
         virtual bool Move(Game &cGame) override;
 
         // Announce the type pf player
-        std::string TypeName() { return "Human"; }
+        std::string TypeName() { return "Client"; }
 };
 
-#endif // HUMAN_H
+#endif // CLIENT_H
