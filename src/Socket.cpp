@@ -120,15 +120,28 @@ int Socket::Recv(std::string& sMessage) const
 
 bool Socket::Connect(const std::string sHost, const int nPort)
 {
+    // getaddrinfo variables
+    struct addrinfo hints, *res;
+    memset(&hints, 0, sizeof(hints));
+    hints.ai_family = AF_INET;
+    hints.ai_socktype = SOCK_STREAM;
+
+    if (getaddrinfo(sHost.c_str(), NULL, &hints, &res) != 0)
+        return false;
+
+    struct sockaddr_in *ipv4 = (struct sockaddr_in *)res->ai_addr;
+    m_SocketAddress.sin_addr = ipv4->sin_addr;
+
+
     if (!IsValid())
         return false;
 
     m_SocketAddress.sin_family = AF_INET;
     m_SocketAddress.sin_port = htons(nPort);
 
-    //int nStatus = inet_pton(AF_INET, sHost.c_str(), &m_SocketAddress.sin_addr);
-    if (inet_pton(AF_INET, sHost.c_str(), &m_SocketAddress.sin_addr) != 1)
-        return false;
+
+    //if (inet_pton(AF_INET, sHost.c_str(), &m_SocketAddress.sin_addr) != 1)
+    //    return false;
 
     //if (errno == EAFNOSUPPORT)
     //    return false;
@@ -148,6 +161,7 @@ bool Socket::Connect(const std::string sHost, const int nPort)
     return true;
 }
 
+/*
 void Socket::SetNonBlocking(const bool b )
 {
     int nFlags = fcntl(m_nSocketID, F_GETFL);
@@ -162,3 +176,4 @@ void Socket::SetNonBlocking(const bool b )
 
     fcntl(m_nSocketID, F_SETFL, nFlags);
 }
+*/

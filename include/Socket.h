@@ -6,9 +6,17 @@
 #include <errno.h>
 #include <fcntl.h>
 #include <iostream>
+
+#if defined(_WIN32)
+#include <winsock2.h>
+#include <ws2tcpip.h>
+#else
+#include <netdb.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <sys/socket.h>
+#endif // defined
+
 #include <unistd.h>
 
 const int MAXHOSTNAME = 200;

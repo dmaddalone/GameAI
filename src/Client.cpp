@@ -45,11 +45,11 @@ void Client::Initialize()
     // 3.                                   Send Confirm
     // 4.    Receive Confirm
     // 5.    Send Request Player Number
-    // 6.                                   Receieve Request Player Number
+    // 6.                                   Receive Request Player Number
     // 7.                                   Send Client Player Number
-    // 8.    Receieve Client Player Number
+    // 8.    Receive Client Player Number
     // 9.    Send Start Game
-    // 10.                                   Receive Start Game
+    // 10.                                  Receive Start Game
 
     // 1. Send Establish Game
     std::cout << "Establishing game of " << GameTitle() << " with server." << std::endl;
@@ -94,7 +94,7 @@ void Client::Initialize()
         throw SocketException(sMessage);
     }
 
-    // 8. Receieve Client Player Number TODO
+    // 8. Receive Client Player Number TODO
     if (!Socket::Recv(sCommand) < 0)
         throw SocketException("Did not receive player number");
 
@@ -111,16 +111,16 @@ void Client::Initialize()
     // Server will establish client's player number as the opposite of what the client
     // has established.  E.g.,
     //   Server: GameAI -1 human  -2 client -g ttt // Meaning on the server, human plays first and client plays second
-    //                                             // and server sends 2 as the player number.
+    //                                             // and server sends 2 as the client player number.
     //
     //   Client: GameAI -1 server -2 human  -g ttt // Meaning on the client, server plays first and human plays second
-    //                                             // and client has 1 as the player number.  This is aligned.
+    //                                             // and client has 1 as the server player number.  This is aligned.
     sToken = GameVocabulary::ParseArgument(sCommand);
-    if (sToken.compare(std::to_string(2 - m_nPlayerNumber + 1)) != 0) // Player numbers are not aligned
+    if (sToken.compare(std::to_string(2 - m_nPlayerNumber + 1)) != 0) // Player numbers are aligned
     {
         // change player numbers on the client
     }
-    sMessage = "Server playing " +  + " and client is playing " + sToken;
+    sMessage = "Server playing " + std::to_string((2 - stoi(sToken) + 1))  + " and client is playing " + sToken;
 }
 
 /**

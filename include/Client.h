@@ -25,6 +25,7 @@
  * \brief The Client class represents a client game player.
  *
  */
+#include <string>
 
 #include "Player.h"
 #include "Socket.h"
