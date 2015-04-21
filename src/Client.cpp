@@ -28,8 +28,6 @@ Client::Client(PlayerType ecPlayerType, std::string sHost, int nPort ) : Player(
         throw SocketException ("Could not connect to port.");
 
     std::cout << "Client connected to host " << sHost << " on port " << nPort << std::endl;
-
-
 }
 
 void Client::Initialize()

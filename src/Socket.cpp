@@ -9,12 +9,24 @@ Socket::Socket() : m_nSocketID(-1)
 Socket::~Socket()
 {
     if (IsValid())
+#if defined(_WIN32)
+        closesocket(m_nSocketID);
+#else
         close(m_nSocketID);
+#endif // defined
+
+
 }
 
 bool Socket::Create()
 {
-    m_nSocketID = socket(AF_INET, SOCK_STREAM, 0);
+#if defined(_WIN32)
+    WSADATA wsaData;
+    if (WSAStartup(MAKEWORD(2,2), &wsaData) != 0)
+        return false;
+#endif
+
+    m_nSocketID = ::socket(AF_INET, SOCK_STREAM, 0);
 
     if (!IsValid())
         return false;
@@ -121,15 +133,15 @@ int Socket::Recv(std::string& sMessage) const
 bool Socket::Connect(const std::string sHost, const int nPort)
 {
     // getaddrinfo variables
-    struct addrinfo hints, *res;
+    struct addrinfo hints, *result;
     memset(&hints, 0, sizeof(hints));
     hints.ai_family = AF_INET;
     hints.ai_socktype = SOCK_STREAM;
 
-    if (getaddrinfo(sHost.c_str(), NULL, &hints, &res) != 0)
+    if (getaddrinfo(sHost.c_str(), NULL, &hints, &result) != 0)
         return false;
 
-    struct sockaddr_in *ipv4 = (struct sockaddr_in *)res->ai_addr;
+    struct sockaddr_in *ipv4 = (struct sockaddr_in *)result->ai_addr;
     m_SocketAddress.sin_addr = ipv4->sin_addr;
 
 
