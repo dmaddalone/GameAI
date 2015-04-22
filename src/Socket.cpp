@@ -26,7 +26,9 @@ bool Socket::Create()
         return false;
 #endif
 
-    m_nSocketID = ::socket(AF_INET, SOCK_STREAM, 0);
+    //m_nSocketID = socket(AF_INET, SOCK_STREAM, 0);
+    //m_nSocketID = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP);
+    m_nSocketID = socket(PF_INET, SOCK_STREAM, 0);
 
     if (!IsValid())
         return false;
@@ -133,23 +135,24 @@ int Socket::Recv(std::string& sMessage) const
 bool Socket::Connect(const std::string sHost, const int nPort)
 {
     // getaddrinfo variables
-    struct addrinfo hints, *result;
-    memset(&hints, 0, sizeof(hints));
-    hints.ai_family = AF_INET;
-    hints.ai_socktype = SOCK_STREAM;
+    //struct addrinfo hints, *result;
+    //memset(&hints, 0, sizeof(hints));
+    //hints.ai_family = AF_INET;
+    //hints.ai_socktype = SOCK_STREAM;
 
-    if (getaddrinfo(sHost.c_str(), NULL, &hints, &result) != 0)
-        return false;
+    //if (getaddrinfo(sHost.c_str(), NULL, &hints, &result) != 0)
+    //    return false;
 
-    struct sockaddr_in *ipv4 = (struct sockaddr_in *)result->ai_addr;
-    m_SocketAddress.sin_addr = ipv4->sin_addr;
-
+    //struct sockaddr_in *ipv4 = (struct sockaddr_in *)result->ai_addr;
+    //m_SocketAddress.sin_addr = ipv4->sin_addr;
 
     if (!IsValid())
         return false;
 
     m_SocketAddress.sin_family = AF_INET;
     m_SocketAddress.sin_port = htons(nPort);
+
+    m_SocketAddress.sin_addr.s_addr = inet_addr(sHost.c_str());
 
 
     //if (inet_pton(AF_INET, sHost.c_str(), &m_SocketAddress.sin_addr) != 1)
@@ -160,8 +163,23 @@ bool Socket::Connect(const std::string sHost, const int nPort)
 
     //nStatus = ::connect (m_nSock, (sockaddr *)&m_Addr, sizeof(m_Addr));
     //nStatus = connect(m_nSocketID, (sockaddr *)&m_SocketAddress, sizeof(m_SocketAddress));
+
+    /*
+    do
+    {
+        if (connect(m_nSocketID, (sockaddr *)&m_SocketAddress, sizeof(m_SocketAddress)) == -1)
+        {
+            if (WSAGetLastError() != WSAECONNREFUSED)
+                return false;
+        }
+    } while (true);
+    */
+
     if (connect(m_nSocketID, (sockaddr *)&m_SocketAddress, sizeof(m_SocketAddress)) == -1)
+    {
+        std::cerr << "Error when connecting " << WSAGetLastError() << std::endl;
         return false;
+    }
 
     //if (nStatus == 0)
     //    return true;

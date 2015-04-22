@@ -24,10 +24,11 @@ Client::Client(PlayerType ecPlayerType, std::string sHost, int nPort ) : Player(
     if (!Socket::Create())
         throw SocketException ("Could not create client socket.");
 
+    std::cout << "Connecting to server ..." << std::endl;
     if (!Socket::Connect(sHost, nPort))
         throw SocketException ("Could not connect to port.");
 
-    std::cout << "Client connected to host " << sHost << " on port " << nPort << std::endl;
+    std::cout << "Client connected to server " << sHost << " on port " << nPort << std::endl;
 }
 
 void Client::Initialize()

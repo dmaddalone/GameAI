@@ -32,6 +32,9 @@ DONE: Change ValidMove from (y, x) to (x, y); change name from ValidMove to OnBo
 					<Add option="-g" />
 					<Add directory="include" />
 				</Compiler>
+				<Linker>
+					<Add option="-lws2_32" />
+				</Linker>
 			</Target>
 			<Target title="Release">
 				<Option output="bin/Release/GameAI" prefix_auto="1" extension_auto="1" />
