@@ -46,7 +46,7 @@ class Client: private Socket, public Player
         ~Client() {};
 
         // Initializer
-        virtual void Initialize() override;
+        virtual void Initialize(bool &bSwap) override;
 
         // Generate the next game move
         virtual bool Move(Game &cGame) override;

@@ -31,8 +31,9 @@ Client::Client(PlayerType ecPlayerType, std::string sHost, int nPort ) : Player(
     std::cout << "Client connected to server " << sHost << " on port " << nPort << std::endl;
 }
 
-void Client::Initialize()
+void Client::Initialize(bool &bSwap)
 {
+    bSwap = false;
     std::string sCommand;
     std::string sMessage;
     std::string sToken;
@@ -118,6 +119,7 @@ void Client::Initialize()
     if (sToken.compare(std::to_string(2 - m_nPlayerNumber + 1)) != 0) // Player numbers are aligned
     {
         // change player numbers on the client
+        bSwap = true;
     }
     sMessage = "Server playing " + std::to_string((2 - stoi(sToken) + 1))  + " and client is playing " + sToken;
 }

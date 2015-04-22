@@ -103,6 +103,7 @@ class Game
         GameType Type()      { return m_ecGameType; }
         int  Player1()       { return m_knPlayer1; }
         int  Player2()       { return m_knPlayer2; }
+        GameMove LastMove    { return m_vGameMoves.back(); }
         int  Winner()        { return m_nWinner; };
         int  NumberOfMoves() { return m_nNumberOfMoves; }
         std::string WinBy()  { return m_sWinBy; }
@@ -114,6 +115,8 @@ class Game
 
         // Default game type
         GameType m_ecGameType {GameType::TYPE_NONE};
+
+        std::vector<GameMove> m_vGameMoves;
 
         // Current winning players
         int m_nWinner;//         {0};

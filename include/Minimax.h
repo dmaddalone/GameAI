@@ -46,7 +46,7 @@ class Minimax: public Player
         ~Minimax() {};
 
         // Initializer
-        virtual void Initialize() override {};
+        virtual void Initialize(bool &bSwap) override { (void)bSwap; };
 
         // Generate the next game move
         virtual bool Move(Game &cGame) override;

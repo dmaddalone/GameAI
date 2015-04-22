@@ -36,8 +36,9 @@ Server::Server(PlayerType ecPlayerType, int nPort) : Player(ecPlayerType)
         throw SocketException("Could not accept connection");
 }
 
-void Server::Initialize()
+void Server::Initialize(bool &bSwap)
 {
+    bSwap = false;
     std::string sCommand;
     std::string sMessage;
     std::string sToken;

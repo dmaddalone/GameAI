@@ -55,7 +55,7 @@ class Player
         virtual ~Player() {};
 
         // Player initialization
-        virtual void Initialize() = 0;
+        virtual void Initialize(bool &bSwap) = 0;
 
         // Player provides a move
         virtual bool Move(Game &pcGame) = 0;
@@ -78,6 +78,7 @@ class Player
         // Return the number of plies
         int  Plies()              { return m_nDepth; }
 
+        PlayerType GetPlayerType()            { return m_ecPlayerType; }
         void SetGameTitle(std::string sTitle) { m_sGameTitle = sTitle; }
         std::string GameTitle()               { return m_sGameTitle; }
 

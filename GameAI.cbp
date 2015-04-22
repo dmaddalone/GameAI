@@ -79,7 +79,7 @@ DONE: Change ValidMove from (y, x) to (x, y); change name from ValidMove to OnBo
 		<Unit filename="src/ConnectFour.cpp" />
 		<Unit filename="src/Game.cpp" />
 		<Unit filename="src/GameMove.cpp" />
-		<Unit filename="src/GameVoabulary.cpp" />
+		<Unit filename="src/GameVocabulary.cpp" />
 		<Unit filename="src/Human.cpp" />
 		<Unit filename="src/LinearGame.cpp" />
 		<Unit filename="src/Logger.cpp" />

@@ -310,8 +310,14 @@ int main(int argc, char* argv[])
     SetPlayers(argv[0], nPlies1, nPlies2, nVerbosity, pcGame->Title(), vPlayers);
 
     // Initialize players
-    vPlayers[0]->Initialize();
-    vPlayers[1]->Initialize();
+    bool bSwap0 = false;
+    bool bSwap1 = false;
+    vPlayers[0]->Initialize(bSwap0);
+    vPlayers[1]->Initialize(bSwap1);
+
+    // Swap players to match server players
+    if (bSwap0 || bSwap1)
+        std::iter_swap(vPlayers.begin() + 0, vPlayers.begin() + 1);
 
     // Announce game
     std::cout << "Playing " << pcGame->Title() << std::endl;
@@ -327,14 +333,21 @@ int main(int argc, char* argv[])
     }
 
     // Have each player play in turn
+    PlayerType PlayerType0 = vPlayers[0]->GetPlayerType();
+    PlayerType PlayerType1 = vPlayers[1]->GetPlayerType();
     while(true)
     {
         // Player 1 move
-        if (!vPlayers[0]->Move(*pcGame))
+        if ((PlayerType0 == PlayerType::TYPE_HUMAN) || (PlayerType0 == PlayerType::TYPE_MINIMAX))
         {
-            std::cerr << "Invalid move.  Exiting." << std::endl;
-            exit(EXIT_FAILURE);
+            if (!vPlayers[0]->Move(*pcGame))
+            {
+                std::cerr << "Invalid move.  Exiting." << std::endl;
+                exit(EXIT_FAILURE);
+            }
         }
+
+
 
         // Announce game score
         std::cout << pcGame->GameScore() << std::endl;

@@ -46,7 +46,7 @@ class Server: private Socket, public Player
         ~Server() {};
 
         // Initializer
-        virtual void Initialize() override;
+        virtual void Initialize(bool &bSwap) override;
 
         void Accept(Server&);
 

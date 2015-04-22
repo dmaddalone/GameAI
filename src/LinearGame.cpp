@@ -207,6 +207,7 @@ bool LinearGame::ApplyMove(int nPlayer, GameMove &cGameMove)
     // Apply move
     m_acGrid[cGameMove.ToY()][cGameMove.ToX()] = m_acTokens[nPlayer];
     ++m_nNumberOfMoves;
+    m_vGameMoves.push_back(cGameMove);
 
     return true;
 }
