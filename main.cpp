@@ -333,21 +333,14 @@ int main(int argc, char* argv[])
     }
 
     // Have each player play in turn
-    PlayerType PlayerType0 = vPlayers[0]->GetPlayerType();
-    PlayerType PlayerType1 = vPlayers[1]->GetPlayerType();
     while(true)
     {
         // Player 1 move
-        if ((PlayerType0 == PlayerType::TYPE_HUMAN) || (PlayerType0 == PlayerType::TYPE_MINIMAX))
+        if (!vPlayers[0]->Move(*pcGame))
         {
-            if (!vPlayers[0]->Move(*pcGame))
-            {
-                std::cerr << "Invalid move.  Exiting." << std::endl;
-                exit(EXIT_FAILURE);
-            }
+            std::cerr << "Invalid move.  Exiting." << std::endl;
+            exit(EXIT_FAILURE);
         }
-
-
 
         // Announce game score
         std::cout << pcGame->GameScore() << std::endl;

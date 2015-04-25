@@ -26,20 +26,12 @@
 #ifndef SERVER_H
 #define SERVER_H
 
-#include "Player.h"
-#include "Socket.h"
-#include "SocketException.h"
-#include "Game.h"
-#include "GameMove.h"
-#include "Logger.h"
-#include "GameVocabulary.h"
-#include "GameAIException.h"
+#include "NetworkPlayer.h"
 
-class Server: private Socket, public Player
+class Server: public NetworkPlayer
 {
     public:
         // Construct a server player
-        //Server(PlayerType ecPlayerType, int nPort) : Player(ecPlayerType) {};
         Server(PlayerType ecPlayerType, int nPort);
 
         // Destructor
@@ -47,11 +39,6 @@ class Server: private Socket, public Player
 
         // Initializer
         virtual void Initialize(bool &bSwap) override;
-
-        void Accept(Server&);
-
-        // Generate the next game move
-        virtual bool Move(Game &cGame) override;
 
         // Announce the type pf player
         std::string TypeName() { return "Server"; }

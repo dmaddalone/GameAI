@@ -25,31 +25,20 @@
  * \brief The Client class represents a client game player.
  *
  */
-#include <string>
 
-#include "Player.h"
-#include "Socket.h"
-#include "SocketException.h"
-#include "Game.h"
-#include "GameMove.h"
-#include "Logger.h"
-#include "GameVocabulary.h"
-#include "GameAIException.h"
+#include "NetworkPlayer.h"
 
-class Client: private Socket, public Player
+class Client: public NetworkPlayer
 {
     public:
         // Construct a client player
         Client(PlayerType ecPlayerType, std::string sHost, int nPort);
 
         // Destructor
-        ~Client() {};
+        ~Client() {}
 
         // Initializer
         virtual void Initialize(bool &bSwap) override;
-
-        // Generate the next game move
-        virtual bool Move(Game &cGame) override;
 
         // Announce the type pf player
         std::string TypeName() { return "Client"; }

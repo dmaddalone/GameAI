@@ -147,11 +147,14 @@ GameMove LinearGame::GetMove(int nPlayer) const
     (void)nPlayer;
 
     std::string sMove {};
-    GameMove cGameMove;
+    //GameMove cGameMove;
 
     std::cin >> sMove;
 
-    cGameMove.SetToX(tolower(sMove[0]) - m_kcXCoordinate);
+    return GenerateMove(sMove);
+/*
+    //cGameMove.SetToX(tolower(sMove[0]) - m_kcXCoordinate);
+    cGameMove.SetToX(sMove[0], m_kcXCoordinate);
 
     sMove.erase(0,1);
 
@@ -159,11 +162,12 @@ GameMove LinearGame::GetMove(int nPlayer) const
     {
         try
         {
-            cGameMove.SetToY(std::stoi(sMove, nullptr) - 1);
+            //cGameMove.SetToY(std::stoi(sMove, nullptr) - 1);
+            cGameMove.SetToY(sMove[0]);
         }
         catch (...)
         {
-            cGameMove.SetFromY(-1);
+            cGameMove.SetToY(-1);
         }
 
     }
@@ -173,6 +177,37 @@ GameMove LinearGame::GetMove(int nPlayer) const
     }
 
     return cGameMove;
+*/
+}
+
+/*
+* TODO
+*/
+GameMove LinearGame::GenerateMove(std::string sMove) const
+{
+    GameMove cGameMove;
+
+    cGameMove.SetToX(sMove[0], m_kcXCoordinate);
+
+    sMove.erase(0,1);
+    if (sMove.length() > 0)
+    {
+        try
+        {
+            //cGameMove.SetToY(std::stoi(sMove, nullptr) -1);
+            cGameMove.SetToY(sMove[0]);
+        }
+        catch (...)
+        {
+            cGameMove.SetToY(-1);
+        }
+    }
+    else
+    {
+        cGameMove.SetToY(-1);
+    }
+
+   return cGameMove;
 }
 
 /**

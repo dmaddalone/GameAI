@@ -61,6 +61,8 @@ class LinearGame : public Game
         virtual std::string ValidMoves(int nPlayer) const override;
         // Get the move from the designated player
         virtual GameMove GetMove(int nPlayer) const override;
+        // Generate a GameMove from text input
+        virtual GameMove GenerateMove(std::string sMove) const override;
         // Provide a preferred move
         virtual int  PreferredMove(const GameMove &cGameMove) const override;
         // Return the score of the game

@@ -58,7 +58,13 @@ class Player
         virtual void Initialize(bool &bSwap) = 0;
 
         // Player provides a move
-        virtual bool Move(Game &pcGame) = 0;
+        virtual bool Move(Game &cGame) = 0;
+
+        // Player sends last move to networked player
+        virtual bool SendLastMove(Game &cGame) = 0;
+
+        // Player receives last move from networked player
+        virtual bool RecvLastMove(Game &cGame) = 0;
 
         // Return the type of player as a string
         virtual std::string TypeName()  = 0;
@@ -78,7 +84,7 @@ class Player
         // Return the number of plies
         int  Plies()              { return m_nDepth; }
 
-        PlayerType GetPlayerType()            { return m_ecPlayerType; }
+        // Set and get game title
         void SetGameTitle(std::string sTitle) { m_sGameTitle = sTitle; }
         std::string GameTitle()               { return m_sGameTitle; }
 

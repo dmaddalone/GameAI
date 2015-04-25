@@ -15,7 +15,6 @@ Socket::~Socket()
         close(m_nSocketID);
 #endif // defined
 
-
 }
 
 bool Socket::Create()
@@ -93,15 +92,9 @@ bool Socket::Accept()
 
 bool Socket::Send(const std::string sMessage) const
 {
-    //int nStatus = ::send(m_nSock, sMessage.c_str(), sMessage.size(), MSG_NOSIGNAL );
-    //int nStatus = send(m_nSocketID, sMessage.c_str(), sMessage.size(), MSG_NOSIGNAL );
-    //int nStatus = send(m_nSocketID, sMessage.c_str(), sMessage.size(), 0);
-    //if (send(m_nSocketID, sMessage.c_str(), sMessage.size(), 0) == -1)
     if (send(m_nSendRecvSocketID, sMessage.c_str(), sMessage.size(), 0) == -1)
-    //if ( nStatus == -1 )
         return false;
 
-    //else
     return true;
 }
 
@@ -112,8 +105,6 @@ int Socket::Recv(std::string& sMessage) const
 
     sMessage = ""; // TODO: Why not use cBuf and get rid of sMessage?
 
-    //int nStatus = ::recv(m_nSock, cBuf, MAXRECV, 0);
-    //int nStatus = recv(m_nServerSocketID, cBuf, MAXRECV, 0);
     int nStatus = recv(m_nSendRecvSocketID, cBuf, MAXRECV, 0);
 
     if (nStatus == -1)

@@ -95,10 +95,11 @@ GameAI/src/Human.cpp              -- Human player
 GameAI/src/LinearGame.cpp         -- Virtual linear game
 GameAI/src/Logger.cpp             -- Support logging
 GameAI/src/Minimax.cpp            -- The computer player
+GameAI/src/NetworkPlayer.cpp      -- Parent class for Server and Client
 GameAI/src/Player.cpp             -- Virtual game player
 GameAI/src/Reversi.cpp            -- Reversi game
 GameAI/src/Server.cpp            -- Server player (proxy for client)
-GameAI/src/Socket.cpp            -- Socket parent class for Server and Client
+GameAI/src/Socket.cpp            -- Socket parent class NetworkPlayer
 GameAI/src/TTT.cpp                -- Tic-Tac-Toe game
 
 GameAI/include/Client.h       
@@ -112,6 +113,7 @@ GameAI/include/Human.h
 GameAI/include/LinearGame.h
 GameAI/include/Logger.h
 GameAI/include/Minimax.h
+GameAI/include/NetworkPlayer.h
 GameAI/include/Player.h
 GameAI/include/Reversi.h
 GameAI/include/Server.h

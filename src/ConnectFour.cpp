@@ -64,12 +64,32 @@ GameMove ConnectFour::GetMove(int nPlayer) const
 {
     (void)nPlayer;
 
-    char     cMove {};
+    //char     cMove {};
+    std::string  sMove {};
+    //GameMove cGameMove;
+
+    //std::cin >> cMove;
+    std::cin >> sMove;
+
+    //return GenerateMove(cMove);
+    return GenerateMove(sMove);
+    /*
+
+    //cGameMove.SetToX(cMove - m_kcXCoordinate);
+    cGameMove.SetToX(cMove, m_kcXCoordinate);
+
+    return cGameMove;
+    */
+}
+
+/*
+* TODO
+*/
+GameMove ConnectFour::GenerateMove(std::string sMove) const
+{
     GameMove cGameMove;
 
-    std::cin >> cMove;
-
-    cGameMove.SetToX(cMove - m_kcXCoordinate);
+    cGameMove.SetToX(sMove[0], m_kcXCoordinate);
 
     return cGameMove;
 }

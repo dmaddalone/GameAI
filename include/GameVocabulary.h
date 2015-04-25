@@ -35,6 +35,8 @@ namespace GameVocabulary
     static const std::string ESTABLISH_GAME                 {"ESTABLISH_GAME"};
     static const std::string REQUEST_CLIENT_PLAYER_NUMBER   {"REQUEST_CLIENT_PLAYER_NUMBER"};
     static const std::string ESTABLISH_CLIENT_PLAYER_NUMBER {"ESTABLISH_CLIENT_PLAYER_NUMBER"};
+    static const std::string START_GAME                     {"START_GAME"};
+    static const std::string MOVE                           {"MOVE"};
     static const std::string CONFIRM                        {"CONFIRM"};
     static const std::string UNCONFIRM                      {"UNCONFIRM"};
 

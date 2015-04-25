@@ -19,7 +19,7 @@
 
 #include "Client.h"
 
-Client::Client(PlayerType ecPlayerType, std::string sHost, int nPort ) : Player(ecPlayerType)
+Client::Client(PlayerType ecPlayerType, std::string sHost, int nPort ) : NetworkPlayer(ecPlayerType)
 {
     if (!Socket::Create())
         throw SocketException ("Could not create client socket.");
@@ -35,7 +35,7 @@ void Client::Initialize(bool &bSwap)
 {
     bSwap = false;
     std::string sCommand;
-    std::string sMessage;
+    std::string sErrorMessage;
     std::string sToken;
 
     // Step  Client                         Server
@@ -48,16 +48,14 @@ void Client::Initialize(bool &bSwap)
     // 6.                                   Receive Request Player Number
     // 7.                                   Send Client Player Number
     // 8.    Receive Client Player Number
-    // 9.    Send Start Game
-    // 10.                                  Receive Start Game
 
     // 1. Send Establish Game
     std::cout << "Establishing game of " << GameTitle() << " with server." << std::endl;
     sCommand = GameVocabulary::ESTABLISH_GAME + GameVocabulary::DELIMETER + GameTitle();
     if (!Socket::Send(sCommand))
     {
-        sMessage = "Could not send command: " + sCommand;
-        throw SocketException(sMessage);
+        sErrorMessage = "Could not send command: " + sCommand;
+        throw SocketException(sErrorMessage);
     }
 
     // 4. Receive Confirm
@@ -69,19 +67,19 @@ void Client::Initialize(bool &bSwap)
     {
         if (sToken.compare(GameVocabulary::UNCONFIRM) == 0)
         {
-            sMessage  = "Server did not confirm game of " + GameTitle();
-            std::cerr << sMessage;
+            sErrorMessage  = "Server did not confirm game of " + GameTitle();
+            std::cerr << sErrorMessage << std::endl;
             std::cout << "Exiting";
             Socket::Send(GameVocabulary::FATAL_EXIT);
-            throw GameAIException(sMessage);
+            throw GameAIException(sErrorMessage);
         }
         else
         {
-            sMessage  = "Expected command " + GameVocabulary::CONFIRM + ", but received " + sToken;
-            std::cerr << sMessage;
-            std::cout << "Exiting";
+            sErrorMessage  = "Expected command " + GameVocabulary::CONFIRM + ", but received " + sCommand;
+            std::cerr << sErrorMessage << std::endl;
+            std::cout << "Exiting" << std::endl;
             Socket::Send(GameVocabulary::FATAL_EXIT);
-            throw GameAIException(sMessage);
+            throw GameAIException(sErrorMessage);
         }
     }
 
@@ -90,22 +88,22 @@ void Client::Initialize(bool &bSwap)
     sCommand = GameVocabulary::REQUEST_CLIENT_PLAYER_NUMBER;
     if (!Socket::Send(sCommand))
     {
-        sMessage = "Could not send command: " + sCommand;
-        throw SocketException(sMessage);
+        sErrorMessage = "Could not send command: " + sCommand;
+        throw SocketException(sErrorMessage);
     }
 
-    // 8. Receive Client Player Number TODO
+    // 8. Receive Client Player Number
     if (!Socket::Recv(sCommand) < 0)
         throw SocketException("Did not receive player number");
 
     sToken = GameVocabulary::ParseCommand(sCommand);
     if (sToken.compare(GameVocabulary::ESTABLISH_CLIENT_PLAYER_NUMBER) != 0)
     {
-        sMessage  = "Expected command " + GameVocabulary::ESTABLISH_CLIENT_PLAYER_NUMBER + ", but received " + sToken;
-        std::cerr << sMessage;
-        std::cout << "Exiting";
+        sErrorMessage  = "Expected command " + GameVocabulary::ESTABLISH_CLIENT_PLAYER_NUMBER + ", but received " + sCommand;
+        std::cerr << sErrorMessage << std::endl;
+        std::cout << "Exiting" << std::endl;
         Socket::Send(GameVocabulary::FATAL_EXIT);
-        throw GameAIException(sMessage);
+        throw GameAIException(sErrorMessage);
     }
 
     // Server will establish client's player number as the opposite of what the client
@@ -121,57 +119,4 @@ void Client::Initialize(bool &bSwap)
         // change player numbers on the client
         bSwap = true;
     }
-    sMessage = "Server playing " + std::to_string((2 - stoi(sToken) + 1))  + " and client is playing " + sToken;
-}
-
-/**
-  * Generate the next game move.
-  *
-  * Use GameMove to collect the next game move from a server player.
-  *
-  * \param cGame The game.
-  *
-  * \return True, if a move has been made or no move to make.
-  */
-
-bool Client::Move(Game &cGame)
-{
-    GameMove cGameMove;
-
-    // Show valid moves at proper logging level.
-    if (m_cLogger.Level() >= 1)
-    {
-        cGame.Display();
-        std::cout << "Valid moves: " << cGame.ValidMoves(m_nPlayerNumber) << std::endl;
-    }
-
-    // Generate all possible valid moves for this player
-    std::vector<GameMove> vGameMoves = cGame.GenerateMoves(m_nPlayerNumber);
-
-    // If no valid moves are possible, return true
-    if (vGameMoves.empty())
-    {
-        return true;
-    }
-
-    do
-    {
-        std::cout << "Player " << m_nPlayerNumber << ", enter move: ";
-
-        // Get move from human player.
-        cGameMove = cGame.GetMove(m_nPlayerNumber);
-
-        // Test move for validity.
-        if (!cGame.ApplyMove(m_nPlayerNumber, cGameMove))
-        {
-            std::cout << "Invalid move" << std::endl;
-        }
-        else
-        {
-            break;
-        }
-
-    } while(true);
-
-    return true;
 }

@@ -67,6 +67,9 @@ class Game
         // Get the move from the designated player
         virtual GameMove GetMove(int nPlayer) const = 0;
 
+        // Generate a GameMove from text input
+        virtual GameMove GenerateMove(std::string sMove) const = 0;
+
         // Announce the move made
         virtual std::string AnnounceMove(int nPlayer, const GameMove &cGameMove) const = 0;
 
@@ -103,7 +106,7 @@ class Game
         GameType Type()      { return m_ecGameType; }
         int  Player1()       { return m_knPlayer1; }
         int  Player2()       { return m_knPlayer2; }
-        GameMove LastMove    { return m_vGameMoves.back(); }
+        GameMove LastMove()  { return m_vGameMoves.back(); }
         int  Winner()        { return m_nWinner; };
         int  NumberOfMoves() { return m_nNumberOfMoves; }
         std::string WinBy()  { return m_sWinBy; }

@@ -51,6 +51,12 @@ class Minimax: public Player
         // Generate the next game move
         virtual bool Move(Game &cGame) override;
 
+        // Player sends last move to networked player - not used in Minimax
+        virtual bool SendLastMove(Game &cGame) override { (void)cGame; return false; }
+
+        // Player receives last move from networked player - not used in Minimax
+        virtual bool RecvLastMove(Game &cGame) override { (void)cGame; return false; }
+
         // Announce the type pf player
         std::string TypeName() { return "Minimax"; }
 

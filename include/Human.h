@@ -36,16 +36,22 @@ class Human: public Player
 {
     public:
         // Construct a human player
-        Human(PlayerType ecPlayerType) : Player(ecPlayerType) {};
+        Human(PlayerType ecPlayerType) : Player(ecPlayerType) {}
 
         // Destructor
-        ~Human() {};
+        ~Human() {}
 
         // Initializer
-        virtual void Initialize(bool &bSwap) override { (void)bSwap; };
+        virtual void Initialize(bool &bSwap) override { (void)bSwap; }
 
         // Generate the next game move
         virtual bool Move(Game &cGame) override;
+
+        // Player sends last move to networked player - not used in Human
+        virtual bool SendLastMove(Game &cGame) override { (void)cGame; return false; }
+
+        // Player receives last move from networked player - not used in Human
+        virtual bool RecvLastMove(Game &cGame) override { (void)cGame; return false; }
 
         // Announce the type pf player
         std::string TypeName() { return "Human"; }
