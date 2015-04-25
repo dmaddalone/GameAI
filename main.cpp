@@ -48,16 +48,21 @@ static void ShowUsage(std::string sName)
               << "Required Options:\n"
               << "    -1 TYPE,  --player1=TYPE  assign TYPE of player to Player 1\n"
               << "    -2 TYPE,  --player2=TYPE  assign TYPE of player to Player 2\n"
-              << "    -p PLIES, --plies=PLIES   assign the number of PLIES that non-human players will use\n"
-              << "              --plies1=PLIES  assign the number of PLIES to Player 1, if non-human\n"
-              << "              --plies2=PLIES  assign the number of PLIES to Player 2, if non-human\n"
+
               << "    -g GAME,  --game=GAME     play GAME"
-              << "\nNon Required Options:\n"
-              << "    -h,       --help          display this help message and exit\n"
+              << "\n\nNon Required Options:\n"
+              << "              --port=PORT     port for network communications.  Required for TYPE of server and client.\n"
+              << "    -h,       --host=HOSTNAME host address or name of the server.  Required for TYPE server.\n"
+              << "    -H,       --help          display this help message and exit\n"
+              << "    -p PLIES, --plies=PLIES   assign the number of PLIES that minimax players will use\n"
+              << "              --plies1=PLIES  assign the number of PLIES to Player 1, if minimax\n"
+              << "              --plies2=PLIES  assign the number of PLIES to Player 2, if minimax\n"
               << "    -v LEVEL, --verbose=LEVEL display game information\n"
               << "    -V,       --version       display version and exit\n"
               << "\n"
-              << "TYPE is either human or minimax\n"
+              << "PORT is a port specification for a server and client to communicate over.  The default is 60000.\n"
+              << "HOST is a host name or address for a server.  The default is 127.0.0.1.\n"
+              << "TYPE is either human, minimax, client, or server.\n"
               << "PLIES are from 1 to 9.  The default is 4.\n"
               << "GAME is ttt, connectfour, or reversi.\n"
               << "LEVEL is an integer 0 to 3.  The default is 1.\n"
@@ -65,6 +70,11 @@ static void ShowUsage(std::string sName)
               << "    1 = display game move-by-move\n"
               << "    2 = display AI scoring of moves and basic network communications\n"
               << "    3 = display AI evaluation of moves\n"
+              << "\n"
+              << "Examples:\n"
+              << "GameAI -1 human -2 minimax -g ttt\n\n"
+              << "GameAI -1 human  -2 client --port=60001 -g connecfour\n"
+              << "GameAI -1 server -2 human  --port=60001 --host=192.168.0.1 -g connecfour\n"
               << std::endl;
 }
 
@@ -145,8 +155,10 @@ static std::unique_ptr<Game> SetGame(char* pcGame)
   *
   */
 
-static void SetPlayers(std::string sName, int nPlies1, int nPlies2, int nVerbosity, std::string sGameTitle, std::vector<std::unique_ptr<Player>> &vPlayers)
+static void SetPlayers(std::string sName, int nPlies1, int nPlies2, int nVerbosity, std::string sGameTitle,
+                       std::string sHost, int nPort, std::vector<std::unique_ptr<Player>> &vPlayers)
 {
+    // Set verbosity
     if (nVerbosity >= 0 && nVerbosity <= 3)
     {
         vPlayers[0]->SetVerbosity(nVerbosity);
@@ -158,6 +170,7 @@ static void SetPlayers(std::string sName, int nPlies1, int nPlies2, int nVerbosi
         exit(EXIT_FAILURE);
     }
 
+    // Set number of plies for minimax players
     if (nPlies1 > 0 && nPlies1 <= 9)
     {
         vPlayers[0]->SetPlies(nPlies1);
@@ -178,8 +191,19 @@ static void SetPlayers(std::string sName, int nPlies1, int nPlies2, int nVerbosi
         exit(EXIT_FAILURE);
     }
 
+    // Set game title
     vPlayers[0]->SetGameTitle(sGameTitle);
     vPlayers[1]->SetGameTitle(sGameTitle);
+
+    // Initialize players
+    bool bSwap0 = false;
+    bool bSwap1 = false;
+    vPlayers[0]->Initialize(sHost, nPort, bSwap0);
+    vPlayers[1]->Initialize(sHost, nPort, bSwap1);
+
+    // Swap players to match server players
+    if (bSwap0 || bSwap1)
+        std::iter_swap(vPlayers.begin() + 0, vPlayers.begin() + 1);
 }
 
 /**
@@ -195,9 +219,11 @@ int main(int argc, char* argv[])
 {
     std::vector<std::unique_ptr<Player>> vPlayers;
     std::unique_ptr<Game> pcGame {};
-    int  nPlies1    {4};
-    int  nPlies2    {4};
-    int  nVerbosity {1};
+    int  nPlies1      {4};
+    int  nPlies2      {4};
+    int nPort         {60000};
+    std::string sHost {"127.0.0.1"};
+    int  nVerbosity   {1};
 
     // Check for command line arguments
     if (argc < 2)
@@ -217,8 +243,10 @@ int main(int argc, char* argv[])
         {"plies1",  required_argument, nullptr, 'x'},
         {"plies2",  required_argument, nullptr, 'y'},
         {"game",    required_argument, nullptr, 'g'},
-        {"help",    no_argument,       nullptr, 'h'},
+        {"port",    required_argument, nullptr, 't'},
+        {"host",    required_argument, nullptr, 'h'},
         {"verbose", required_argument, nullptr, 'v'},
+        {"help",    no_argument,       nullptr, 'H'},
         {"version", no_argument,       nullptr, 'V'},
         {NULL,      0,                 nullptr,  0}
     };
@@ -226,35 +254,10 @@ int main(int argc, char* argv[])
     // Execute getopt_long
     int nC = 0;
     int nOptionIndex = 0;
-    while ((nC = getopt_long(argc, argv, "1:2:p:g:x:y:hv:V", stLongOptions, &nOptionIndex)) != -1)
+    while ((nC = getopt_long(argc, argv, "1:2:p:x:y:g:t:h:v:HV", stLongOptions, &nOptionIndex)) != -1)
     {
         switch (nC)
         {
-            // Help
-            case 'h':
-                ShowUsage(argv[0]);
-                exit(EXIT_SUCCESS);
-                break;
-            // Verbosity
-            case 'v':
-                if (optarg)
-                {
-                    if (isdigit(optarg[0]))
-                    {
-                        nVerbosity = atoi(optarg);
-                    }
-                    else
-                    {
-                        ShowUsage(argv[0]);
-                        exit (EXIT_FAILURE);
-                    }
-                }
-                break;
-            // Version
-            case 'V':
-                ShowVersion();
-                exit(EXIT_SUCCESS);
-                break;
             // Player 1
             case '1':
                 if (!SetPlayerType(optarg, vPlayers))
@@ -287,6 +290,39 @@ int main(int argc, char* argv[])
             case 'g':
                 pcGame = SetGame(optarg);
                 break;
+            // Port
+            case 't':
+                nPort = atoi(optarg);
+                break;
+            // Host
+            case 'h':
+                sHost = optarg;
+                break;
+            // Verbosity
+            case 'v':
+                if (optarg)
+                {
+                    if (isdigit(optarg[0]))
+                    {
+                        nVerbosity = atoi(optarg);
+                    }
+                    else
+                    {
+                        ShowUsage(argv[0]);
+                        exit (EXIT_FAILURE);
+                    }
+                }
+                break;
+            // Help
+            case 'H':
+                ShowUsage(argv[0]);
+                exit(EXIT_SUCCESS);
+                break;
+            // Version
+            case 'V':
+                ShowVersion();
+                exit(EXIT_SUCCESS);
+                break;
             // Help
             case '?':
                 ShowUsage(argv[0]);
@@ -307,17 +343,7 @@ int main(int argc, char* argv[])
     }
 
     // Set player parameters
-    SetPlayers(argv[0], nPlies1, nPlies2, nVerbosity, pcGame->Title(), vPlayers);
-
-    // Initialize players
-    bool bSwap0 = false;
-    bool bSwap1 = false;
-    vPlayers[0]->Initialize(bSwap0);
-    vPlayers[1]->Initialize(bSwap1);
-
-    // Swap players to match server players
-    if (bSwap0 || bSwap1)
-        std::iter_swap(vPlayers.begin() + 0, vPlayers.begin() + 1);
+    SetPlayers(argv[0], nPlies1, nPlies2, nVerbosity, pcGame->Title(), sHost, nPort, vPlayers);
 
     // Announce game
     std::cout << "Playing " << pcGame->Title() << std::endl;

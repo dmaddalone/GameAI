@@ -42,13 +42,13 @@ class NetworkPlayer: public Socket, public Player
     public:
         // Construct a client player
         NetworkPlayer(PlayerType ecPlayerType);
-        //NetworkPlayer() {}
 
         // Destructor
         virtual ~NetworkPlayer() {}
 
-        // Initializer
-        virtual void Initialize(bool &bSwap) = 0;
+        //// Initializer
+        //virtual void Initialize(bool &bSwap) = 0;
+        virtual void Initialize(std::string sHost, int nPort, bool &bSwap) override { (void)sHost; (void)nPort; (void)bSwap; }
 
         // Generate the next game move
         virtual bool Move(Game &cGame) override;
@@ -59,8 +59,8 @@ class NetworkPlayer: public Socket, public Player
         // Player receives last move from networked player
         bool RecvLastMove(Game &cGame);
 
-        //// Announce the type pf player
-        //std::string TypeName() { return "Client"; }
+        //// Player declares a win
+        //virtual void DeclareWin() override;
 
         bool Sending()        { return m_bSetToSend; }
         bool Receiving()      { return !m_bSetToSend; }

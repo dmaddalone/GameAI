@@ -32,13 +32,14 @@ class Client: public NetworkPlayer
 {
     public:
         // Construct a client player
-        Client(PlayerType ecPlayerType, std::string sHost, int nPort);
+        Client(PlayerType ecPlayerType);
 
         // Destructor
         ~Client() {}
 
         // Initializer
-        virtual void Initialize(bool &bSwap) override;
+        //virtual void Initialize(bool &bSwap) override;
+        virtual void Initialize(std::string sHost, int nPort, bool &bSwap) override;
 
         // Announce the type pf player
         std::string TypeName() { return "Client"; }

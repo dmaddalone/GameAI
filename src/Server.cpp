@@ -19,8 +19,18 @@
 
 #include "Server.h"
 
-Server::Server(PlayerType ecPlayerType, int nPort) : NetworkPlayer(ecPlayerType)
+Server::Server(PlayerType ecPlayerType) : NetworkPlayer(ecPlayerType)
+{}
+
+void Server::Initialize(std::string sHost, int nPort, bool &bSwap)
 {
+    (void)sHost;
+
+    bSwap = false;
+    std::string sCommand;
+    std::string sErrorMessage;
+    std::string sToken;
+
     if (!Socket::Create())
         throw SocketException("Could not create server socket");
 
@@ -30,18 +40,10 @@ Server::Server(PlayerType ecPlayerType, int nPort) : NetworkPlayer(ecPlayerType)
     if (!Socket::Listen())
         throw SocketException("Could not listen to socket");
 
-    std::cout << "Server lisenting on port " << nPort << std::endl;
+    std::cout << "Server listening on port " << nPort << std::endl;
 
     if (!Socket::Accept())
         throw SocketException("Could not accept connection");
-}
-
-void Server::Initialize(bool &bSwap)
-{
-    bSwap = false;
-    std::string sCommand;
-    std::string sErrorMessage;
-    std::string sToken;
 
     // Step  Client                         Server
     // ----  ---------------------          ------------------------

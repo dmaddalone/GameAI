@@ -55,16 +55,15 @@ class Player
         virtual ~Player() {};
 
         // Player initialization
-        virtual void Initialize(bool &bSwap) = 0;
+        //virtual void Initialize(bool &bSwap) = 0;
+        //void Initialize(std::string sHost, int nPort, bool &bSwap) { (void)sHost, (void)nPort, (void)bSwap; }
+        virtual void Initialize(std::string sHost, int nPort, bool &bSwap) = 0;
 
         // Player provides a move
         virtual bool Move(Game &cGame) = 0;
 
-        // Player sends last move to networked player
-        virtual bool SendLastMove(Game &cGame) = 0;
-
-        // Player receives last move from networked player
-        virtual bool RecvLastMove(Game &cGame) = 0;
+        //// Player declares a win
+        //virtual void DeclareWin() = 0;
 
         // Return the type of player as a string
         virtual std::string TypeName()  = 0;

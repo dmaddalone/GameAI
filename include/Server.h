@@ -32,13 +32,14 @@ class Server: public NetworkPlayer
 {
     public:
         // Construct a server player
-        Server(PlayerType ecPlayerType, int nPort);
+        Server(PlayerType ecPlayerType);
 
         // Destructor
         ~Server() {};
 
         // Initializer
-        virtual void Initialize(bool &bSwap) override;
+        //virtual void Initialize(bool &bSwap) override;
+        virtual void Initialize(std::string sHost, int nPort, bool &bSwap) override;
 
         // Announce the type pf player
         std::string TypeName() { return "Server"; }

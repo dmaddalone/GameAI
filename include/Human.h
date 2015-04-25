@@ -42,16 +42,13 @@ class Human: public Player
         ~Human() {}
 
         // Initializer
-        virtual void Initialize(bool &bSwap) override { (void)bSwap; }
+        virtual void Initialize(std::string sHost, int nPort, bool &bSwap) override { (void)sHost; (void)nPort; (void)bSwap; }
 
         // Generate the next game move
         virtual bool Move(Game &cGame) override;
 
-        // Player sends last move to networked player - not used in Human
-        virtual bool SendLastMove(Game &cGame) override { (void)cGame; return false; }
-
-        // Player receives last move from networked player - not used in Human
-        virtual bool RecvLastMove(Game &cGame) override { (void)cGame; return false; }
+        //// Player declares a win
+        //virtual void DeclareWin() override {}
 
         // Announce the type pf player
         std::string TypeName() { return "Human"; }

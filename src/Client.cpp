@@ -19,8 +19,16 @@
 
 #include "Client.h"
 
-Client::Client(PlayerType ecPlayerType, std::string sHost, int nPort ) : NetworkPlayer(ecPlayerType)
+Client::Client(PlayerType ecPlayerType) : NetworkPlayer(ecPlayerType)
+{}
+
+void Client::Initialize(std::string sHost, int nPort, bool &bSwap)
 {
+    bSwap = false;
+    std::string sCommand;
+    std::string sErrorMessage;
+    std::string sToken;
+
     if (!Socket::Create())
         throw SocketException ("Could not create client socket.");
 
@@ -29,14 +37,6 @@ Client::Client(PlayerType ecPlayerType, std::string sHost, int nPort ) : Network
         throw SocketException ("Could not connect to port.");
 
     std::cout << "Client connected to server " << sHost << " on port " << nPort << std::endl;
-}
-
-void Client::Initialize(bool &bSwap)
-{
-    bSwap = false;
-    std::string sCommand;
-    std::string sErrorMessage;
-    std::string sToken;
 
     // Step  Client                         Server
     // ----  ---------------------          ------------------------

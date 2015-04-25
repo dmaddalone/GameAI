@@ -47,9 +47,9 @@ std::unique_ptr<Player> Player::MakePlayer(PlayerType ecPlayerType)
         case PlayerType::TYPE_MINIMAX:
             return std::unique_ptr<Player>(new Minimax(ecPlayerType));
         case PlayerType::TYPE_SERVER:
-            return std::unique_ptr<Player>(new Server(ecPlayerType, 60000));
+            return std::unique_ptr<Player>(new Server(ecPlayerType));
         case PlayerType::TYPE_CLIENT:
-            return std::unique_ptr<Player>(new Client(ecPlayerType, "127.0.0.1", 60000));
+            return std::unique_ptr<Player>(new Client(ecPlayerType));
         default:
             return nullptr;
     }

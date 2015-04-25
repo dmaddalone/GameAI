@@ -19,7 +19,7 @@
 
 #include <unistd.h>
 
-const int MAXHOSTNAME = 200;
+//const int MAXHOSTNAME = 200;
 const int BACKLOG = 5;
 const int MAXRECV = 500;
 

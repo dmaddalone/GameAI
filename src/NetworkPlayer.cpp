@@ -42,6 +42,12 @@ bool NetworkPlayer::Move(Game &cGame)
 // TODO: Cleanup logic
     if (m_nPlayerNumber == 2)  // Network Player #2
     {
+            // Show valid moves at proper logging level.
+        if (m_cLogger.Level() >= 1)
+        {
+            cGame.Display();
+        }
+
         if (!SendLastMove(cGame)) // Send Player #1 last move
             return false;
 
@@ -53,7 +59,10 @@ bool NetworkPlayer::Move(Game &cGame)
     {
         if (Sending())
         {
-            //SetToReceiving();  // For next turn
+            if (m_cLogger.Level() >= 1)
+            {
+                cGame.Display();
+            }
 
             if (!SendLastMove(cGame)) // Send Player #2 last move
                 return false;
@@ -117,7 +126,6 @@ bool NetworkPlayer::SendLastMove(Game &cGame)
     return true;
 }
 
-
 bool NetworkPlayer::RecvLastMove(Game &cGame)
 {
     GameMove cGameMove;
@@ -133,11 +141,29 @@ bool NetworkPlayer::RecvLastMove(Game &cGame)
     sToken = GameVocabulary::ParseCommand(sCommand);
     if (sToken.compare(GameVocabulary::MOVE) != 0)
     {
-        sErrorMessage  = "Expected command " + GameVocabulary::MOVE + ", but received " + sCommand;
-        std::cerr << sErrorMessage << std::endl;
-        std::cout << "Exiting" << std::endl;
-        Socket::Send(GameVocabulary::FATAL_EXIT);
-        throw GameAIException(sErrorMessage);
+        if (sToken.compare(GameVocabulary::FATAL_EXIT) == 0)
+        {
+            sErrorMessage = "Opponent experienced a fatal error.";
+            std::cerr << sErrorMessage << std::endl;
+            std::cout << "Exiting." << std::endl;
+            exit(EXIT_FAILURE);
+        }
+        else if (sToken.compare(GameVocabulary::DECLARE_WIN) == 0)
+        {
+            //sErrorMessage = "Opponent won.";
+            //std::cerr << sErrorMessage << std::endl;
+            //std::cout << "Exiting." << std::endl;
+            //exit(EXIT_SUCCESS);
+            return true;
+        }
+        else
+        {
+            sErrorMessage  = "Expected command " + GameVocabulary::MOVE + ", but received " + sCommand;
+            std::cerr << sErrorMessage << std::endl;
+            std::cout << "Exiting" << std::endl;
+            Socket::Send(GameVocabulary::FATAL_EXIT);
+            throw GameAIException(sErrorMessage);
+        }
     }
 
     sToken = GameVocabulary::ParseArgument(sCommand);
@@ -153,6 +179,16 @@ bool NetworkPlayer::RecvLastMove(Game &cGame)
         {
             sErrorMessage = "Could not send command: " + sCommand;
             throw SocketException(sErrorMessage);
+        }
+
+        if (cGame.GameEnded(2 - m_nPlayerNumber +1))
+        {
+            sCommand = GameVocabulary::DECLARE_WIN;
+            if (!Socket::Send(sCommand))
+            {
+                sErrorMessage = "Could not send command: " + sCommand;
+                throw SocketException(sErrorMessage);
+            }
         }
     }
     else
