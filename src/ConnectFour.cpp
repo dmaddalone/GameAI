@@ -41,7 +41,10 @@ std::vector<GameMove> ConnectFour::GenerateMoves(int nPlayer) const
     {
         if (FindBottom(xxx) >= 0)
         {
-            vGameMoves.emplace_back(-1,-1,xxx,-1,false);
+            //vGameMoves.emplace_back(-1,-1,xxx,-1,false);
+            //vGameMoves.emplace_back(xxx,false);
+            //vGameMoves.emplace_back(xxx,m_kc false);
+            vGameMoves.emplace_back(0, 0, xxx, 0, m_kcXCoordinate, false);
         }
     }
 

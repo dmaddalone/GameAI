@@ -32,13 +32,34 @@ class GameMove
 {
     public:
         // Construct a GameMove // TODO needed?
+        /*
         GameMove(int nFromX=-1, int nFromY=-1, int nToX=-1, int nToY=-1, bool bUseY=true) :
             m_nFromX(nFromX),
             m_nFromY(nFromY),
             m_nToX(nToX),
             m_nToY(nToY),
+            m_cFromX(' '),
+            m_cFromY(' '),
+            m_cToX(' '),
+            m_cToY(' '),
             m_bUseY(bUseY)
         {}
+        */
+
+        GameMove() {}
+
+        GameMove(int nFromX, int nFromY, int nToX, int nToY, char cOffset, bool bUseY) :
+            m_nFromX(nFromX),
+            m_nFromY(nFromY),
+            m_nToX(nToX),
+            m_nToY(nToY),
+            m_bUseY(bUseY)
+        {
+            m_cFromX = m_nFromX + cOffset;
+            m_cFromY = m_nFromY + m_kcIToCOffset;
+            m_cToX   = m_nToX + cOffset;
+            m_cToY   = m_nToY + m_kcIToCOffset;
+        }
 
         // Destructor
         virtual ~GameMove() {};
@@ -47,11 +68,12 @@ class GameMove
         //void SetFromX(int nX)  { m_nFromX = nX; }
         void SetFromX(char cX, char cOffset) { m_cFromX = tolower(cX); m_nFromX = m_cFromX - cOffset; }
         //void SetFromY(int nY)  { m_nFromX = nY; }
-        void SetFromY(char cY)  { m_cFromY = cY; std::string s(1, m_cFromY); m_nFromY = std::stoi(s, nullptr) - 1; }
+        void SetFromY(char cY)               { m_cFromY = cY; std::string s(1, m_cFromY); m_nFromY = std::stoi(s, nullptr) - 1; }
         //void SetToX(int nX)    { m_nToX = nX; }
-        void SetToX(char cX, char cOffset) { m_cToX = tolower(cX); m_nToX = m_cToX - cOffset; }
-        void SetToY(int nY)   { m_nToY = nY; m_cToY = ' ';}
-        void SetToY(char cY)  { m_cToY = cY; std::string s(1, m_cToY); m_nToY = std::stoi(s, nullptr) - 1; }
+        //void SetToX(int nX)                  { m_nToX = nX; m_cToX = ' '; } // TODO: make sure this will not break
+        void SetToX(char cX, char cOffset)   { m_cToX = tolower(cX); m_nToX = m_cToX - cOffset; }
+        //void SetToY(int nY)                  { m_nToY = nY; m_cToY = ' ';} // TODO: make sure this will not break
+        void SetToY(char cY)                 { m_cToY = cY; std::string s(1, m_cToY); m_nToY = std::stoi(s, nullptr) - 1; }
 
         // Return the coordinates of a move
         int  FromX() const      { return m_nFromX; }
@@ -77,21 +99,24 @@ class GameMove
         std::string AnnounceToMove() const;
 
     private:
+        // Used to convert int coordinates to char values for internal representation using ASCII representation
+        static const char m_kcIToCOffset {48};
+
         // Game move coordinates
-        int  m_nFromX;
-        char m_cFromX;
+        int  m_nFromX {-1};
+        char m_cFromX {'?'};
 
-        int  m_nFromY;
-        char m_cFromY;
+        int  m_nFromY {-1};
+        char m_cFromY {'?'};
 
-        int  m_nToX;
-        char m_cToX;
+        int  m_nToX {-1};
+        char m_cToX {'?'};
 
-        int  m_nToY;
-        char m_cToY;
+        int  m_nToY {-1};
+        char m_cToY {'?'};
 
         // Whether the Y-coordinates are used
-        bool m_bUseY;
+        bool m_bUseY {true};
 
         // Whether this is a move or not; used if no move is possible
         bool m_bNoMove {false};

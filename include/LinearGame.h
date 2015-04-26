@@ -111,7 +111,7 @@ class LinearGame : public Game
         const bool m_kbDisplayGrid;
         const bool m_kbDisplayXCoordinates;
         const bool m_kbDisplayYCoordinates;
-        // Used to convery alpha X coordinates to integer values for internal representation
+        // Used to convert alpha X coordinates to integer values for internal representation
         const char m_kcXCoordinate {'a'};
         // Max X-coordinate for any game
         static const int m_knMaxX {8};

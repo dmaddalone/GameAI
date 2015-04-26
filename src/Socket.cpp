@@ -168,7 +168,11 @@ bool Socket::Connect(const std::string sHost, const int nPort)
 
     if (connect(m_nSocketID, (sockaddr *)&m_SocketAddress, sizeof(m_SocketAddress)) == -1)
     {
+#if defined(_WIN32)
         std::cerr << "Error when connecting " << WSAGetLastError() << std::endl;
+#else
+        perror("connect");
+#endif // defined
         return false;
     }
 
