@@ -19,8 +19,15 @@
 
 #include "NetworkPlayer.h"
 
-NetworkPlayer::NetworkPlayer(PlayerType ecPlayerType) : Player(ecPlayerType) // TODO: Cleanup logic
+/**
+  * Construct a NetworkPlayer class.
+  *
+  */
+
+NetworkPlayer::NetworkPlayer(PlayerType ecPlayerType) : Player(ecPlayerType)
 {
+    // Supporting the main game play loop.  If player is number 1, begin by receiving
+    // a message.  If not, begin by sending a message.
     if (m_nPlayerNumber == 1)
         SetToReceiving();
     else
@@ -28,9 +35,9 @@ NetworkPlayer::NetworkPlayer(PlayerType ecPlayerType) : Player(ecPlayerType) // 
 }
 
 /**
-  * Generate the next game move.
+  * Send and receive moves between networked players.
   *
-  * Use GameMove to collect the next game move from a server player.
+  * Send the last move made to the networked player and receive her move back.
   *
   * \param cGame The game.
   *
@@ -39,10 +46,9 @@ NetworkPlayer::NetworkPlayer(PlayerType ecPlayerType) : Player(ecPlayerType) // 
 
 bool NetworkPlayer::Move(Game &cGame)
 {
-// TODO: Cleanup logic
     if (m_nPlayerNumber == 2)  // Network Player #2
     {
-            // Show valid moves at proper logging level.
+        // Show game board at proper logging level.
         if (m_cLogger.Level() >= 1)
         {
             cGame.Display();
@@ -59,6 +65,7 @@ bool NetworkPlayer::Move(Game &cGame)
     {
         if (Sending())
         {
+            // Show game board at proper logging level.
             if (m_cLogger.Level() >= 1)
             {
                 cGame.Display();
@@ -80,18 +87,32 @@ bool NetworkPlayer::Move(Game &cGame)
     }
 }
 
+/**
+  * Send last move made to the networked player.
+  *
+  * Send the last move made to the networked player.
+  *
+  * \param cGame The game.
+  *
+  * \return True, if a move has been sent successfully.
+  */
+
 bool NetworkPlayer::SendLastMove(Game &cGame)
 {
     std::string sCommand;
     std::string sToken;
     std::string sErrorMessage;
 
+    // Get last move made
     GameMove cGameMove = cGame.LastMove();
 
-    std::string sMessage = GameVocabulary::MOVE + " " + cGameMove.ToInputX() + cGameMove.ToInputY();
+    // Create command string
+    std::string sMessage = GameVocabulary::MOVE + " ";
+    sMessage += cGameMove.AnnounceToMove();
 
     std::cout << "Sending move to opponent." << std::endl;
 
+    // Send command string to networked player
     if (!Socket::Send(sMessage))
     {
         sErrorMessage = "Could not send command: " + sCommand;
@@ -99,9 +120,11 @@ bool NetworkPlayer::SendLastMove(Game &cGame)
         throw SocketException(sErrorMessage);
     }
 
+    // Receieve command string (networked player's confirmation)
     if (!Socket::Recv(sCommand) < 0)
         throw SocketException("Did not receive move confirmation");
 
+    // Evaluate CONFIRM command
     sToken = GameVocabulary::ParseCommand(sCommand);
     if (sToken.compare(GameVocabulary::CONFIRM) != 0)
     {
@@ -126,6 +149,16 @@ bool NetworkPlayer::SendLastMove(Game &cGame)
     return true;
 }
 
+/**
+  * Receive last move made from the networked player.
+  *
+  * Receive the last move made by the networked player.
+  *
+  * \param cGame The game.
+  *
+  * \return True, if a move has been received successfully.
+  */
+
 bool NetworkPlayer::RecvLastMove(Game &cGame)
 {
     GameMove cGameMove;
@@ -135,9 +168,11 @@ bool NetworkPlayer::RecvLastMove(Game &cGame)
 
     std::cout << "Waiting for opponent's move" << std::endl;
 
+    // Receive the last move made from th enetworked player
     if (!Socket::Recv(sCommand) < 0)
         throw SocketException("Did not receive move command");
 
+    // Evaluate command
     sToken = GameVocabulary::ParseCommand(sCommand);
     if (sToken.compare(GameVocabulary::MOVE) != 0)
     {
@@ -148,14 +183,12 @@ bool NetworkPlayer::RecvLastMove(Game &cGame)
             std::cout << "Exiting." << std::endl;
             exit(EXIT_FAILURE);
         }
+
         else if (sToken.compare(GameVocabulary::DECLARE_WIN) == 0)
         {
-            //sErrorMessage = "Opponent won.";
-            //std::cerr << sErrorMessage << std::endl;
-            //std::cout << "Exiting." << std::endl;
-            //exit(EXIT_SUCCESS);
             return true;
         }
+
         else
         {
             sErrorMessage  = "Expected command " + GameVocabulary::MOVE + ", but received " + sCommand;
@@ -166,14 +199,17 @@ bool NetworkPlayer::RecvLastMove(Game &cGame)
         }
     }
 
+    // Evaluate move
     sToken = GameVocabulary::ParseArgument(sCommand);
     std::cout << "Received move " << sToken << " from Player " << std::to_string(m_nPlayerNumber) << std::endl;
 
+    // Generate a game move from the received move
     cGameMove = cGame.GenerateMove(sToken);
 
-    // Test move for validity.
+    // Test game move for validity.
     if (cGame.ApplyMove(m_nPlayerNumber, cGameMove))
     {
+        // Send confirmation of received move
         sCommand = GameVocabulary::CONFIRM;
         if (!Socket::Send(sCommand))
         {
@@ -181,7 +217,8 @@ bool NetworkPlayer::RecvLastMove(Game &cGame)
             throw SocketException(sErrorMessage);
         }
 
-        if (cGame.GameEnded(2 - m_nPlayerNumber +1))
+        // If the last move ended the game, send a DECLARE_WIN message
+        if (cGame.GameEnded(2 - m_nPlayerNumber + 1))
         {
             sCommand = GameVocabulary::DECLARE_WIN;
             if (!Socket::Send(sCommand))
@@ -191,7 +228,7 @@ bool NetworkPlayer::RecvLastMove(Game &cGame)
             }
         }
     }
-    else
+    else // Game move is not valid
     {
         sErrorMessage = "Move " + sToken + " is invalid";
         std::cerr << sErrorMessage << std::endl;

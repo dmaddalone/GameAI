@@ -31,58 +31,38 @@
 class GameMove
 {
     public:
-        // Construct a GameMove // TODO needed?
-        /*
-        GameMove(int nFromX=-1, int nFromY=-1, int nToX=-1, int nToY=-1, bool bUseY=true) :
-            m_nFromX(nFromX),
-            m_nFromY(nFromY),
-            m_nToX(nToX),
-            m_nToY(nToY),
-            m_cFromX(' '),
-            m_cFromY(' '),
-            m_cToX(' '),
-            m_cToY(' '),
-            m_bUseY(bUseY)
-        {}
-        */
-
+        // Construct a GameMove
         GameMove() {}
 
-        GameMove(int nFromX, int nFromY, int nToX, int nToY, char cOffset, bool bUseY) :
+        GameMove(int nFromX, int nFromY, int nToX, int nToY, bool bUseY) :
             m_nFromX(nFromX),
             m_nFromY(nFromY),
             m_nToX(nToX),
             m_nToY(nToY),
             m_bUseY(bUseY)
         {
-            m_cFromX = m_nFromX + cOffset;
-            m_cFromY = m_nFromY + m_kcIToCOffset;
-            m_cToX   = m_nToX + cOffset;
-            m_cToY   = m_nToY + m_kcIToCOffset;
+            m_cFromX = m_nFromX + m_kcXOffset;
+            m_cFromY = m_nFromY + m_kcYOffset;
+            m_cToX   = m_nToX + m_kcXOffset;
+            m_cToY   = m_nToY + m_kcYOffset;
         }
 
         // Destructor
         virtual ~GameMove() {};
 
         // Modify the coordinates of a move
-        //void SetFromX(int nX)  { m_nFromX = nX; }
-        void SetFromX(char cX, char cOffset) { m_cFromX = tolower(cX); m_nFromX = m_cFromX - cOffset; }
-        //void SetFromY(int nY)  { m_nFromX = nY; }
-        void SetFromY(char cY)               { m_cFromY = cY; std::string s(1, m_cFromY); m_nFromY = std::stoi(s, nullptr) - 1; }
-        //void SetToX(int nX)    { m_nToX = nX; }
-        //void SetToX(int nX)                  { m_nToX = nX; m_cToX = ' '; } // TODO: make sure this will not break
-        void SetToX(char cX, char cOffset)   { m_cToX = tolower(cX); m_nToX = m_cToX - cOffset; }
-        //void SetToY(int nY)                  { m_nToY = nY; m_cToY = ' ';} // TODO: make sure this will not break
-        void SetToY(char cY)                 { m_cToY = cY; std::string s(1, m_cToY); m_nToY = std::stoi(s, nullptr) - 1; }
+        void SetToX(char cX)   { m_cToX   = tolower(cX); m_nToX = m_cToX - m_kcXOffset; }
+        void SetToY(char cY)   { m_cToY   = tolower(cY); m_nToY = m_cToY - m_kcYOffset; }
+        void SetToY(int nY)    { m_nToY = nY; m_cToY = m_nToY + m_kcYOffset; }
 
         // Return the coordinates of a move
         int  FromX() const      { return m_nFromX; }
-        char FromInputX() const { return m_cFromX; }
         int  FromY() const      { return m_nFromY; }
-        char FromInputY() const { return m_cFromY; }
         int  ToX()   const      { return m_nToX; }
-        char ToInputX() const   { return m_cToX; }
         int  ToY()   const      { return m_nToY; }
+        char FromInputX() const { return m_cFromX; }
+        char FromInputY() const { return m_cFromY; }
+        char ToInputX() const   { return m_cToX; }
         char ToInputY() const   { return m_cToY; }
 
         // Return whether the Y-coordinate is used
@@ -95,25 +75,27 @@ class GameMove
         // Compare two moves and whether their to-moves are the same
         bool SameTo(const GameMove &cGameMove) { if ((cGameMove.ToX() == m_nToX) && (cGameMove.ToY() == m_nToY)) return true; else return false;}
 
+
         // Announce the to-move
         std::string AnnounceToMove() const;
 
     private:
         // Used to convert int coordinates to char values for internal representation using ASCII representation
-        static const char m_kcIToCOffset {48};
+        static const char m_kcXOffset {'a'};
+        static const char m_kcYOffset {'1'};
 
-        // Game move coordinates
-        int  m_nFromX {-1};
-        char m_cFromX {'?'};
+        // Game move coordinates - initialize to garbage
+        int  m_nFromX {-1};   // Start = 0
+        char m_cFromX {'?'};  // Start = 'a'
 
-        int  m_nFromY {-1};
-        char m_cFromY {'?'};
+        int  m_nFromY {-1};   // Start = 0
+        char m_cFromY {'?'};  // Start = '1'
 
-        int  m_nToX {-1};
-        char m_cToX {'?'};
+        int  m_nToX {-1};     // Start = 0
+        char m_cToX {'?'};    // Start = 'a'
 
-        int  m_nToY {-1};
-        char m_cToY {'?'};
+        int  m_nToY {-1};     // Start = 0
+        char m_cToY {'?'};    // Start  ='1'
 
         // Whether the Y-coordinates are used
         bool m_bUseY {true};

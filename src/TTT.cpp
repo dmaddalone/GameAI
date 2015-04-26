@@ -42,8 +42,7 @@ std::vector<GameMove> TTT::GenerateMoves(int nPlayer) const
         for (int yyy = 0; yyy < m_knY; ++yyy)
         {
             if (m_acGrid[yyy][xxx] == m_kcClear)
-                //vGameMoves.emplace_back(0,0,xxx,yyy);
-                vGameMoves.emplace_back(0, 0, xxx, yyy, m_kcXCoordinate, true);
+                vGameMoves.emplace_back(0, 0, xxx, yyy, true);
         }
     }
 

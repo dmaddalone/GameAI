@@ -25,6 +25,13 @@
 
 #include "LinearGame.h"
 
+/**
+  * Clear and set the game board.
+  *
+  * Run through every space on the board and set the token to clear.  The set
+  * up the board.
+  */
+
 void LinearGame::ClearBoard()
 {
     for (int xxx = 0; xxx < m_knX; ++xxx)
@@ -135,7 +142,7 @@ std::string LinearGame::ValidMoves(int nPlayer) const
 /**
   * Get the player's move.
   *
-  * From std::cin, populate a GameMove object.
+  * From std::cin, generate a GameMove object.
   *
   * \param nPlayer The player whose turn it is.
   *
@@ -147,54 +154,37 @@ GameMove LinearGame::GetMove(int nPlayer) const
     (void)nPlayer;
 
     std::string sMove {};
-    //GameMove cGameMove;
 
     std::cin >> sMove;
 
     return GenerateMove(sMove);
-/*
-    //cGameMove.SetToX(tolower(sMove[0]) - m_kcXCoordinate);
-    cGameMove.SetToX(sMove[0], m_kcXCoordinate);
-
-    sMove.erase(0,1);
-
-    if (sMove.length() > 0)
-    {
-        try
-        {
-            //cGameMove.SetToY(std::stoi(sMove, nullptr) - 1);
-            cGameMove.SetToY(sMove[0]);
-        }
-        catch (...)
-        {
-            cGameMove.SetToY(-1);
-        }
-
-    }
-    else
-    {
-        cGameMove.SetToY(-1);
-    }
-
-    return cGameMove;
-*/
 }
 
-/*
-* TODO
-*/
+/**
+  * Generate a GameMove from a string.
+  *
+  * From a string, generate a GameMove object.
+  *
+  * \param sMove A string representing a game move.
+  *
+  * \return A GameMove object.
+  */
+
 GameMove LinearGame::GenerateMove(std::string sMove) const
 {
     GameMove cGameMove;
 
-    cGameMove.SetToX(sMove[0], m_kcXCoordinate);
+    // Set the To X coordinate from the first charatcter of the string.
+    cGameMove.SetToX(sMove[0]);
 
+    // Remove the first character ...
     sMove.erase(0,1);
+
+    // ... and if more of the string exists, set the To Y coordinate
     if (sMove.length() > 0)
     {
         try
         {
-            //cGameMove.SetToY(std::stoi(sMove, nullptr) -1);
             cGameMove.SetToY(sMove[0]);
         }
         catch (...)
@@ -239,9 +229,13 @@ bool LinearGame::ApplyMove(int nPlayer, GameMove &cGameMove)
     if (m_acGrid[cGameMove.ToY()][cGameMove.ToX()] != m_kcClear)
         return false;
 
-    // Apply move
+    // Apply move to the board
     m_acGrid[cGameMove.ToY()][cGameMove.ToX()] = m_acTokens[nPlayer];
+
+    // Increment move counter
     ++m_nNumberOfMoves;
+
+    // Capture move for later playback or analysis
     m_vGameMoves.push_back(cGameMove);
 
     return true;

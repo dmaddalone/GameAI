@@ -19,16 +19,37 @@
 
 #include "Client.h"
 
+/**
+  * Construct a Client class.
+  *
+  */
+
 Client::Client(PlayerType ecPlayerType) : NetworkPlayer(ecPlayerType)
 {}
 
+/**
+  * Initialize the client.
+  *
+  * Create the client socket.  Upon connection, walk through setup dialog
+  * with the server.
+  *
+  * \param sHost Host name or IP address
+  * \param nport Port specification
+  * \param bSwap Flag to indicate to caller that the server player number
+  *  should be swapped with the other player.
+  *
+  */
+
 void Client::Initialize(std::string sHost, int nPort, bool &bSwap)
 {
+    // Do not swap
     bSwap = false;
+
     std::string sCommand;
     std::string sErrorMessage;
     std::string sToken;
 
+    // Create and connect on the socket
     if (!Socket::Create())
         throw SocketException ("Could not create client socket.");
 
@@ -37,6 +58,9 @@ void Client::Initialize(std::string sHost, int nPort, bool &bSwap)
         throw SocketException ("Could not connect to port.");
 
     std::cout << "Client connected to server " << sHost << " on port " << nPort << std::endl;
+
+    // Upon creating a connection, begin the following dialog to setup
+    // a game with the server:
 
     // Step  Client                         Server
     // ----  ---------------------          ------------------------
@@ -116,7 +140,7 @@ void Client::Initialize(std::string sHost, int nPort, bool &bSwap)
     sToken = GameVocabulary::ParseArgument(sCommand);
     if (sToken.compare(std::to_string(2 - m_nPlayerNumber + 1)) != 0) // Player numbers are aligned
     {
-        // change player numbers on the client
+        // Change player numbers on the client
         bSwap = true;
     }
 }

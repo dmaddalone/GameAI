@@ -32,8 +32,6 @@
 #include "Socket.h"
 #include "SocketException.h"
 #include "Game.h"
-#include "GameMove.h"
-//#include "Logger.h"
 #include "GameVocabulary.h"
 #include "GameAIException.h"
 
@@ -46,28 +44,29 @@ class NetworkPlayer: public Socket, public Player
         // Destructor
         virtual ~NetworkPlayer() {}
 
-        //// Initializer
-        //virtual void Initialize(bool &bSwap) = 0;
+        // Initializer
         virtual void Initialize(std::string sHost, int nPort, bool &bSwap) override { (void)sHost; (void)nPort; (void)bSwap; }
 
         // Generate the next game move
         virtual bool Move(Game &cGame) override;
 
-        // Player sends last move to networked player
+        // Player actions at end of game
+        virtual bool Finish(Game &cGame) override { return Move(cGame); }
+
+        // Player sends last move to networked opponent
         bool SendLastMove(Game &cGame);
 
-        // Player receives last move from networked player
+        // Player receives last move from networked opponent
         bool RecvLastMove(Game &cGame);
 
-        //// Player declares a win
-        //virtual void DeclareWin() override;
-
+        // Manage state of sending and receiving messages
         bool Sending()        { return m_bSetToSend; }
         bool Receiving()      { return !m_bSetToSend; }
         void SetToSending()   { m_bSetToSend = true; }
         void SetToReceiving() { m_bSetToSend = false; }
 
     private:
+        // State of sending or reciving messages
         bool m_bSetToSend = false;
 };
 

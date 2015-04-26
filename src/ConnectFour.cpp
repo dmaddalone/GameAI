@@ -39,12 +39,11 @@ std::vector<GameMove> ConnectFour::GenerateMoves(int nPlayer) const
 
     for (int xxx = 0; xxx < m_knX; ++xxx)
     {
+        // Find the bottom of the Connect Four grid
         if (FindBottom(xxx) >= 0)
         {
-            //vGameMoves.emplace_back(-1,-1,xxx,-1,false);
-            //vGameMoves.emplace_back(xxx,false);
-            //vGameMoves.emplace_back(xxx,m_kc false);
-            vGameMoves.emplace_back(0, 0, xxx, 0, m_kcXCoordinate, false);
+            // Create a game move with an X-Coordinate only
+            vGameMoves.emplace_back(0, 0, xxx, 0, false);
         }
     }
 
@@ -55,7 +54,7 @@ std::vector<GameMove> ConnectFour::GenerateMoves(int nPlayer) const
 /**
   * Get the player's next move.
   *
-  * Using std::cin, capture the player's move, create a GameMove object, and
+  * Using std::cin, capture the player's move, generate a GameMove object, and
   * return it.
   *
   * \param nPlayer The player whose turn it is.
@@ -65,34 +64,31 @@ std::vector<GameMove> ConnectFour::GenerateMoves(int nPlayer) const
 
 GameMove ConnectFour::GetMove(int nPlayer) const
 {
+    // nPlayer not used
     (void)nPlayer;
 
-    //char     cMove {};
     std::string  sMove {};
-    //GameMove cGameMove;
 
-    //std::cin >> cMove;
     std::cin >> sMove;
 
-    //return GenerateMove(cMove);
     return GenerateMove(sMove);
-    /*
-
-    //cGameMove.SetToX(cMove - m_kcXCoordinate);
-    cGameMove.SetToX(cMove, m_kcXCoordinate);
-
-    return cGameMove;
-    */
 }
 
-/*
-* TODO
-*/
+/**
+  * Generate a GameMove from a string.
+  *
+  * From string, generate a GameMove object.
+  *
+  * \param sMove A string representing a game move.
+  *
+  * \return A GameMove object.
+  */
+
 GameMove ConnectFour::GenerateMove(std::string sMove) const
 {
     GameMove cGameMove;
 
-    cGameMove.SetToX(sMove[0], m_kcXCoordinate);
+    cGameMove.SetToX(sMove[0]);
 
     return cGameMove;
 }

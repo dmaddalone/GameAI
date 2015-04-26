@@ -28,10 +28,8 @@
 #ifndef LINEARGAME_H
 #define LINEARGAME_H
 
-#include <cctype>
 #include <climits>
 #include <iostream>
-#include <string>
 
 #include "Game.h"
 
@@ -85,6 +83,7 @@ class LinearGame : public Game
         void ClearBoard();
         // Set up the board
         void SetBoard() { return; };
+
         // Check to see if a players tokens are connected linearly
         bool CheckOrthogonal(int nPlayer, int nConnect);
         int  CheckHorizontal(int nPlayer, int y, int x) const;

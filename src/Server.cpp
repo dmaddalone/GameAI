@@ -19,18 +19,40 @@
 
 #include "Server.h"
 
+/**
+  * Construct a Server class.
+  *
+  */
+
 Server::Server(PlayerType ecPlayerType) : NetworkPlayer(ecPlayerType)
 {}
 
+/**
+  * Initialize the server.
+  *
+  * Create the server socket.  Upon connection, walk through setup dialog
+  * with the client.
+  *
+  * \param sHost Host name or IP address
+  * \param nport Port specification
+  * \param bSwap Flag to indicate to caller that the server player number
+  *  should be swapped with the other player.
+  *
+  */
+
 void Server::Initialize(std::string sHost, int nPort, bool &bSwap)
 {
+    // sHose parameter not used
     (void)sHost;
 
+    // Do not swap
     bSwap = false;
+
     std::string sCommand;
     std::string sErrorMessage;
     std::string sToken;
 
+    // Create, bind, listen, and accept on the socket
     if (!Socket::Create())
         throw SocketException("Could not create server socket");
 
@@ -44,6 +66,9 @@ void Server::Initialize(std::string sHost, int nPort, bool &bSwap)
 
     if (!Socket::Accept())
         throw SocketException("Could not accept connection");
+
+    // Upon accepting a connection, begin the following dialog to setup
+    // a game with the client:
 
     // Step  Client                         Server
     // ----  ---------------------          ------------------------
@@ -66,7 +91,6 @@ void Server::Initialize(std::string sHost, int nPort, bool &bSwap)
         sErrorMessage  = "Expected command " + GameVocabulary::ESTABLISH_GAME + ", but received " + sCommand;
         std::cerr << sErrorMessage << std::endl;
         std::cout << "Exiting" << std::endl;
-        Socket::Send(GameVocabulary::FATAL_EXIT);
         throw GameAIException(sErrorMessage);
     }
 
@@ -77,7 +101,6 @@ void Server::Initialize(std::string sHost, int nPort, bool &bSwap)
         std::cerr << sErrorMessage << std::endl;
         std::cout << "Exiting" << std::endl;
         Socket::Send(GameVocabulary::UNCONFIRM);
-        Socket::Send(GameVocabulary::FATAL_EXIT);
         throw GameAIException(sErrorMessage);
     }
 
@@ -100,7 +123,6 @@ void Server::Initialize(std::string sHost, int nPort, bool &bSwap)
         sErrorMessage  = "Expected command " + GameVocabulary::REQUEST_CLIENT_PLAYER_NUMBER + ", but received " + sCommand;
         std::cerr << sErrorMessage << std::endl;
         std::cout << "Exiting" << std::endl;
-        Socket::Send(GameVocabulary::FATAL_EXIT);
         throw GameAIException(sErrorMessage);
     }
 

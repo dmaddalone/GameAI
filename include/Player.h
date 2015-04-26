@@ -26,8 +26,6 @@
 #ifndef PLAYER_H
 #define PLAYER_H
 
-#include <memory>
-
 #include "Game.h"
 #include "Logger.h"
 
@@ -48,22 +46,20 @@ class Player
         Player(PlayerType ecPlayerType) { m_ecPlayerType = ecPlayerType; m_nPlayerNumber = m_nPlayerCount; }
 
         //
-        // Virtual functions to be defined by child classes
+        // Virtual functions to be defined by dervied classes
         //
 
         // Destructor
         virtual ~Player() {};
 
         // Player initialization
-        //virtual void Initialize(bool &bSwap) = 0;
-        //void Initialize(std::string sHost, int nPort, bool &bSwap) { (void)sHost, (void)nPort, (void)bSwap; }
         virtual void Initialize(std::string sHost, int nPort, bool &bSwap) = 0;
 
         // Player provides a move
         virtual bool Move(Game &cGame) = 0;
 
-        //// Player declares a win
-        //virtual void DeclareWin() = 0;
+        // Player actions at end of game
+        virtual bool Finish(Game &cGame) = 0;
 
         // Return the type of player as a string
         virtual std::string TypeName()  = 0;

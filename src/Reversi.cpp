@@ -55,8 +55,7 @@ std::vector<GameMove> Reversi::GenerateMoves(int nPlayer) const
             {
                 if (Contiguous(xxx, yyy, nPlayer)) // Check valid move
                 {
-                    //vGameMoves.emplace_back(0,0,xxx,yyy);
-                    vGameMoves.emplace_back(0, 0, xxx, yyy, m_kcXCoordinate, true);
+                    vGameMoves.emplace_back(0, 0, xxx, yyy, true);
                 }
             }
         }

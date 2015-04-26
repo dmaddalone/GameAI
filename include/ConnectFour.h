@@ -26,7 +26,6 @@
 #ifndef CONNECTFOUR_H
 #define CONNECTFOUR_H
 
-#include <iostream>
 #include "Game.h"
 #include "LinearGame.h"
 

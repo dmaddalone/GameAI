@@ -28,10 +28,8 @@
 #define MINIMAX_H
 
 #include <climits>
-#include <iostream>
 #include "Player.h"
 #include "Game.h"
-#include "GameAIException.h"
 
 class Minimax: public Player
 {
@@ -51,8 +49,8 @@ class Minimax: public Player
         // Generate the next game move
         virtual bool Move(Game &cGame) override;
 
-        //// Player declares a win
-        //virtual void DeclareWin() override {}
+        // Player actions at end of game
+        virtual bool Finish(Game &cGame) override { (void)cGame; return true; }
 
         // Announce the type pf player
         std::string TypeName() { return "Minimax"; }

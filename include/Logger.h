@@ -28,7 +28,6 @@
 
 #include <ctime>
 #include <iostream>
-#include <iomanip>
 
 class Logger
 {
@@ -41,10 +40,12 @@ class Logger
         // Set and return the logging level
         void SetLevel(int nLevel)   { m_nLevel = nLevel; }
         int  Level() const          { return m_nLevel; }
+
         // Booleans to use a time stamp, use a logging tag, and indenting the log message
         void UseTimeStamp(bool b)   { m_bUseTimeStamp = b; }
         void UseTag(bool b)         { m_bUseTag = b; }
         void UseLevelIndent(bool b) { m_bUseLevelIndent = b; }
+
         // Calls for different types of logging
         void LogInfo(const std::string sMessage, int nLevel);
         void LogWarn(const std::string sMessage);

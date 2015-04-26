@@ -119,6 +119,7 @@ class Game
         // Default game type
         GameType m_ecGameType {GameType::TYPE_NONE};
 
+        // List of all game moves
         std::vector<GameMove> m_vGameMoves;
 
         // Current winning players

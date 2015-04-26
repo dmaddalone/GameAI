@@ -26,11 +26,8 @@
 #ifndef HUMAN_H
 #define HUMAN_H
 
-#include <iostream>
 #include "Player.h"
 #include "Game.h"
-#include "GameMove.h"
-#include "Logger.h"
 
 class Human: public Player
 {
@@ -47,8 +44,8 @@ class Human: public Player
         // Generate the next game move
         virtual bool Move(Game &cGame) override;
 
-        //// Player declares a win
-        //virtual void DeclareWin() override {}
+        // Player actions at end of game
+        virtual bool Finish(Game &cGame) override { (void)cGame; return true; }
 
         // Announce the type pf player
         std::string TypeName() { return "Human"; }

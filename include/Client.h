@@ -38,7 +38,6 @@ class Client: public NetworkPlayer
         ~Client() {}
 
         // Initializer
-        //virtual void Initialize(bool &bSwap) override;
         virtual void Initialize(std::string sHost, int nPort, bool &bSwap) override;
 
         // Announce the type pf player

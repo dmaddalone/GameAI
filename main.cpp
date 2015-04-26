@@ -17,21 +17,14 @@
     along with GameAI.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <cassert>
-#include <cctype>
-#include <cstdlib>
 #include <getopt.h>
 #include <iostream>
-#include <memory>
 #include <vector>
 
 #include "GameAIException.h"
 #include "GameAIVersion.h"
 #include "Player.h"
 #include "Game.h"
-//#include "Logger.h"
-#include "Server.h"
-#include "Client.h"
 
 /**
   * ShowUsage
@@ -62,7 +55,7 @@ static void ShowUsage(std::string sName)
               << "\n"
               << "PORT is a port specification for a server and client to communicate over.  The default is 60000.\n"
               << "HOST is a host name or address for a server.  The default is 127.0.0.1.\n"
-              << "TYPE is either human, minimax, client, or server.\n"
+              << "TYPE is either human, minimax, client, or server.  Start a server before staring a client.\n"
               << "PLIES are from 1 to 9.  The default is 4.\n"
               << "GAME is ttt, connectfour, or reversi.\n"
               << "LEVEL is an integer 0 to 3.  The default is 1.\n"
@@ -371,9 +364,14 @@ int main(int argc, char* argv[])
         // Announce game score
         std::cout << pcGame->GameScore() << std::endl;
 
-        // Evaluate game state from player 2 perspective
+        // Evaluate game state from player 2 perspective.  If game ended, allow player 2 to finish.
+        // Then break from loop.
         if (pcGame->GameEnded(pcGame->Player2()))
+        {
+            vPlayers[1]->Finish(*pcGame);
             break;
+        }
+
 
         // Player 2 move
         if (!vPlayers[1]->Move(*pcGame))
@@ -385,9 +383,13 @@ int main(int argc, char* argv[])
         // Announce game score
         std::cout << pcGame->GameScore() << std::endl;
 
-        // Evaluate game state from player 1 perspective
+        // Evaluate game state from player 1 perspective.  If game ended, allow player 1 to finish.
+        // Then break from loop.
         if (pcGame->GameEnded(pcGame->Player1()))
+        {
+            vPlayers[0]->Finish(*pcGame);
             break;
+        }
     }
 
     // Display game

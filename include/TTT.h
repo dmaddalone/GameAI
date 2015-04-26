@@ -28,6 +28,7 @@
 
 #include <iostream>
 #include "Game.h"
+#include "GameMove.h"
 #include "LinearGame.h"
 
 class TTT : public LinearGame
@@ -44,8 +45,6 @@ class TTT : public LinearGame
         virtual std::unique_ptr<Game> Clone() const override { return std::unique_ptr<Game>(new TTT(*this)); }
         // Return the title of the game
         virtual std::string Title() override { return "Tic-Tac-Toe"; }
-
-    private:
 };
 
 #endif // TTT_H
