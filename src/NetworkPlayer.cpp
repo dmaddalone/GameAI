@@ -110,7 +110,7 @@ bool NetworkPlayer::SendLastMove(Game &cGame)
     std::string sMessage = GameVocabulary::MOVE + " ";
     sMessage += cGameMove.AnnounceToMove();
 
-    std::cout << "Sending move to opponent." << std::endl;
+    m_cLogger.LogInfo("Sending move to opponent", 2);
 
     // Send command string to networked player
     if (!Socket::Send(sMessage))
@@ -165,8 +165,9 @@ bool NetworkPlayer::RecvLastMove(Game &cGame)
     std::string sCommand;
     std::string sToken;
     std::string sErrorMessage;
+    std::string sMessage;
 
-    std::cout << "Waiting for opponent's move" << std::endl;
+    m_cLogger.LogInfo("Waiting for opponent's move", 2);
 
     // Receive the last move made from th enetworked player
     if (!Socket::Recv(sCommand) < 0)
@@ -201,7 +202,7 @@ bool NetworkPlayer::RecvLastMove(Game &cGame)
 
     // Evaluate move
     sToken = GameVocabulary::ParseArgument(sCommand);
-    std::cout << "Received move " << sToken << " from Player " << std::to_string(m_nPlayerNumber) << std::endl;
+    std::cout << "Received move " << sToken << " from opponent" << std::endl;
 
     // Generate a game move from the received move
     cGameMove = cGame.GenerateMove(sToken);

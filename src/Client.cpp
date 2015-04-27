@@ -48,16 +48,26 @@ void Client::Initialize(std::string sHost, int nPort, bool &bSwap)
     std::string sCommand;
     std::string sErrorMessage;
     std::string sToken;
+    std::string sMessage;
+
+    // Change logger settings
+    m_cLogger.UseLevelIndent(false);
+    m_cLogger.UseTag(true);
 
     // Create and connect on the socket
     if (!Socket::Create())
         throw SocketException ("Could not create client socket.");
 
-    std::cout << "Connecting to server ..." << std::endl;
+    // Log the socket creation
+    m_cLogger.LogInfo("Socket created", 3);
+
     if (!Socket::Connect(sHost, nPort))
         throw SocketException ("Could not connect to port.");
 
-    std::cout << "Client connected to server " << sHost << " on port " << nPort << std::endl;
+    // Log the connection
+    sMessage = "Connected to server " + sHost + " on port " + std::to_string(nPort);
+    m_cLogger.LogInfo(sMessage, 3);
+    //std::cout << "Client connected to server " << sHost << " on port " << nPort << std::endl;
 
     // Upon creating a connection, begin the following dialog to setup
     // a game with the server:
@@ -74,7 +84,9 @@ void Client::Initialize(std::string sHost, int nPort, bool &bSwap)
     // 8.    Receive Client Player Number
 
     // 1. Send Establish Game
-    std::cout << "Establishing game of " << GameTitle() << " with server." << std::endl;
+    sMessage = "Establishing game of " + GameTitle() + " with server.";
+    m_cLogger.LogInfo(sMessage, 2);
+
     sCommand = GameVocabulary::ESTABLISH_GAME + GameVocabulary::DELIMETER + GameTitle();
     if (!Socket::Send(sCommand))
     {
@@ -108,7 +120,8 @@ void Client::Initialize(std::string sHost, int nPort, bool &bSwap)
     }
 
     // 5. Request Player Number
-    std::cout << "Requesting player number from server." << std::endl;
+    m_cLogger.LogInfo("Requesting player number from server.", 2);
+
     sCommand = GameVocabulary::REQUEST_CLIENT_PLAYER_NUMBER;
     if (!Socket::Send(sCommand))
     {

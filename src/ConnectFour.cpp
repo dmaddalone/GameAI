@@ -88,7 +88,7 @@ GameMove ConnectFour::GenerateMove(std::string sMove) const
 {
     GameMove cGameMove;
 
-    cGameMove.SetToX(sMove[0]);
+    cGameMove.SetToX(sMove[0], false);
 
     return cGameMove;
 }

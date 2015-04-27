@@ -51,9 +51,10 @@ class GameMove
         virtual ~GameMove() {};
 
         // Modify the coordinates of a move
-        void SetToX(char cX)   { m_cToX   = tolower(cX); m_nToX = m_cToX - m_kcXOffset; }
-        void SetToY(char cY)   { m_cToY   = tolower(cY); m_nToY = m_cToY - m_kcYOffset; }
-        void SetToY(int nY)    { m_nToY = nY; m_cToY = m_nToY + m_kcYOffset; }
+        void SetToX(char cX)             { m_cToX = tolower(cX); m_nToX = m_cToX - m_kcXOffset; }
+        void SetToX(char cX, bool bUseY) { SetToX(cX); m_bUseY = bUseY; }
+        void SetToY(char cY)             { m_cToY = tolower(cY); m_nToY = m_cToY - m_kcYOffset; }
+        void SetToY(int nY)              { m_nToY = nY; m_cToY = m_nToY + m_kcYOffset; }
 
         // Return the coordinates of a move
         int  FromX() const      { return m_nFromX; }
@@ -74,7 +75,6 @@ class GameMove
 
         // Compare two moves and whether their to-moves are the same
         bool SameTo(const GameMove &cGameMove) { if ((cGameMove.ToX() == m_nToX) && (cGameMove.ToY() == m_nToY)) return true; else return false;}
-
 
         // Announce the to-move
         std::string AnnounceToMove() const;

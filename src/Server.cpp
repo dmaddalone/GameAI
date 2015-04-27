@@ -51,21 +51,39 @@ void Server::Initialize(std::string sHost, int nPort, bool &bSwap)
     std::string sCommand;
     std::string sErrorMessage;
     std::string sToken;
+    std::string sMessage;
+
+    // Change logger settings
+    m_cLogger.UseLevelIndent(false);
+    m_cLogger.UseTag(true);
 
     // Create, bind, listen, and accept on the socket
     if (!Socket::Create())
         throw SocketException("Could not create server socket");
 
+    // Log the socket creation
+    m_cLogger.LogInfo("Socket created", 3);
+
     if (!Socket::Bind(nPort))
         throw SocketException("Could not bind to port");
+
+    // Log the address bind
+    m_cLogger.LogInfo("Bind created", 3);
 
     if (!Socket::Listen())
         throw SocketException("Could not listen to socket");
 
-    std::cout << "Server listening on port " << nPort << std::endl;
+    // Log the port listening
+    sMessage = "Server listening on port " + std::to_string(nPort);
+    m_cLogger.LogInfo(sMessage, 2);
+
+    std::cout << "Waiting for client to connect" << std::endl;
 
     if (!Socket::Accept())
         throw SocketException("Could not accept connection");
+
+    // Log the connection accepted
+    m_cLogger.LogInfo("Accepted network connection", 3);
 
     // Upon accepting a connection, begin the following dialog to setup
     // a game with the client:
@@ -105,7 +123,9 @@ void Server::Initialize(std::string sHost, int nPort, bool &bSwap)
     }
 
     // 3. Send Confirm Game
-    std::cout << "Confirming game of " << GameTitle() << " with client." << std::endl;
+    sMessage = "Confirming game of " + GameTitle() + " with client.";
+    m_cLogger.LogInfo(sMessage, 2);
+
     sCommand = GameVocabulary::CONFIRM;
     if (!Socket::Send(sCommand))
     {
@@ -127,7 +147,9 @@ void Server::Initialize(std::string sHost, int nPort, bool &bSwap)
     }
 
     // 7. Send Client Player Number
-    std::cout << "Establishing client player number of " << m_nPlayerNumber << std::endl;
+    sMessage = "Establishing client player number of " + std::to_string(m_nPlayerNumber);
+    m_cLogger.LogInfo(sMessage, 2);
+
     sCommand = GameVocabulary::ESTABLISH_CLIENT_PLAYER_NUMBER + GameVocabulary::DELIMETER + std::to_string(m_nPlayerNumber);
     if (!Socket::Send(sCommand))
     {
