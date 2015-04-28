@@ -154,6 +154,7 @@ void Client::Initialize(std::string sHost, int nPort, bool &bSwap)
     if (sToken.compare(std::to_string(2 - m_nPlayerNumber + 1)) != 0) // Player numbers are aligned
     {
         // Change player numbers on the client
+        m_cLogger.LogInfo("Swapping player numbers.", 3);
         bSwap = true;
     }
 }

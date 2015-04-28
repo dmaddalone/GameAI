@@ -62,7 +62,7 @@ static void ShowUsage(std::string sName)
               << "    0 = display start and ending announcements\n"
               << "    1 = display game move-by-move\n"
               << "    2 = display AI scoring of moves and basic network communications\n"
-              << "    3 = display AI evaluation of moves\n"
+              << "    3 = display AI evaluation of moves and detailed network communications\n"
               << "\n"
               << "Examples:\n"
               << "GameAI -1 human -2 minimax -g ttt\n\n"
@@ -196,7 +196,12 @@ static void SetPlayers(std::string sName, int nPlies1, int nPlies2, int nVerbosi
 
     // Swap players to match server players
     if (bSwap0 || bSwap1)
+    {
         std::iter_swap(vPlayers.begin() + 0, vPlayers.begin() + 1);
+        int nNumber = vPlayers[0]->PlayerNumber();
+        vPlayers[0]->SetPlayerNumber(vPlayers[1]->PlayerNumber());
+        vPlayers[1]->SetPlayerNumber(nNumber);
+    }
 }
 
 /**

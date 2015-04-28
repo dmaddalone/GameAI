@@ -67,6 +67,10 @@ class Player
         // Make a player
         static std::unique_ptr<Player> MakePlayer(PlayerType ecPlayerType);
 
+        // Set player number
+        void SetPlayerNumber(int nNumber) { m_nPlayerNumber = nNumber; }
+        int PlayerNumber()                { return m_nPlayerNumber; }
+
         // Return the type of player
         PlayerType Type() { return m_ecPlayerType; }
 
