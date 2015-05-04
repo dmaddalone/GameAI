@@ -54,6 +54,14 @@ void LinearGame::ClearBoard()
 
 void LinearGame::Display() const
 {
+    char cToken;
+    std::string sColor;
+
+#if defined(_WIN32)
+    HANDLE hConsole;
+    hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+#endif
+
     // Display X-coordinatres
     if (m_kbDisplayXCoordinates)
     {
@@ -89,7 +97,21 @@ void LinearGame::Display() const
                 std::cout << " | ";
             }
 
-            std::cout << static_cast<char>(m_acGrid[yyy][xxx]);
+            // Determine color of token
+            cToken = static_cast<char>(m_acGrid[yyy][xxx]);
+            if (cToken == m_acTokens[1])
+            {
+                sColor = m_sColorRed;
+            }
+            else if (cToken == m_acTokens[2])
+            {
+                sColor = m_sColorWhite;
+            }
+            else // Clear space
+            {
+                sColor = "";
+            }
+            std::cout << sColor << cToken << m_sColorReset;
 
             if (!m_kbDisplayGrid)
             {

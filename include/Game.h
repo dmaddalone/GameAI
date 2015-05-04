@@ -28,6 +28,9 @@
 
 #include <memory>
 #include <vector>
+#if defined(_WIN32)
+#include <windows.h>
+#endif
 
 #include "GameMove.h"
 
@@ -101,7 +104,6 @@ class Game
         // Make a game of ecGameType
         static std::unique_ptr<Game> Make(GameType ecGameType);
 
-
         // Return game information
         GameType Type()      { return m_ecGameType; }
         int  Player1()       { return m_knPlayer1; }
@@ -128,6 +130,17 @@ class Game
         int m_nNumberOfMoves;//  {0};
         // How the winner won
         std::string m_sWinBy  {};
+
+        // Used to provide color for game pieces
+#if defined(_WIN32)
+        const std::string m_sColorRed   {"12"};
+        const std::string m_sColorWhite {"15"};
+        const std::string m_sColorReset {"15"};
+#else
+        const std::string m_sColorRed   {"\033[1;31m"};
+        const std::string m_sColorWhite {"\033[1;37m"};
+        const std::string m_sColorReset {"\033[0m"};
+#endif
 };
 
 #endif // GAME_H
