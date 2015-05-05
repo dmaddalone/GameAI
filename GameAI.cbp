@@ -7,13 +7,9 @@
 		<Option compiler="gcc" />
 		<Option show_notes="0">
 			<notes>
-				<![CDATA[TODO: Comments
+				<![CDATA[TODO: NO MOVE is mesing up network play
 
-TODO: Fix minimax over network
-
-TODO: Add DECLARE_WIN to vocabulary
-
-TODO: Clean up SetToSend logic
+TODO: Make hostname work
 
 TODO: Check other TODOs
 

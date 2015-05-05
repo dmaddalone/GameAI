@@ -318,7 +318,7 @@ int main(int argc, char* argv[])
                 break;
             // Version
             case 'V':
-                ShowVersion();
+                //ShowVersion(); Executed by default
                 exit(EXIT_SUCCESS);
                 break;
             // Help
