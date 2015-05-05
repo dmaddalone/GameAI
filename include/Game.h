@@ -29,7 +29,9 @@
 #include <memory>
 #include <vector>
 #if defined(_WIN32)
+#include <winsock2.h>
 #include <windows.h>
+#include <wincon.h>
 #endif
 
 #include "GameMove.h"
@@ -133,9 +135,9 @@ class Game
 
         // Used to provide color for game pieces
 #if defined(_WIN32)
-        const std::string m_sColorRed   {"12"};
-        const std::string m_sColorWhite {"15"};
-        const std::string m_sColorReset {"15"};
+        const int m_nColorRed   {FOREGROUND_RED};
+        const int m_nColorWhite {FOREGROUND_INTENSITY | FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE};
+        const int m_nColorReset {FOREGROUND_INTENSITY | FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE};
 #else
         const std::string m_sColorRed   {"\033[1;31m"};
         const std::string m_sColorWhite {"\033[1;37m"};

@@ -101,17 +101,32 @@ void LinearGame::Display() const
             cToken = static_cast<char>(m_acGrid[yyy][xxx]);
             if (cToken == m_acTokens[1])
             {
+#if defined(_WIN32)
+                SetConsoleTextAttribute(hConsole, m_nColorRed);
+#else
                 sColor = m_sColorRed;
+#endif // defined
+
             }
             else if (cToken == m_acTokens[2])
             {
+#if defined(_WIN32)
+                SetConsoleTextAttribute(hConsole, m_nColorWhite);
+#else
                 sColor = m_sColorWhite;
+#endif // defined
             }
             else // Clear space
             {
                 sColor = "";
             }
+
+#if defined(_WIN32)
+            std::cout << cToken;
+            SetConsoleTextAttribute(hConsole, m_nColorReset);
+#else
             std::cout << sColor << cToken << m_sColorReset;
+#endif // defined
 
             if (!m_kbDisplayGrid)
             {
