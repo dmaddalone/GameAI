@@ -64,7 +64,7 @@ class Game
         // Destructor
         virtual ~Game() {};
 
-        // Display the game board
+        // Display the game
         virtual void Display() const  = 0;
 
         // Return a list of valid moves in string format
@@ -133,17 +133,6 @@ class Game
         int m_nNumberOfMoves;//  {0};
         // How the winner won
         std::string m_sWinBy  {};
-
-        // Used to provide color for game pieces
-#if defined(_WIN32)
-        const int m_nColorPlayer1 {FOREGROUND_RED};
-        const int m_nColorPlayer2 {FOREGROUND_INTENSITY | FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE}; // White
-        const int m_nColorReset   {FOREGROUND_INTENSITY | FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE}; // White
-#else
-        const std::string m_sColorPlayer1   {"\033[1;31m"}; // Red
-        const std::string m_sColorPlayer2 {"\033[1;37m"};   // White
-        const std::string m_sColorReset {"\033[0m"};        // Reset
-#endif
 };
 
 #endif // GAME_H

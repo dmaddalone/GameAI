@@ -31,40 +31,25 @@
 #include <climits>
 #include <iostream>
 
-#include "Game.h"
-#include "GameBoard.h"
-#include "GamePiece.h"
+#include "BoardGame.h"
 
-class LinearGame : public Game
+class LinearGame : public BoardGame
 {
     public:
         // Construct a LinearGame
         LinearGame(GameType ecGameType, int nX, int nY, char cToken1, char cToken2, int nInARow, bool bUseY, bool bDisplayGrid, bool bDisplayXCoordinates, bool bDisplayYCoordinates) :
-            Game(ecGameType),
-            m_knX(nX),
-            m_knY(nY),
+            BoardGame(ecGameType, nX, nY, bDisplayGrid, bDisplayXCoordinates, bDisplayYCoordinates),
             m_kcToken1(cToken1),
             m_kcToken2(cToken2),
             m_knTokensInARowWin(nInARow),
-            m_bUseY(bUseY),
-            cBoard(nX, nY, bDisplayGrid, bDisplayXCoordinates, bDisplayYCoordinates)
-            {  SetTokens(); SetBoard(); }
+            m_bUseY(bUseY)
+            {  SetTokens(); }
 
         // Destructor
         virtual ~LinearGame() {}
 
-        // Display the game board
-        virtual void Display() const override;
-        // Return a list of valid moves in string format
-        virtual std::string ValidMoves(int nPlayer) const override;
-        // Get the move from the designated player
-        virtual GameMove GetMove(int nPlayer) const override;
         // Generate a GameMove from text input
         virtual GameMove GenerateMove(std::string sMove) const override;
-        // Provide a preferred move
-        virtual int  PreferredMove(const GameMove &cGameMove) const override;
-        // Return the score of the game
-        virtual std::string GameScore() const override;
         // Apply the move to the game
         virtual bool ApplyMove(int nPlayer, GameMove &cGameMove) override;
         // Announce the move made
@@ -80,9 +65,6 @@ class LinearGame : public Game
         // Set the tokens to be used for clear and both players
         void SetTokens() { m_acTokens[1] = m_kcToken1; m_acTokens[2] = m_kcToken2; }
 
-        //// Set up the board
-        void SetBoard() { cBoard.Clear(); return; };
-
         // Check to see if a players tokens are connected linearly
         bool CheckOrthogonal(int nPlayer, int nConnect);
         int  CheckHorizontal(int nPlayer, int y, int x) const;
@@ -90,14 +72,6 @@ class LinearGame : public Game
         bool CheckDiagonal(int nPlayer, int nConnect);
         int  CheckDiagonalUpperLeftLowerRight(int nPlayer, int y, int x) const;
         int  CheckDiagonalUpperRightLowerLeft(int nPlayer, int y, int x) const;
-
-        // Check for whether a X- and Y-coordinate are valid (on the board)
-        bool ValidMove(int y, int x) const;
-
-        // Max X-coordinate for this game
-        const int  m_knX;
-        // Max Y-coordinate this game
-        const int  m_knY;
 
         // Player 1's token
         const char m_kcToken1;
@@ -119,6 +93,7 @@ class LinearGame : public Game
         static const int m_knTokens {3};
         // Array used to hold tokens
         char m_acTokens[m_knTokens];
+
         // Struct used to evaluate the game state
         struct SequenceCounts {
             int nCount1 {0};
@@ -128,12 +103,6 @@ class LinearGame : public Game
 
         // Count the number and length of connected tokens per player
         void CountSequence(int nSequence, SequenceCounts &stSequenceCounts);
-
-        ///
-        ///
-        ///
-        GameBoard cBoard;
-
 };
 
 #endif // LINEARGAME_H

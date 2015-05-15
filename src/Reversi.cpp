@@ -62,7 +62,6 @@ std::vector<GameMove> Reversi::GenerateMoves(int nPlayer) const
     {
         for (int yyy = 0; yyy < m_knY; ++yyy)
         {
-            //if (m_anGrid[yyy][xxx] == m_kcClear)
             if (!cBoard.PositionOccupied(xxx, yyy))
             {
                 if (Contiguous(xxx, yyy, nPlayer)) // Check valid move
@@ -716,7 +715,7 @@ bool Reversi::ContiguousUpLeft(int nX, int nY, int nPlayer) const
 bool Reversi::CheckContiguous(int nX, int nY, int nPlayer, bool &bOpponentPieceAdjacent) const
 {
     // If location is not valid, set opponent piece adjacent to false and return false
-    if (!ValidMove(nX, nY))
+    if (!cBoard.ValidLocation(nX, nY))
     {
         bOpponentPieceAdjacent = false;
         return false;

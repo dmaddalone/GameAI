@@ -48,6 +48,8 @@ class GameBoard
         // Destructor
         ~GameBoard() {}
 
+        // Evaluate location validity
+        bool ValidLocation(int nX, int nY) const;
         // Clear the board
         void Clear();
         // Display the board
@@ -60,9 +62,6 @@ class GameBoard
         bool PositionOccupiedByPlayer(int nX, int nY, int nPlayer) const;
 
     private:
-        // Evaluate location validity
-        bool ValidLocation(int nX, int nY) const;
-
         // Max X-coordinate for any game
         static const int m_knMaxX {8};
         // Max Y-coordinate for any game

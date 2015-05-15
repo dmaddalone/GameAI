@@ -20,70 +20,6 @@
 #include "LinearGame.h"
 
 /**
-  * Display the game board.
-  *
-  * Run through every space on the board and display it's token.  Also display
-  * coordinates and grid lines, depending on settings.
-  */
-
-void LinearGame::Display() const
-{
-    cBoard.Display();
-}
-
-/**
-  * Return a string of valid moves.
-  *
-  * Call GenerateMoves and collect information into a string.
-  *
-  * \param nPlayer The player whose turn it is.
-  *
-  * \return A string of valid moves.
-  */
-
-std::string LinearGame::ValidMoves(int nPlayer) const
-{
-    std::string sValidMoves {};
-
-    std::vector<GameMove> vGameMoves = GenerateMoves(nPlayer);
-
-    if (vGameMoves.empty())
-    {
-        sValidMoves = "NO VALID MOVE";
-    }
-    else
-    {
-        for (GameMove cGameMove : vGameMoves)
-        {
-            sValidMoves += cGameMove.AnnounceToMove() + " ";
-        }
-    }
-
-    return sValidMoves;
-}
-
-/**
-  * Get the player's move.
-  *
-  * From std::cin, generate a GameMove object.
-  *
-  * \param nPlayer The player whose turn it is.
-  *
-  * \return A GameMove object.
-  */
-
-GameMove LinearGame::GetMove(int nPlayer) const
-{
-    (void)nPlayer;
-
-    std::string sMove {};
-
-    std::cin >> sMove;
-
-    return GenerateMove(sMove);
-}
-
-/**
   * Generate a GameMove from a string.
   *
   * From a string, generate a GameMove object.
@@ -148,25 +84,14 @@ bool LinearGame::ApplyMove(int nPlayer, GameMove &cGameMove)
     if ((nPlayer != m_knPlayer1) && (nPlayer != m_knPlayer2))
         return false;
 
-    // Check X-coordinate bounds
-    if ((cGameMove.ToX() > m_knX - 1) || (cGameMove.ToX() < 0))
-        return false;
-
-    // Check Y-coordinate bounds
-    if ((cGameMove.ToY() > m_knY - 1) || (cGameMove.ToY() < 0))
+    if (!cBoard.ValidLocation(cGameMove.ToX(), cGameMove.ToY()))
         return false;
 
     // Check to see if a space is clear
-    //if (m_anGrid[cGameMove.ToY()][cGameMove.ToX()] != m_kcClear)
     if (cBoard.PositionOccupied(cGameMove.ToX(), cGameMove.ToY()))
         return false;
 
     // Apply move to the board
-    //m_anGrid[cGameMove.ToY()][cGameMove.ToX()] = m_acTokens[nPlayer];
-
-    ///
-    ///
-    ///
     GamePiece cGamePiece(m_acTokens[nPlayer], nPlayer);
     cBoard.SetPiece(cGameMove.ToX(), cGameMove.ToY(), cGamePiece);
 
@@ -360,9 +285,8 @@ bool LinearGame::CheckOrthogonal(int nPlayer, int nConnect)
 
 int LinearGame::CheckHorizontal(int nPlayer, int y, int x) const
 {
-    if (!ValidMove(x, y)) return 0;
+    if (!cBoard.ValidLocation(x, y)) return 0;
 
-    //if (m_anGrid[y][x] == m_acTokens[nPlayer])
     if (cBoard.PositionOccupiedByPlayer(x, y, nPlayer))
         return (1 + CheckHorizontal(nPlayer, y, x+1));
     else
@@ -384,9 +308,8 @@ int LinearGame::CheckHorizontal(int nPlayer, int y, int x) const
 
 int LinearGame::CheckVertical(int nPlayer, int y, int x) const
 {
-    if (!ValidMove(x, y)) return 0;
+    if (!cBoard.ValidLocation(x, y)) return 0;
 
-    //if (m_anGrid[y][x] == m_acTokens[nPlayer])
     if (cBoard.PositionOccupiedByPlayer(x, y, nPlayer))
         return (1 + CheckVertical(nPlayer, y+1, x));
     else
@@ -470,9 +393,8 @@ bool LinearGame::CheckDiagonal(int nPlayer, int nConnect)
 
 int LinearGame::CheckDiagonalUpperLeftLowerRight(int nPlayer, int y, int x) const
 {
-    if (!ValidMove(x, y)) return 0;
+    if (!cBoard.ValidLocation(x, y)) return 0;
 
-    //if (m_anGrid[y][x] == m_acTokens[nPlayer])
     if (cBoard.PositionOccupiedByPlayer(x, y, nPlayer))
         return (1 + CheckDiagonalUpperLeftLowerRight(nPlayer, y+1, x+1));
     else
@@ -496,65 +418,12 @@ int LinearGame::CheckDiagonalUpperLeftLowerRight(int nPlayer, int y, int x) cons
 
 int LinearGame::CheckDiagonalUpperRightLowerLeft(int nPlayer, int y, int x) const
 {
-    if (!ValidMove(x, y)) return 0;
+    if (!cBoard.ValidLocation(x, y)) return 0;
 
     if (cBoard.PositionOccupiedByPlayer(x, y, nPlayer))
         return (1 + CheckDiagonalUpperRightLowerLeft(nPlayer, y+1, x-1));
     else
         return 0;
-}
-
-/**
-  * Check a move for validity.
-  *
-  * Compares the passed X- and Y-coordinates to the area of the
-  * game board.
-  *
-  * \param x        The X-coordinate
-  * \param y        The Y-coordinate
-  *
-  * \return True, if the coordinates are located within the game board.  False otherwise.
-  */
-
-bool LinearGame::ValidMove(int x, int y) const
-{
-    if ((x >= m_knX) || (x < 0))
-        return false;
-
-    if ((y >= m_knY) || (y < 0))
-        return false;
-
-    return true;
-}
-
-/**
-  * Return a measure of the preference of a move.
-  *
-  * This function is a NOP and should be overridden in derived classes.
-  *
-  * \param cGameMove  The GameMove to be evaluated.
-  *
-  * \return 0
-  */
-
-int LinearGame::PreferredMove(const GameMove &cGameMove) const
-{
-    (void)cGameMove;
-
-    return 0;
-}
-
-/**
-  * Return a  string providing a current score of the game.
-  *
-  * This function is a NOP and should be overridden in derived classes.
-  *
-  * \return ""
-  */
-
-std::string LinearGame::GameScore() const
-{
-    return "";
 }
 
 /**
