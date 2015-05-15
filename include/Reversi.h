@@ -32,7 +32,7 @@ class Reversi : public LinearGame
 {
     public:
         // Construct a Reversi game, and set up the board
-        Reversi(GameType ecGameType) : LinearGame(ecGameType, m_kiDimension, m_kiDimension, ' ', 'D', 'L', 0, true, true, true) { SetBoard(); }
+        Reversi(GameType ecGameType) : LinearGame(ecGameType, m_kiDimension, m_kiDimension, 'D', 'L', 0, true, true, true, true) { SetBoard(); }
         // Deconstructor
         ~Reversi() {}
 
@@ -77,6 +77,7 @@ class Reversi : public LinearGame
         void FlipDownLeft(int nX, int nY, int nPlayer);
         void FlipLeft(int nX, int nY, int nPlayer);
         void FlipUpLeft(int nX, int nY, int nPlayer);
+        bool FlipToken(int nX, int nY, int nPlayer);
 
         // Count the number of tokens for nPlayer
         int  CountEvaluation(int nPlayer) const;

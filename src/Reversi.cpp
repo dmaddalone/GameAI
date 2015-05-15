@@ -27,10 +27,21 @@
 
 void Reversi::SetBoard()
 {
-    m_acGrid[(m_knY / 2) - 1][(m_knX / 2) - 1] = m_acTokens[2];
-    m_acGrid[(m_knY / 2) - 1][(m_knX / 2)]     = m_acTokens[1];
-    m_acGrid[(m_knY / 2)][(m_knX / 2) - 1]     = m_acTokens[1];
-    m_acGrid[(m_knY / 2)][(m_knX / 2)]         = m_acTokens[2];
+    GamePiece cGamePiece;
+
+    cBoard.Clear();
+
+    cGamePiece.Set(m_acTokens[2], 2);
+    cBoard.SetPiece((m_knX /2) - 1, (m_knY / 2) - 1, cGamePiece);
+
+    cGamePiece.Set(m_acTokens[1], 1);
+    cBoard.SetPiece((m_knX /2), (m_knY / 2) - 1, cGamePiece);
+
+    cGamePiece.Set(m_acTokens[1], 1);
+    cBoard.SetPiece((m_knX /2) - 1, (m_knY / 2), cGamePiece);
+
+    cGamePiece.Set(m_acTokens[2], 2);
+    cBoard.SetPiece((m_knX /2), (m_knY / 2), cGamePiece);
 }
 
 /**
@@ -51,7 +62,8 @@ std::vector<GameMove> Reversi::GenerateMoves(int nPlayer) const
     {
         for (int yyy = 0; yyy < m_knY; ++yyy)
         {
-             if (m_acGrid[yyy][xxx] == m_kcClear)
+            //if (m_anGrid[yyy][xxx] == m_kcClear)
+            if (!cBoard.PositionOccupied(xxx, yyy))
             {
                 if (Contiguous(xxx, yyy, nPlayer)) // Check valid move
                 {
@@ -129,6 +141,35 @@ void Reversi::Flip(int nPlayer, const GameMove &cGameMove)
 }
 
 /**
+  * Change token.
+  *
+  * If location's token belongs to the other player, "flip it"
+  * to this player.
+  *
+  * \param nX The token's X-coordinate
+  * \param nY The tokens's Y-coordinate
+  * \param nPlayer The player whose turn it is.
+  *
+  * \return True if flip occured, false otherwise.
+  */
+
+bool Reversi::FlipToken(int nX, int nY, int nPlayer)
+{
+    GamePiece cGamePiece;
+
+    if (!cBoard.PositionOccupiedByPlayer(nX, nY, nPlayer))
+    {
+        cGamePiece.Set(m_acTokens[nPlayer], nPlayer);
+        cBoard.SetPiece(nX, nY, cGamePiece);
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+
+/**
   * Flip (change) tokens along a vertical-up line.
   *
   * Examine a line "up" from token location and flip all contiguous tokens
@@ -141,14 +182,16 @@ void Reversi::Flip(int nPlayer, const GameMove &cGameMove)
 
 void Reversi::FlipUp(int nX, int nY, int nPlayer)
 {
+    GamePiece cGamePiece;
+
     if (ContiguousUp(nX, nY, nPlayer))
     {
         while (true)
         {
             --nY;
 
-            if (m_acGrid[nY][nX] != m_acTokens[nPlayer])
-                m_acGrid[nY][nX] = m_acTokens[nPlayer];
+            if (FlipToken(nX, nY, nPlayer))
+                continue;
             else
                 break;
         }
@@ -175,8 +218,8 @@ void Reversi::FlipUpRight(int nX, int nY, int nPlayer)
             ++nX;
             --nY;
 
-            if (m_acGrid[nY][nX] != m_acTokens[nPlayer])
-                m_acGrid[nY][nX] = m_acTokens[nPlayer];
+            if (FlipToken(nX, nY, nPlayer))
+                continue;
             else
                 break;
         }
@@ -202,8 +245,8 @@ void Reversi::FlipRight(int nX, int nY, int nPlayer)
         {
             ++nX;
 
-            if (m_acGrid[nY][nX] != m_acTokens[nPlayer])
-                m_acGrid[nY][nX] = m_acTokens[nPlayer];
+            if (FlipToken(nX, nY, nPlayer))
+                continue;
             else
                 break;
         }
@@ -230,8 +273,8 @@ void Reversi::FlipDownRight(int nX, int nY, int nPlayer)
             ++nX;
             ++nY;
 
-            if (m_acGrid[nY][nX] != m_acTokens[nPlayer])
-                m_acGrid[nY][nX] = m_acTokens[nPlayer];
+            if (FlipToken(nX, nY, nPlayer))
+                continue;
             else
                 break;
         }
@@ -257,8 +300,8 @@ void Reversi::FlipDown(int nX, int nY, int nPlayer)
         {
             ++nY;
 
-            if (m_acGrid[nY][nX] != m_acTokens[nPlayer])
-                m_acGrid[nY][nX] = m_acTokens[nPlayer];
+            if (FlipToken(nX, nY, nPlayer))
+                continue;
             else
                 break;
         }
@@ -285,8 +328,9 @@ void Reversi::FlipDownLeft(int nX, int nY, int nPlayer)
             --nX;
             ++nY;
 
-            if (m_acGrid[nY][nX] != m_acTokens[nPlayer])
-                m_acGrid[nY][nX] = m_acTokens[nPlayer];
+
+            if (FlipToken(nX, nY, nPlayer))
+                continue;
             else
                 break;
         }
@@ -312,8 +356,9 @@ void Reversi::FlipLeft(int nX, int nY, int nPlayer)
         {
             --nX;
 
-            if (m_acGrid[nY][nX] != m_acTokens[nPlayer])
-                m_acGrid[nY][nX] = m_acTokens[nPlayer];
+
+            if (FlipToken(nX, nY, nPlayer))
+                continue;
             else
                 break;
         }
@@ -340,8 +385,8 @@ void Reversi::FlipUpLeft(int nX, int nY, int nPlayer)
             --nX;
             --nY;
 
-            if (m_acGrid[nY][nX] != m_acTokens[nPlayer])
-                m_acGrid[nY][nX] = m_acTokens[nPlayer];
+            if (FlipToken(nX, nY, nPlayer))
+                continue;
             else
                 break;
         }
@@ -678,14 +723,14 @@ bool Reversi::CheckContiguous(int nX, int nY, int nPlayer, bool &bOpponentPieceA
     }
 
     // If location is clear, set opponent piece adjacent to false and return false
-    if (m_acGrid[nY][nX] == m_kcClear)
+    if (!cBoard.PositionOccupied(nX, nY))
     {
         bOpponentPieceAdjacent = false;
         return false;
     }
 
     // If location contains an opponent's token, set opponent piece adjacent to true and return false
-    if (m_acGrid[nY][nX] == m_acTokens[2 - nPlayer + 1])
+    if (cBoard.PositionOccupiedByPlayer(nX, nY, 2 - nPlayer + 1))
     {
         bOpponentPieceAdjacent = true;
         return false;
@@ -693,7 +738,7 @@ bool Reversi::CheckContiguous(int nX, int nY, int nPlayer, bool &bOpponentPieceA
 
     // If location contains a player's token, and we have already identified an opponent's token as adjacent,
     // then return true.  Otherwise false.
-    if (m_acGrid[nY][nX] == m_acTokens[nPlayer])
+    if (cBoard.PositionOccupiedByPlayer(nX, nY, nPlayer))
     {
         if (bOpponentPieceAdjacent)
             return true;
@@ -756,7 +801,7 @@ int Reversi::CountEvaluation(int nPlayer) const
     {
         for (int yyy = 0; yyy < m_knY; ++yyy)
         {
-            if (m_acGrid[yyy][xxx] == m_acTokens[nPlayer])
+            if (cBoard.PositionOccupiedByPlayer(xxx, yyy, nPlayer))
                 ++nEval;
         }
     }
@@ -781,7 +826,7 @@ int Reversi::SquareEvaluation(int nPlayer) const
     {
         for (int yyy = 0; yyy < m_knY; ++yyy)
         {
-            if (m_acGrid[yyy][xxx] == m_acTokens[nPlayer])
+            if (cBoard.PositionOccupiedByPlayer(xxx, yyy, nPlayer))
                 nEval += m_kaiEvalTable[yyy][xxx];
         }
     }

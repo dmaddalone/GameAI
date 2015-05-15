@@ -22,7 +22,7 @@ TODO: Check other TODOs
 				<Option object_output="obj/Debug/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
-				<Option parameters="-1 human  -2 human -g ttt " />
+				<Option parameters="-1 human  -2 human -g reversi " />
 				<Compiler>
 					<Add option="-std=c++11" />
 					<Add option="-Wextra" />
@@ -91,7 +91,9 @@ TODO: Check other TODOs
 		<Unit filename="include/Game.h" />
 		<Unit filename="include/GameAIException.h" />
 		<Unit filename="include/GameAIVersion.h" />
+		<Unit filename="include/GameBoard.h" />
 		<Unit filename="include/GameMove.h" />
+		<Unit filename="include/GamePiece.h" />
 		<Unit filename="include/GameVocabulary.h" />
 		<Unit filename="include/Human.h" />
 		<Unit filename="include/LinearGame.h" />
@@ -108,6 +110,7 @@ TODO: Check other TODOs
 		<Unit filename="src/Client.cpp" />
 		<Unit filename="src/ConnectFour.cpp" />
 		<Unit filename="src/Game.cpp" />
+		<Unit filename="src/GameBoard.cpp" />
 		<Unit filename="src/GameMove.cpp" />
 		<Unit filename="src/GameVocabulary.cpp" />
 		<Unit filename="src/Human.cpp" />

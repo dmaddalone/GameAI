@@ -33,16 +33,10 @@ class ConnectFour : public LinearGame
 {
     public:
         // Constructor
-        ConnectFour(GameType ecGameType) : LinearGame(ecGameType, 7, 6, '0', '1', '2', 4, false, true, false) {}
+        ConnectFour(GameType ecGameType) : LinearGame(ecGameType, 7, 6, '1', '2', 4, true, true, true, false) {}
 
         // Destructor
         ~ConnectFour() {}
-
-        // Get the move from the designated player
-        virtual GameMove GetMove(int nPlayer) const override;
-
-        // Generate a GameMove from text input
-        virtual GameMove GenerateMove(std::string sMove) const override;
 
         // Provide a preferred move
         virtual int  PreferredMove(const GameMove &cGameMove) const override;

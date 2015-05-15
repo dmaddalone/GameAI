@@ -32,26 +32,26 @@
 #include <iostream>
 
 #include "Game.h"
+#include "GameBoard.h"
+#include "GamePiece.h"
 
 class LinearGame : public Game
 {
     public:
         // Construct a LinearGame
-        LinearGame(GameType ecGameType, int nX, int nY, char cClear, char cToken1, char cToken2, int nWin, bool bDisplayGrid, bool bDisplayXCoordinates, bool bDisplayYCoordinates) :
+        LinearGame(GameType ecGameType, int nX, int nY, char cToken1, char cToken2, int nInARow, bool bUseY, bool bDisplayGrid, bool bDisplayXCoordinates, bool bDisplayYCoordinates) :
             Game(ecGameType),
             m_knX(nX),
             m_knY(nY),
-            m_kcClear(cClear),
             m_kcToken1(cToken1),
             m_kcToken2(cToken2),
-            m_knWin(nWin),
-            m_kbDisplayGrid(bDisplayGrid),
-            m_kbDisplayXCoordinates(bDisplayXCoordinates),
-            m_kbDisplayYCoordinates(bDisplayYCoordinates)
-            {  SetTokens(); ClearBoard(); }
+            m_knTokensInARowWin(nInARow),
+            m_bUseY(bUseY),
+            cBoard(nX, nY, bDisplayGrid, bDisplayXCoordinates, bDisplayYCoordinates)
+            {  SetTokens(); SetBoard(); }
 
         // Destructor
-        ~LinearGame() {}
+        virtual ~LinearGame() {}
 
         // Display the game board
         virtual void Display() const override;
@@ -78,11 +78,10 @@ class LinearGame : public Game
 
     protected:
         // Set the tokens to be used for clear and both players
-        void SetTokens() { m_acTokens[0] = m_kcClear; m_acTokens[1] = m_kcToken1; m_acTokens[2] = m_kcToken2; }
-        // Remove all tokens from the board
-        void ClearBoard();
-        // Set up the board
-        void SetBoard() { return; };
+        void SetTokens() { m_acTokens[1] = m_kcToken1; m_acTokens[2] = m_kcToken2; }
+
+        //// Set up the board
+        void SetBoard() { cBoard.Clear(); return; };
 
         // Check to see if a players tokens are connected linearly
         bool CheckOrthogonal(int nPlayer, int nConnect);
@@ -91,6 +90,7 @@ class LinearGame : public Game
         bool CheckDiagonal(int nPlayer, int nConnect);
         int  CheckDiagonalUpperLeftLowerRight(int nPlayer, int y, int x) const;
         int  CheckDiagonalUpperRightLowerLeft(int nPlayer, int y, int x) const;
+
         // Check for whether a X- and Y-coordinate are valid (on the board)
         bool ValidMove(int y, int x) const;
 
@@ -98,26 +98,23 @@ class LinearGame : public Game
         const int  m_knX;
         // Max Y-coordinate this game
         const int  m_knY;
-        // Clear token (no token)
-        const char m_kcClear;
+
         // Player 1's token
         const char m_kcToken1;
         // Player 2's token
         const char m_kcToken2;
-        // Winning player
-        const int m_knWin;
-        // Booleans to display game information
-        const bool m_kbDisplayGrid;
-        const bool m_kbDisplayXCoordinates;
-        const bool m_kbDisplayYCoordinates;
-        // Used to convert alpha X coordinates to integer values for internal representation
-        const char m_kcXCoordinate {'a'};
+
+        // For games that require tokens in a row
+        const int m_knTokensInARowWin;
+
+        // Use of the Y-Coordinate
+        const int m_bUseY;
+
         // Max X-coordinate for any game
         static const int m_knMaxX {8};
         // Max Y-coordinate for any game
         static const int m_knMaxY {8};
-        // The board for any game
-        int m_acGrid[m_knMaxY][m_knMaxX] {{}};
+
         // Number of tokens
         static const int m_knTokens {3};
         // Array used to hold tokens
@@ -131,6 +128,12 @@ class LinearGame : public Game
 
         // Count the number and length of connected tokens per player
         void CountSequence(int nSequence, SequenceCounts &stSequenceCounts);
+
+        ///
+        ///
+        ///
+        GameBoard cBoard;
+
 };
 
 #endif // LINEARGAME_H

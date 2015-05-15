@@ -66,7 +66,8 @@ class GameMove
         char ToInputX() const   { return m_cToX; }
         char ToInputY() const   { return m_cToY; }
 
-        // Return whether the Y-coordinate is used
+        // Set and return whether the Y-coordinate is used
+        void SetUseY(bool b)   { m_bUseY = b; }
         bool UseY() const      { return m_bUseY; }
 
         // Set and return whether a move has been made

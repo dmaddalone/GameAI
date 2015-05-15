@@ -17,33 +17,7 @@
     along with GameAI.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-/**
-  * Clear the board.
-  *
-  * Run through every space on the board and assign a clear token to it.
-  */
-
 #include "LinearGame.h"
-
-/**
-  * Clear and set the game board.
-  *
-  * Run through every space on the board and set the token to clear.  The set
-  * up the board.
-  */
-
-void LinearGame::ClearBoard()
-{
-    for (int xxx = 0; xxx < m_knX; ++xxx)
-    {
-        for (int yyy = 0; yyy < m_knY; ++yyy)
-        {
-            m_acGrid[yyy][xxx] = m_kcClear;
-        }
-    }
-
-    SetBoard();
-}
 
 /**
   * Display the game board.
@@ -54,95 +28,7 @@ void LinearGame::ClearBoard()
 
 void LinearGame::Display() const
 {
-    char cToken;
-    std::string sColor;
-
-#if defined(_WIN32)
-    HANDLE hConsole;
-    hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
-#endif
-
-    // Display X-coordinatres
-    if (m_kbDisplayXCoordinates)
-    {
-        char c = m_kcXCoordinate;
-
-        std::cout << "   ";
-        for (int xxx = 0; xxx < m_knX; ++xxx)
-        {
-
-            std::cout << c << "   ";
-            ++c;
-        }
-        std::cout << std::endl << std::endl;
-    }
-
-    for (int yyy = 0; yyy < m_knY; ++yyy)
-    {
-        // Display Y-coordinates
-        if (m_kbDisplayYCoordinates)
-        {
-            std::cout << yyy + 1 << "  ";
-        }
-        else
-        {
-            std::cout << "   ";
-        }
-
-        for (int xxx = 0; xxx < m_knX; ++xxx)
-        {
-            // Display grid lines
-            if (m_kbDisplayGrid && xxx > 0)
-            {
-                std::cout << " | ";
-            }
-
-            // Determine color of token
-            cToken = static_cast<char>(m_acGrid[yyy][xxx]);
-            if (cToken == m_acTokens[1])
-            {
-#if defined(_WIN32)
-                SetConsoleTextAttribute(hConsole, m_nColorRed);
-#else
-                sColor = m_sColorRed;
-#endif // defined
-
-            }
-            else if (cToken == m_acTokens[2])
-            {
-#if defined(_WIN32)
-                SetConsoleTextAttribute(hConsole, m_nColorWhite);
-#else
-                sColor = m_sColorWhite;
-#endif // defined
-            }
-            else // Clear space
-            {
-                sColor = "";
-            }
-
-#if defined(_WIN32)
-            std::cout << cToken;
-            SetConsoleTextAttribute(hConsole, m_nColorReset);
-#else
-            std::cout << sColor << cToken << m_sColorReset;
-#endif // defined
-
-            if (!m_kbDisplayGrid)
-            {
-                std::cout << "   ";
-            }
-        }
-
-        if (m_kbDisplayGrid && yyy < m_knY - 1)
-        {
-            std::string sHyphen("  ");
-            sHyphen.insert(sHyphen.length() - 1, 4 * m_knX, '-');
-            std::cout << std::endl << sHyphen << std::endl;
-        }
-        else
-            std::cout << std::endl << std::endl;
-    }
+    cBoard.Display();
 }
 
 /**
@@ -214,24 +100,32 @@ GameMove LinearGame::GenerateMove(std::string sMove) const
     // Set the To X coordinate from the first charatcter of the string.
     cGameMove.SetToX(sMove[0]);
 
-    // Remove the first character ...
-    sMove.erase(0,1);
-
-    // ... and if more of the string exists, set the To Y coordinate
-    if (sMove.length() > 0)
+    if (m_bUseY)
     {
-        try
+
+        // Remove the first character ...
+        sMove.erase(0,1);
+
+        // ... and if more of the string exists, set the To Y coordinate
+        if (sMove.length() > 0)
         {
-            cGameMove.SetToY(sMove[0]);
+            try
+            {
+                cGameMove.SetToY(sMove[0]);
+            }
+            catch (...)
+            {
+                cGameMove.SetToY(-1);
+            }
         }
-        catch (...)
+        else
         {
             cGameMove.SetToY(-1);
         }
     }
     else
     {
-        cGameMove.SetToY(-1);
+        cGameMove.SetUseY(false);
     }
 
    return cGameMove;
@@ -263,11 +157,18 @@ bool LinearGame::ApplyMove(int nPlayer, GameMove &cGameMove)
         return false;
 
     // Check to see if a space is clear
-    if (m_acGrid[cGameMove.ToY()][cGameMove.ToX()] != m_kcClear)
+    //if (m_anGrid[cGameMove.ToY()][cGameMove.ToX()] != m_kcClear)
+    if (cBoard.PositionOccupied(cGameMove.ToX(), cGameMove.ToY()))
         return false;
 
     // Apply move to the board
-    m_acGrid[cGameMove.ToY()][cGameMove.ToX()] = m_acTokens[nPlayer];
+    //m_anGrid[cGameMove.ToY()][cGameMove.ToX()] = m_acTokens[nPlayer];
+
+    ///
+    ///
+    ///
+    GamePiece cGamePiece(m_acTokens[nPlayer], nPlayer);
+    cBoard.SetPiece(cGameMove.ToX(), cGameMove.ToY(), cGamePiece);
 
     // Increment move counter
     ++m_nNumberOfMoves;
@@ -461,7 +362,8 @@ int LinearGame::CheckHorizontal(int nPlayer, int y, int x) const
 {
     if (!ValidMove(x, y)) return 0;
 
-    if (m_acGrid[y][x] == m_acTokens[nPlayer])
+    //if (m_anGrid[y][x] == m_acTokens[nPlayer])
+    if (cBoard.PositionOccupiedByPlayer(x, y, nPlayer))
         return (1 + CheckHorizontal(nPlayer, y, x+1));
     else
         return 0;
@@ -484,7 +386,8 @@ int LinearGame::CheckVertical(int nPlayer, int y, int x) const
 {
     if (!ValidMove(x, y)) return 0;
 
-    if (m_acGrid[y][x] == m_acTokens[nPlayer])
+    //if (m_anGrid[y][x] == m_acTokens[nPlayer])
+    if (cBoard.PositionOccupiedByPlayer(x, y, nPlayer))
         return (1 + CheckVertical(nPlayer, y+1, x));
     else
         return 0;
@@ -569,7 +472,8 @@ int LinearGame::CheckDiagonalUpperLeftLowerRight(int nPlayer, int y, int x) cons
 {
     if (!ValidMove(x, y)) return 0;
 
-    if (m_acGrid[y][x] == m_acTokens[nPlayer])
+    //if (m_anGrid[y][x] == m_acTokens[nPlayer])
+    if (cBoard.PositionOccupiedByPlayer(x, y, nPlayer))
         return (1 + CheckDiagonalUpperLeftLowerRight(nPlayer, y+1, x+1));
     else
         return 0;
@@ -594,7 +498,7 @@ int LinearGame::CheckDiagonalUpperRightLowerLeft(int nPlayer, int y, int x) cons
 {
     if (!ValidMove(x, y)) return 0;
 
-    if (m_acGrid[y][x] == m_acTokens[nPlayer])
+    if (cBoard.PositionOccupiedByPlayer(x, y, nPlayer))
         return (1 + CheckDiagonalUpperRightLowerLeft(nPlayer, y+1, x-1));
     else
         return 0;
@@ -672,28 +576,28 @@ bool LinearGame::GameEnded(int nPlayer)
     m_sWinBy.assign("nothing");
 
     // Evaluate orthognal lines for player 1
-    if (CheckOrthogonal(m_knPlayer1, m_knWin))
+    if (CheckOrthogonal(m_knPlayer1, m_knTokensInARowWin))
     {
         m_nWinner = m_knPlayer1;
         return true;
     }
 
     // Evaluate orthognal lines for player 2
-    if (CheckOrthogonal(m_knPlayer2, m_knWin))
+    if (CheckOrthogonal(m_knPlayer2, m_knTokensInARowWin))
     {
         m_nWinner = m_knPlayer2;
         return true;
     }
 
     // Evaluate diagnoal lines for player 1
-    if (CheckDiagonal(m_knPlayer1, m_knWin))
+    if (CheckDiagonal(m_knPlayer1, m_knTokensInARowWin))
     {
         m_nWinner = m_knPlayer1;
         return true;
     }
 
     // Evaluate diagnoal lines for player 2
-    if (CheckDiagonal(m_knPlayer2, m_knWin))
+    if (CheckDiagonal(m_knPlayer2, m_knTokensInARowWin))
     {
         m_nWinner = m_knPlayer2;
         return true;

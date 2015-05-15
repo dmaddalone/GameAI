@@ -50,49 +50,6 @@ std::vector<GameMove> ConnectFour::GenerateMoves(int nPlayer) const
     return vGameMoves;
 }
 
-
-/**
-  * Get the player's next move.
-  *
-  * Using std::cin, capture the player's move, generate a GameMove object, and
-  * return it.
-  *
-  * \param nPlayer The player whose turn it is.
-  *
-  * \return A GameMove object.
-  */
-
-GameMove ConnectFour::GetMove(int nPlayer) const
-{
-    // nPlayer not used
-    (void)nPlayer;
-
-    std::string  sMove {};
-
-    std::cin >> sMove;
-
-    return GenerateMove(sMove);
-}
-
-/**
-  * Generate a GameMove from a string.
-  *
-  * From string, generate a GameMove object.
-  *
-  * \param sMove A string representing a game move.
-  *
-  * \return A GameMove object.
-  */
-
-GameMove ConnectFour::GenerateMove(std::string sMove) const
-{
-    GameMove cGameMove;
-
-    cGameMove.SetToX(sMove[0], false);
-
-    return cGameMove;
-}
-
 /**
   * Apply the move to the game.
   *
@@ -128,7 +85,7 @@ int ConnectFour::FindBottom(int x) const
 {
     for (int yyy = m_knY - 1; yyy >= 0; --yyy)
     {
-        if (m_acGrid[yyy][x] == m_kcClear)
+        if (!cBoard.PositionOccupied(x, yyy))
             return yyy;
     }
 
