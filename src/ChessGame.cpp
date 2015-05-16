@@ -36,7 +36,7 @@
 
 GameMove ChessGame::GenerateMove(std::string sMove) const
 {
-    GameMove cGameMove (sMove[0], sMove[1], sMove[2], sMove[3], true);
+    GameMove cGameMove (sMove[0], sMove[1], sMove[2], sMove[3]);
 
     return cGameMove;
 }
@@ -56,18 +56,25 @@ std::vector<GameMove> ChessGame::GenerateMoves(int nPlayer) const
     std::vector<GameMove> vGameMoves {};
     char cToken;
 
-    for (int xxx = 0; xxx < m_knX; ++xxx)
+    for (int yyy = 0; yyy < m_knY; ++yyy)
     {
-        for (int yyy = 0; yyy < m_knY; ++yyy)
+        for (int xxx = 0; xxx < m_knX; ++xxx)
         {
-            if (!cBoard.PositionOccupiedByPlayer(xxx, yyy, nPlayer))
+            if (cBoard.PositionOccupiedByPlayer(xxx, yyy, nPlayer))
             {
                 cToken = cBoard.Token(xxx, yyy);
                 if (cToken == m_kcPawnToken)
-                {
                     GeneratePawnMoves(xxx, yyy, nPlayer, vGameMoves);
-                    break;
-                }
+                if (cToken == m_kcRookToken)
+                    GenerateRookMoves(xxx, yyy, nPlayer, vGameMoves);
+                if (cToken == m_kcKnightToken)
+                    GenerateKnightMoves(xxx, yyy, nPlayer, vGameMoves);
+                if (cToken == m_kcBishopToken)
+                    GenerateKnightMoves(xxx, yyy, nPlayer, vGameMoves);
+                if (cToken == m_kcQueenToken)
+                    GenerateQueenMoves(xxx, yyy, nPlayer, vGameMoves);
+                if (cToken == m_kcKingToken)
+                    GenerateKingMoves(xxx, yyy, nPlayer, vGameMoves);
             }
         }
     }
@@ -75,20 +82,315 @@ std::vector<GameMove> ChessGame::GenerateMoves(int nPlayer) const
     return vGameMoves;
 }
 
+/**
+  * Generate moves for a pawn.
+  *
+  * Review and collect all valid moves for a pawn.
+  *
+  * \param nX The X-Coordinate of the pawn
+  * \param nY The Y-Coordinate of the pawn
+  * \param nPlayer The player whose turn it is.
+  * \param vGameMoves The vector to add valid moves to
+  */
+
 void ChessGame::GeneratePawnMoves(int nX, int nY, int nPlayer, std::vector<GameMove> &vGameMoves) const
 {
-    int nForwardY;
+    int nNewY;
 
     // Push
     if (nPlayer == 1)
-        nForwardY = nY + 1;
+        nNewY = nY + 1;
     else
-        nForwardY = nY - 1;
+        nNewY = nY - 1;
 
-    if (!cBoard.PositionOccupied(nX, nForwardY))
-        vGameMoves.emplace_back(nX, nY, nX, nForwardY, true);
+    if (!cBoard.PositionOccupied(nX, nNewY))
+        vGameMoves.emplace_back(nX, nY, nX, nNewY, true);
 
     // Capture
+
+    if (cBoard.PositionOccupiedByPlayer(nX - 1, nNewY, 1 - nPlayer + 2))
+        vGameMoves.emplace_back(nX, nY, nX - 1, nNewY, true);
+    if (cBoard.PositionOccupiedByPlayer(nX + 1, nNewY, 1 - nPlayer + 2))
+        vGameMoves.emplace_back(nX, nY, nX + 1, nNewY, true);
+
+    // TODO: Promotions
+}
+
+/**
+  * Generate moves for a Rook, Queen, or King.
+  *
+  * Review and collect all valid moves for a Rook, Queen, or King
+  *
+  * \param nX The X-Coordinate of the Rook, Queen, or King
+  * \param nY The Y-Coordinate of the Rook, Queen, or King
+  * \param nPlayer The player whose turn it is.
+  * \param vGameMoves The vector to add valid moves to
+  */
+
+void ChessGame::GenerateRookMoves(int nX, int nY, int nPlayer, std::vector<GameMove> &vGameMoves, bool bUnlimitedMoves) const
+{
+    int nNewX;
+    int nNewY;
+
+    // Evaluate north along file
+    nNewY = nY + 1;
+    while (cBoard.ValidLocation(nX, nNewY))
+    {
+        if (GenerateLinearMove(nX, nY, nX, nNewY, nPlayer, vGameMoves))
+            ++nNewY;
+        else
+            break;
+
+        if (!bUnlimitedMoves) // Limit the King move to one square
+            break;
+    }
+
+    // Evaluate south along file
+    nNewY = nY - 1;
+    while (cBoard.ValidLocation(nX, nNewY))
+    {
+        if (GenerateLinearMove(nX, nY, nX, nNewY, nPlayer, vGameMoves))
+            --nNewY;
+        else
+            break;
+
+        if (!bUnlimitedMoves) // Limit the King move to one square
+            break;
+    }
+
+    // Evaluate east along rank
+    nNewX = nX - 1;
+    while (cBoard.ValidLocation(nNewX, nY))
+    {
+        if (GenerateLinearMove(nX, nY, nNewX, nY, nPlayer, vGameMoves))
+            --nNewX;
+        else
+            break;
+
+        if (!bUnlimitedMoves) // Limit the King move to one square
+            break;
+    }
+
+    // Evaluate west along rank
+    nNewX = nX + 1;
+    while (cBoard.ValidLocation(nNewX, nY))
+    {
+        if (GenerateLinearMove(nX, nY, nNewX, nY, nPlayer, vGameMoves))
+            ++nNewX;
+        else
+            break;
+
+        if (!bUnlimitedMoves) // Limit the King move to one square
+            break;
+    }
+}
+
+/**
+  * Generate moves for a Bishop, Queen or King.
+  *
+  * Review and collect all valid moves for a Bishop, Queen, or a King
+  *
+  * \param nX The X-Coordinate of the Bishop, Queen, or King
+  * \param nY The Y-Coordinate of the Bishop, Queen, or King
+  * \param nPlayer The player whose turn it is.
+  * \param vGameMoves The vector to add valid moves to
+  */
+
+void ChessGame::GenerateBishopMoves(int nX, int nY, int nPlayer, std::vector<GameMove> &vGameMoves, bool bUnlimitedMoves) const
+{
+    int nNewX;
+    int nNewY;
+
+    // Evaluate north-west
+    nNewX = nX + 1;
+    nNewY = nY + 1;
+    while (cBoard.ValidLocation(nNewX, nNewY))
+    {
+        if (GenerateLinearMove(nX, nY, nNewX, nNewY, nPlayer, vGameMoves))
+        {
+            ++nNewX;
+            ++nNewY;
+        }
+        else
+            break;
+
+        if (!bUnlimitedMoves) // Limit the King move to one square
+            break;
+    }
+
+    // Evaluate south-west
+    nNewX = nX + 1;
+    nNewY = nY - 1;
+    while (cBoard.ValidLocation(nNewX, nNewY))
+    {
+        if (GenerateLinearMove(nX, nY, nNewX, nNewY, nPlayer, vGameMoves))
+        {
+            ++nNewX;
+            --nNewY;
+        }
+        else
+            break;
+
+        if (!bUnlimitedMoves) // Limit the King move to one square
+            break;
+    }
+
+    // Evaluate south-east
+    nNewX = nX - 1;
+    nNewY = nY - 1;
+    while (cBoard.ValidLocation(nNewX, nNewY))
+    {
+        if (GenerateLinearMove(nX, nY, nNewX, nNewY, nPlayer, vGameMoves))
+        {
+            ++nNewX;
+            ++nNewY;
+        }
+        else
+            break;
+
+        if (!bUnlimitedMoves) // Limit the King move to one square
+            break;
+    }
+
+    // Evaluate north-east
+    nNewX = nX - 1;
+    nNewY = nY + 1;
+    while (cBoard.ValidLocation(nNewX, nNewY))
+    {
+        if (GenerateLinearMove(nX, nY, nNewX, nNewY, nPlayer, vGameMoves))
+        {
+            ++nNewX;
+            ++nNewY;
+        }
+        else
+            break;
+
+        if (!bUnlimitedMoves) // Limit the King move to one square
+            break;
+    }
+}
+
+/**
+  * Generate moves for a Queen.
+  *
+  * Review and collect all valid moves for a Queen
+  *
+  * \param nX The X-Coordinate of the Queen
+  * \param nY The Y-Coordinate of the Queen
+  * \param nPlayer The player whose turn it is.
+  * \param vGameMoves The vector to add valid moves to
+  */
+
+void ChessGame::GenerateQueenMoves(int nX, int nY, int nPlayer, std::vector<GameMove> &vGameMoves) const
+{
+    GenerateRookMoves(nX, nY, nPlayer, vGameMoves);
+    GenerateBishopMoves(nX, nY, nPlayer, vGameMoves);
+}
+
+/**
+  * Generate moves for a King.
+  *
+  * Review and collect all valid moves for a King
+  *
+  * \param nX The X-Coordinate of the King
+  * \param nY The Y-Coordinate of the King
+  * \param nPlayer The player whose turn it is.
+  * \param vGameMoves The vector to add valid moves to
+  */
+
+void ChessGame::GenerateKingMoves(int nX, int nY, int nPlayer, std::vector<GameMove> &vGameMoves) const
+{
+    GenerateRookMoves(nX, nY, nPlayer, vGameMoves, false);
+    GenerateBishopMoves(nX, nY, nPlayer, vGameMoves, false);
+
+    // TODO: Evaluate moves for check
+    // TODO: Castling
+    // TODO: Evaluate moves for stalemate
+}
+
+bool ChessGame::GenerateLinearMove(int nFromX, int nFromY, int nToX, int nToY, int nPlayer, std::vector<GameMove> &vGameMoves) const
+{
+    // Move
+    if (!cBoard.PositionOccupied(nToX, nToY))
+    {
+        vGameMoves.emplace_back(nFromX, nFromY, nToX, nToY, true);
+        return true;
+    }
+    else if (cBoard.PositionOccupiedByPlayer(nToX, nToY, nPlayer))
+        return false;
+
+    // Capture
+    else //if (cBoard.PositionOccupiedByPlayer(nToX, nToY, 1 - nPlayer + 2))
+    {
+        vGameMoves.emplace_back(nFromX, nFromY, nToX, nToY, true);
+        return false;
+    }
+}
+
+/**
+  * Generate moves for a Knight.
+  *
+  * Review and collect all valid moves for a Knight
+  *
+  * \param nX The X-Coordinate of the Knight
+  * \param nY The Y-Coordinate of the Knight
+  * \param nPlayer The player whose turn it is.
+  * \param vGameMoves The vector to add valid moves to
+  */
+
+void ChessGame::GenerateKnightMoves(int nX, int nY, int nPlayer, std::vector<GameMove> &vGameMoves) const
+{
+    int nNewX;
+    int nNewY;
+
+    // Two up, one right
+    nNewX = nX + 2;
+    nNewY = nY + 1;
+    GenerateKnightMove(nX, nY, nNewX, nNewY, nPlayer, vGameMoves);
+
+    // One up, two right
+    nNewX = nX + 1;
+    nNewY = nY + 2;
+    GenerateKnightMove(nX, nY, nNewX, nNewY, nPlayer, vGameMoves);
+
+    // One down, two right
+    nNewX = nX - 1;
+    nNewY = nY + 2;
+    GenerateKnightMove(nX, nY, nNewX, nNewY, nPlayer, vGameMoves);
+
+    // Two down, one right
+    nNewX = nX - 2;
+    nNewY = nY + 1;
+    GenerateKnightMove(nX, nY, nNewX, nNewY, nPlayer, vGameMoves);
+
+    // Two down, one left
+    nNewX = nX - 2;
+    nNewY = nY - 1;
+    GenerateKnightMove(nX, nY, nNewX, nNewY, nPlayer, vGameMoves);
+
+    // One down, two left
+    nNewX = nX - 1;
+    nNewY = nY - 2;
+    GenerateKnightMove(nX, nY, nNewX, nNewY, nPlayer, vGameMoves);
+
+    // One up, two left
+    nNewX = nX + 1;
+    nNewY = nY - 2;
+    GenerateKnightMove(nX, nY, nNewX, nNewY, nPlayer, vGameMoves);
+
+    // Two up, one left
+    nNewX = nX + 2;
+    nNewY = nY - 1;
+    GenerateKnightMove(nX, nY, nNewX, nNewY, nPlayer, vGameMoves);
+}
+
+void ChessGame::GenerateKnightMove(int nFromX, int nFromY, int nToX, int nToY, int nPlayer, std::vector<GameMove> &vGameMoves) const
+{
+    if (cBoard.ValidLocation(nToX, nToY))
+    {
+        if ((!cBoard.PositionOccupied(nToX, nToY)) || (cBoard.PositionOccupiedByPlayer(nToX, nToY, 1 - nPlayer + 2)))
+            vGameMoves.emplace_back(nFromX, nFromY, nToX, nToY, true);
+    }
 }
 
 /**
@@ -104,6 +406,8 @@ void ChessGame::GeneratePawnMoves(int nX, int nY, int nPlayer, std::vector<GameM
 
 bool ChessGame::ApplyMove(int nPlayer, GameMove &cGameMove)
 {
+    bool bValidMove = false;
+
     // Check player number
     if ((nPlayer != m_knPlayer1) && (nPlayer != m_knPlayer2))
         return false;
@@ -112,24 +416,23 @@ bool ChessGame::ApplyMove(int nPlayer, GameMove &cGameMove)
         return false;
 
     // Generate a vector of all possible valid moves for the from square
-    std::vector<GameMove> vGameMoves = GenerateMovesForPiece(cGameMove);
+    std::vector<GameMove> vGameMoves = GenerateMovesForPiece(nPlayer, cGameMove);
 
     // Compare passed GameMove to generated game moves.  If one is found to be
-    // the same, flip tokens accordingly.
-
+    // the same, make the move on the board.
     for (GameMove &cValidGameMove : vGameMoves)
     {
         if (cValidGameMove.SameTo(cGameMove))
         {
-            //Flip(nPlayer, cGameMove);
-            //bValidMove = true;
-            break;
+            if (cBoard.MovePiece(cGameMove))
+            {
+                bValidMove = true;
+                break;
+            }
+            else
+                return false;
         }
     }
-
-    // Apply move to the board
-    //GamePiece cGamePiece(m_acTokens[nPlayer], nPlayer);
-    //cBoard.SetPiece(cGameMove.ToX(), cGameMove.ToY(), cGamePiece);
 
     // Increment move counter
     ++m_nNumberOfMoves;
@@ -137,27 +440,28 @@ bool ChessGame::ApplyMove(int nPlayer, GameMove &cGameMove)
     // Capture move for later playback or analysis
     m_vGameMoves.push_back(cGameMove);
 
-    return true;
+    return bValidMove;
 }
 
-std::vector<GameMove> ChessGame::GenerateMovesForPiece(const GameMove &cGameMove)
+std::vector<GameMove> ChessGame::GenerateMovesForPiece(int nPlayer, const GameMove &cGameMove)
 {
     std::vector<GameMove> vGameMoves {};
-/*
-    for (int xxx = 0; xxx < m_knX; ++xxx)
-    {
-        for (int yyy = 0; yyy < m_knY; ++yyy)
-        {
-            if (!cBoard.PositionOccupied(xxx, yyy))
-            {
-                if (Contiguous(xxx, yyy, nPlayer)) // Check valid move
-                {
-                    vGameMoves.emplace_back(0, 0, xxx, yyy, true);
-                }
-            }
-        }
-    }
-*/
+    char cToken;
+
+    cToken = cBoard.Token(cGameMove.FromX(), cGameMove.FromY());
+    if (cToken == m_kcPawnToken)
+        GeneratePawnMoves(cGameMove.FromX(), cGameMove.FromY(), nPlayer, vGameMoves);
+    if (cToken == m_kcRookToken)
+        GenerateRookMoves(cGameMove.FromX(), cGameMove.FromY(), nPlayer, vGameMoves);
+    if (cToken == m_kcKnightToken)
+        GenerateKnightMoves(cGameMove.FromX(), cGameMove.FromY(), nPlayer, vGameMoves);
+    if (cToken == m_kcBishopToken)
+        GenerateBishopMoves(cGameMove.FromX(), cGameMove.FromY(), nPlayer, vGameMoves);
+    if (cToken == m_kcQueenToken)
+        GenerateQueenMoves(cGameMove.FromX(), cGameMove.FromY(), nPlayer, vGameMoves);
+    if (cToken == m_kcKingToken)
+        GenerateKingMoves(cGameMove.FromX(), cGameMove.FromY(), nPlayer, vGameMoves);
+
     return vGameMoves;
 }
 

@@ -37,6 +37,7 @@
 //#include <wincon.h>
 #endif
 
+#include "GameMove.h"
 #include "GamePiece.h"
 
 class GameBoard
@@ -63,14 +64,18 @@ class GameBoard
         void Display() const;
         // Set a piece on the board
         bool SetPiece(int nX, int nY, const GamePiece &cGamePiece);
+        // Move a piece on the board
+        bool MovePiece(const GameMove &cGameMove);
         // Evaluate locations on the board
         bool PositionOccupied(int nX, int nY) const;
         int  PositionOccupiedBy(int nX, int nY) const;
         bool PositionOccupiedByPlayer(int nX, int nY, int nPlayer) const;
+        // Return the token for a board location
+        char Token(int nX, int nY) const { return m_vBoard[nY][nX].Token(); }
 
-        char Token(int nX, int nY) const { return m_vBoard[nX][nY].Token(); }
-
+        // Reverse token colors for players
         void ReverseColors() { std::string sColor = m_sPlayer1TokenColor; m_sPlayer1TokenColor = m_sPlayer2TokenColor; m_sPlayer2TokenColor = sColor; }
+        // Reverse Y-Coordinates of the board
         void ReverseY()      { m_bReverseY = true; }
 
     private:

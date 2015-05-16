@@ -56,6 +56,10 @@ class GamePiece
         char Token() const        { return m_cToken; }
         // Return player number
         int  Player() const       { return m_nPlayer; }
+        // Return value
+        int  Value() const        { return m_nValue; }
+        // Return piece
+        GamePiece Piece() const   { return GamePiece(m_cToken, m_nPlayer, m_nValue); }
         // Evaluate whether piece is a game pice (vs a non-game piece or clear)
         bool IsAGamePiece() const { return m_cToken != m_kcNoToken; }
 
@@ -63,7 +67,7 @@ class GamePiece
         void Set(char cToken, int nPlayer)             { m_cToken = cToken; m_nPlayer = nPlayer; }
         void Set(char cToken, int nPlayer, int nValue) { m_cToken = cToken; m_nPlayer = nPlayer; m_nValue = nValue; }
         // Clear a game piece
-        void Clear()                       { m_cToken = m_kcNoToken; m_nPlayer = m_knNoValue; }
+        void Clear() { m_cToken = m_kcNoToken; m_nPlayer = m_knNoValue; m_nValue = m_knNoValue; }
 
     private:
         // Constants for clear pieces
@@ -76,6 +80,8 @@ class GamePiece
         int  m_nPlayer;
         // Value of the piece
         int  m_nValue;
+
+        bool m_bHasMoved {false}; // TODO: For castling
 };
 
 #endif // GAMEPIECE_H

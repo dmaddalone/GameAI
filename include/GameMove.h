@@ -47,12 +47,22 @@ class GameMove
             m_cToY   = m_nToY + m_kcYOffset;
         }
 
+        GameMove(char cFromX, char cFromY, char cToX, char cToY)
+        {
+            SetFromX(cFromX);
+            SetFromY(cFromY);
+            SetToX(cToX);
+            SetToY(cToY);
+        }
+
         // Destructor
         virtual ~GameMove() {};
 
         // Modify the coordinates of a move
+        void SetFromX(char cX)           { m_cFromX = tolower(cX); m_nFromX = m_cFromX - m_kcXOffset; }
         void SetToX(char cX)             { m_cToX = tolower(cX); m_nToX = m_cToX - m_kcXOffset; }
         void SetToX(char cX, bool bUseY) { SetToX(cX); m_bUseY = bUseY; }
+        void SetFromY(char cY)           { m_cFromY = tolower(cY); m_nFromY = m_cFromY - m_kcYOffset; }
         void SetToY(char cY)             { m_cToY = tolower(cY); m_nToY = m_cToY - m_kcYOffset; }
         void SetToY(int nY)              { m_nToY = nY; m_cToY = m_nToY + m_kcYOffset; }
 

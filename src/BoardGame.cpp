@@ -55,7 +55,7 @@ std::string BoardGame::ValidMoves(int nPlayer) const
     {
         for (GameMove cGameMove : vGameMoves)
         {
-            sValidMoves += cGameMove.AnnounceToMove() + " ";
+            sValidMoves += cGameMove.AnnounceFromMove() + cGameMove.AnnounceToMove() + " ";
         }
     }
 

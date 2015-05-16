@@ -49,7 +49,29 @@ bool GameBoard::SetPiece(int nX, int nY, const GamePiece &cGamePiece)
     if (!ValidLocation(nX, nY))
         return false;
 
-    m_vBoard[nY][nX].Set(cGamePiece.Token(), cGamePiece.Player());
+    m_vBoard[nY][nX].Set(cGamePiece.Token(), cGamePiece.Player(), cGamePiece.Value());
+
+    return true;
+}
+
+/**
+  * Move a piece on the board.
+  *
+  * Copy piece from location and paste it to the to location.
+  *
+  * \param GameMove The game move
+  *
+  * \return True if valid move, false otherwise.
+  */
+
+bool GameBoard::MovePiece(const GameMove &cGameMove)
+{
+    GamePiece cGamePiece = m_vBoard[cGameMove.FromY()][cGameMove.FromX()].Piece();
+
+    if (!SetPiece(cGameMove.ToX(), cGameMove.ToY(), cGamePiece))
+        return false;
+
+    m_vBoard[cGameMove.FromY()][cGameMove.FromX()].Clear();
 
     return true;
 }
@@ -207,7 +229,7 @@ void GameBoard::Display() const
                 sColor = m_sPlayer2TokenColor;
 #endif // defined
             }
-            else // Clear space
+            else // Clear color
             {
                 sColor = "";
             }

@@ -5,11 +5,18 @@
 		<Option title="GameAI" />
 		<Option pch_mode="2" />
 		<Option compiler="gcc" />
+		<Option virtualFolders="src/;include/;" />
 		<Option show_notes="0">
 			<notes>
 				<![CDATA[TODO: NO MOVE is mesing up network play
 
 TODO: Make hostname work
+
+TODO: Generate castling move
+TODO: Evaluate for check and check mate
+TODO: Evaluate for stalemate
+TODO: Allow pawn promotion
+TODO: Chess evaluation
 
 TODO: Check other TODOs
 
@@ -22,7 +29,7 @@ TODO: Check other TODOs
 				<Option object_output="obj/Debug/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
-				<Option parameters="-1 human  -2 human -g reversi " />
+				<Option parameters="-1 human  -2 human -g chess-gardner " />
 				<Compiler>
 					<Add option="-std=c++11" />
 					<Add option="-Wextra" />
@@ -86,7 +93,9 @@ TODO: Check other TODOs
 			<Add option="-Wall" />
 			<Add option="-fexceptions" />
 		</Compiler>
-		<Unit filename="include/BoardGame.h" />
+		<Unit filename="include/BoardGame.h">
+			<Option virtualFolder="include/" />
+		</Unit>
 		<Unit filename="include/ChessGame.h" />
 		<Unit filename="include/ChessGardner.h" />
 		<Unit filename="include/Client.h" />
@@ -94,7 +103,9 @@ TODO: Check other TODOs
 		<Unit filename="include/Game.h" />
 		<Unit filename="include/GameAIException.h" />
 		<Unit filename="include/GameAIVersion.h" />
-		<Unit filename="include/GameBoard.h" />
+		<Unit filename="include/GameBoard.h">
+			<Option virtualFolder="include/" />
+		</Unit>
 		<Unit filename="include/GameMove.h" />
 		<Unit filename="include/GamePiece.h" />
 		<Unit filename="include/GameVocabulary.h" />

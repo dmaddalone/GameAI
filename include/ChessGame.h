@@ -57,13 +57,19 @@ class ChessGame : public BoardGame
         // Clone the current game
         virtual std::unique_ptr<Game> Clone() const = 0;
 
-
-        std::vector<GameMove> GenerateMovesForPiece(const GameMove &cGameMove);
+        std::vector<GameMove> GenerateMovesForPiece(int nPlayer, const GameMove &cGameMove);
 
         void SetBoard() { BoardGame::SetBoard(); cBoard.ReverseY(); }
 
     protected:
         void GeneratePawnMoves(int nX, int nY, int nPlayer, std::vector<GameMove> &vGameMoves) const;
+        void GenerateRookMoves(int nX, int nY, int nPlayer, std::vector<GameMove> &vGameMoves, bool bUnlimitedMoves=true) const;
+        void GenerateBishopMoves(int nX, int nY, int nPlayer, std::vector<GameMove> &vGameMoves, bool bUnlimitedMoves=true) const;
+        void GenerateQueenMoves(int nX, int nY, int nPlayer, std::vector<GameMove> &vGameMoves) const;
+        void GenerateKingMoves(int nX, int nY, int nPlayer, std::vector<GameMove> &vGameMoves) const;
+        bool GenerateLinearMove(int nFromX, int nFromY, int nToX, int nToY, int nPlayer, std::vector<GameMove> &vGameMoves) const;
+        void GenerateKnightMoves(int nX, int nY, int nPlayer, std::vector<GameMove> &vGameMoves) const;
+        void GenerateKnightMove(int nFromX, int nFromY, int nToX, int nToY, int nPlayer, std::vector<GameMove> &vGameMoves) const;
 
         //const std::string sPieceSymbols {"RNBKQ"};
         //const std::string sFiles        {"abcdefgh"};
@@ -72,7 +78,7 @@ class ChessGame : public BoardGame
 
         static const char m_kcPawnToken   {'P'};
         static const char m_kcRookToken   {'R'};
-        static const char m_kcKnightToken {'K'};
+        static const char m_kcKnightToken {'N'};
         static const char m_kcBishopToken {'B'};
         static const char m_kcQueenToken  {'Q'};
         static const char m_kcKingToken   {'K'};
