@@ -60,7 +60,8 @@ class GamePiece
         bool IsAGamePiece() const { return m_cToken != m_kcNoToken; }
 
         // Set game piece
-        void Set(char cToken, int nPlayer) { m_cToken = cToken; m_nPlayer = nPlayer; }
+        void Set(char cToken, int nPlayer)             { m_cToken = cToken; m_nPlayer = nPlayer; }
+        void Set(char cToken, int nPlayer, int nValue) { m_cToken = cToken; m_nPlayer = nPlayer; m_nValue = nValue; }
         // Clear a game piece
         void Clear()                       { m_cToken = m_kcNoToken; m_nPlayer = m_knNoValue; }
 

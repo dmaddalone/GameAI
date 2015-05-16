@@ -30,6 +30,13 @@
 #include <iostream>
 #include <string>
 #include <vector>
+
+#if defined(_WIN32)
+//#include <winsock2.h>
+#include <windows.h>
+//#include <wincon.h>
+#endif
+
 #include "GamePiece.h"
 
 class GameBoard
@@ -61,6 +68,11 @@ class GameBoard
         int  PositionOccupiedBy(int nX, int nY) const;
         bool PositionOccupiedByPlayer(int nX, int nY, int nPlayer) const;
 
+        char Token(int nX, int nY) const { return m_vBoard[nX][nY].Token(); }
+
+        void ReverseColors() { std::string sColor = m_sPlayer1TokenColor; m_sPlayer1TokenColor = m_sPlayer2TokenColor; m_sPlayer2TokenColor = sColor; }
+        void ReverseY()      { m_bReverseY = true; }
+
     private:
         // Max X-coordinate for any game
         static const int m_knMaxX {8};
@@ -87,14 +99,16 @@ class GameBoard
 
         // Used to provide color for game pieces
 #if defined(_WIN32)
-        const int m_nColorPlayer1 {FOREGROUND_RED};
-        const int m_nColorPlayer2 {FOREGROUND_INTENSITY | FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE}; // White
-        const int m_nColorReset   {FOREGROUND_INTENSITY | FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE}; // White
+        int m_sPlayer1TokenColor     {FOREGROUND_INTENSITY | FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE}; // White
+        int m_sPlayer2TokenColor     {FOREGROUND_RED};
+        const int m_sResetTokenColor {FOREGROUND_INTENSITY | FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE}; // White
 #else
-        const std::string m_sColorPlayer1   {"\033[1;31m"}; // Red
-        const std::string m_sColorPlayer2 {"\033[1;37m"};   // White
-        const std::string m_sColorReset {"\033[0m"};        // Reset
+        std::string m_sPlayer1TokenColor       {"\033[1;37m"}; // White
+        std::string m_sPlayer2TokenColor       {"\033[1;31m"}; // Red
+        const std::string m_sResetTokenColor   {"\033[0m"};    // Reset
 #endif
+
+        bool m_bReverseY = false;
 };
 
 #endif // GAMEBOARD_H

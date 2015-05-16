@@ -30,6 +30,7 @@ void Reversi::SetBoard()
     GamePiece cGamePiece;
 
     cBoard.Clear();
+    cBoard.ReverseColors();
 
     cGamePiece.Set(m_acTokens[2], 2);
     cBoard.SetPiece((m_knX /2) - 1, (m_knY / 2) - 1, cGamePiece);
@@ -92,7 +93,7 @@ bool Reversi::ApplyMove(int nPlayer, GameMove &cGameMove)
 {
     bool bValidMove = false;
 
-    // generate a vector lf all possible valid moves for this player
+    // Generate a vector of all possible valid moves for this player
     std::vector<GameMove> vGameMoves = GenerateMoves(nPlayer);
 
     // If the GameMove (passed to this method) is not valid for a LinearGame
@@ -111,6 +112,8 @@ bool Reversi::ApplyMove(int nPlayer, GameMove &cGameMove)
             break;
         }
     }
+
+    // TODO: If move was not valid, remove it from m_vGameMoves
 
     return bValidMove;
 }

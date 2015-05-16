@@ -131,6 +131,8 @@ static std::unique_ptr<Game> SetGame(char* pcGame)
         return Game::Make(GameType::TYPE_TTT);
     else if (sGame == "reversi")
         return Game::Make(GameType::TYPE_REVERSI);
+    else if (sGame == "chess-gardner")
+        return Game::Make(GameType::TYPE_CHESSGARDNER);
     else
         return nullptr;
 }

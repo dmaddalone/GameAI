@@ -30,9 +30,9 @@
 #include <vector>
 
 #if defined(_WIN32)
-#include <winsock2.h>
-#include <windows.h>
-#include <wincon.h>
+//#include <winsock2.h>
+//#include <windows.h>
+//#include <wincon.h>
 #endif
 
 #include "GameMove.h"
@@ -43,7 +43,8 @@ enum class GameType
     TYPE_NONE,
     TYPE_CONNECT_FOUR,
     TYPE_TTT,
-    TYPE_REVERSI
+    TYPE_REVERSI,
+    TYPE_CHESSGARDNER
 };
 
 class Game

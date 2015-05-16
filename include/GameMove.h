@@ -77,8 +77,10 @@ class GameMove
         // Compare two moves and whether their to-moves are the same
         bool SameTo(const GameMove &cGameMove) { if ((cGameMove.ToX() == m_nToX) && (cGameMove.ToY() == m_nToY)) return true; else return false;}
 
-        // Announce the to-move
+        // Announce the moves
+        std::string AnnounceFromMove() const;
         std::string AnnounceToMove() const;
+
 
     private:
         // Used to convert int coordinates to char values for internal representation using ASCII representation

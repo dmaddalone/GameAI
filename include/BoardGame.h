@@ -62,19 +62,14 @@ class BoardGame : public Game
         // Clone the current game
         virtual std::unique_ptr<Game> Clone() const = 0;
 
-    protected:
-        //// Set up the board
-        void SetBoard() { cBoard.Clear(); return; };
+        // Set up the board
+        void SetBoard() { cBoard.Clear(); };
 
+    protected:
         // Max X-coordinate for this game
         const int  m_knX;
         // Max Y-coordinate this game
         const int  m_knY;
-
-        // Max X-coordinate for any board game
-        static const int m_knMaxX {8};
-        // Max Y-coordinate for any board game
-        static const int m_knMaxY {8};
 
         // The game board, initialized in the constructor
         GameBoard cBoard;

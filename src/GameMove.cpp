@@ -20,6 +20,35 @@
 #include "GameMove.h"
 
 /**
+  * Announce the from-move.
+  *
+  * Construct a string containing the to-move.
+  *
+  * \return A string containing the to-move.
+  */
+
+std::string GameMove::AnnounceFromMove() const
+{
+    std::string sMove;
+
+    if (m_bNoMove)
+    {
+        sMove = "NO MOVE";
+    }
+    else if (m_bUseY)
+    {
+        sMove = m_cFromX;
+        sMove += m_cFromY;
+    }
+    else
+    {
+        sMove = m_cFromX;
+    }
+
+    return sMove;
+}
+
+/**
   * Announce the to-move.
   *
   * Construct a string containing the to-move.

@@ -129,6 +129,8 @@ bool GameBoard::PositionOccupiedByPlayer(int nX, int nY, int nPlayer) const
     else
         return false;
 }
+
+
 /**
   * Display the game board.
   *
@@ -162,10 +164,17 @@ void GameBoard::Display() const
 
     for (int yyy = 0; yyy < m_knY; ++yyy)
     {
+        int nDisplayY;
+
+        if (m_bReverseY)
+            nDisplayY = m_knY - yyy - 1;
+        else
+            nDisplayY = yyy;
+
         // Display Y-coordinates
         if (m_kbDisplayYCoordinates)
         {
-            std::cout << yyy + 1 << "  ";
+            std::cout << nDisplayY + 1 << "  ";
         }
         else
         {
@@ -181,21 +190,21 @@ void GameBoard::Display() const
             }
 
             // Determine color of token
-            if (m_vBoard[yyy][xxx].Player() == 1)
+            if (m_vBoard[nDisplayY][xxx].Player() == 1)
             {
 #if defined(_WIN32)
-                SetConsoleTextAttribute(hConsole, m_nColorPlayer1);
+                SetConsoleTextAttribute(hConsole, m_sPlayer1TokenColor);
 #else
-                sColor = m_sColorPlayer1;
+                sColor = m_sPlayer1TokenColor;
 #endif // defined
 
             }
-            else if (m_vBoard[yyy][xxx].Player() == 2)
+            else if (m_vBoard[nDisplayY][xxx].Player() == 2)
             {
 #if defined(_WIN32)
-                SetConsoleTextAttribute(hConsole, m_nColorPlayer2);
+                SetConsoleTextAttribute(hConsole, m_sPlayer2TokenColor);
 #else
-                sColor = m_sColorPlayer2;
+                sColor = m_sPlayer2TokenColor;
 #endif // defined
             }
             else // Clear space
@@ -205,9 +214,9 @@ void GameBoard::Display() const
 
 #if defined(_WIN32)
             std::cout << m_vBoard[yyy][xxx].Token();
-            SetConsoleTextAttribute(hConsole, m_nColorReset);
+            SetConsoleTextAttribute(hConsole, m_sResetTokenColor);
 #else
-            std::cout << sColor << m_vBoard[yyy][xxx].Token() << m_sColorReset;
+            std::cout << sColor << m_vBoard[nDisplayY][xxx].Token() << m_sResetTokenColor;
 #endif // defined
 
             if (!m_kbDisplayGrid)

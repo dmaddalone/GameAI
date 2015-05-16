@@ -84,11 +84,6 @@ class LinearGame : public BoardGame
         // Use of the Y-Coordinate
         const int m_bUseY;
 
-        // Max X-coordinate for any game
-        static const int m_knMaxX {8};
-        // Max Y-coordinate for any game
-        static const int m_knMaxY {8};
-
         // Number of tokens
         static const int m_knTokens {3};
         // Array used to hold tokens
