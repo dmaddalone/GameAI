@@ -78,16 +78,17 @@ class GameBoard
         // Reverse Y-Coordinates of the board
         void ReverseY()      { m_bReverseY = true; }
 
+    protected:
+        // Vector of vectors to represent the board
+        typedef std::vector<GamePiece> Row;
+        typedef std::vector<Row>       Board;
+        Board m_vBoard;
+
     private:
         // Max X-coordinate for any game
         static const int m_knMaxX {8};
         // Max Y-coordinate for any game
         static const int m_knMaxY {8};
-
-        // Vector of vectors to represent the board
-        typedef std::vector<GamePiece> Row;
-        typedef std::vector<Row>       Board;
-        Board m_vBoard;
 
         // Max X-coordinate for this game
         const int  m_knX;

@@ -31,22 +31,13 @@ class GamePiece
         // Constructor with no arguments - blank or clear piece
         GamePiece() :
             m_cToken(m_kcNoToken),
-            m_nPlayer(m_knNoValue),
-            m_nValue(m_knNoValue)
+            m_nPlayer(m_knNoValue)
         {}
 
         // Constructor with token and player number
         GamePiece(char cToken, int nPlayer) :
             m_cToken(cToken),
-            m_nPlayer(nPlayer),
-            m_nValue(m_knNoValue)
-        {}
-
-        // Constructor with token, player number, and piece value
-        GamePiece(char cToken, int nPlayer, int nValue) :
-            m_cToken(cToken),
-            m_nPlayer(nPlayer),
-            m_nValue(nValue)
+            m_nPlayer(nPlayer)
         {}
 
         // Deconstructor
@@ -56,32 +47,24 @@ class GamePiece
         char Token() const        { return m_cToken; }
         // Return player number
         int  Player() const       { return m_nPlayer; }
-        // Return value
-        int  Value() const        { return m_nValue; }
         // Return piece
-        GamePiece Piece() const   { return GamePiece(m_cToken, m_nPlayer, m_nValue); }
+        GamePiece Piece() const   { return GamePiece(m_cToken, m_nPlayer); }
         // Evaluate whether piece is a game pice (vs a non-game piece or clear)
         bool IsAGamePiece() const { return m_cToken != m_kcNoToken; }
 
         // Set game piece
         void Set(char cToken, int nPlayer)             { m_cToken = cToken; m_nPlayer = nPlayer; }
-        void Set(char cToken, int nPlayer, int nValue) { m_cToken = cToken; m_nPlayer = nPlayer; m_nValue = nValue; }
         // Clear a game piece
-        void Clear() { m_cToken = m_kcNoToken; m_nPlayer = m_knNoValue; m_nValue = m_knNoValue; }
+        void Clear() { m_cToken = m_kcNoToken; m_nPlayer = m_knNoValue; }
 
-    private:
+    protected:
         // Constants for clear pieces
         static const char m_kcNoToken {32};
         static const int  m_knNoValue {-1};
-
         // Board representation of a piece, for example 'X' and 'O' for tic-tac-toe
         char m_cToken;
         // Player number
         int  m_nPlayer;
-        // Value of the piece
-        int  m_nValue;
-
-        bool m_bHasMoved {false}; // TODO: For castling
 };
 
 #endif // GAMEPIECE_H

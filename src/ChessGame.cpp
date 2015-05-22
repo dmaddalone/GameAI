@@ -114,6 +114,8 @@ void ChessGame::GeneratePawnMoves(int nX, int nY, int nPlayer, std::vector<GameM
         vGameMoves.emplace_back(nX, nY, nX + 1, nNewY, true);
 
     // TODO: Promotions
+    // TODO: Pawn double move
+    // TODO: En passant
 }
 
 /**
@@ -303,6 +305,30 @@ void ChessGame::GenerateKingMoves(int nX, int nY, int nPlayer, std::vector<GameM
     GenerateRookMoves(nX, nY, nPlayer, vGameMoves, false);
     GenerateBishopMoves(nX, nY, nPlayer, vGameMoves, false);
 
+    if (m_bCastlingAllowed)
+    {
+        //  Find King
+        //  If King has not moved
+        //      Find West Rook
+        //      If found
+        //          GenerateCastleMove(nKX, nKY, nRX, nRY, vGameMoves)
+        //      Find East Rook
+        //      If found
+        //          GenerateCastleMove(nKX, nKY, nRX, nRY,  vGameMoves)
+        //
+        // GenerateCastleMove(nKX, nKY, nRX, nRY, vGameMove)
+        //  Rook = cBoard.Piece()
+        //  If Rook has not moved and
+        //    no piece exists between West Rook and King
+        //      vGameMoves.emplace_back(cKing.
+
+        //ChessPiece cKing = cBoard.Piece(nX, nY);
+        // if (!cKing.HasMoved())
+        // {
+        //
+        // }
+    }
+
     // TODO: Evaluate moves for check
     // TODO: Castling
     // TODO: Evaluate moves for stalemate
@@ -412,6 +438,7 @@ bool ChessGame::ApplyMove(int nPlayer, GameMove &cGameMove)
     if ((nPlayer != m_knPlayer1) && (nPlayer != m_knPlayer2))
         return false;
 
+    // Ensure we are on the board
     if (!cBoard.ValidLocation(cGameMove.ToX(), cGameMove.ToY()))
         return false;
 
@@ -440,8 +467,30 @@ bool ChessGame::ApplyMove(int nPlayer, GameMove &cGameMove)
     // Capture move for later playback or analysis
     m_vGameMoves.push_back(cGameMove);
 
+/*
+    char cToken = cBoard.Token(cGameMove.FromX(), cGameMove.FromY());
+
+    if ((cToken == m_kcRookToken) || (cToken == m_kcKingToken)) // TODO: Need to update for multiple rooks
+    {
+        if (nPlayer == 1)
+            m_bCastlingAllowedForPlayer1 = false;
+        else
+            m_bCastlingAllowedForPlayer2 = false;
+    }
+*/
+
     return bValidMove;
 }
+
+/**
+  * Generate a vector of possible moves for a piece located at GameMove
+  * coordinates.
+  *
+  * \param nPlayer   The player whose turn it is.
+  * \param cGameMove The player's move
+  *
+  * \return A vector of possible moves.
+  */
 
 std::vector<GameMove> ChessGame::GenerateMovesForPiece(int nPlayer, const GameMove &cGameMove)
 {

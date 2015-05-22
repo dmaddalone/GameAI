@@ -30,6 +30,7 @@
 #include <iostream>
 
 #include "BoardGame.h"
+#include "ChessPiece.h"
 
 class ChessGame : public BoardGame
 {
@@ -82,6 +83,8 @@ class ChessGame : public BoardGame
         static const char m_kcBishopToken {'B'};
         static const char m_kcQueenToken  {'Q'};
         static const char m_kcKingToken   {'K'};
+
+        bool m_bCastlingAllowed {true};
 };
 
 #endif // CHESSGAME_H

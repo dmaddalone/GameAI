@@ -5,10 +5,9 @@
 		<Option title="GameAI" />
 		<Option pch_mode="2" />
 		<Option compiler="gcc" />
-		<Option virtualFolders="src/;include/;" />
 		<Option show_notes="0">
 			<notes>
-				<![CDATA[TODO: NO MOVE is mesing up network play
+				<![CDATA[TODO: NO MOVE is messing up network play
 
 TODO: Make hostname work
 
@@ -93,19 +92,17 @@ TODO: Check other TODOs
 			<Add option="-Wall" />
 			<Add option="-fexceptions" />
 		</Compiler>
-		<Unit filename="include/BoardGame.h">
-			<Option virtualFolder="include/" />
-		</Unit>
+		<Unit filename="include/BoardGame.h" />
+		<Unit filename="include/ChessBoard.h" />
 		<Unit filename="include/ChessGame.h" />
 		<Unit filename="include/ChessGardner.h" />
+		<Unit filename="include/ChessPiece.h" />
 		<Unit filename="include/Client.h" />
 		<Unit filename="include/ConnectFour.h" />
 		<Unit filename="include/Game.h" />
 		<Unit filename="include/GameAIException.h" />
 		<Unit filename="include/GameAIVersion.h" />
-		<Unit filename="include/GameBoard.h">
-			<Option virtualFolder="include/" />
-		</Unit>
+		<Unit filename="include/GameBoard.h" />
 		<Unit filename="include/GameMove.h" />
 		<Unit filename="include/GamePiece.h" />
 		<Unit filename="include/GameVocabulary.h" />
@@ -122,6 +119,7 @@ TODO: Check other TODOs
 		<Unit filename="include/TTT.h" />
 		<Unit filename="main.cpp" />
 		<Unit filename="src/BoardGame.cpp" />
+		<Unit filename="src/ChessBoard.cpp" />
 		<Unit filename="src/ChessGame.cpp" />
 		<Unit filename="src/ChessGardner.cpp" />
 		<Unit filename="src/Client.cpp" />
