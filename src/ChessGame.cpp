@@ -19,6 +19,32 @@
 
 #include "ChessGame.h"
 
+std::string ChessGame::Title()
+{
+    std::string sMessage;
+
+    if (m_abCastlingAllowed[0])
+    {
+        sMessage += "\nCastling is Allowed";
+    }
+    else
+    {
+        sMessage += "\nCastling is Not Allowed";
+    }
+
+    if (m_bDoublePawnMoveAllowed)
+    {
+        sMessage += "\nDouble Pawn is Allowed";
+    }
+    else
+    {
+        sMessage += "\nDouble Pawn is Not Allowed";
+    }
+
+
+    return sMessage;
+}
+
 /**
   * Generate a GameMove from a string.
   *
@@ -65,14 +91,19 @@ std::vector<GameMove> ChessGame::GenerateMoves(int nPlayer) const
                 cToken = cBoard.Token(xxx, yyy);
                 if (cToken == m_kcPawnToken)
                     GeneratePawnMoves(xxx, yyy, nPlayer, vGameMoves);
+
                 if (cToken == m_kcRookToken)
                     GenerateRookMoves(xxx, yyy, nPlayer, vGameMoves);
+
                 if (cToken == m_kcKnightToken)
                     GenerateKnightMoves(xxx, yyy, nPlayer, vGameMoves);
+
                 if (cToken == m_kcBishopToken)
-                    GenerateKnightMoves(xxx, yyy, nPlayer, vGameMoves);
+                    GenerateBishopMoves(xxx, yyy, nPlayer, vGameMoves);
+
                 if (cToken == m_kcQueenToken)
                     GenerateQueenMoves(xxx, yyy, nPlayer, vGameMoves);
+
                 if (cToken == m_kcKingToken)
                     GenerateKingMoves(xxx, yyy, nPlayer, vGameMoves);
             }
@@ -107,14 +138,28 @@ void ChessGame::GeneratePawnMoves(int nX, int nY, int nPlayer, std::vector<GameM
         vGameMoves.emplace_back(nX, nY, nX, nNewY, true);
 
     // Capture
-
     if (cBoard.PositionOccupiedByPlayer(nX - 1, nNewY, 1 - nPlayer + 2))
         vGameMoves.emplace_back(nX, nY, nX - 1, nNewY, true);
     if (cBoard.PositionOccupiedByPlayer(nX + 1, nNewY, 1 - nPlayer + 2))
         vGameMoves.emplace_back(nX, nY, nX + 1, nNewY, true);
 
+    // Double move
+    if (m_bDoublePawnMoveAllowed)
+    {
+        GamePiece cPiece = cBoard.Piece(nX, nY);
+        if (!cPiece.HasMoved())
+        {
+            if (nPlayer == 1)
+                nNewY = nY + 2;
+            else
+                nNewY = nY - 2;
+
+            if (!cBoard.PositionOccupied(nX, nNewY))
+                vGameMoves.emplace_back(nX, nY, nX, nNewY, true);
+        }
+    }
+
     // TODO: Promotions
-    // TODO: Pawn double move
     // TODO: En passant
 }
 
@@ -300,38 +345,76 @@ void ChessGame::GenerateQueenMoves(int nX, int nY, int nPlayer, std::vector<Game
   * \param vGameMoves The vector to add valid moves to
   */
 
-void ChessGame::GenerateKingMoves(int nX, int nY, int nPlayer, std::vector<GameMove> &vGameMoves) const
+void ChessGame::GenerateKingMoves(int nKX, int nKY, int nPlayer, std::vector<GameMove> &vGameMoves) const
 {
-    GenerateRookMoves(nX, nY, nPlayer, vGameMoves, false);
-    GenerateBishopMoves(nX, nY, nPlayer, vGameMoves, false);
-
-    if (m_bCastlingAllowed)
-    {
-        //  Find King
-        //  If King has not moved
-        //      Find West Rook
-        //      If found
-        //          GenerateCastleMove(nKX, nKY, nRX, nRY, vGameMoves)
-        //      Find East Rook
-        //      If found
-        //          GenerateCastleMove(nKX, nKY, nRX, nRY,  vGameMoves)
-        //
-        // GenerateCastleMove(nKX, nKY, nRX, nRY, vGameMove)
-        //  Rook = cBoard.Piece()
-        //  If Rook has not moved and
-        //    no piece exists between West Rook and King
-        //      vGameMoves.emplace_back(cKing.
-
-        //ChessPiece cKing = cBoard.Piece(nX, nY);
-        // if (!cKing.HasMoved())
-        // {
-        //
-        // }
-    }
+    GenerateRookMoves(nKX, nKY, nPlayer, vGameMoves, false);
+    GenerateBishopMoves(nKX, nKY, nPlayer, vGameMoves, false);
+    GenerateCastleMoves(nKX, nKY, nPlayer, vGameMoves);
 
     // TODO: Evaluate moves for check
     // TODO: Castling
     // TODO: Evaluate moves for stalemate
+}
+
+void ChessGame::GenerateCastleMoves(int nKX, int nKY, int nPlayer, std::vector<GameMove> &vGameMoves) const
+{
+    if (m_abCastlingAllowed[nPlayer - 1])
+    {
+        int nRX    {0};
+        int nRY    {0};
+        int nNewKX {0};
+        bool bCastleValid {false};
+
+        while (FindPiece(nRX, nRY, nPlayer, m_kcRookToken))
+        {
+            GamePiece cRook = cBoard.Piece(nRX, nRY);
+            if (!cRook.HasMoved())
+            {
+                bCastleValid = true;
+
+                if (nRX < nKX)
+                {
+                    nNewKX = nKX - 2;
+                    for (int xxx = nRX + 1; xxx != nKX; ++xxx)
+                    {
+                        if (cBoard.PositionOccupied(xxx, nRY))
+                        {
+                            bCastleValid = false;
+                            break;
+                        }
+                    }
+                }
+                else
+                {
+                    nNewKX = nKX + 2;
+                    for (int xxx = nRX - 1; xxx != nKX; --xxx)
+                    {
+                        if (cBoard.PositionOccupied(xxx, nRY))
+                        {
+                            bCastleValid = false;
+                            break;
+                        }
+                    }
+                }
+
+                if (bCastleValid)
+                {
+                    vGameMoves.emplace_back(nKX, nKY, nNewKX, nKY, true);
+                }
+            }
+
+            if (nRX < m_knX - 1)
+            {
+                ++nRX;
+            }
+            else
+            {
+                nRX = 0;
+                ++nRY;
+            }
+
+        }
+    }
 }
 
 bool ChessGame::GenerateLinearMove(int nFromX, int nFromY, int nToX, int nToY, int nPlayer, std::vector<GameMove> &vGameMoves) const
@@ -467,17 +550,58 @@ bool ChessGame::ApplyMove(int nPlayer, GameMove &cGameMove)
     // Capture move for later playback or analysis
     m_vGameMoves.push_back(cGameMove);
 
-/*
-    char cToken = cBoard.Token(cGameMove.FromX(), cGameMove.FromY());
-
-    if ((cToken == m_kcRookToken) || (cToken == m_kcKingToken)) // TODO: Need to update for multiple rooks
+    // Check Castling Move
+    char cToken = cBoard.Token(cGameMove.ToX(), cGameMove.ToY());
+    if (cToken == m_kcKingToken)
     {
-        if (nPlayer == 1)
-            m_bCastlingAllowedForPlayer1 = false;
-        else
-            m_bCastlingAllowedForPlayer2 = false;
+        int nX;
+        int nY;
+        bool bCastleWest = false;
+
+        if (abs(cGameMove.FromX() - cGameMove.ToX()) > 1)
+        {
+            bValidMove = false;
+
+            //
+            // Find Rook
+            //
+
+            // If King moved more than one square to the west
+            if (cGameMove.FromX() - cGameMove.ToX() > 1)
+            {
+                nX = 0;
+                bCastleWest = true;
+            }
+            // Else King moved more than one square to the west
+            else
+            {
+                nX = cGameMove.FromX() + 2;
+            }
+
+            nY = cGameMove.FromY();
+
+            if (FindPiece(nX, nY, nPlayer, m_kcRookToken))
+            {
+                //
+                // Move Rook
+                //
+                cGameMove.SetFromX(nX);
+                if (bCastleWest)
+                {
+                    cGameMove.SetToX(cGameMove.ToX() + 1);
+                }
+                else
+                {
+                    cGameMove.SetToX(cGameMove.ToX() - 1);
+                }
+                if (cBoard.MovePiece(cGameMove))
+                {
+                    bValidMove = true;
+                    m_abCastlingAllowed[nPlayer - 1] = false;
+                }
+            }
+        }
     }
-*/
 
     return bValidMove;
 }
@@ -512,6 +636,39 @@ std::vector<GameMove> ChessGame::GenerateMovesForPiece(int nPlayer, const GameMo
         GenerateKingMoves(cGameMove.FromX(), cGameMove.FromY(), nPlayer, vGameMoves);
 
     return vGameMoves;
+}
+
+/**
+  * Find a chess piece.
+  *
+  * Using the passed coordinates as a starting place, find a piece on the
+  * board moving left to right and up each row.  If the peice is found, update
+  * the passed coordinates with the location and return true.
+  *
+  * \param nX      The X-Coordinate location to being the search
+  * \param nY      The Y-Coordinate location to being the search
+  * \param nPlayer The player to search for
+  * \param cToken  The piece token to search for
+  *
+  * \return True if piece found, false otherwise.
+  */
+
+bool ChessGame::FindPiece(int &nX, int &nY, int nPlayer, char cToken) const
+{
+    for (int yyy = nY; yyy < m_knY; ++yyy)
+    {
+        for (int xxx = nX; xxx < m_knX; ++xxx)
+        {
+            if ((cBoard.Token(xxx, yyy) == cToken) && (cBoard.Player(xxx, yyy) == nPlayer))
+            {
+                nX = xxx;
+                nY = yyy;
+                return true;
+            }
+        }
+    }
+
+    return false;
 }
 
 /**

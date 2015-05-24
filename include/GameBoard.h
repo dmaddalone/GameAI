@@ -66,12 +66,16 @@ class GameBoard
         bool SetPiece(int nX, int nY, const GamePiece &cGamePiece);
         // Move a piece on the board
         bool MovePiece(const GameMove &cGameMove);
+        // Return the piece at the location coordinates
+        const GamePiece & Piece(int nX, int nY) const { return m_vBoard[nY][nX].Piece(); }
         // Evaluate locations on the board
         bool PositionOccupied(int nX, int nY) const;
         int  PositionOccupiedBy(int nX, int nY) const;
         bool PositionOccupiedByPlayer(int nX, int nY, int nPlayer) const;
         // Return the token for a board location
         char Token(int nX, int nY) const { return m_vBoard[nY][nX].Token(); }
+        // Return the player for a board location
+        char Player(int nX, int nY) const { return m_vBoard[nY][nX].Player(); }
 
         // Reverse token colors for players
         void ReverseColors() { std::string sColor = m_sPlayer1TokenColor; m_sPlayer1TokenColor = m_sPlayer2TokenColor; m_sPlayer2TokenColor = sColor; }

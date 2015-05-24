@@ -11,11 +11,13 @@
 
 TODO: Make hostname work
 
-TODO: Generate castling move
 TODO: Evaluate for check and check mate
 TODO: Evaluate for stalemate
 TODO: Allow pawn promotion
 TODO: Chess evaluation
+
+TODO: Queen limimted to one square move?
+TODO: Rook does not move upon castle?
 
 TODO: Check other TODOs
 
@@ -93,10 +95,8 @@ TODO: Check other TODOs
 			<Add option="-fexceptions" />
 		</Compiler>
 		<Unit filename="include/BoardGame.h" />
-		<Unit filename="include/ChessBoard.h" />
 		<Unit filename="include/ChessGame.h" />
 		<Unit filename="include/ChessGardner.h" />
-		<Unit filename="include/ChessPiece.h" />
 		<Unit filename="include/Client.h" />
 		<Unit filename="include/ConnectFour.h" />
 		<Unit filename="include/Game.h" />
@@ -119,7 +119,6 @@ TODO: Check other TODOs
 		<Unit filename="include/TTT.h" />
 		<Unit filename="main.cpp" />
 		<Unit filename="src/BoardGame.cpp" />
-		<Unit filename="src/ChessBoard.cpp" />
 		<Unit filename="src/ChessGame.cpp" />
 		<Unit filename="src/ChessGardner.cpp" />
 		<Unit filename="src/Client.cpp" />

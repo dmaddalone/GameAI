@@ -27,10 +27,13 @@
 #define CHESSGAME_H
 
 #include <climits>
+//#include <cstdlib>
 #include <iostream>
+#include <string>
 
 #include "BoardGame.h"
-#include "ChessPiece.h"
+//#include "ChessPiece.h"
+//#include "ChessBoard.h"
 
 class ChessGame : public BoardGame
 {
@@ -57,6 +60,7 @@ class ChessGame : public BoardGame
         virtual std::vector<GameMove> GenerateMoves(int nPlayer) const override;
         // Clone the current game
         virtual std::unique_ptr<Game> Clone() const = 0;
+        virtual std::string Title() override;
 
         std::vector<GameMove> GenerateMovesForPiece(int nPlayer, const GameMove &cGameMove);
 
@@ -68,9 +72,11 @@ class ChessGame : public BoardGame
         void GenerateBishopMoves(int nX, int nY, int nPlayer, std::vector<GameMove> &vGameMoves, bool bUnlimitedMoves=true) const;
         void GenerateQueenMoves(int nX, int nY, int nPlayer, std::vector<GameMove> &vGameMoves) const;
         void GenerateKingMoves(int nX, int nY, int nPlayer, std::vector<GameMove> &vGameMoves) const;
+        void GenerateCastleMoves(int nKX, int nKY, int nPlayer, std::vector<GameMove> &vGameMoves) const;
         bool GenerateLinearMove(int nFromX, int nFromY, int nToX, int nToY, int nPlayer, std::vector<GameMove> &vGameMoves) const;
         void GenerateKnightMoves(int nX, int nY, int nPlayer, std::vector<GameMove> &vGameMoves) const;
         void GenerateKnightMove(int nFromX, int nFromY, int nToX, int nToY, int nPlayer, std::vector<GameMove> &vGameMoves) const;
+        bool FindPiece(int &nX, int &nY, int nPlayer, char cToken) const;
 
         //const std::string sPieceSymbols {"RNBKQ"};
         //const std::string sFiles        {"abcdefgh"};
@@ -84,7 +90,8 @@ class ChessGame : public BoardGame
         static const char m_kcQueenToken  {'Q'};
         static const char m_kcKingToken   {'K'};
 
-        bool m_bCastlingAllowed {true};
+        bool m_abCastlingAllowed[2]   { true };
+        bool m_bDoublePawnMoveAllowed { true };
 };
 
 #endif // CHESSGAME_H

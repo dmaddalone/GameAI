@@ -31,33 +31,49 @@ class GamePiece
         // Constructor with no arguments - blank or clear piece
         GamePiece() :
             m_cToken(m_kcNoToken),
-            m_nPlayer(m_knNoValue)
+            m_nPlayer(m_knNoValue),
+            m_nValue(m_knNoValue)
         {}
 
         // Constructor with token and player number
         GamePiece(char cToken, int nPlayer) :
             m_cToken(cToken),
-            m_nPlayer(nPlayer)
+            m_nPlayer(nPlayer),
+            m_nValue(m_knNoValue)
+        {}
+
+        // Constructor with token, player number, and value
+        GamePiece(char cToken, int nPlayer, int nValue) :
+            m_cToken(cToken),
+            m_nPlayer(nPlayer),
+            m_nValue(nValue)
         {}
 
         // Deconstructor
         ~GamePiece() {}
 
         // Return token
-        char Token() const        { return m_cToken; }
+        char Token() const    { return m_cToken; }
         // Return player number
-        int  Player() const       { return m_nPlayer; }
+        int  Player() const   { return m_nPlayer; }
+        // Return value
+        int  Value() const    { return m_nValue; }
         // Return piece
-        GamePiece Piece() const   { return GamePiece(m_cToken, m_nPlayer); }
+        const GamePiece & Piece() const { return *this; }
         // Evaluate whether piece is a game pice (vs a non-game piece or clear)
         bool IsAGamePiece() const { return m_cToken != m_kcNoToken; }
 
         // Set game piece
-        void Set(char cToken, int nPlayer)             { m_cToken = cToken; m_nPlayer = nPlayer; }
+        void Set(char cToken, int nPlayer) { m_cToken = cToken; m_nPlayer = nPlayer; m_nValue = m_knNoValue; }
+        // Set game piece
+        void Set(char cToken, int nPlayer, int nValue) { m_cToken = cToken; m_nPlayer = nPlayer; m_nValue = nValue; }
         // Clear a game piece
-        void Clear() { m_cToken = m_kcNoToken; m_nPlayer = m_knNoValue; }
+        void Clear()                       { m_cToken = m_kcNoToken; m_nPlayer = m_knNoValue; m_nValue = m_knNoValue; }
 
-    protected:
+        bool HasMoved() { return m_bHasMoved; }
+        void SetMoved() { m_bHasMoved = true; }
+
+    private:
         // Constants for clear pieces
         static const char m_kcNoToken {32};
         static const int  m_knNoValue {-1};
@@ -65,6 +81,10 @@ class GamePiece
         char m_cToken;
         // Player number
         int  m_nPlayer;
+        // Value number
+        int  m_nValue;
+        // Flag for whether the piece has moved
+        bool m_bHasMoved {false};
 };
 
 #endif // GAMEPIECE_H

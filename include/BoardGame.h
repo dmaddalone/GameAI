@@ -34,15 +34,10 @@ class BoardGame : public Game
 {
     public:
         // Construct a BoardGame
-        //BoardGame(GameType ecGameType, int nX, int nY, char cToken1, char cToken2, int nInARow, bool bUseY, bool bDisplayGrid, bool bDisplayXCoordinates, bool bDisplayYCoordinates) :
         BoardGame(GameType ecGameType, int nX, int nY, bool bDisplayGrid, bool bDisplayXCoordinates, bool bDisplayYCoordinates) :
             Game(ecGameType),
             m_knX(nX),
             m_knY(nY),
-            //m_kcToken1(cToken1),
-            //m_kcToken2(cToken2),
-            //m_knTokensInARowWin(nInARow),
-            //m_bUseY(bUseY),
             cBoard(nX, nY, bDisplayGrid, bDisplayXCoordinates, bDisplayYCoordinates)
             {  SetBoard(); }
 

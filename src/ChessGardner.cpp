@@ -2,8 +2,8 @@
 
 void ChessGardner::SetBoard()
 {
-    //GamePiece cPiece;
-    ChessPiece cPiece;
+    GamePiece cPiece;
+    //ChessPiece cPiece;
 
     ChessGame::SetBoard();
 

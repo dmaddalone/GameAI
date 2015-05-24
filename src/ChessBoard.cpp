@@ -39,9 +39,8 @@ bool ChessBoard::MovePiece(const GameMove &cGameMove)
     if (!GameBoard::MovePiece(cGameMove))
         return false;
 
-    ChessPiece cGamePiece = m_vBoard[cGameMove.ToY()][cGameMove.ToX()].Piece();
-
-    cGamePiece.HasMoved();
+    ChessPiece cChessPiece = m_vBoard[cGameMove.ToY()][cGameMove.ToX()].Piece();
+    cChessPiece.SetMoved();
 
     return true;
 }

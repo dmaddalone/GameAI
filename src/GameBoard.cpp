@@ -49,7 +49,8 @@ bool GameBoard::SetPiece(int nX, int nY, const GamePiece &cGamePiece)
     if (!ValidLocation(nX, nY))
         return false;
 
-    m_vBoard[nY][nX].Set(cGamePiece.Token(), cGamePiece.Player());
+    //m_vBoard[nY][nX].Set(cGamePiece.Token(), cGamePiece.Player());
+    m_vBoard[nY][nX].Set(cGamePiece.Token(), cGamePiece.Player(), cGamePiece.Value());
 
     return true;
 }
@@ -70,6 +71,8 @@ bool GameBoard::MovePiece(const GameMove &cGameMove)
 
     if (!SetPiece(cGameMove.ToX(), cGameMove.ToY(), cGamePiece))
         return false;
+
+    cGamePiece.SetMoved();
 
     m_vBoard[cGameMove.FromY()][cGameMove.FromX()].Clear();
 

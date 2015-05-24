@@ -42,7 +42,7 @@ class ChessGardner : public ChessGame
         // Clone the current game
         virtual std::unique_ptr<Game> Clone() const override { return std::unique_ptr<Game>(new ChessGardner(*this)); }
         // Return the title of the game
-        virtual std::string Title() override { return "Gardner Minichess"; }
+        virtual std::string Title() override { return "Gardner Minichess" + ChessGame::Title(); }
 
         void SetBoard();
 };
