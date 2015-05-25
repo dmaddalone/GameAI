@@ -80,9 +80,29 @@ GameMove BoardGame::GetMove(int nPlayer) const
 
     std::cin >> sMove;
 
+    // Genterate and return a GameMove
     return GenerateMove(sMove);
 }
 
+GameMove BoardGame::GenerateMove(std::string sMove) const
+{
+    // Generic GamoevMove
+    GameMove cGameMove(-1, -1, -1, -1, false, false);
+
+    // Upper case the move string
+    std::locale loc;
+    for (std::string::size_type iii = 0; iii < sMove.length(); ++iii)
+        sMove[iii] = std::toupper(sMove[iii], loc);
+
+    // Compare move against resignation
+    if (sMove.compare(m_ksMoveResign) == 0)
+    {
+        cGameMove.SetResignation(true);
+        return cGameMove;
+    }
+
+    return cGameMove;
+}
 
 /**
   * Return a measure of the preference of a move.
@@ -114,3 +134,15 @@ std::string BoardGame::GameScore() const
     return "";
 }
 
+bool BoardGame::GameEnded(int nPlayer)
+{
+    GameMove cGameMove = m_vGameMoves.back();
+    if (cGameMove.Resignation())
+    {
+        m_nWinner = nPlayer;
+        m_sWinBy.assign("resignation");
+        return true;
+    }
+
+    return false;
+}

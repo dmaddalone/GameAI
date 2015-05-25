@@ -396,6 +396,14 @@ int main(int argc, char* argv[])
         if (nPlayer == 2)
         {
             nPlayer = -1;
+
+            // Evaluate game state from player 1 perspective.  If game ended, allow player 1 to finish.
+            // Then break from loop.
+            if (pcGame->GameEnded(pcGame->Player1()))
+            {
+                vPlayers[0]->Finish(*pcGame);
+                break;
+            }
         }
         // Otherwise, let Player 1 move.
         else

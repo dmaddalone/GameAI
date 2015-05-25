@@ -31,13 +31,17 @@
 
 GameMove LinearGame::GenerateMove(std::string sMove) const
 {
-    GameMove cGameMove;
+    GameMove cGameMove = BoardGame::GenerateMove(sMove);
+
+    if (cGameMove.Resignation())
+        return cGameMove;
 
     // Set the To X coordinate from the first charatcter of the string.
     cGameMove.SetToX(sMove[0]);
 
     if (m_bUseY)
     {
+        cGameMove.SetUseY(true);
 
         // Remove the first character ...
         sMove.erase(0,1);
@@ -83,6 +87,14 @@ bool LinearGame::ApplyMove(int nPlayer, GameMove &cGameMove)
     // Check player number
     if ((nPlayer != m_knPlayer1) && (nPlayer != m_knPlayer2))
         return false;
+
+    // Check for resignation
+    if (cGameMove.Resignation())
+    {
+        // Capture move for later playback or analysis
+        m_vGameMoves.push_back(cGameMove);
+        return true;
+    }
 
     if (!cBoard.ValidLocation(cGameMove.ToX(), cGameMove.ToY()))
         return false;
@@ -443,6 +455,9 @@ bool LinearGame::GameEnded(int nPlayer)
     // Clear win variables
     m_nWinner = 0;
     m_sWinBy.assign("nothing");
+
+    if (BoardGame::GameEnded(nPlayer))
+        return true;
 
     // Evaluate orthognal lines for player 1
     if (CheckOrthogonal(m_knPlayer1, m_knTokensInARowWin))

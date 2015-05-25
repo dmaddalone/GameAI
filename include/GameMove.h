@@ -92,6 +92,10 @@ class GameMove
         void SetNoMove(bool b) { m_bNoMove = b; }
         bool NoMove()          { return m_bNoMove; }
 
+        // Set and return whether a resignation has been made
+        void SetResignation(bool b) { m_bResignation = b; }
+        bool Resignation()          { return m_bResignation; }
+
         // Compare two moves and whether their to-moves are the same
         bool SameTo(const GameMove &cGameMove) { if ((cGameMove.ToX() == m_nToX) && (cGameMove.ToY() == m_nToY)) return true; else return false;}
 
@@ -125,6 +129,9 @@ class GameMove
 
         // Whether this is a move or not; used if no move is possible
         bool m_bNoMove {false};
+
+        // Whether this is a resignation
+        bool m_bResignation {false};
 };
 
 #endif // GAMEMOVE_H

@@ -62,13 +62,13 @@ OBJDIR_RELEASE_WINDOWS = obj/Release
 DEP_RELEASE_WINDOWS = 
 OUT_RELEASE_WINDOWS = bin/Release/GameAI
 
-OBJ_DEBUG = $(OBJDIR_DEBUG)/src/LinearGame.o $(OBJDIR_DEBUG)/main.o $(OBJDIR_DEBUG)/src/Client.o $(OBJDIR_DEBUG)/src/ConnectFour.o $(OBJDIR_DEBUG)/src/Game.o $(OBJDIR_DEBUG)/src/GameBoard.o $(OBJDIR_DEBUG)/src/GameMove.o $(OBJDIR_DEBUG)/src/GameVocabulary.o $(OBJDIR_DEBUG)/src/Human.o $(OBJDIR_DEBUG)/src/Logger.o $(OBJDIR_DEBUG)/src/Minimax.o $(OBJDIR_DEBUG)/src/NetworkPlayer.o $(OBJDIR_DEBUG)/src/Player.o $(OBJDIR_DEBUG)/src/Reversi.o $(OBJDIR_DEBUG)/src/Server.o $(OBJDIR_DEBUG)/src/Socket.o $(OBJDIR_DEBUG)/src/TTT.o
+OBJ_DEBUG = $(OBJDIR_DEBUG)/src/GameVocabulary.o $(OBJDIR_DEBUG)/main.o $(OBJDIR_DEBUG)/src/BoardGame.o $(OBJDIR_DEBUG)/src/ChessGame.o $(OBJDIR_DEBUG)/src/ChessGardner.o $(OBJDIR_DEBUG)/src/Client.o $(OBJDIR_DEBUG)/src/ConnectFour.o $(OBJDIR_DEBUG)/src/Game.o $(OBJDIR_DEBUG)/src/GameBoard.o $(OBJDIR_DEBUG)/src/GameMove.o $(OBJDIR_DEBUG)/src/Human.o $(OBJDIR_DEBUG)/src/LinearGame.o $(OBJDIR_DEBUG)/src/Logger.o $(OBJDIR_DEBUG)/src/Minimax.o $(OBJDIR_DEBUG)/src/NetworkPlayer.o $(OBJDIR_DEBUG)/src/Player.o $(OBJDIR_DEBUG)/src/Reversi.o $(OBJDIR_DEBUG)/src/Server.o $(OBJDIR_DEBUG)/src/Socket.o $(OBJDIR_DEBUG)/src/TTT.o
 
-OBJ_RELEASE = $(OBJDIR_RELEASE)/src/LinearGame.o $(OBJDIR_RELEASE)/main.o $(OBJDIR_RELEASE)/src/Client.o $(OBJDIR_RELEASE)/src/ConnectFour.o $(OBJDIR_RELEASE)/src/Game.o $(OBJDIR_RELEASE)/src/GameBoard.o $(OBJDIR_RELEASE)/src/GameMove.o $(OBJDIR_RELEASE)/src/GameVocabulary.o $(OBJDIR_RELEASE)/src/Human.o $(OBJDIR_RELEASE)/src/Logger.o $(OBJDIR_RELEASE)/src/Minimax.o $(OBJDIR_RELEASE)/src/NetworkPlayer.o $(OBJDIR_RELEASE)/src/Player.o $(OBJDIR_RELEASE)/src/Reversi.o $(OBJDIR_RELEASE)/src/Server.o $(OBJDIR_RELEASE)/src/Socket.o $(OBJDIR_RELEASE)/src/TTT.o
+OBJ_RELEASE = $(OBJDIR_RELEASE)/src/GameVocabulary.o $(OBJDIR_RELEASE)/main.o $(OBJDIR_RELEASE)/src/BoardGame.o $(OBJDIR_RELEASE)/src/ChessGame.o $(OBJDIR_RELEASE)/src/ChessGardner.o $(OBJDIR_RELEASE)/src/Client.o $(OBJDIR_RELEASE)/src/ConnectFour.o $(OBJDIR_RELEASE)/src/Game.o $(OBJDIR_RELEASE)/src/GameBoard.o $(OBJDIR_RELEASE)/src/GameMove.o $(OBJDIR_RELEASE)/src/Human.o $(OBJDIR_RELEASE)/src/LinearGame.o $(OBJDIR_RELEASE)/src/Logger.o $(OBJDIR_RELEASE)/src/Minimax.o $(OBJDIR_RELEASE)/src/NetworkPlayer.o $(OBJDIR_RELEASE)/src/Player.o $(OBJDIR_RELEASE)/src/Reversi.o $(OBJDIR_RELEASE)/src/Server.o $(OBJDIR_RELEASE)/src/Socket.o $(OBJDIR_RELEASE)/src/TTT.o
 
-OBJ_DEBUG_WINDOWS = $(OBJDIR_DEBUG_WINDOWS)/src/LinearGame.o $(OBJDIR_DEBUG_WINDOWS)/main.o $(OBJDIR_DEBUG_WINDOWS)/src/Client.o $(OBJDIR_DEBUG_WINDOWS)/src/ConnectFour.o $(OBJDIR_DEBUG_WINDOWS)/src/Game.o $(OBJDIR_DEBUG_WINDOWS)/src/GameBoard.o $(OBJDIR_DEBUG_WINDOWS)/src/GameMove.o $(OBJDIR_DEBUG_WINDOWS)/src/GameVocabulary.o $(OBJDIR_DEBUG_WINDOWS)/src/Human.o $(OBJDIR_DEBUG_WINDOWS)/src/Logger.o $(OBJDIR_DEBUG_WINDOWS)/src/Minimax.o $(OBJDIR_DEBUG_WINDOWS)/src/NetworkPlayer.o $(OBJDIR_DEBUG_WINDOWS)/src/Player.o $(OBJDIR_DEBUG_WINDOWS)/src/Reversi.o $(OBJDIR_DEBUG_WINDOWS)/src/Server.o $(OBJDIR_DEBUG_WINDOWS)/src/Socket.o $(OBJDIR_DEBUG_WINDOWS)/src/TTT.o
+OBJ_DEBUG_WINDOWS = $(OBJDIR_DEBUG_WINDOWS)/src/GameVocabulary.o $(OBJDIR_DEBUG_WINDOWS)/main.o $(OBJDIR_DEBUG_WINDOWS)/src/BoardGame.o $(OBJDIR_DEBUG_WINDOWS)/src/ChessGame.o $(OBJDIR_DEBUG_WINDOWS)/src/ChessGardner.o $(OBJDIR_DEBUG_WINDOWS)/src/Client.o $(OBJDIR_DEBUG_WINDOWS)/src/ConnectFour.o $(OBJDIR_DEBUG_WINDOWS)/src/Game.o $(OBJDIR_DEBUG_WINDOWS)/src/GameBoard.o $(OBJDIR_DEBUG_WINDOWS)/src/GameMove.o $(OBJDIR_DEBUG_WINDOWS)/src/Human.o $(OBJDIR_DEBUG_WINDOWS)/src/LinearGame.o $(OBJDIR_DEBUG_WINDOWS)/src/Logger.o $(OBJDIR_DEBUG_WINDOWS)/src/Minimax.o $(OBJDIR_DEBUG_WINDOWS)/src/NetworkPlayer.o $(OBJDIR_DEBUG_WINDOWS)/src/Player.o $(OBJDIR_DEBUG_WINDOWS)/src/Reversi.o $(OBJDIR_DEBUG_WINDOWS)/src/Server.o $(OBJDIR_DEBUG_WINDOWS)/src/Socket.o $(OBJDIR_DEBUG_WINDOWS)/src/TTT.o
 
-OBJ_RELEASE_WINDOWS = $(OBJDIR_RELEASE_WINDOWS)/src/LinearGame.o $(OBJDIR_RELEASE_WINDOWS)/main.o $(OBJDIR_RELEASE_WINDOWS)/src/Client.o $(OBJDIR_RELEASE_WINDOWS)/src/ConnectFour.o $(OBJDIR_RELEASE_WINDOWS)/src/Game.o $(OBJDIR_RELEASE_WINDOWS)/src/GameBoard.o $(OBJDIR_RELEASE_WINDOWS)/src/GameMove.o $(OBJDIR_RELEASE_WINDOWS)/src/GameVocabulary.o $(OBJDIR_RELEASE_WINDOWS)/src/Human.o $(OBJDIR_RELEASE_WINDOWS)/src/Logger.o $(OBJDIR_RELEASE_WINDOWS)/src/Minimax.o $(OBJDIR_RELEASE_WINDOWS)/src/NetworkPlayer.o $(OBJDIR_RELEASE_WINDOWS)/src/Player.o $(OBJDIR_RELEASE_WINDOWS)/src/Reversi.o $(OBJDIR_RELEASE_WINDOWS)/src/Server.o $(OBJDIR_RELEASE_WINDOWS)/src/Socket.o $(OBJDIR_RELEASE_WINDOWS)/src/TTT.o
+OBJ_RELEASE_WINDOWS = $(OBJDIR_RELEASE_WINDOWS)/src/GameVocabulary.o $(OBJDIR_RELEASE_WINDOWS)/main.o $(OBJDIR_RELEASE_WINDOWS)/src/BoardGame.o $(OBJDIR_RELEASE_WINDOWS)/src/ChessGame.o $(OBJDIR_RELEASE_WINDOWS)/src/ChessGardner.o $(OBJDIR_RELEASE_WINDOWS)/src/Client.o $(OBJDIR_RELEASE_WINDOWS)/src/ConnectFour.o $(OBJDIR_RELEASE_WINDOWS)/src/Game.o $(OBJDIR_RELEASE_WINDOWS)/src/GameBoard.o $(OBJDIR_RELEASE_WINDOWS)/src/GameMove.o $(OBJDIR_RELEASE_WINDOWS)/src/Human.o $(OBJDIR_RELEASE_WINDOWS)/src/LinearGame.o $(OBJDIR_RELEASE_WINDOWS)/src/Logger.o $(OBJDIR_RELEASE_WINDOWS)/src/Minimax.o $(OBJDIR_RELEASE_WINDOWS)/src/NetworkPlayer.o $(OBJDIR_RELEASE_WINDOWS)/src/Player.o $(OBJDIR_RELEASE_WINDOWS)/src/Reversi.o $(OBJDIR_RELEASE_WINDOWS)/src/Server.o $(OBJDIR_RELEASE_WINDOWS)/src/Socket.o $(OBJDIR_RELEASE_WINDOWS)/src/TTT.o
 
 all: debug release debug_windows release_windows
 
@@ -86,11 +86,20 @@ debug: before_debug out_debug after_debug
 out_debug: before_debug $(OBJ_DEBUG) $(DEP_DEBUG)
 	$(LD) $(LIBDIR_DEBUG) -o $(OUT_DEBUG) $(OBJ_DEBUG)  $(LDFLAGS_DEBUG) $(LIB_DEBUG)
 
-$(OBJDIR_DEBUG)/src/LinearGame.o: src/LinearGame.cpp
-	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c src/LinearGame.cpp -o $(OBJDIR_DEBUG)/src/LinearGame.o
+$(OBJDIR_DEBUG)/src/GameVocabulary.o: src/GameVocabulary.cpp
+	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c src/GameVocabulary.cpp -o $(OBJDIR_DEBUG)/src/GameVocabulary.o
 
 $(OBJDIR_DEBUG)/main.o: main.cpp
 	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c main.cpp -o $(OBJDIR_DEBUG)/main.o
+
+$(OBJDIR_DEBUG)/src/BoardGame.o: src/BoardGame.cpp
+	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c src/BoardGame.cpp -o $(OBJDIR_DEBUG)/src/BoardGame.o
+
+$(OBJDIR_DEBUG)/src/ChessGame.o: src/ChessGame.cpp
+	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c src/ChessGame.cpp -o $(OBJDIR_DEBUG)/src/ChessGame.o
+
+$(OBJDIR_DEBUG)/src/ChessGardner.o: src/ChessGardner.cpp
+	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c src/ChessGardner.cpp -o $(OBJDIR_DEBUG)/src/ChessGardner.o
 
 $(OBJDIR_DEBUG)/src/Client.o: src/Client.cpp
 	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c src/Client.cpp -o $(OBJDIR_DEBUG)/src/Client.o
@@ -107,11 +116,11 @@ $(OBJDIR_DEBUG)/src/GameBoard.o: src/GameBoard.cpp
 $(OBJDIR_DEBUG)/src/GameMove.o: src/GameMove.cpp
 	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c src/GameMove.cpp -o $(OBJDIR_DEBUG)/src/GameMove.o
 
-$(OBJDIR_DEBUG)/src/GameVocabulary.o: src/GameVocabulary.cpp
-	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c src/GameVocabulary.cpp -o $(OBJDIR_DEBUG)/src/GameVocabulary.o
-
 $(OBJDIR_DEBUG)/src/Human.o: src/Human.cpp
 	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c src/Human.cpp -o $(OBJDIR_DEBUG)/src/Human.o
+
+$(OBJDIR_DEBUG)/src/LinearGame.o: src/LinearGame.cpp
+	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c src/LinearGame.cpp -o $(OBJDIR_DEBUG)/src/LinearGame.o
 
 $(OBJDIR_DEBUG)/src/Logger.o: src/Logger.cpp
 	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c src/Logger.cpp -o $(OBJDIR_DEBUG)/src/Logger.o
@@ -155,11 +164,20 @@ release: before_release out_release after_release
 out_release: before_release $(OBJ_RELEASE) $(DEP_RELEASE)
 	$(LD) $(LIBDIR_RELEASE) -o $(OUT_RELEASE) $(OBJ_RELEASE)  $(LDFLAGS_RELEASE) $(LIB_RELEASE)
 
-$(OBJDIR_RELEASE)/src/LinearGame.o: src/LinearGame.cpp
-	$(CXX) $(CFLAGS_RELEASE) $(INC_RELEASE) -c src/LinearGame.cpp -o $(OBJDIR_RELEASE)/src/LinearGame.o
+$(OBJDIR_RELEASE)/src/GameVocabulary.o: src/GameVocabulary.cpp
+	$(CXX) $(CFLAGS_RELEASE) $(INC_RELEASE) -c src/GameVocabulary.cpp -o $(OBJDIR_RELEASE)/src/GameVocabulary.o
 
 $(OBJDIR_RELEASE)/main.o: main.cpp
 	$(CXX) $(CFLAGS_RELEASE) $(INC_RELEASE) -c main.cpp -o $(OBJDIR_RELEASE)/main.o
+
+$(OBJDIR_RELEASE)/src/BoardGame.o: src/BoardGame.cpp
+	$(CXX) $(CFLAGS_RELEASE) $(INC_RELEASE) -c src/BoardGame.cpp -o $(OBJDIR_RELEASE)/src/BoardGame.o
+
+$(OBJDIR_RELEASE)/src/ChessGame.o: src/ChessGame.cpp
+	$(CXX) $(CFLAGS_RELEASE) $(INC_RELEASE) -c src/ChessGame.cpp -o $(OBJDIR_RELEASE)/src/ChessGame.o
+
+$(OBJDIR_RELEASE)/src/ChessGardner.o: src/ChessGardner.cpp
+	$(CXX) $(CFLAGS_RELEASE) $(INC_RELEASE) -c src/ChessGardner.cpp -o $(OBJDIR_RELEASE)/src/ChessGardner.o
 
 $(OBJDIR_RELEASE)/src/Client.o: src/Client.cpp
 	$(CXX) $(CFLAGS_RELEASE) $(INC_RELEASE) -c src/Client.cpp -o $(OBJDIR_RELEASE)/src/Client.o
@@ -176,11 +194,11 @@ $(OBJDIR_RELEASE)/src/GameBoard.o: src/GameBoard.cpp
 $(OBJDIR_RELEASE)/src/GameMove.o: src/GameMove.cpp
 	$(CXX) $(CFLAGS_RELEASE) $(INC_RELEASE) -c src/GameMove.cpp -o $(OBJDIR_RELEASE)/src/GameMove.o
 
-$(OBJDIR_RELEASE)/src/GameVocabulary.o: src/GameVocabulary.cpp
-	$(CXX) $(CFLAGS_RELEASE) $(INC_RELEASE) -c src/GameVocabulary.cpp -o $(OBJDIR_RELEASE)/src/GameVocabulary.o
-
 $(OBJDIR_RELEASE)/src/Human.o: src/Human.cpp
 	$(CXX) $(CFLAGS_RELEASE) $(INC_RELEASE) -c src/Human.cpp -o $(OBJDIR_RELEASE)/src/Human.o
+
+$(OBJDIR_RELEASE)/src/LinearGame.o: src/LinearGame.cpp
+	$(CXX) $(CFLAGS_RELEASE) $(INC_RELEASE) -c src/LinearGame.cpp -o $(OBJDIR_RELEASE)/src/LinearGame.o
 
 $(OBJDIR_RELEASE)/src/Logger.o: src/Logger.cpp
 	$(CXX) $(CFLAGS_RELEASE) $(INC_RELEASE) -c src/Logger.cpp -o $(OBJDIR_RELEASE)/src/Logger.o
@@ -224,11 +242,20 @@ debug_windows: before_debug_windows out_debug_windows after_debug_windows
 out_debug_windows: before_debug_windows $(OBJ_DEBUG_WINDOWS) $(DEP_DEBUG_WINDOWS)
 	$(LD) $(LIBDIR_DEBUG_WINDOWS) -o $(OUT_DEBUG_WINDOWS) $(OBJ_DEBUG_WINDOWS)  $(LDFLAGS_DEBUG_WINDOWS) $(LIB_DEBUG_WINDOWS)
 
-$(OBJDIR_DEBUG_WINDOWS)/src/LinearGame.o: src/LinearGame.cpp
-	$(CXX) $(CFLAGS_DEBUG_WINDOWS) $(INC_DEBUG_WINDOWS) -c src/LinearGame.cpp -o $(OBJDIR_DEBUG_WINDOWS)/src/LinearGame.o
+$(OBJDIR_DEBUG_WINDOWS)/src/GameVocabulary.o: src/GameVocabulary.cpp
+	$(CXX) $(CFLAGS_DEBUG_WINDOWS) $(INC_DEBUG_WINDOWS) -c src/GameVocabulary.cpp -o $(OBJDIR_DEBUG_WINDOWS)/src/GameVocabulary.o
 
 $(OBJDIR_DEBUG_WINDOWS)/main.o: main.cpp
 	$(CXX) $(CFLAGS_DEBUG_WINDOWS) $(INC_DEBUG_WINDOWS) -c main.cpp -o $(OBJDIR_DEBUG_WINDOWS)/main.o
+
+$(OBJDIR_DEBUG_WINDOWS)/src/BoardGame.o: src/BoardGame.cpp
+	$(CXX) $(CFLAGS_DEBUG_WINDOWS) $(INC_DEBUG_WINDOWS) -c src/BoardGame.cpp -o $(OBJDIR_DEBUG_WINDOWS)/src/BoardGame.o
+
+$(OBJDIR_DEBUG_WINDOWS)/src/ChessGame.o: src/ChessGame.cpp
+	$(CXX) $(CFLAGS_DEBUG_WINDOWS) $(INC_DEBUG_WINDOWS) -c src/ChessGame.cpp -o $(OBJDIR_DEBUG_WINDOWS)/src/ChessGame.o
+
+$(OBJDIR_DEBUG_WINDOWS)/src/ChessGardner.o: src/ChessGardner.cpp
+	$(CXX) $(CFLAGS_DEBUG_WINDOWS) $(INC_DEBUG_WINDOWS) -c src/ChessGardner.cpp -o $(OBJDIR_DEBUG_WINDOWS)/src/ChessGardner.o
 
 $(OBJDIR_DEBUG_WINDOWS)/src/Client.o: src/Client.cpp
 	$(CXX) $(CFLAGS_DEBUG_WINDOWS) $(INC_DEBUG_WINDOWS) -c src/Client.cpp -o $(OBJDIR_DEBUG_WINDOWS)/src/Client.o
@@ -245,11 +272,11 @@ $(OBJDIR_DEBUG_WINDOWS)/src/GameBoard.o: src/GameBoard.cpp
 $(OBJDIR_DEBUG_WINDOWS)/src/GameMove.o: src/GameMove.cpp
 	$(CXX) $(CFLAGS_DEBUG_WINDOWS) $(INC_DEBUG_WINDOWS) -c src/GameMove.cpp -o $(OBJDIR_DEBUG_WINDOWS)/src/GameMove.o
 
-$(OBJDIR_DEBUG_WINDOWS)/src/GameVocabulary.o: src/GameVocabulary.cpp
-	$(CXX) $(CFLAGS_DEBUG_WINDOWS) $(INC_DEBUG_WINDOWS) -c src/GameVocabulary.cpp -o $(OBJDIR_DEBUG_WINDOWS)/src/GameVocabulary.o
-
 $(OBJDIR_DEBUG_WINDOWS)/src/Human.o: src/Human.cpp
 	$(CXX) $(CFLAGS_DEBUG_WINDOWS) $(INC_DEBUG_WINDOWS) -c src/Human.cpp -o $(OBJDIR_DEBUG_WINDOWS)/src/Human.o
+
+$(OBJDIR_DEBUG_WINDOWS)/src/LinearGame.o: src/LinearGame.cpp
+	$(CXX) $(CFLAGS_DEBUG_WINDOWS) $(INC_DEBUG_WINDOWS) -c src/LinearGame.cpp -o $(OBJDIR_DEBUG_WINDOWS)/src/LinearGame.o
 
 $(OBJDIR_DEBUG_WINDOWS)/src/Logger.o: src/Logger.cpp
 	$(CXX) $(CFLAGS_DEBUG_WINDOWS) $(INC_DEBUG_WINDOWS) -c src/Logger.cpp -o $(OBJDIR_DEBUG_WINDOWS)/src/Logger.o
@@ -293,11 +320,20 @@ release_windows: before_release_windows out_release_windows after_release_window
 out_release_windows: before_release_windows $(OBJ_RELEASE_WINDOWS) $(DEP_RELEASE_WINDOWS)
 	$(LD) $(LIBDIR_RELEASE_WINDOWS) -o $(OUT_RELEASE_WINDOWS) $(OBJ_RELEASE_WINDOWS)  $(LDFLAGS_RELEASE_WINDOWS) $(LIB_RELEASE_WINDOWS)
 
-$(OBJDIR_RELEASE_WINDOWS)/src/LinearGame.o: src/LinearGame.cpp
-	$(CXX) $(CFLAGS_RELEASE_WINDOWS) $(INC_RELEASE_WINDOWS) -c src/LinearGame.cpp -o $(OBJDIR_RELEASE_WINDOWS)/src/LinearGame.o
+$(OBJDIR_RELEASE_WINDOWS)/src/GameVocabulary.o: src/GameVocabulary.cpp
+	$(CXX) $(CFLAGS_RELEASE_WINDOWS) $(INC_RELEASE_WINDOWS) -c src/GameVocabulary.cpp -o $(OBJDIR_RELEASE_WINDOWS)/src/GameVocabulary.o
 
 $(OBJDIR_RELEASE_WINDOWS)/main.o: main.cpp
 	$(CXX) $(CFLAGS_RELEASE_WINDOWS) $(INC_RELEASE_WINDOWS) -c main.cpp -o $(OBJDIR_RELEASE_WINDOWS)/main.o
+
+$(OBJDIR_RELEASE_WINDOWS)/src/BoardGame.o: src/BoardGame.cpp
+	$(CXX) $(CFLAGS_RELEASE_WINDOWS) $(INC_RELEASE_WINDOWS) -c src/BoardGame.cpp -o $(OBJDIR_RELEASE_WINDOWS)/src/BoardGame.o
+
+$(OBJDIR_RELEASE_WINDOWS)/src/ChessGame.o: src/ChessGame.cpp
+	$(CXX) $(CFLAGS_RELEASE_WINDOWS) $(INC_RELEASE_WINDOWS) -c src/ChessGame.cpp -o $(OBJDIR_RELEASE_WINDOWS)/src/ChessGame.o
+
+$(OBJDIR_RELEASE_WINDOWS)/src/ChessGardner.o: src/ChessGardner.cpp
+	$(CXX) $(CFLAGS_RELEASE_WINDOWS) $(INC_RELEASE_WINDOWS) -c src/ChessGardner.cpp -o $(OBJDIR_RELEASE_WINDOWS)/src/ChessGardner.o
 
 $(OBJDIR_RELEASE_WINDOWS)/src/Client.o: src/Client.cpp
 	$(CXX) $(CFLAGS_RELEASE_WINDOWS) $(INC_RELEASE_WINDOWS) -c src/Client.cpp -o $(OBJDIR_RELEASE_WINDOWS)/src/Client.o
@@ -314,11 +350,11 @@ $(OBJDIR_RELEASE_WINDOWS)/src/GameBoard.o: src/GameBoard.cpp
 $(OBJDIR_RELEASE_WINDOWS)/src/GameMove.o: src/GameMove.cpp
 	$(CXX) $(CFLAGS_RELEASE_WINDOWS) $(INC_RELEASE_WINDOWS) -c src/GameMove.cpp -o $(OBJDIR_RELEASE_WINDOWS)/src/GameMove.o
 
-$(OBJDIR_RELEASE_WINDOWS)/src/GameVocabulary.o: src/GameVocabulary.cpp
-	$(CXX) $(CFLAGS_RELEASE_WINDOWS) $(INC_RELEASE_WINDOWS) -c src/GameVocabulary.cpp -o $(OBJDIR_RELEASE_WINDOWS)/src/GameVocabulary.o
-
 $(OBJDIR_RELEASE_WINDOWS)/src/Human.o: src/Human.cpp
 	$(CXX) $(CFLAGS_RELEASE_WINDOWS) $(INC_RELEASE_WINDOWS) -c src/Human.cpp -o $(OBJDIR_RELEASE_WINDOWS)/src/Human.o
+
+$(OBJDIR_RELEASE_WINDOWS)/src/LinearGame.o: src/LinearGame.cpp
+	$(CXX) $(CFLAGS_RELEASE_WINDOWS) $(INC_RELEASE_WINDOWS) -c src/LinearGame.cpp -o $(OBJDIR_RELEASE_WINDOWS)/src/LinearGame.o
 
 $(OBJDIR_RELEASE_WINDOWS)/src/Logger.o: src/Logger.cpp
 	$(CXX) $(CFLAGS_RELEASE_WINDOWS) $(INC_RELEASE_WINDOWS) -c src/Logger.cpp -o $(OBJDIR_RELEASE_WINDOWS)/src/Logger.o

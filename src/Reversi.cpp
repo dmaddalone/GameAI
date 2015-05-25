@@ -76,7 +76,6 @@ std::vector<GameMove> Reversi::GenerateMoves(int nPlayer) const
     return vGameMoves;
 }
 
-
 /**
   * Apply the move to the game.
   *
@@ -100,6 +99,10 @@ bool Reversi::ApplyMove(int nPlayer, GameMove &cGameMove)
     // return false
     if (!LinearGame::ApplyMove(nPlayer, cGameMove))
         return false;
+
+    // Evaluate whether the game ended with the LinearGame::ApplyMove
+    if (GameEnded(1 - nPlayer + 2))
+        return true;
 
     // Compare passed GameMove to generated game moves.  If one is found to be
     // the same, flip tokens accordingly.
@@ -878,8 +881,11 @@ std::string Reversi::GameScore() const
 
 bool Reversi::GameEnded(int nPlayer)
 {
-    // nPlayer not used in this override
-    (void)nPlayer;
+    //// nPlayer not used in this override
+    //(void)nPlayer;
+
+    if (BoardGame::GameEnded(nPlayer))
+        return true;
 
     // Count the number of tokens for each player
     int nCountPlayer1 = CountEvaluation(m_knPlayer1);

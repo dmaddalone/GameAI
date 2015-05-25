@@ -34,11 +34,7 @@ std::string GameMove::AnnounceFromMove() const
     if (!m_bUseFrom)
         return sMove;
 
-    if (m_bNoMove)
-    {
-        sMove = "NO MOVE";
-    }
-    else if (m_bUseY)
+    if (m_bUseY)
     {
         sMove = m_cFromX;
         sMove += m_cFromY;
@@ -66,6 +62,10 @@ std::string GameMove::AnnounceToMove() const
     if (m_bNoMove)
     {
         sMove = "NO MOVE";
+    }
+    else if (m_bResignation)
+    {
+        sMove = "RESIGN";
     }
     else if (m_bUseY)
     {

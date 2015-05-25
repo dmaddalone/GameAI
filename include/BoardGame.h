@@ -50,10 +50,14 @@ class BoardGame : public Game
         virtual std::string ValidMoves(int nPlayer) const override;
         // Get the move from the designated player
         virtual GameMove GetMove(int nPlayer) const override;
+        // Generate a GameMove from text input
+        virtual GameMove GenerateMove(std::string sMove) const override;
         // Provide a preferred move
         virtual int  PreferredMove(const GameMove &cGameMove) const override;
         // Return the score of the game
         virtual std::string GameScore() const override;
+        // Check to see if the game has ended
+        virtual bool GameEnded(int nPlayer) override;
         // Clone the current game
         virtual std::unique_ptr<Game> Clone() const = 0;
 
@@ -65,6 +69,9 @@ class BoardGame : public Game
         const int  m_knX;
         // Max Y-coordinate this game
         const int  m_knY;
+
+        // Resignation move
+        const std::string m_ksMoveResign {"RESIGN"};
 
         // The game board, initialized in the constructor
         GameBoard cBoard;

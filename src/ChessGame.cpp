@@ -62,7 +62,18 @@ std::string ChessGame::Title()
 
 GameMove ChessGame::GenerateMove(std::string sMove) const
 {
-    GameMove cGameMove (sMove[0], sMove[1], sMove[2], sMove[3]);
+    GameMove cGameMove = BoardGame::GenerateMove(sMove);
+
+    if (cGameMove.Resignation())
+        return cGameMove;
+
+    //cGameMove(sMove[0], sMove[1], sMove[2], sMove[3]);
+    cGameMove.SetFromX(sMove[0]);
+    cGameMove.SetFromY(sMove[1]);
+    cGameMove.SetToX(sMove[2]);
+    cGameMove.SetToY(sMove[3]);
+    cGameMove.SetUseFrom(true);
+    cGameMove.SetUseY(true);
 
     return cGameMove;
 }
@@ -522,6 +533,14 @@ bool ChessGame::ApplyMove(int nPlayer, GameMove &cGameMove)
     if ((nPlayer != m_knPlayer1) && (nPlayer != m_knPlayer2))
         return false;
 
+    // Check for resignation
+    if (cGameMove.Resignation())
+    {
+        // Capture move for later playback or analysis
+        m_vGameMoves.push_back(cGameMove);
+        return true;
+    }
+
     // Ensure we are on the board
     if (!cBoard.ValidLocation(cGameMove.ToX(), cGameMove.ToY()))
         return false;
@@ -780,6 +799,17 @@ bool ChessGame::GameEnded(int nPlayer)
     m_nWinner = 0;
     m_sWinBy.assign("nothing");
 
+    if (BoardGame::GameEnded(nPlayer))
+        return true;
+/*
+    GameMove cGameMove = m_vGameMoves.back();
+    if (cGameMove.Resignation())
+    {
+        m_nWinner = nPlayer;
+        m_sWinBy.assign("resignation");
+        return true;
+    }
+*/
     // Evaluate whether the player has any valid moves to make
     std::vector<GameMove> vGameMoves = GenerateMoves(nPlayer);
     if (vGameMoves.empty())
