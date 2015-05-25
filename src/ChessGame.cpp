@@ -135,13 +135,13 @@ void ChessGame::GeneratePawnMoves(int nX, int nY, int nPlayer, std::vector<GameM
         nNewY = nY - 1;
 
     if (!cBoard.PositionOccupied(nX, nNewY))
-        vGameMoves.emplace_back(nX, nY, nX, nNewY, true);
+        vGameMoves.emplace_back(nX, nY, nX, nNewY, true, true);
 
     // Capture
     if (cBoard.PositionOccupiedByPlayer(nX - 1, nNewY, 1 - nPlayer + 2))
-        vGameMoves.emplace_back(nX, nY, nX - 1, nNewY, true);
+        vGameMoves.emplace_back(nX, nY, nX - 1, nNewY, true, true);
     if (cBoard.PositionOccupiedByPlayer(nX + 1, nNewY, 1 - nPlayer + 2))
-        vGameMoves.emplace_back(nX, nY, nX + 1, nNewY, true);
+        vGameMoves.emplace_back(nX, nY, nX + 1, nNewY, true, true);
 
     // Double move
     if (m_bDoublePawnMoveAllowed)
@@ -155,7 +155,7 @@ void ChessGame::GeneratePawnMoves(int nX, int nY, int nPlayer, std::vector<GameM
                 nNewY = nY - 2;
 
             if (!cBoard.PositionOccupied(nX, nNewY))
-                vGameMoves.emplace_back(nX, nY, nX, nNewY, true);
+                vGameMoves.emplace_back(nX, nY, nX, nNewY, true, true);
         }
     }
 
@@ -289,8 +289,8 @@ void ChessGame::GenerateBishopMoves(int nX, int nY, int nPlayer, std::vector<Gam
     {
         if (GenerateLinearMove(nX, nY, nNewX, nNewY, nPlayer, vGameMoves))
         {
-            ++nNewX;
-            ++nNewY;
+            --nNewX;
+            --nNewY;
         }
         else
             break;
@@ -306,7 +306,7 @@ void ChessGame::GenerateBishopMoves(int nX, int nY, int nPlayer, std::vector<Gam
     {
         if (GenerateLinearMove(nX, nY, nNewX, nNewY, nPlayer, vGameMoves))
         {
-            ++nNewX;
+            --nNewX;
             ++nNewY;
         }
         else
@@ -399,7 +399,7 @@ void ChessGame::GenerateCastleMoves(int nKX, int nKY, int nPlayer, std::vector<G
 
                 if (bCastleValid)
                 {
-                    vGameMoves.emplace_back(nKX, nKY, nNewKX, nKY, true);
+                    vGameMoves.emplace_back(nKX, nKY, nNewKX, nKY, true, true);
                 }
             }
 
@@ -422,7 +422,7 @@ bool ChessGame::GenerateLinearMove(int nFromX, int nFromY, int nToX, int nToY, i
     // Move
     if (!cBoard.PositionOccupied(nToX, nToY))
     {
-        vGameMoves.emplace_back(nFromX, nFromY, nToX, nToY, true);
+        vGameMoves.emplace_back(nFromX, nFromY, nToX, nToY, true, true);
         return true;
     }
     else if (cBoard.PositionOccupiedByPlayer(nToX, nToY, nPlayer))
@@ -431,7 +431,7 @@ bool ChessGame::GenerateLinearMove(int nFromX, int nFromY, int nToX, int nToY, i
     // Capture
     else //if (cBoard.PositionOccupiedByPlayer(nToX, nToY, 1 - nPlayer + 2))
     {
-        vGameMoves.emplace_back(nFromX, nFromY, nToX, nToY, true);
+        vGameMoves.emplace_back(nFromX, nFromY, nToX, nToY, true, true);
         return false;
     }
 }
@@ -498,7 +498,7 @@ void ChessGame::GenerateKnightMove(int nFromX, int nFromY, int nToX, int nToY, i
     if (cBoard.ValidLocation(nToX, nToY))
     {
         if ((!cBoard.PositionOccupied(nToX, nToY)) || (cBoard.PositionOccupiedByPlayer(nToX, nToY, 1 - nPlayer + 2)))
-            vGameMoves.emplace_back(nFromX, nFromY, nToX, nToY, true);
+            vGameMoves.emplace_back(nFromX, nFromY, nToX, nToY, true, true);
     }
 }
 
@@ -516,6 +516,7 @@ void ChessGame::GenerateKnightMove(int nFromX, int nFromY, int nToX, int nToY, i
 bool ChessGame::ApplyMove(int nPlayer, GameMove &cGameMove)
 {
     bool bValidMove = false;
+    char cToken;
 
     // Check player number
     if ((nPlayer != m_knPlayer1) && (nPlayer != m_knPlayer2))
@@ -550,54 +551,111 @@ bool ChessGame::ApplyMove(int nPlayer, GameMove &cGameMove)
     // Capture move for later playback or analysis
     m_vGameMoves.push_back(cGameMove);
 
-    // Check Castling Move
-    char cToken = cBoard.Token(cGameMove.ToX(), cGameMove.ToY());
-    if (cToken == m_kcKingToken)
+    // Perform Pawn Promotion
+    cToken = cBoard.Token(cGameMove.ToX(), cGameMove.ToY());
+    if ((cToken == m_kcPawnToken) && (cGameMove.ToY() == m_knY -1))
     {
-        int nX;
-        int nY;
-        bool bCastleWest = false;
+        bool bGoodToken = false;
+        char cPromotion {};
 
-        if (abs(cGameMove.FromX() - cGameMove.ToX()) > 1)
+        GamePiece cGamePiece = cBoard.Piece(cGameMove.ToX(), cGameMove.ToY());
+
+        while (!bGoodToken)
         {
-            bValidMove = false;
+            std::cout << "\nPAWN PROMOTION ("
+                << m_kcRookToken << ", "
+                << m_kcKnightToken << ", "
+                << m_kcBishopToken << ", "
+                << m_kcQueenToken << "): ";
 
-            //
-            // Find Rook
-            //
+            std::cin >> cPromotion;
+            cPromotion = toupper(cPromotion);
 
-            // If King moved more than one square to the west
-            if (cGameMove.FromX() - cGameMove.ToX() > 1)
+            switch (cPromotion)
             {
-                nX = 0;
-                bCastleWest = true;
+                case m_kcRookToken:
+                    cToken = cPromotion;
+                    cGamePiece.Set(cPromotion, nPlayer, m_knRookValue);
+                    cBoard.SetPiece(cGameMove.ToX(), cGameMove.ToY(), cGamePiece);
+                    bGoodToken = true;
+                    break;
+                case m_kcKnightToken:
+                    cToken = cPromotion;
+                    cGamePiece.Set(cPromotion, nPlayer, m_knKnightValue);
+                    cBoard.SetPiece(cGameMove.ToX(), cGameMove.ToY(), cGamePiece);
+                    bGoodToken = true;
+                    break;
+                case m_kcBishopToken:
+                    cToken = cPromotion;
+                    cGamePiece.Set(cPromotion, nPlayer, m_knBishopValue);
+                    cBoard.SetPiece(cGameMove.ToX(), cGameMove.ToY(), cGamePiece);
+                    bGoodToken = true;
+                    break;
+                case m_kcQueenToken:
+                    cToken = cPromotion;
+                    cGamePiece.Set(cPromotion, nPlayer, m_knQueenValue);
+                    cBoard.SetPiece(cGameMove.ToX(), cGameMove.ToY(), cGamePiece);
+                    bGoodToken = true;
+                    break;
+                default:
+                    std::cout << "Invalid entry: " << cPromotion << std::endl;
+                    break;
             }
-            // Else King moved more than one square to the west
-            else
-            {
-                nX = cGameMove.FromX() + 2;
-            }
+        }
+    }
 
-            nY = cGameMove.FromY();
+    // Perform Castling Move
+    if (m_abCastlingAllowed[nPlayer -1])
+    {
+        cToken = cBoard.Token(cGameMove.ToX(), cGameMove.ToY());
+        if (cToken == m_kcKingToken)
+        {
+            int nX;
+            int nY;
+            bool bCastleWest = false;
 
-            if (FindPiece(nX, nY, nPlayer, m_kcRookToken))
+            if (abs(cGameMove.FromX() - cGameMove.ToX()) > 1)
             {
+                bValidMove = false;
+
                 //
-                // Move Rook
+                // Find Rook
                 //
-                cGameMove.SetFromX(nX);
-                if (bCastleWest)
+
+                // If King moved more than one square to the west
+                if (cGameMove.FromX() - cGameMove.ToX() > 1)
                 {
-                    cGameMove.SetToX(cGameMove.ToX() + 1);
+                    nX = 0;
+                    bCastleWest = true;
                 }
+                // Else King moved more than one square to the west
                 else
                 {
-                    cGameMove.SetToX(cGameMove.ToX() - 1);
+                    nX = cGameMove.FromX() + 2;
                 }
-                if (cBoard.MovePiece(cGameMove))
+
+                nY = cGameMove.FromY();
+
+                if (FindPiece(nX, nY, nPlayer, m_kcRookToken))
                 {
-                    bValidMove = true;
-                    m_abCastlingAllowed[nPlayer - 1] = false;
+                    //
+                    // Move Rook
+                    //
+                    cGameMove.SetFromX(nX);
+                    if (bCastleWest)
+                    {
+                        cGameMove.SetToX(cGameMove.ToX() + 1);
+                    }
+                    else
+                    {
+                        cGameMove.SetToX(cGameMove.ToX() - 1);
+                    }
+
+                    if (cBoard.MovePiece(cGameMove))
+                    {
+                        bValidMove = true;
+                        m_abCastlingAllowed[nPlayer - 1] = false;
+                    }
                 }
             }
         }

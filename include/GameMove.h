@@ -34,12 +34,13 @@ class GameMove
         // Construct a GameMove
         GameMove() {}
 
-        GameMove(int nFromX, int nFromY, int nToX, int nToY, bool bUseY) :
+        GameMove(int nFromX, int nFromY, int nToX, int nToY, bool bUseY, bool bUseFrom) :
             m_nFromX(nFromX),
             m_nFromY(nFromY),
             m_nToX(nToX),
             m_nToY(nToY),
-            m_bUseY(bUseY)
+            m_bUseY(bUseY),
+            m_bUseFrom(bUseFrom)
         {
             m_cFromX = m_nFromX + m_kcXOffset;
             m_cFromY = m_nFromY + m_kcYOffset;
@@ -83,6 +84,10 @@ class GameMove
         void SetUseY(bool b)   { m_bUseY = b; }
         bool UseY() const      { return m_bUseY; }
 
+        // Set and return whether the From coordinates are used
+        void SetUseFrom(bool b)   { m_bUseFrom = b; }
+        bool UseFrom() const      { return m_bUseFrom; }
+
         // Set and return whether a move has been made
         void SetNoMove(bool b) { m_bNoMove = b; }
         bool NoMove()          { return m_bNoMove; }
@@ -93,7 +98,6 @@ class GameMove
         // Announce the moves
         std::string AnnounceFromMove() const;
         std::string AnnounceToMove() const;
-
 
     private:
         // Used to convert int coordinates to char values for internal representation using ASCII representation
@@ -115,6 +119,9 @@ class GameMove
 
         // Whether the Y-coordinates are used
         bool m_bUseY {true};
+
+        // Whether the From coordinates are used
+        bool m_bUseFrom {false};
 
         // Whether this is a move or not; used if no move is possible
         bool m_bNoMove {false};

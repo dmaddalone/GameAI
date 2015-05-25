@@ -42,7 +42,8 @@ class ConnectFour : public LinearGame
         virtual int  PreferredMove(const GameMove &cGameMove) const override;
 
         // Apply the move to the game
-        virtual bool ApplyMove(int nPlayer, GameMove &cGameMove) override;
+        //virtual bool ApplyMove(int nPlayer, GameMove &cGameMove) override;
+        bool ApplyMove(int nPlayer, GameMove &cGameMove);
 
         // Generate a vector of valis moves
         virtual std::vector<GameMove> GenerateMoves(int nPlayer) const override;

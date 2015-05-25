@@ -26,6 +26,8 @@
 #ifndef GAME_H
 #define GAME_H
 
+#include <iostream>
+#include <fstream>
 #include <memory>
 #include <vector>
 
@@ -77,11 +79,11 @@ class Game
         // Generate a GameMove from text input
         virtual GameMove GenerateMove(std::string sMove) const = 0;
 
-        // Announce the move made
-        virtual std::string AnnounceMove(int nPlayer, const GameMove &cGameMove) const = 0;
-
         // Apply the move to the game
         virtual bool ApplyMove(int nPlayer, GameMove &cGameMove) = 0;
+
+        // Announce the move made
+        virtual std::string AnnounceMove(int nPlayer, const GameMove &cGameMove) const = 0;
 
         // Provide a preferred move
         virtual int  PreferredMove(const GameMove &cGameMove) const = 0;
@@ -107,6 +109,14 @@ class Game
 
         // Make a game of ecGameType
         static std::unique_ptr<Game> Make(GameType ecGameType);
+
+
+
+        // Read moves from a text file and apply them
+        int ReadMoves(std::string sFileName);
+
+        // Write moves to a text file
+        bool WriteMoves(std::string sFileName);
 
         // Return game information
         GameType Type()      { return m_ecGameType; }

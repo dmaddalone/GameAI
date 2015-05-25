@@ -49,3 +49,66 @@ std::unique_ptr<Game> Game::Make(GameType ecGameType)
             return nullptr;
     }
 }
+
+/**
+  * Write moves to a file.
+  *
+  * \param sFileName Name of the output file
+  *
+  * \return True if successful, false otherwise.
+  */
+
+bool Game::WriteMoves(std::string sFileName)
+{
+    std::ofstream ofsFile(sFileName);
+    if (!ofsFile)
+    {
+        std::cerr << "Could not open " << sFileName << std::endl;
+        return false;
+    }
+
+    for (GameMove cGameMove : m_vGameMoves)
+    {
+        ofsFile << cGameMove.AnnounceFromMove() << cGameMove.AnnounceToMove() << std::endl;
+    }
+
+    ofsFile.close();
+
+    return true;
+}
+
+/**
+  * Read moves from a file.
+  *
+  * Read moves from file, generate a GameMove, and apply the move to the game.
+  *
+  * \param sFileName Name of the input file
+  *
+  * \return Number pf th eplayer to play next if successful, otherwise 0.
+  */
+
+int Game::ReadMoves(std::string sFileName)
+{
+    std::string sMove;
+    GameMove cGameMove;
+    int nPlayer {1};
+
+    std::ifstream ifsFile(sFileName);
+    if (!ifsFile)
+    {
+        std::cerr << "Could not open " << sFileName << std::endl;
+        return 0;
+    }
+
+    while (getline(ifsFile, sMove))
+    {
+        cGameMove = GenerateMove(sMove);
+        if (!ApplyMove(nPlayer, cGameMove))
+            return 0;
+        nPlayer = 1 - nPlayer + 2;
+    }
+
+    ifsFile.close();
+
+    return nPlayer;
+}

@@ -22,7 +22,7 @@
 /**
   * Make a move.
   *
-  * Call MinimaxMOve to generate the best game move and apply it to the game.
+  * Call MinimaxMove to generate the best game move and apply it to the game.
   *
   * \param cGame The game board.
   *

@@ -37,7 +37,8 @@ class Reversi : public LinearGame
         ~Reversi() {}
 
         // Apply the move to the game
-        virtual bool ApplyMove(int nPlayer, GameMove &cGameMove) override;
+        //virtual bool ApplyMove(int nPlayer, GameMove &cGameMove) override;
+        bool ApplyMove(int nPlayer, GameMove &cGameMove);
         // Evaluate the game state from the perspective of the nPlayer
         virtual int  EvaluateGameState(int nPlayer) override;
         // Return the score of the game

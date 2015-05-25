@@ -90,6 +90,13 @@ class ChessGame : public BoardGame
         static const char m_kcQueenToken  {'Q'};
         static const char m_kcKingToken   {'K'};
 
+        static const int  m_knPawnValue   {1};
+        static const int  m_knRookValue   {5};
+        static const int  m_knKnightValue {3};
+        static const int  m_knBishopValue {3};
+        static const int  m_knQueenValue {9};
+        static const int  m_knKingValue   {4};
+
         bool m_abCastlingAllowed[2]   { true };
         bool m_bDoublePawnMoveAllowed { true };
 };

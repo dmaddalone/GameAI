@@ -29,7 +29,10 @@
 
 std::string GameMove::AnnounceFromMove() const
 {
-    std::string sMove;
+    std::string sMove {};
+
+    if (!m_bUseFrom)
+        return sMove;
 
     if (m_bNoMove)
     {

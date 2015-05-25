@@ -47,6 +47,8 @@ static void ShowUsage(std::string sName)
               << "              --port=PORT     port for network communications.  Required for TYPE of server and client.\n"
               << "    -h,       --host=HOSTNAME host address or name of the server.  Required for TYPE server.\n"
               << "    -H,       --help          display this help message and exit\n"
+              << "    -i FILE,  --input=FILE    read game moves from FILE\n"
+              << "    -o FILE,  --output=FILE   write game moves to FILE\n"
               << "    -p PLIES, --plies=PLIES   assign the number of PLIES that minimax players will use\n"
               << "              --plies1=PLIES  assign the number of PLIES to Player 1, if minimax\n"
               << "              --plies2=PLIES  assign the number of PLIES to Player 2, if minimax\n"
@@ -219,11 +221,13 @@ int main(int argc, char* argv[])
 {
     std::vector<std::unique_ptr<Player>> vPlayers;
     std::unique_ptr<Game> pcGame {};
-    int  nPlies1      {4};
-    int  nPlies2      {4};
-    int nPort         {60000};
-    std::string sHost {"127.0.0.1"};
-    int  nVerbosity   {1};
+    int  nPlies1            {4};
+    int  nPlies2            {4};
+    int  nPort              {60000};
+    std::string sHost       {"127.0.0.1"};
+    std::string sInputFile  {};
+    std::string sOutputFile {};
+    int  nVerbosity         {1};
 
     // Check for command line arguments
     if (argc < 2)
@@ -245,6 +249,8 @@ int main(int argc, char* argv[])
         {"game",    required_argument, nullptr, 'g'},
         {"port",    required_argument, nullptr, 't'},
         {"host",    required_argument, nullptr, 'h'},
+        {"input",   required_argument, nullptr, 'i'},
+        {"output",  required_argument, nullptr, 'o'},
         {"verbose", required_argument, nullptr, 'v'},
         {"help",    no_argument,       nullptr, 'H'},
         {"version", no_argument,       nullptr, 'V'},
@@ -254,7 +260,7 @@ int main(int argc, char* argv[])
     // Execute getopt_long
     int nC = 0;
     int nOptionIndex = 0;
-    while ((nC = getopt_long(argc, argv, "1:2:p:x:y:g:t:h:v:HV", stLongOptions, &nOptionIndex)) != -1)
+    while ((nC = getopt_long(argc, argv, "1:2:p:x:y:g:t:h:i:o:v:HV", stLongOptions, &nOptionIndex)) != -1)
     {
         switch (nC)
         {
@@ -297,6 +303,14 @@ int main(int argc, char* argv[])
             // Host
             case 'h':
                 sHost = optarg;
+                break;
+            // Output
+            case 'i':
+                sInputFile = optarg;
+                break;
+            // Output
+            case 'o':
+                sOutputFile = optarg;
                 break;
             // Verbosity
             case 'v':
@@ -358,14 +372,40 @@ int main(int argc, char* argv[])
         std::cout << std::endl;
     }
 
+    //
+    // If input file specified, read and apply game moves
+    //
+
+    // nPlayer used to capture next player's turn after reading and applying omves
+    // Also used in the player turn loop below.  Set to a number other than 0, 1, or 2.
+    int nPlayer = -1;
+    // If input file specified, read and apply moves.  Returns number of next player.
+    if (!sInputFile.empty())
+        nPlayer = pcGame->ReadMoves(sInputFile);
+    // If nPlayer == 0, an error occured.
+    if (nPlayer == 0)
+    {
+        std::cerr << "Invalid move.  Exiting." << std::endl;
+        exit(EXIT_FAILURE);
+    }
+
     // Have each player play in turn
     while(true)
     {
-        // Player 1 move
-        if (!vPlayers[0]->Move(*pcGame))
+        // if nPlayer == 2, set nPlayer to another number and skip Player 1.
+        if (nPlayer == 2)
         {
-            std::cerr << "Invalid move.  Exiting." << std::endl;
-            exit(EXIT_FAILURE);
+            nPlayer = -1;
+        }
+        // Otherwise, let Player 1 move.
+        else
+        {
+            // Player 1 move
+            if (!vPlayers[0]->Move(*pcGame))
+            {
+                std::cerr << "Invalid move.  Exiting." << std::endl;
+                exit(EXIT_FAILURE);
+            }
         }
 
         // Announce game score
@@ -378,7 +418,6 @@ int main(int argc, char* argv[])
             vPlayers[1]->Finish(*pcGame);
             break;
         }
-
 
         // Player 2 move
         if (!vPlayers[1]->Move(*pcGame))
@@ -414,4 +453,8 @@ int main(int argc, char* argv[])
     }
 
     std::cout << "Total number of moves: " << pcGame->NumberOfMoves() << std::endl;
+
+    // If output file specified, write game moves
+    if (!sOutputFile.empty())
+        pcGame->WriteMoves(sOutputFile);
 }

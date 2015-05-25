@@ -43,7 +43,7 @@ std::vector<GameMove> ConnectFour::GenerateMoves(int nPlayer) const
         if (FindBottom(xxx) >= 0)
         {
             // Create a game move with an X-Coordinate only
-            vGameMoves.emplace_back(0, 0, xxx, 0, false);
+            vGameMoves.emplace_back(0, 0, xxx, 0, false, false);
         }
     }
 
