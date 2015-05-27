@@ -379,31 +379,44 @@ int main(int argc, char* argv[])
     // nPlayer used to capture next player's turn after reading and applying omves
     // Also used in the player turn loop below.  Set to a number other than 0, 1, or 2.
     int nPlayer = -1;
+    bool bGameNotEnded = true;
     // If input file specified, read and apply moves.  Returns number of next player.
     if (!sInputFile.empty())
         nPlayer = pcGame->ReadMoves(sInputFile);
+
+    // Evaluate game ended before moving into player turns loop
     // If nPlayer == 0, an error occured.
     if (nPlayer == 0)
     {
         std::cerr << "Invalid move.  Exiting." << std::endl;
         exit(EXIT_FAILURE);
     }
+    // If Player == 1, evaluate game state from Player 1's perspective.  If game ended, allow Player 1 to finish.
+    else if (nPlayer == 1)
+    {
+        if (pcGame->GameEnded(pcGame->Player1()))
+        {
+            vPlayers[0]->Finish(*pcGame);
+            bGameNotEnded = false;
+        }
+    }
+    // If Player == 2, evaluate game state from Player 2's perspective.  If game ended, allow Player 2 to finish.
+    else
+    {
+        if (pcGame->GameEnded(pcGame->Player2()))
+        {
+            vPlayers[1]->Finish(*pcGame);
+            bGameNotEnded = false;
+        }
+    }
 
     // Have each player play in turn
-    while(true)
+    while (bGameNotEnded)
     {
-        // if nPlayer == 2, set nPlayer to another number and skip Player 1.
+        // if nPlayer == 2, set from ReadMoves, set nPlayer to another number and for this round skip Player 1.
         if (nPlayer == 2)
         {
             nPlayer = -1;
-
-            // Evaluate game state from player 1 perspective.  If game ended, allow player 1 to finish.
-            // Then break from loop.
-            if (pcGame->GameEnded(pcGame->Player1()))
-            {
-                vPlayers[0]->Finish(*pcGame);
-                break;
-            }
         }
         // Otherwise, let Player 1 move.
         else

@@ -423,7 +423,6 @@ void ChessGame::GenerateCastleMoves(int nKX, int nKY, int nPlayer, std::vector<G
                 nRX = 0;
                 ++nRY;
             }
-
         }
     }
 }
@@ -801,15 +800,7 @@ bool ChessGame::GameEnded(int nPlayer)
 
     if (BoardGame::GameEnded(nPlayer))
         return true;
-/*
-    GameMove cGameMove = m_vGameMoves.back();
-    if (cGameMove.Resignation())
-    {
-        m_nWinner = nPlayer;
-        m_sWinBy.assign("resignation");
-        return true;
-    }
-*/
+
     // Evaluate whether the player has any valid moves to make
     std::vector<GameMove> vGameMoves = GenerateMoves(nPlayer);
     if (vGameMoves.empty())

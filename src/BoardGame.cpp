@@ -136,12 +136,15 @@ std::string BoardGame::GameScore() const
 
 bool BoardGame::GameEnded(int nPlayer)
 {
-    GameMove cGameMove = m_vGameMoves.back();
-    if (cGameMove.Resignation())
+    if (!m_vGameMoves.empty())
     {
-        m_nWinner = nPlayer;
-        m_sWinBy.assign("resignation");
-        return true;
+        GameMove cGameMove = m_vGameMoves.back();
+        if (cGameMove.Resignation())
+        {
+            m_nWinner = nPlayer;
+            m_sWinBy.assign("resignation");
+            return true;
+        }
     }
 
     return false;

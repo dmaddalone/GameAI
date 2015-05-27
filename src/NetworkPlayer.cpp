@@ -108,7 +108,7 @@ bool NetworkPlayer::SendLastMove(Game &cGame)
 
     // Create command string
     std::string sMessage = GameVocabulary::MOVE + " ";
-    sMessage += cGameMove.AnnounceToMove();
+    sMessage += cGameMove.AnnounceFromMove() + cGameMove.AnnounceToMove();
 
     m_cLogger.LogInfo("Sending move to opponent", 2);
 
@@ -139,10 +139,10 @@ bool NetworkPlayer::SendLastMove(Game &cGame)
         else
         {
             sErrorMessage  = "Expected command " + GameVocabulary::CONFIRM + ", but received " + sCommand;
-            std::cerr << sMessage << std::endl;
+            std::cerr << sErrorMessage << std::endl;
             std::cout << "Exiting" << std::endl;
             Socket::Send(GameVocabulary::FATAL_EXIT);
-            throw GameAIException(sMessage);
+            throw GameAIException(sErrorMessage);
         }
     }
 
@@ -169,7 +169,7 @@ bool NetworkPlayer::RecvLastMove(Game &cGame)
 
     m_cLogger.LogInfo("Waiting for opponent's move", 2);
 
-    // Receive the last move made from th enetworked player
+    // Receive the last move made from the networked player
     if (!Socket::Recv(sCommand) < 0)
         throw SocketException("Did not receive move command");
 
@@ -221,6 +221,7 @@ bool NetworkPlayer::RecvLastMove(Game &cGame)
         // If the last move ended the game, send a DECLARE_WIN message
         if (cGame.GameEnded(2 - m_nPlayerNumber + 1))
         {
+            sleep(1); // Wait for other player to process previous CONFIRM command before sending DECLARE_WIN command.  Cheesy?
             sCommand = GameVocabulary::DECLARE_WIN;
             if (!Socket::Send(sCommand))
             {
@@ -228,6 +229,7 @@ bool NetworkPlayer::RecvLastMove(Game &cGame)
                 throw SocketException(sErrorMessage);
             }
         }
+
     }
     else // Game move is not valid
     {

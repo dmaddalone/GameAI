@@ -13,8 +13,8 @@ TODO: Make hostname work
 
 TODO: Evaluate for check and check mate
 TODO: Evaluate for stalemate
-TODO: DEBUG  pawn promotion
 TODO: Chess evaluation
+TODO: Update NetworkPlayer to send RESIGN move
 
 TODO: Check other TODOs
 
@@ -27,7 +27,7 @@ TODO: Check other TODOs
 				<Option object_output="obj/Debug/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
-				<Option parameters="-1 human  -2 human -g ttt -i ttt-moves.txt" />
+				<Option parameters="-1 human  -2 server -g ttt" />
 				<Compiler>
 					<Add option="-std=c++11" />
 					<Add option="-Wextra" />
