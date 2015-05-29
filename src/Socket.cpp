@@ -154,7 +154,7 @@ bool Socket::Accept()
   * \return True if send is successful.  False otherwise.
   */
 
-bool Socket::Send(const std::string sMessage) const
+bool Socket::Send(const std::string &sMessage) const
 {
     if (send(m_nSendRecvSocketID, sMessage.c_str(), sMessage.size(), 0) == -1)
         return false;
@@ -166,20 +166,29 @@ bool Socket::Send(const std::string sMessage) const
   * Receive data from a connected socket.
   *
   * \param sMessage Data to be received.
+  * \param nLength Length of message to receive, defaults to 0, meaning MAXRECV
   *
   * \return Size of message.  Zero on error.
   */
 
-int Socket::Recv(std::string& sMessage) const
+int Socket::Recv(std::string &sMessage, int nLength) const
 {
+    size_t nMessageLength;
+
+    // Determine length of message to receive
+    if (nLength > 0)
+        nMessageLength = nLength;
+    else
+        nMessageLength = MAXRECV;
+
     // Clear message buffer
-    char cBuf[MAXRECV + 1];
-    memset(cBuf, 0, MAXRECV + 1);
+    char cBuf[nMessageLength + 1];
+    memset(cBuf, 0, nMessageLength + 1);
 
     sMessage = ""; // TODO: Why not use cBuf and get rid of sMessage?
 
     // Reeive message
-    int nStatus = recv(m_nSendRecvSocketID, cBuf, MAXRECV, 0);
+    int nStatus = recv(m_nSendRecvSocketID, cBuf, nMessageLength, 0);
 
     // Evaluate status
     if (nStatus == -1)

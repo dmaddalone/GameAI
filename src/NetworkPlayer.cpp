@@ -121,29 +121,19 @@ bool NetworkPlayer::SendLastMove(Game &cGame)
     }
 
     // Receieve command string (networked player's confirmation)
-    if (!Socket::Recv(sCommand) < 0)
+    // Limit received message to CONFIRM
+    if (!Socket::Recv(sCommand, GameVocabulary::CONFIRM.length()) < 0)
         throw SocketException("Did not receive move confirmation");
 
     // Evaluate CONFIRM command
     sToken = GameVocabulary::ParseCommand(sCommand);
     if (sToken.compare(GameVocabulary::CONFIRM) != 0)
     {
-        if (sToken.compare(GameVocabulary::UNCONFIRM) == 0)
-        {
-            sErrorMessage  = "Opponent did not confirm " + sMessage;
-            std::cerr << sErrorMessage << std::endl;
-            std::cout << "Exiting" << std::endl;
-            Socket::Send(GameVocabulary::FATAL_EXIT);
-            throw GameAIException(sErrorMessage);
-        }
-        else
-        {
-            sErrorMessage  = "Expected command " + GameVocabulary::CONFIRM + ", but received " + sCommand;
-            std::cerr << sErrorMessage << std::endl;
-            std::cout << "Exiting" << std::endl;
-            Socket::Send(GameVocabulary::FATAL_EXIT);
-            throw GameAIException(sErrorMessage);
-        }
+        sErrorMessage  = "Expected command " + GameVocabulary::CONFIRM + ", but received " + sCommand;
+        std::cerr << sErrorMessage << std::endl;
+        std::cout << "Exiting" << std::endl;
+        Socket::Send(GameVocabulary::FATAL_EXIT);
+        throw GameAIException(sErrorMessage);
     }
 
     return true;
@@ -221,7 +211,6 @@ bool NetworkPlayer::RecvLastMove(Game &cGame)
         // If the last move ended the game, send a DECLARE_WIN message
         if (cGame.GameEnded(2 - m_nPlayerNumber + 1))
         {
-            sleep(1); // Wait for other player to process previous CONFIRM command before sending DECLARE_WIN command.  Cheesy?
             sCommand = GameVocabulary::DECLARE_WIN;
             if (!Socket::Send(sCommand))
             {

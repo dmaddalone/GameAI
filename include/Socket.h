@@ -63,8 +63,8 @@ class Socket
         bool Connect (const std::string host, const int port);
 
         // Data transimission
-        bool Send(const std::string) const;
-        int  Recv(std::string&) const;
+        bool Send(const std::string &sMessage) const;
+        int  Recv(std::string &sMessage, int len=0) const;
 
         //void SetNonBlocking(const bool);
 
