@@ -38,6 +38,7 @@
 #endif
 
 #include "GameMove.h"
+#include "Logger.h"
 
 // Used to identify the type of game
 enum class GameType
@@ -110,7 +111,8 @@ class Game
         // Make a game of ecGameType
         static std::unique_ptr<Game> Make(GameType ecGameType);
 
-
+        // Set the level of logging
+        void SetVerbosity(int n)  { m_cLogger.SetLevel(n); m_cLogger.UseTimeStamp(false); m_cLogger.UseTag(false); m_cLogger.UseLevelIndent(true); }
 
         // Read moves from a text file and apply them
         int ReadMoves(std::string sFileName);
@@ -144,6 +146,10 @@ class Game
         int m_nNumberOfMoves;//  {0};
         // How the winner won
         std::string m_sWinBy  {};
+
+        // Create a Logger object
+        Logger m_cLogger;
+
 };
 
 #endif // GAME_H

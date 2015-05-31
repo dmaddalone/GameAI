@@ -63,8 +63,8 @@ static void ShowUsage(std::string sName)
               << "LEVEL is an integer 0 to 3.  The default is 1.\n"
               << "    0 = display start and ending announcements\n"
               << "    1 = display game move-by-move\n"
-              << "    2 = display AI scoring of moves and basic network communications\n"
-              << "    3 = display AI evaluation of moves and detailed network communications\n"
+              << "    2 = display AI scoring of moves and basic operations\n"
+              << "    3 = display AI evaluation of moves and detailed operations\n"
               << "\n"
               << "Examples:\n"
               << "GameAI -1 human -2 minimax -g ttt\n\n"
@@ -304,7 +304,7 @@ int main(int argc, char* argv[])
             case 'h':
                 sHost = optarg;
                 break;
-            // Output
+            // Input
             case 'i':
                 sInputFile = optarg;
                 break;
@@ -358,6 +358,9 @@ int main(int argc, char* argv[])
 
     // Set player parameters
     SetPlayers(argv[0], nPlies1, nPlies2, nVerbosity, pcGame->Title(), sHost, nPort, vPlayers);
+
+    // Set verbosity of game
+    pcGame->SetVerbosity(nVerbosity);
 
     // Announce game
     std::cout << "Playing " << pcGame->Title() << std::endl;

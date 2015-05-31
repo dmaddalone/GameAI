@@ -60,6 +60,10 @@ std::unique_ptr<Game> Game::Make(GameType ecGameType)
 
 bool Game::WriteMoves(std::string sFileName)
 {
+    // Log the method entry
+    std::string sMessage = "Writing moves to file " + sFileName;
+    m_cLogger.LogInfo(sMessage,2);
+
     std::ofstream ofsFile(sFileName);
     if (!ofsFile)
     {
@@ -93,6 +97,10 @@ int Game::ReadMoves(std::string sFileName)
     GameMove cGameMove;
     int nPlayer {1};
 
+    // Log the method entry
+    std::string sMessage = "Reading moves from file " + sFileName;
+    m_cLogger.LogInfo(sMessage,2);
+
     std::ifstream ifsFile(sFileName);
     if (!ifsFile)
     {
@@ -100,9 +108,15 @@ int Game::ReadMoves(std::string sFileName)
         return 0;
     }
 
+    int nMoveCounter = 0;
+
     while (getline(ifsFile, sMove))
     {
         cGameMove = GenerateMove(sMove);
+
+        sMessage = "Read move " + std::to_string(++nMoveCounter) + ". " + sMove;
+        m_cLogger.LogInfo(sMessage,3);
+
         if (!ApplyMove(nPlayer, cGameMove))
             return 0;
         nPlayer = 1 - nPlayer + 2;

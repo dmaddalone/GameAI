@@ -32,8 +32,6 @@
 #include <string>
 
 #include "BoardGame.h"
-//#include "ChessPiece.h"
-//#include "ChessBoard.h"
 #include "GameAIException.h"
 
 class ChessGame : public BoardGame
@@ -67,29 +65,18 @@ class ChessGame : public BoardGame
         void SetBoard() { BoardGame::SetBoard(); cBoard.ReverseY(); }
 
     protected:
-        //void GeneratePawnMoves(GameMove &cGameMove,   int nPlayer, std::vector<GameMove> &vGameMoves, bool bTestForCheck=true) const;
         void GeneratePawnMoves(GameMove cGameMove,   int nPlayer, std::vector<GameMove> &vGameMoves) const;
-        //void GenerateRookMoves(GameMove &cGameMove,   int nPlayer, std::vector<GameMove> &vGameMoves, bool bUnlimitedMoves=true, bool bTestForCheck=true) const;
         void GenerateRookMoves(GameMove cGameMove,   int nPlayer, std::vector<GameMove> &vGameMoves, bool bUnlimitedMoves=true) const;
-        //void GenerateBishopMoves(GameMove &cGameMove, int nPlayer, std::vector<GameMove> &vGameMoves, bool bUnlimitedMoves=true, bool bTestForCheck=true) const;
         void GenerateBishopMoves(GameMove cGameMove, int nPlayer, std::vector<GameMove> &vGameMoves, bool bUnlimitedMoves=true) const;
-        //void GenerateQueenMoves(GameMove &cGameMove,  int nPlayer, std::vector<GameMove> &vGameMoves, bool bTestForCheck=true) const;
         void GenerateQueenMoves(GameMove cGameMove,  int nPlayer, std::vector<GameMove> &vGameMoves) const;
-        //void GenerateKingMoves(GameMove &cGameMove,   int nPlayer, std::vector<GameMove> &vGameMoves, bool bTestForCheck=true) const;
         void GenerateKingMoves(GameMove cGameMove,   int nPlayer, std::vector<GameMove> &vGameMoves) const;
-        //void GenerateCastleMoves(int nKX, int nKY,    int nPlayer, std::vector<GameMove> &vGameMoves, bool bTestForCheck=true) const;
         void GenerateCastleMoves(GameMove cGameMove, int nPlayer, std::vector<GameMove> &vGameMoves) const;
-        //bool GenerateLinearMove(GameMove &cGameMove,  int nPlayer, std::vector<GameMove> &vGameMoves, bool bTestForCheck=true) const;
         bool GenerateLinearMove(GameMove cGameMove,  int nPlayer, std::vector<GameMove> &vGameMoves) const;
-        //void GenerateKnightMoves(GameMove &cGameMove, int nPlayer, std::vector<GameMove> &vGameMoves, bool bTestForCheck=true) const;
         void GenerateKnightMoves(GameMove cGameMove, int nPlayer, std::vector<GameMove> &vGameMoves) const;
-        //void GenerateKnightMove(GameMove &cGameMove,  int nPlayer, std::vector<GameMove> &vGameMoves, bool bTestForCheck=true) const;
         void GenerateKnightMove(GameMove cGameMove,  int nPlayer, std::vector<GameMove> &vGameMoves) const;
-        //std::vector<GameMove> GenerateMovesForPiece(int nPlayer, const GameMove &cGameMove, bool bTestForCheck=true) const;
         std::vector<GameMove> GenerateMovesForPiece(int nPlayer, const GameMove &cGameMove) const;
         bool FindPiece(int &nX, int &nY, int nPlayer, char cToken) const;
 
-        //void TestForCheck(int nPlayer, GameMove &cGameMove, std::vector<GameMove> &vGameMoves, bool bTestForCheck) const;
         void TestForCheck(int nPlayer, GameMove &cGameMove, std::vector<GameMove> &vGameMoves) const;
         bool KingInCheck(int nPlayer) const;
         bool AttackingTheKing(int nKX, int nKY, int nPlayer, int nX, int nY) const;
