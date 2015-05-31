@@ -86,7 +86,7 @@ GameMove BoardGame::GetMove(int nPlayer) const
 
 GameMove BoardGame::GenerateMove(std::string sMove) const
 {
-    // Generic GamoevMove
+    // Generic GamevMove
     GameMove cGameMove(-1, -1, -1, -1, false, false);
 
     // Upper case the move string

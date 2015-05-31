@@ -70,6 +70,16 @@ class GameMove
         void SetToY(char cY)             { m_cToY = tolower(cY); m_nToY = m_cToY - m_kcYOffset; }
         void SetToY(int nY)              { m_nToY = nY; m_cToY = m_nToY + m_kcYOffset; }
 
+        void Set(int nFromX, int nFromY, int nToX, int nToY, bool bUseY, bool bUseFrom)
+        {
+            SetFromX(nFromX);
+            SetFromY(nFromY);
+            SetToX(nToX);
+            SetToY(nToY);
+            SetUseY(bUseY);
+            SetUseFrom(bUseFrom);
+        }
+
         // Return the coordinates of a move
         int  FromX() const      { return m_nFromX; }
         int  FromY() const      { return m_nFromY; }
@@ -95,6 +105,10 @@ class GameMove
         // Set and return whether a resignation has been made
         void SetResignation(bool b) { m_bResignation = b; }
         bool Resignation()          { return m_bResignation; }
+
+        // Set and return whether this is a test move
+        void SetTestMove(bool b) { m_bTestMove = b; }
+        bool TestMove()          { return m_bTestMove; }
 
         // Compare two moves and whether their to-moves are the same
         bool SameTo(const GameMove &cGameMove) { if ((cGameMove.ToX() == m_nToX) && (cGameMove.ToY() == m_nToY)) return true; else return false;}
@@ -132,6 +146,9 @@ class GameMove
 
         // Whether this is a resignation
         bool m_bResignation {false};
+
+        // Whather this is a test move
+        bool m_bTestMove {false};
 };
 
 #endif // GAMEMOVE_H

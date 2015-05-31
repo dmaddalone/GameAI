@@ -175,10 +175,11 @@ int Minimax::MinMove(int nPlayer, Game &cGame, int nDepth, int nAlpha, int nBeta
     m_cLogger.LogInfo(sMessage,3);
 
     // Evaluate all possible moves
+    std::unique_ptr<Game> pcGameClone {};
     for (GameMove cGameMove : vGameMoves)
     {
-        // Clone the game board
-        std::unique_ptr<Game> pcGameClone = cGame.Clone();
+        // Clone the game
+        pcGameClone = cGame.Clone();
 
         // Log the current move evaluation
         sMessage = "MinMove Player=" + std::to_string(nPlayer) + " Evaluate Move= " + cGameMove.AnnounceToMove();
@@ -228,10 +229,12 @@ int Minimax::MaxMove(int nPlayer, Game &cGame, int nDepth, int nAlpha, int nBeta
     m_cLogger.LogInfo(sMessage,3);
 
     // Evaluate all possible moves
+
+    std::unique_ptr<Game> pcGameClone {};
     for (GameMove cGameMove : vGameMoves)
     {
-        // Clone the game board
-        std::unique_ptr<Game> pcGameClone = cGame.Clone();
+        // Clone the game
+        pcGameClone = cGame.Clone();
 
         // Log the current move evaluation
         sMessage = "MaxMove Player=" + std::to_string(nPlayer) + " Evaluate Move= " + cGameMove.AnnounceToMove();

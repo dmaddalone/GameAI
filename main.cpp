@@ -377,7 +377,7 @@ int main(int argc, char* argv[])
     //
 
     // nPlayer used to capture next player's turn after reading and applying omves
-    // Also used in the player turn loop below.  Set to a number other than 0, 1, or 2.
+    // Also used in the player turn loop below.  Initially set to a number other than 0, 1, or 2.
     int nPlayer = -1;
     bool bGameNotEnded = true;
     // If input file specified, read and apply moves.  Returns number of next player.
@@ -401,7 +401,7 @@ int main(int argc, char* argv[])
         }
     }
     // If Player == 2, evaluate game state from Player 2's perspective.  If game ended, allow Player 2 to finish.
-    else
+    else if (nPlayer == 2)
     {
         if (pcGame->GameEnded(pcGame->Player2()))
         {
