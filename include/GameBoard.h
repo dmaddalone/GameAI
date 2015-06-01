@@ -78,7 +78,11 @@ class GameBoard
         char Player(int nX, int nY) const { return m_vBoard[nY][nX].Player(); }
 
         // Reverse token colors for players
+#if defined(_WIN32)
+        void ReverseColors() { int nColor = m_nPlayer1TokenColor; m_nPlayer1TokenColor = m_nPlayer2TokenColor; m_nPlayer2TokenColor = nColor; }
+#else
         void ReverseColors() { std::string sColor = m_sPlayer1TokenColor; m_sPlayer1TokenColor = m_sPlayer2TokenColor; m_sPlayer2TokenColor = sColor; }
+#endif
         // Reverse Y-Coordinates of the board
         void ReverseY()      { m_bReverseY = true; }
 
@@ -109,13 +113,13 @@ class GameBoard
 
         // Used to provide color for game pieces
 #if defined(_WIN32)
-        int m_sPlayer1TokenColor     {FOREGROUND_INTENSITY | FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE}; // White
-        int m_sPlayer2TokenColor     {FOREGROUND_RED};
-        const int m_sResetTokenColor {FOREGROUND_INTENSITY | FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE}; // White
+        int m_nPlayer1TokenColor      {FOREGROUND_INTENSITY | FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE}; // White
+        int m_nPlayer2TokenColor      {FOREGROUND_RED};
+        const int m_knResetTokenColor {FOREGROUND_INTENSITY | FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE}; // White
 #else
         std::string m_sPlayer1TokenColor       {"\033[1;37m"}; // White
         std::string m_sPlayer2TokenColor       {"\033[1;31m"}; // Red
-        const std::string m_sResetTokenColor   {"\033[0m"};    // Reset
+        const std::string m_ksResetTokenColor  {"\033[0m"};    // Reset
 #endif
 
         bool m_bReverseY = false;

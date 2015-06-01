@@ -67,9 +67,11 @@ static void ShowUsage(std::string sName)
               << "    3 = display AI evaluation of moves and detailed operations\n"
               << "\n"
               << "Examples:\n"
+              << "Start a game on a single computer:\n"
               << "GameAI -1 human -2 minimax -g ttt\n\n"
-              << "GameAI -1 human  -2 client --port=60001 -g connecfour\n"
-              << "GameAI -1 server -2 human  --port=60001 --host=192.168.0.1 -g connecfour\n"
+              << "Start a game across two computers:\n"
+              << "GameAI -1 human  -2 client -g connetcfour --port=60001\n"
+              << "GameAI -1 server -2 human  -g connectfour --port=60001 --host=192.168.0.1\n"
               << std::endl;
 }
 

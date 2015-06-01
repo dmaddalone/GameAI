@@ -49,7 +49,6 @@ bool GameBoard::SetPiece(int nX, int nY, const GamePiece &cGamePiece)
     if (!ValidLocation(nX, nY))
         return false;
 
-    //m_vBoard[nY][nX].Set(cGamePiece.Token(), cGamePiece.Player());
     m_vBoard[nY][nX].Set(cGamePiece.Token(), cGamePiece.Player(), cGamePiece.Value());
 
     return true;
@@ -218,7 +217,7 @@ void GameBoard::Display() const
             if (m_vBoard[nDisplayY][xxx].Player() == 1)
             {
 #if defined(_WIN32)
-                SetConsoleTextAttribute(hConsole, m_sPlayer1TokenColor);
+                SetConsoleTextAttribute(hConsole, m_nPlayer1TokenColor);
 #else
                 sColor = m_sPlayer1TokenColor;
 #endif // defined
@@ -227,7 +226,7 @@ void GameBoard::Display() const
             else if (m_vBoard[nDisplayY][xxx].Player() == 2)
             {
 #if defined(_WIN32)
-                SetConsoleTextAttribute(hConsole, m_sPlayer2TokenColor);
+                SetConsoleTextAttribute(hConsole, m_nPlayer2TokenColor);
 #else
                 sColor = m_sPlayer2TokenColor;
 #endif // defined
@@ -239,9 +238,9 @@ void GameBoard::Display() const
 
 #if defined(_WIN32)
             std::cout << m_vBoard[yyy][xxx].Token();
-            SetConsoleTextAttribute(hConsole, m_sResetTokenColor);
+            SetConsoleTextAttribute(hConsole, m_knResetTokenColor);
 #else
-            std::cout << sColor << m_vBoard[nDisplayY][xxx].Token() << m_sResetTokenColor;
+            std::cout << sColor << m_vBoard[nDisplayY][xxx].Token() << m_ksResetTokenColor;
 #endif // defined
 
             if (!m_kbDisplayGrid)

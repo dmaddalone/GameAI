@@ -19,28 +19,40 @@
 
 #include "ChessGame.h"
 
+/**
+  * Generate a game title.
+  *
+  * This class will create a titlemade up of Chess game
+  * options.
+  *
+  * \return A string containing the game title.
+  */
+
 std::string ChessGame::Title()
 {
-    std::string sMessage;
+    std::string sMessage {};
+
+    sMessage += "\nCastling is ";
 
     if (m_abCastlingAllowed[0])
     {
-        sMessage += "\nCastling is Allowed";
+        sMessage += "Allowed";
     }
     else
     {
-        sMessage += "\nCastling is Not Allowed";
+        sMessage += "Not Allowed";
     }
+
+    sMessage += "\nDouble Pawn Move is ";
 
     if (m_bDoublePawnMoveAllowed)
     {
-        sMessage += "\nDouble Pawn Move is Allowed";
+        sMessage += "Allowed";
     }
     else
     {
-        sMessage += "\nDouble Pawn Move is Not Allowed";
+        sMessage += "Not Allowed";
     }
-
 
     return sMessage;
 }
@@ -67,8 +79,6 @@ GameMove ChessGame::GenerateMove(std::string sMove) const
     if (cGameMove.Resignation())
         return cGameMove;
 
-    // TODO: Validate input - game will abort with a move of dfc4
-
     cGameMove.SetFromX(sMove[0]);
     cGameMove.SetFromY(sMove[1]);
     cGameMove.SetToX(sMove[2]);
@@ -78,6 +88,19 @@ GameMove ChessGame::GenerateMove(std::string sMove) const
 
     return cGameMove;
 }
+
+/**
+  * Add a move to the vector of game moves after testing the move to see if it
+  * results in the player's King in check.
+  *
+  * If the GameMove is a TestMove (a look ahead move), add it to the vector.
+  * If not, evaluate if the move allows a check to the King.  If not, add it
+  * to the vector.
+  *
+  * \param nPlayer Number of the player
+  * \param cGameMove The game move
+  * \param vGameMoves The vector of game moves
+  */
 
 void ChessGame::TestForCheck(int nPlayer, GameMove &cGameMove, std::vector<GameMove> &vGameMoves) const
 {
@@ -154,13 +177,11 @@ std::vector<GameMove> ChessGame::GenerateMoves(int nPlayer) const
   *
   * Review and collect all valid moves for a pawn.
   *
-  * \param nX The X-Coordinate of the pawn
-  * \param nY The Y-Coordinate of the pawn
+  * \param cGameMove The game move under consideration
   * \param nPlayer The player whose turn it is.
   * \param vGameMoves The vector to add valid moves to
   */
 
-//void ChessGame::GeneratePawnMoves(GameMove &cGameMove, int nPlayer, std::vector<GameMove> &vGameMoves, bool bTestForCheck) const
 void ChessGame::GeneratePawnMoves(GameMove cGameMove, int nPlayer, std::vector<GameMove> &vGameMoves) const
 {
     int nX = cGameMove.FromX();
@@ -236,13 +257,12 @@ void ChessGame::GeneratePawnMoves(GameMove cGameMove, int nPlayer, std::vector<G
   *
   * Review and collect all valid moves for a Rook, Queen, or King
   *
-  * \param nX The X-Coordinate of the Rook, Queen, or King
-  * \param nY The Y-Coordinate of the Rook, Queen, or King
+  * \param cGameMove The game move under consideration
   * \param nPlayer The player whose turn it is.
   * \param vGameMoves The vector to add valid moves to
+  * \param bUnlimitedMoves Whether to to limit moves to one square (used for the King)
   */
 
-//void ChessGame::GenerateRookMoves(GameMove &cGameMove, int nPlayer, std::vector<GameMove> &vGameMoves, bool bUnlimitedMoves, bool bTestForCheck) const
 void ChessGame::GenerateRookMoves(GameMove cGameMove, int nPlayer, std::vector<GameMove> &vGameMoves, bool bUnlimitedMoves) const
 {
     int nX = cGameMove.FromX();
@@ -316,13 +336,12 @@ void ChessGame::GenerateRookMoves(GameMove cGameMove, int nPlayer, std::vector<G
   *
   * Review and collect all valid moves for a Bishop, Queen, or a King
   *
-  * \param nX The X-Coordinate of the Bishop, Queen, or King
-  * \param nY The Y-Coordinate of the Bishop, Queen, or King
+  * \param cGameMove The game move under consideration
   * \param nPlayer The player whose turn it is.
   * \param vGameMoves The vector to add valid moves to
+  * \param bUnlimitedMoves Whether to to limit moves to one square (used for the King)
   */
 
-//void ChessGame::GenerateBishopMoves(GameMove &cGameMove, int nPlayer, std::vector<GameMove> &vGameMoves, bool bUnlimitedMoves, bool bTestForCheck) const
 void ChessGame::GenerateBishopMoves(GameMove cGameMove, int nPlayer, std::vector<GameMove> &vGameMoves, bool bUnlimitedMoves) const
 {
     int nX = cGameMove.FromX();
@@ -412,13 +431,11 @@ void ChessGame::GenerateBishopMoves(GameMove cGameMove, int nPlayer, std::vector
   *
   * Review and collect all valid moves for a Queen
   *
-  * \param nX The X-Coordinate of the Queen
-  * \param nY The Y-Coordinate of the Queen
+  * \param cGameMove The game move under consideration
   * \param nPlayer The player whose turn it is.
   * \param vGameMoves The vector to add valid moves to
   */
 
-//void ChessGame::GenerateQueenMoves(GameMove &cGameMove, int nPlayer, std::vector<GameMove> &vGameMoves, bool bTestForCheck) const
 void ChessGame::GenerateQueenMoves(GameMove cGameMove, int nPlayer, std::vector<GameMove> &vGameMoves) const
 {
     GenerateRookMoves(cGameMove, nPlayer, vGameMoves, true);
@@ -430,13 +447,11 @@ void ChessGame::GenerateQueenMoves(GameMove cGameMove, int nPlayer, std::vector<
   *
   * Review and collect all valid moves for a King
   *
-  * \param nX The X-Coordinate of the King
-  * \param nY The Y-Coordinate of the King
+  * \param cGameMove The game move under consideration
   * \param nPlayer The player whose turn it is.
   * \param vGameMoves The vector to add valid moves to
   */
 
-//void ChessGame::GenerateKingMoves(int nKX, int nKY, int nPlayer, std::vector<GameMove> &vGameMoves, bool bTestForCheck) const
 void ChessGame::GenerateKingMoves(GameMove cGameMove, int nPlayer, std::vector<GameMove> &vGameMoves) const
 {
     GenerateRookMoves(cGameMove, nPlayer, vGameMoves, false);
@@ -447,9 +462,18 @@ void ChessGame::GenerateKingMoves(GameMove cGameMove, int nPlayer, std::vector<G
     // TODO: Evaluate moves for stalemate
 }
 
-//void ChessGame::GenerateCastleMoves(int nKX, int nKY, int nPlayer, std::vector<GameMove> &vGameMoves, bool bTestForCheck) const
+/**
+  * Generate castle moves.
+  *
+  * \param cGameMove The game move under consideration
+  * \param nPlayer The player whose turn it is.
+  * \param vGameMoves The vector to add valid moves to
+  */
+
 void ChessGame::GenerateCastleMoves(GameMove cGameMove, int nPlayer, std::vector<GameMove> &vGameMoves) const
 {
+    // TODO: Document this method
+
     int nKX = cGameMove.FromX();
     int nKY = cGameMove.FromY();
 
@@ -516,8 +540,19 @@ void ChessGame::GenerateCastleMoves(GameMove cGameMove, int nPlayer, std::vector
     }
 }
 
+
+/**
+  * Generic method to test and add linear moves to the game moves vector.
+  *
+  * \param cGameMove The game move under consideration
+  * \param nPlayer The player whose turn it is.
+  * \param vGameMoves The vector to add valid moves to
+  */
+
 bool ChessGame::GenerateLinearMove(GameMove cGameMove, int nPlayer, std::vector<GameMove> &vGameMoves) const
 {
+    // TODO: Document this method
+
     int nToX = cGameMove.ToX();
     int nToY = cGameMove.ToY();
 
@@ -534,7 +569,6 @@ bool ChessGame::GenerateLinearMove(GameMove cGameMove, int nPlayer, std::vector<
     else //if (cBoard.PositionOccupiedByPlayer(nToX, nToY, 1 - nPlayer + 2))
     {
         TestForCheck(nPlayer, cGameMove, vGameMoves);
-
         return false;
     }
 }
@@ -544,8 +578,7 @@ bool ChessGame::GenerateLinearMove(GameMove cGameMove, int nPlayer, std::vector<
   *
   * Review and collect all valid moves for a Knight
   *
-  * \param nX The X-Coordinate of the Knight
-  * \param nY The Y-Coordinate of the Knight
+  * \param cGameMove The game move under consideration
   * \param nPlayer The player whose turn it is.
   * \param vGameMoves The vector to add valid moves to
   */
@@ -596,6 +629,16 @@ void ChessGame::GenerateKnightMoves(GameMove cGameMove, int nPlayer, std::vector
     GenerateKnightMove(cGameMove, nPlayer, vGameMoves);
 }
 
+/**
+  * Generate a move for a Knight.
+  *
+  * RTest a specific move for the knight.
+  *
+  * \param cGameMove The game move under consideration
+  * \param nPlayer The player whose turn it is.
+  * \param vGameMoves The vector to add valid moves to
+  */
+
 void ChessGame::GenerateKnightMove(GameMove cGameMove, int nPlayer, std::vector<GameMove> &vGameMoves) const
 {
     int nToX = cGameMove.ToX();
@@ -640,6 +683,9 @@ bool ChessGame::ApplyMove(int nPlayer, GameMove &cGameMove)
     }
 
     // Ensure we are on the board
+    if (!cBoard.ValidLocation(cGameMove.FromX(), cGameMove.FromY()))
+        return false;
+
     if (!cBoard.ValidLocation(cGameMove.ToX(), cGameMove.ToY()))
         return false;
 
@@ -809,14 +855,19 @@ std::vector<GameMove> ChessGame::GenerateMovesForPiece(int nPlayer, const GameMo
 
         if (cToken == m_kcPawnToken)
             GeneratePawnMoves(cGameMove, nPlayer, vGameMoves);
+
         if (cToken == m_kcRookToken)
             GenerateRookMoves(cGameMove, nPlayer, vGameMoves);
+
         if (cToken == m_kcKnightToken)
             GenerateKnightMoves(cGameMove, nPlayer, vGameMoves);
+
         if (cToken == m_kcBishopToken)
             GenerateBishopMoves(cGameMove, nPlayer, vGameMoves);
+
         if (cToken == m_kcQueenToken)
             GenerateQueenMoves(cGameMove, nPlayer, vGameMoves);
+
         if (cToken == m_kcKingToken)
             GenerateKingMoves(cGameMove, nPlayer, vGameMoves);
     }
@@ -831,8 +882,8 @@ std::vector<GameMove> ChessGame::GenerateMovesForPiece(int nPlayer, const GameMo
   * board moving left to right and up each row.  If the peice is found, update
   * the passed coordinates with the location and return true.
   *
-  * \param nX      The X-Coordinate location to being the search
-  * \param nY      The Y-Coordinate location to being the search
+  * \param nX      The X-Coordinate location to begin the search
+  * \param nY      The Y-Coordinate location to begin the search
   * \param nPlayer The player to search for
   * \param cToken  The piece token to search for
   *
@@ -856,6 +907,16 @@ bool ChessGame::FindPiece(int &nX, int &nY, int nPlayer, char cToken) const
 
     return false;
 }
+
+/**
+  * Evaluate whether the King is in check.
+  *
+  * Evaluate whether any opposing piece has the King in check.
+  *
+  * \param nPlayer The player to search for
+  *
+  * \return True if King is in check, false otherwise.
+  */
 
 bool ChessGame::KingInCheck(int nPlayer) const
 {
@@ -884,6 +945,18 @@ bool ChessGame::KingInCheck(int nPlayer) const
 
     return false;
 }
+
+/**
+  * Evaluate whether an opposing piece is attacking the King.
+  *
+  * \param nKX the X-Coordinate of the King
+  * \param nKY The Y-Coordinate of the King
+  * \param nPlayer The player to search for
+  * \param nX The X-Coordinate of the opposing piece
+  * \param nX The Y-Coordinate of the opposing piece
+  *
+  * \return True if Kthe opposing piece is attacking the King, false otherwise.
+  */
 
 bool ChessGame::AttackingTheKing(int nKX, int nKY, int nPlayer, int nX, int nY) const
 {
@@ -948,6 +1021,16 @@ int ChessGame::EvaluateGameState(int nPlayer)
 
     return 0;
 }
+
+/**
+  * Check to see if a player has won the game.
+  *
+  * For a each player, evaluate the board for a ... TODO
+  *
+  * \param nPlayer The player
+  *
+  * \return True, if any player has won the game.  False otherwise.
+  */
 
 bool ChessGame::GameEnded(int nPlayer)
 {
