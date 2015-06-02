@@ -544,31 +544,58 @@ void ChessGame::GenerateCastleMoves(GameMove cGameMove, int nPlayer, std::vector
 /**
   * Generic method to test and add linear moves to the game moves vector.
   *
+  * Evaluates a move,  If legal before considering adjacent Kings or checks, it
+  * returns true.  True means continue checking for valid linear moves. It calls
+  * TestForCheck() to add the move to the vector of moves.
+  *
   * \param cGameMove The game move under consideration
   * \param nPlayer The player whose turn it is.
-  * \param vGameMoves The vector to add valid moves to
+  * \param vGameMoves The vector to add valid moves to\
+  *
+  * \return True if game move is valid before considering adjacent kings or a check.  False otherwise.
   */
 
 bool ChessGame::GenerateLinearMove(GameMove cGameMove, int nPlayer, std::vector<GameMove> &vGameMoves) const
 {
-    // TODO: Document this method
-
     int nToX = cGameMove.ToX();
     int nToY = cGameMove.ToY();
 
+    //
     // Move
+    //
+
+    // If To position is not occupied
     if (!cBoard.PositionOccupied(nToX, nToY))
     {
+        // If this move results in adjacent Kings, return true, but do not add it to the vector of moves
+        if (TestForAdjacentKings(cGameMove, nPlayer))
+            return true;
+
+        // Procedure tests for a King check before adding the move to the vector
         TestForCheck(nPlayer, cGameMove, vGameMoves);
+
+        // Return true because the move was valid before considering adjacent Kings or checks
         return true;
     }
     else if (cBoard.PositionOccupiedByPlayer(nToX, nToY, nPlayer))
+    {
+        // Return false because the move cannot be made
         return false;
+    }
 
+    //
     // Capture
+    //
     else //if (cBoard.PositionOccupiedByPlayer(nToX, nToY, 1 - nPlayer + 2))
     {
+        // If this move results in adjacent Kings, return true, but do not add it to the vector of moves
+        if (TestForAdjacentKings(cGameMove, nPlayer))
+            return false;
+
+        // Procedure tests for a King check before adding the move to the vector
         TestForCheck(nPlayer, cGameMove, vGameMoves);
+
+        // Return false because no more linear moves may be made and evaluated
         return false;
     }
 }
@@ -904,6 +931,77 @@ bool ChessGame::FindPiece(int &nX, int &nY, int nPlayer, char cToken) const
             }
         }
     }
+
+    return false;
+}
+
+/**
+  * Evaluate move to see if two Kings are adjacent.
+  *
+  * Check that the moved piece is a King.  If so, rotate around the To
+  * coordinates to ensure that the opposing King is not adjacent.
+  *
+  * \param cGameMove The game move
+  * \param nPlayer The player to search for
+  *
+  * \return True if Kings are adjacent, false otherwise.
+  */
+
+bool ChessGame::TestForAdjacentKings(const GameMove &cGameMove, int nPlayer) const
+{
+    // Grab piece on From coordinates.  If not a King, return false;
+    GamePiece cPiece = cBoard.Piece(cGameMove.FromX(), cGameMove.FromY());
+    if (cPiece.Token() != m_kcKingToken)
+        return false;
+
+    // Find the opposing King
+    int nKX  {0};
+    int nKY  {0};
+
+    if (!FindPiece(nKX, nKY, 1 - nPlayer + 2, m_kcKingToken))
+    {
+        std::string sErrorMessage  = "Could not find King for Player " + std::to_string(nPlayer);
+        std::cerr << sErrorMessage << std::endl;
+        std::cout << "Exiting" << std::endl;
+        throw GameAIException("Could not find King ");
+    }
+
+
+    // Rotate around the game move To coordinates looking for the opposing King
+    int nToX = cGameMove.ToX();
+    int nToY = cGameMove.ToY();
+
+    // North
+    if ((nToX == nKX) && (nToY + 1 == nKY))
+        return true;
+
+    // North East
+    if ((nToX + 1 == nKX) && (nToY + 1 == nKY))
+        return true;
+
+    // East
+    if ((nToX + 1 == nKX) && (nToY == nKY))
+        return true;
+
+    // South East
+    if ((nToX + 1 == nKX) && (nToY - 1 == nKY))
+        return true;
+
+    // South
+    if ((nToX == nKX) && (nToY - 1 == nKY))
+        return true;
+
+    // South West
+    if ((nToX - 1 == nKX) && (nToY - 1 == nKY))
+        return true;
+
+    // West
+    if ((nToX - 1 == nKX) && (nToY == nKY))
+        return true;
+
+    // North West
+    if ((nToX - 1 == nKX) && (nToY + 1 == nKY))
+        return true;
 
     return false;
 }
