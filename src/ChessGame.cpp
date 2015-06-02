@@ -458,7 +458,6 @@ void ChessGame::GenerateKingMoves(GameMove cGameMove, int nPlayer, std::vector<G
     GenerateBishopMoves(cGameMove, nPlayer, vGameMoves, false);
     GenerateCastleMoves(cGameMove, nPlayer, vGameMoves);
 
-    // TODO: King cannot be adjacent to opponent King
     // TODO: Evaluate moves for stalemate
 }
 
@@ -472,31 +471,49 @@ void ChessGame::GenerateKingMoves(GameMove cGameMove, int nPlayer, std::vector<G
 
 void ChessGame::GenerateCastleMoves(GameMove cGameMove, int nPlayer, std::vector<GameMove> &vGameMoves) const
 {
-    // TODO: Document this method
-
+    // King From coordinates
     int nKX = cGameMove.FromX();
     int nKY = cGameMove.FromY();
 
-    // TODO: Cannot castle if in check
-    // TODO: Cannot castle if movement places King in check
+    // Used to test for  check on the intermediate castle move
+    std::vector<GameMove> vIntermediateCastleMove {};
 
+    // If castling is allowed, continue
     if (m_abCastlingAllowed[nPlayer - 1])
     {
+        // Cannot castle if the King is in check
+        if (KingInCheck(nPlayer))
+            return;
+
+        // Used to locate the Rook(s)
         int nRX    {0};
         int nRY    {0};
+
+        // Ending King location on a castle move
         int nNewKX {0};
+        // Intermediate King location on a castle move
+        int nIntermediateKX {0};
+
         bool bCastleValid {false};
 
+        // Find all Rooks
         while (FindPiece(nRX, nRY, nPlayer, m_kcRookToken))
         {
             GamePiece cRook = cBoard.Piece(nRX, nRY);
+            // If Rook has not moved, continue
             if (!cRook.HasMoved())
             {
+                // Assume a castle is valid
                 bCastleValid = true;
 
+                // If the Rook is to the west of the King ...
                 if (nRX < nKX)
                 {
+                    // New end location for the King
                     nNewKX = nKX - 2;
+                    // Intermediate location for the King
+                    nIntermediateKX= nKX - 1;
+                    // Ensure it is clear between Rook and the King
                     for (int xxx = nRX + 1; xxx != nKX; ++xxx)
                     {
                         if (cBoard.PositionOccupied(xxx, nRY))
@@ -506,9 +523,13 @@ void ChessGame::GenerateCastleMoves(GameMove cGameMove, int nPlayer, std::vector
                         }
                     }
                 }
-                else
+                else // The Rook is to the East of the King
                 {
+                    // New end location for the King
                     nNewKX = nKX + 2;
+                    // Intermediate location for the King
+                    nIntermediateKX = nKX + 1;
+                    // Ensure it is clear between Rook and the King
                     for (int xxx = nRX - 1; xxx != nKX; --xxx)
                     {
                         if (cBoard.PositionOccupied(xxx, nRY))
@@ -519,14 +540,34 @@ void ChessGame::GenerateCastleMoves(GameMove cGameMove, int nPlayer, std::vector
                     }
                 }
 
+                // If castle is still valid after previous tests, continue
                 if (bCastleValid)
                 {
-                    cGameMove.SetToX(nNewKX);
+                    // Check that the intermediate castling move does not move
+                    // the King adjacent to the opposing King
+                    cGameMove.SetToX(nIntermediateKX);
                     cGameMove.SetToY(nKY);
-                    TestForCheck(nPlayer, cGameMove, vGameMoves);
+                    if (!TestForAdjacentKings(cGameMove, nPlayer))
+                    {
+                        // Ensure the King is not in check on the intermediate castling move
+                        TestForCheck(nPlayer, cGameMove, vIntermediateCastleMove);
+                        if (!vIntermediateCastleMove.empty())
+                        {
+                            // Check that the end castling move does not move
+                            // the King adjacent to the opposing King
+                            cGameMove.SetToX(nNewKX);
+                            if (!TestForAdjacentKings(cGameMove, nPlayer))
+                            {
+                                 // Ensure the King is not in check on the end castling move.
+                                 // This method will add  the castle move as valid.
+                                TestForCheck(nPlayer, cGameMove, vGameMoves);
+                            }
+                        }
+                    }
                 }
             }
 
+            // Update coordinates to find another Rook
             if (nRX < m_knX - 1)
             {
                 ++nRX;
@@ -536,8 +577,8 @@ void ChessGame::GenerateCastleMoves(GameMove cGameMove, int nPlayer, std::vector
                 nRX = 0;
                 ++nRY;
             }
-        }
-    }
+        } // end of while
+    } // end of if castling is allowed
 }
 
 
@@ -936,9 +977,9 @@ bool ChessGame::FindPiece(int &nX, int &nY, int nPlayer, char cToken) const
 }
 
 /**
-  * Evaluate move to see if two Kings are adjacent.
+  * Evaluate move to see if the Kings are adjacent.
   *
-  * Check that the moved piece is a King.  If so, rotate around the To
+  * Check whether the to be moved piece is a King.  If so, rotate around the To
   * coordinates to ensure that the opposing King is not adjacent.
   *
   * \param cGameMove The game move
@@ -965,7 +1006,6 @@ bool ChessGame::TestForAdjacentKings(const GameMove &cGameMove, int nPlayer) con
         std::cout << "Exiting" << std::endl;
         throw GameAIException("Could not find King ");
     }
-
 
     // Rotate around the game move To coordinates looking for the opposing King
     int nToX = cGameMove.ToX();
