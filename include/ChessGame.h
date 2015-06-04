@@ -78,7 +78,7 @@ class ChessGame : public BoardGame
         bool FindPiece(int &nX, int &nY, int nPlayer, char cToken) const;
 
         bool TestForAdjacentKings(const GameMove &cGameMove, int nPlayer) const;
-        void TestForCheck(int nPlayer, GameMove &cGameMove, std::vector<GameMove> &vGameMoves) const;
+        void TestForCheck(int nPlayer, GameMove cGameMove, std::vector<GameMove> &vGameMoves) const;
         bool KingInCheck(int nPlayer) const;
         bool AttackingTheKing(int nKX, int nKY, int nPlayer, int nX, int nY) const;
 

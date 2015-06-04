@@ -102,21 +102,33 @@ GameMove ChessGame::GenerateMove(std::string sMove) const
   * \param vGameMoves The vector of game moves
   */
 
-void ChessGame::TestForCheck(int nPlayer, GameMove &cGameMove, std::vector<GameMove> &vGameMoves) const
+void ChessGame::TestForCheck(int nPlayer, GameMove cGameMove, std::vector<GameMove> &vGameMoves) const
 {
+    // If theis is a test move, add it to the vector.
+    // We are not looking ahead more than one move.
     if (cGameMove.TestMove())
     {
         vGameMoves.push_back(cGameMove);
     }
-    else
+    else // not a test move
     {
+        // Set as test move
         cGameMove.SetTestMove(true);
+        // Clone the game
         std::unique_ptr<Game> pcGameClone = Clone();
+        // Apply the move to cloneed game.  If a valid move, set
+        // test move to false and add the move to the vector.
         if (pcGameClone->ApplyMove(nPlayer, cGameMove))
         {
             cGameMove.SetTestMove(false);
             vGameMoves.push_back(cGameMove);
         }
+        /*
+        else // Otherwise set the test move to false
+        {
+            cGameMove.SetTestMove(false);
+        }
+        */
     }
 }
 
@@ -339,7 +351,7 @@ void ChessGame::GenerateRookMoves(GameMove cGameMove, int nPlayer, std::vector<G
   * \param cGameMove The game move under consideration
   * \param nPlayer The player whose turn it is.
   * \param vGameMoves The vector to add valid moves to
-  * \param bUnlimitedMoves Whether to to limit moves to one square (used for the King)
+  * \param bUnlimitedMoves Whether to to limit moves to one square (use d for the King)
   */
 
 void ChessGame::GenerateBishopMoves(GameMove cGameMove, int nPlayer, std::vector<GameMove> &vGameMoves, bool bUnlimitedMoves) const
@@ -471,7 +483,7 @@ void ChessGame::GenerateKingMoves(GameMove cGameMove, int nPlayer, std::vector<G
 
 void ChessGame::GenerateCastleMoves(GameMove cGameMove, int nPlayer, std::vector<GameMove> &vGameMoves) const
 {
-    // King From coordinates
+    // King's From coordinates
     int nKX = cGameMove.FromX();
     int nKY = cGameMove.FromY();
 
@@ -1004,7 +1016,7 @@ bool ChessGame::TestForAdjacentKings(const GameMove &cGameMove, int nPlayer) con
         std::string sErrorMessage  = "Could not find King for Player " + std::to_string(nPlayer);
         std::cerr << sErrorMessage << std::endl;
         std::cout << "Exiting" << std::endl;
-        throw GameAIException("Could not find King ");
+        throw GameAIException(sErrorMessage);
     }
 
     // Rotate around the game move To coordinates looking for the opposing King
