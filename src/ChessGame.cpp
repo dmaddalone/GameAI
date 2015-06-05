@@ -481,6 +481,8 @@ void ChessGame::GenerateKingMoves(GameMove cGameMove, int nPlayer, std::vector<G
   * \param vGameMoves The vector to add valid moves to
   */
 
+//TODO: BROKEN
+
 void ChessGame::GenerateCastleMoves(GameMove cGameMove, int nPlayer, std::vector<GameMove> &vGameMoves) const
 {
     // King's From coordinates
@@ -524,7 +526,7 @@ void ChessGame::GenerateCastleMoves(GameMove cGameMove, int nPlayer, std::vector
                     // New end location for the King
                     nNewKX = nKX - 2;
                     // Intermediate location for the King
-                    nIntermediateKX= nKX - 1;
+                    nIntermediateKX = nKX - 1;
                     // Ensure it is clear between Rook and the King
                     for (int xxx = nRX + 1; xxx != nKX; ++xxx)
                     {
@@ -559,20 +561,44 @@ void ChessGame::GenerateCastleMoves(GameMove cGameMove, int nPlayer, std::vector
                     // the King adjacent to the opposing King
                     cGameMove.SetToX(nIntermediateKX);
                     cGameMove.SetToY(nKY);
+
+                    // Log the castle move evaluation
+                    std::string sMessage =  "Checking castle move " + cGameMove.AnnounceFromMove() + cGameMove.AnnounceToMove();
+                    if (cGameMove.TestMove())
+                        sMessage += " (test move)";
+                    m_cLogger.LogInfo(sMessage,3);
+
                     if (!TestForAdjacentKings(cGameMove, nPlayer))
                     {
+                        // Log the castle move evaluation
+                        std::string sMessage =  "Castle move " + cGameMove.AnnounceFromMove() + cGameMove.AnnounceToMove() + " passed test for adjacent Kings";
+                        if (cGameMove.TestMove())
+                            sMessage += " (test move)";
+                        m_cLogger.LogInfo(sMessage,3);
+
                         // Ensure the King is not in check on the intermediate castling move
                         TestForCheck(nPlayer, cGameMove, vIntermediateCastleMove);
                         if (!vIntermediateCastleMove.empty())
                         {
+                            // Log the castle move evaluation
+                            std::string sMessage =  "Castle move " + cGameMove.AnnounceFromMove() + cGameMove.AnnounceToMove() + " passed test check";
+                            if (cGameMove.TestMove())
+                                sMessage += " (test move)";
+                            m_cLogger.LogInfo(sMessage,3);
+
                             // Check that the end castling move does not move
                             // the King adjacent to the opposing King
                             cGameMove.SetToX(nNewKX);
                             if (!TestForAdjacentKings(cGameMove, nPlayer))
                             {
+                                // Log the castle move evaluation
+                                std::string sMessage =  "Castle move " + cGameMove.AnnounceFromMove() + cGameMove.AnnounceToMove() + " passed test for adjacent Kings";
+                                if (cGameMove.TestMove())
+                                    sMessage += " (test move)";
+                                m_cLogger.LogInfo(sMessage,3);
                                  // Ensure the King is not in check on the end castling move.
                                  // This method will add  the castle move as valid.
-                                TestForCheck(nPlayer, cGameMove, vGameMoves);
+                                TestForCheck(nPlayer, cGameMove, vGameMoves); // TODO: BROKEN
                             }
                         }
                     }

@@ -27,7 +27,7 @@
   * \return A string time stamp
   */
 
-std::string Logger::TimeStamp()
+std::string Logger::TimeStamp() const
 {
     std::string sTimeStamp {};
     int         nBufLen    {25};
@@ -54,7 +54,7 @@ std::string Logger::TimeStamp()
   * \param nLevel The logging level
   */
 
-void Logger::Log(const std::string sTag, const std::string sMessage, int nLevel)
+void Logger::Log(const std::string sTag, const std::string sMessage, int nLevel) const
 {
     // Generate a time stamp
     std::string sLog(TimeStamp());
@@ -85,7 +85,7 @@ void Logger::Log(const std::string sTag, const std::string sMessage, int nLevel)
   * \param nLevel The logging level, defaulted to zero
   */
 
-void Logger::LogInfo(const std::string sMessage, int nLevel=0)
+void Logger::LogInfo(const std::string sMessage, int nLevel=0) const
 {
     if (m_nLevel >= nLevel)
         Log("INFO:", sMessage, nLevel);
