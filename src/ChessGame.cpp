@@ -589,6 +589,13 @@ void ChessGame::GenerateCastleMoves(GameMove cGameMove, int nPlayer, std::vector
                             // Check that the end castling move does not move
                             // the King adjacent to the opposing King
                             cGameMove.SetToX(nNewKX);
+
+                            // Log the castle move evaluation
+                            sMessage =  "Checking castle move " + cGameMove.AnnounceFromMove() + cGameMove.AnnounceToMove();
+                            if (cGameMove.TestMove())
+                                sMessage += " (test move)";
+                            m_cLogger.LogInfo(sMessage,3);
+
                             if (!TestForAdjacentKings(cGameMove, nPlayer))
                             {
                                 // Log the castle move evaluation
