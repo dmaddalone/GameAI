@@ -121,13 +121,13 @@ class Game
         bool WriteMoves(std::string sFileName);
 
         // Return game information
-        GameType Type()      { return m_ecGameType; }
-        int  Player1()       { return m_knPlayer1; }
-        int  Player2()       { return m_knPlayer2; }
-        GameMove LastMove()  { return m_vGameMoves.back(); }
-        int  Winner()        { return m_nWinner; };
-        int  NumberOfMoves() { return m_nNumberOfMoves; }
-        std::string WinBy()  { return m_sWinBy; }
+        GameType Type() const      { return m_ecGameType; }
+        int  Player1() const       { return m_knPlayer1; }
+        int  Player2() const       { return m_knPlayer2; }
+        GameMove LastMove() const  { if (!m_vGameMoves.empty()) return m_vGameMoves.back(); else { GameMove cGameMove; cGameMove.SetNoMove(true); return cGameMove; } }
+        int  Winner() const        { return m_nWinner; };
+        int  NumberOfMoves() const { return m_nNumberOfMoves; }
+        std::string WinBy() const  { return m_sWinBy; }
 
     protected:
         // Player numbers, defined in the Constructor

@@ -103,6 +103,7 @@ class ChessGame : public BoardGame
 
         bool m_abCastlingAllowed[2]   { true };
         bool m_bDoublePawnMoveAllowed { true };
+        bool m_bEnPassantAllowed      { true };
 };
 
 #endif // CHESSGAME_H

@@ -54,6 +54,17 @@ std::string ChessGame::Title()
         sMessage += "Not Allowed";
     }
 
+    sMessage += "\nEn Passant Move is ";
+
+    if (m_bEnPassantAllowed)
+    {
+        sMessage += "Allowed";
+    }
+    else
+    {
+        sMessage += "Not Allowed";
+    }
+
     return sMessage;
 }
 
@@ -195,8 +206,8 @@ std::vector<GameMove> ChessGame::GenerateMoves(int nPlayer) const
 
 void ChessGame::GeneratePawnMoves(GameMove cGameMove, int nPlayer, std::vector<GameMove> &vGameMoves) const
 {
-    int nX = cGameMove.FromX();
-    int nY = cGameMove.FromY();
+    const int knX = cGameMove.FromX();
+    const int knY = cGameMove.FromY();
     int nNewY;
     int nIntermediateY;
 
@@ -204,13 +215,13 @@ void ChessGame::GeneratePawnMoves(GameMove cGameMove, int nPlayer, std::vector<G
     // Push
     //
     if (nPlayer == 1)
-        nNewY = nY + 1;
+        nNewY = knY + 1;
     else
-        nNewY = nY - 1;
+        nNewY = knY - 1;
 
-    if (!cBoard.PositionOccupied(nX, nNewY))
+    if (!cBoard.PositionOccupied(knX, nNewY))
     {
-        cGameMove.SetToX(nX);
+        cGameMove.SetToX(knX);
         cGameMove.SetToY(nNewY);
         TestForCheck(nPlayer, cGameMove, vGameMoves);
     }
@@ -218,16 +229,16 @@ void ChessGame::GeneratePawnMoves(GameMove cGameMove, int nPlayer, std::vector<G
     //
     // Capture
     //
-    if (cBoard.PositionOccupiedByPlayer(nX - 1, nNewY, 1 - nPlayer + 2))
+    if (cBoard.PositionOccupiedByPlayer(knX - 1, nNewY, 1 - nPlayer + 2))
     {
-        cGameMove.SetToX(nX - 1);
+        cGameMove.SetToX(knX - 1);
         cGameMove.SetToY(nNewY);
         TestForCheck(nPlayer, cGameMove, vGameMoves);
     }
 
-    if (cBoard.PositionOccupiedByPlayer(nX + 1, nNewY, 1 - nPlayer + 2))
+    if (cBoard.PositionOccupiedByPlayer(knX + 1, nNewY, 1 - nPlayer + 2))
     {
-        cGameMove.SetToX(nX + 1);
+        cGameMove.SetToX(knX + 1);
         cGameMove.SetToY(nNewY);
         TestForCheck(nPlayer, cGameMove, vGameMoves);
     }
@@ -237,30 +248,81 @@ void ChessGame::GeneratePawnMoves(GameMove cGameMove, int nPlayer, std::vector<G
     //
     if (m_bDoublePawnMoveAllowed)
     {
-        GamePiece cPiece = cBoard.Piece(nX, nY);
+        GamePiece cPiece = cBoard.Piece(knX, knY);
         if (!cPiece.HasMoved())
         {
             if (nPlayer == 1)
             {
-                nNewY = nY + 2;
-                nIntermediateY = nY + 1;
+                nNewY = knY + 2;
+                nIntermediateY = knY + 1;
             }
             else
             {
-                nNewY = nY - 2;
-                nIntermediateY = nY - 1;
+                nNewY = knY - 2;
+                nIntermediateY = knY - 1;
             }
 
-            if ((!cBoard.PositionOccupied(nX, nIntermediateY)) && (!cBoard.PositionOccupied(nX, nNewY)))
+            if ((!cBoard.PositionOccupied(knX, nIntermediateY)) && (!cBoard.PositionOccupied(knX, nNewY)))
             {
-                cGameMove.SetToX(nX);
+                cGameMove.SetToX(knX);
                 cGameMove.SetToY(nNewY);
                 TestForCheck(nPlayer, cGameMove, vGameMoves);
             }
         }
     }
 
-    // TODO: En passant
+    //
+    // En passant
+    //
+    if (m_bEnPassantAllowed)
+    {
+        GameMove cLastGameMove = LastMove();
+        // Check to see if there was a move
+        if (!cLastGameMove.NoMove())
+        {
+            // If last move was a Pawn
+            if (cBoard.Token(cLastGameMove.ToX(), cLastGameMove.ToY()) == m_kcPawnToken)
+            {
+                // If the Pawn moved two squares
+                if (abs((cLastGameMove.FromY() - cLastGameMove.ToY())) == 2)
+                {
+                    // If the Pawn's movement passed this player's Pawn
+                    if ((cLastGameMove.ToY() > knY) && (cLastGameMove.FromY() < knY))
+                    {
+                        // If the Pawn's are adjacent
+                        if (knX - cLastGameMove.FromX() == 1)
+                        {
+                            cGameMove.SetToX(cLastGameMove.FromX());
+                            cGameMove.SetToY(cLastGameMove.FromY() - 1);
+                            TestForCheck(nPlayer, cGameMove, vGameMoves);
+                        }
+                        else if (cLastGameMove.FromX() - knX == 1)
+                        {
+                            cGameMove.SetToX(cLastGameMove.FromX());
+                            cGameMove.SetToY(cLastGameMove.FromY() - 1);
+                            TestForCheck(nPlayer, cGameMove, vGameMoves);
+                        }
+                    }
+                    else if ((cLastGameMove.FromY() > knY) && (cLastGameMove.ToY() < knY))
+                    {
+                        // If the Pawn's are adjacent
+                        if (knX - cLastGameMove.FromX() == 1)
+                        {
+                            cGameMove.SetToX(cLastGameMove.FromX());
+                            cGameMove.SetToY(cLastGameMove.FromY() + 1);
+                            TestForCheck(nPlayer, cGameMove, vGameMoves);
+                        }
+                        else if (cLastGameMove.FromX() - knX == 1)
+                        {
+                            cGameMove.SetToX(cLastGameMove.FromX());
+                            cGameMove.SetToY(cLastGameMove.FromY() + 1);
+                            TestForCheck(nPlayer, cGameMove, vGameMoves);
+                        }
+                    }  // If the Pawn's movement passed this player's Pawn
+                } // If the Pawn moved two squares
+            } // If last move was a Pawn
+        } // Check to see if there was a move
+    } //  if (m_bEnPassantAllowed)
 }
 
 /**
@@ -276,15 +338,15 @@ void ChessGame::GeneratePawnMoves(GameMove cGameMove, int nPlayer, std::vector<G
 
 void ChessGame::GenerateRookMoves(GameMove cGameMove, int nPlayer, std::vector<GameMove> &vGameMoves, bool bUnlimitedMoves) const
 {
-    int nX = cGameMove.FromX();
-    int nY = cGameMove.FromY();
+    const int knX = cGameMove.FromX();
+    const int knY = cGameMove.FromY();
     int nNewX;
     int nNewY;
 
     // Evaluate north along file
-    cGameMove.SetToX(nX);
-    nNewY = nY + 1;
-    while (cBoard.ValidLocation(nX, nNewY))
+    cGameMove.SetToX(knX);
+    nNewY = knY + 1;
+    while (cBoard.ValidLocation(knX, nNewY))
     {
         cGameMove.SetToY(nNewY);
         if (GenerateLinearMove(cGameMove, nPlayer, vGameMoves))
@@ -297,9 +359,9 @@ void ChessGame::GenerateRookMoves(GameMove cGameMove, int nPlayer, std::vector<G
     }
 
     // Evaluate south along file
-    cGameMove.SetToX(nX);
-    nNewY = nY - 1;
-    while (cBoard.ValidLocation(nX, nNewY))
+    cGameMove.SetToX(knX);
+    nNewY = knY - 1;
+    while (cBoard.ValidLocation(knX, nNewY))
     {
         cGameMove.SetToY(nNewY);
         if (GenerateLinearMove(cGameMove, nPlayer, vGameMoves))
@@ -312,9 +374,9 @@ void ChessGame::GenerateRookMoves(GameMove cGameMove, int nPlayer, std::vector<G
     }
 
     // Evaluate east along rank
-    cGameMove.SetToY(nY);
-    nNewX = nX - 1;
-    while (cBoard.ValidLocation(nNewX, nY))
+    cGameMove.SetToY(knY);
+    nNewX = knX - 1;
+    while (cBoard.ValidLocation(nNewX, knY))
     {
         cGameMove.SetToX(nNewX);
         if (GenerateLinearMove(cGameMove, nPlayer, vGameMoves))
@@ -327,9 +389,9 @@ void ChessGame::GenerateRookMoves(GameMove cGameMove, int nPlayer, std::vector<G
     }
 
     // Evaluate west along rank
-    cGameMove.SetToY(nY);
-    nNewX = nX + 1;
-    while (cBoard.ValidLocation(nNewX, nY))
+    cGameMove.SetToY(knY);
+    nNewX = knX + 1;
+    while (cBoard.ValidLocation(nNewX, knY))
     {
         cGameMove.SetToX(nNewX);
         if (GenerateLinearMove(cGameMove, nPlayer, vGameMoves))
@@ -355,14 +417,14 @@ void ChessGame::GenerateRookMoves(GameMove cGameMove, int nPlayer, std::vector<G
 
 void ChessGame::GenerateBishopMoves(GameMove cGameMove, int nPlayer, std::vector<GameMove> &vGameMoves, bool bUnlimitedMoves) const
 {
-    int nX = cGameMove.FromX();
-    int nY = cGameMove.FromY();
+    const int knX = cGameMove.FromX();
+    const int knY = cGameMove.FromY();
     int nNewX;
     int nNewY;
 
     // Evaluate north-west
-    nNewX = nX + 1;
-    nNewY = nY + 1;
+    nNewX = knX + 1;
+    nNewY = knY + 1;
     while (cBoard.ValidLocation(nNewX, nNewY))
     {
         cGameMove.SetToX(nNewX);
@@ -380,8 +442,8 @@ void ChessGame::GenerateBishopMoves(GameMove cGameMove, int nPlayer, std::vector
     }
 
     // Evaluate south-west
-    nNewX = nX + 1;
-    nNewY = nY - 1;
+    nNewX = knX + 1;
+    nNewY = knY - 1;
     while (cBoard.ValidLocation(nNewX, nNewY))
     {
         cGameMove.SetToX(nNewX);
@@ -399,8 +461,8 @@ void ChessGame::GenerateBishopMoves(GameMove cGameMove, int nPlayer, std::vector
     }
 
     // Evaluate south-east
-    nNewX = nX - 1;
-    nNewY = nY - 1;
+    nNewX = knX - 1;
+    nNewY = knY - 1;
     while (cBoard.ValidLocation(nNewX, nNewY))
     {
         cGameMove.SetToX(nNewX);
@@ -418,8 +480,8 @@ void ChessGame::GenerateBishopMoves(GameMove cGameMove, int nPlayer, std::vector
     }
 
     // Evaluate north-east
-    nNewX = nX - 1;
-    nNewY = nY + 1;
+    nNewX = knX - 1;
+    nNewY = knY + 1;
     while (cBoard.ValidLocation(nNewX, nNewY))
     {
         cGameMove.SetToX(nNewX);
@@ -481,8 +543,8 @@ void ChessGame::GenerateKingMoves(GameMove cGameMove, int nPlayer, std::vector<G
 void ChessGame::GenerateCastleMoves(GameMove cGameMove, int nPlayer, std::vector<GameMove> &vGameMoves) const
 {
     // King's From coordinates
-    int nKX = cGameMove.FromX();
-    int nKY = cGameMove.FromY();
+    const int knKX = cGameMove.FromX();
+    const int knKY = cGameMove.FromY();
 
     // Used to test for  check on the intermediate castle move
     std::vector<GameMove> vIntermediateCastleMove {};
@@ -516,14 +578,14 @@ void ChessGame::GenerateCastleMoves(GameMove cGameMove, int nPlayer, std::vector
                 bCastleValid = true;
 
                 // If the Rook is to the west of the King ...
-                if (nRX < nKX)
+                if (nRX < knKX)
                 {
                     // New end location for the King
-                    nNewKX = nKX - 2;
+                    nNewKX = knKX - 2;
                     // Intermediate location for the King
-                    nIntermediateKX = nKX - 1;
+                    nIntermediateKX = knKX - 1;
                     // Ensure it is clear between Rook and the King
-                    for (int xxx = nRX + 1; xxx != nKX; ++xxx)
+                    for (int xxx = nRX + 1; xxx != knKX; ++xxx)
                     {
                         if (cBoard.PositionOccupied(xxx, nRY))
                         {
@@ -535,11 +597,11 @@ void ChessGame::GenerateCastleMoves(GameMove cGameMove, int nPlayer, std::vector
                 else // The Rook is to the East of the King
                 {
                     // New end location for the King
-                    nNewKX = nKX + 2;
+                    nNewKX = knKX + 2;
                     // Intermediate location for the King
-                    nIntermediateKX = nKX + 1;
+                    nIntermediateKX = knKX + 1;
                     // Ensure it is clear between Rook and the King
-                    for (int xxx = nRX - 1; xxx != nKX; --xxx)
+                    for (int xxx = nRX - 1; xxx != knKX; --xxx)
                     {
                         if (cBoard.PositionOccupied(xxx, nRY))
                         {
@@ -555,7 +617,7 @@ void ChessGame::GenerateCastleMoves(GameMove cGameMove, int nPlayer, std::vector
                     // Check that the intermediate castling move does not move
                     // the King adjacent to the opposing King
                     cGameMove.SetToX(nIntermediateKX);
-                    cGameMove.SetToY(nKY);
+                    cGameMove.SetToY(knKY);
 
                     if (!TestForAdjacentKings(cGameMove, nPlayer))
                     {
@@ -610,15 +672,15 @@ void ChessGame::GenerateCastleMoves(GameMove cGameMove, int nPlayer, std::vector
 
 bool ChessGame::GenerateLinearMove(GameMove cGameMove, int nPlayer, std::vector<GameMove> &vGameMoves) const
 {
-    int nToX = cGameMove.ToX();
-    int nToY = cGameMove.ToY();
+    const int knToX = cGameMove.ToX();
+    const int knToY = cGameMove.ToY();
 
     //
     // Move
     //
 
     // If To position is not occupied
-    if (!cBoard.PositionOccupied(nToX, nToY))
+    if (!cBoard.PositionOccupied(knToX, knToY))
     {
         // If this move results in adjacent Kings, return true, but do not add it to the vector of moves
         if (TestForAdjacentKings(cGameMove, nPlayer))
@@ -630,7 +692,7 @@ bool ChessGame::GenerateLinearMove(GameMove cGameMove, int nPlayer, std::vector<
         // Return true because the move was valid before considering adjacent Kings or checks
         return true;
     }
-    else if (cBoard.PositionOccupiedByPlayer(nToX, nToY, nPlayer))
+    else if (cBoard.PositionOccupiedByPlayer(knToX, knToY, nPlayer))
     {
         // Return false because the move cannot be made
         return false;
@@ -665,47 +727,47 @@ bool ChessGame::GenerateLinearMove(GameMove cGameMove, int nPlayer, std::vector<
 
 void ChessGame::GenerateKnightMoves(GameMove cGameMove, int nPlayer, std::vector<GameMove> &vGameMoves) const
 {
-    int nX = cGameMove.FromX();
-    int nY = cGameMove.FromY();
+    const int knX = cGameMove.FromX();
+    const int knY = cGameMove.FromY();
 
     // Two up, one right
-    cGameMove.SetToX(nX + 2);
-    cGameMove.SetToY(nY + 1);
+    cGameMove.SetToX(knX + 2);
+    cGameMove.SetToY(knY + 1);
     GenerateKnightMove(cGameMove, nPlayer, vGameMoves);
 
     // One up, two right
-    cGameMove.SetToX(nX + 1);
-    cGameMove.SetToY(nY + 2);
+    cGameMove.SetToX(knX + 1);
+    cGameMove.SetToY(knY + 2);
     GenerateKnightMove(cGameMove, nPlayer, vGameMoves);
 
     // One down, two right
-    cGameMove.SetToX(nX - 1);
-    cGameMove.SetToY(nY + 2);
+    cGameMove.SetToX(knX - 1);
+    cGameMove.SetToY(knY + 2);
     GenerateKnightMove(cGameMove, nPlayer, vGameMoves);
 
     // Two down, one right
-    cGameMove.SetToX(nX - 2);
-    cGameMove.SetToY(nY + 1);
+    cGameMove.SetToX(knX - 2);
+    cGameMove.SetToY(knY + 1);
     GenerateKnightMove(cGameMove, nPlayer, vGameMoves);
 
     // Two down, one left
-    cGameMove.SetToX(nX - 2);
-    cGameMove.SetToY(nY - 1);
+    cGameMove.SetToX(knX - 2);
+    cGameMove.SetToY(knY - 1);
     GenerateKnightMove(cGameMove, nPlayer, vGameMoves);
 
     // One down, two left
-    cGameMove.SetToX(nX - 1);
-    cGameMove.SetToY(nY - 2);
+    cGameMove.SetToX(knX - 1);
+    cGameMove.SetToY(knY - 2);
     GenerateKnightMove(cGameMove, nPlayer, vGameMoves);
 
     // One up, two left
-    cGameMove.SetToX(nX + 1);
-    cGameMove.SetToY(nY - 2);
+    cGameMove.SetToX(knX + 1);
+    cGameMove.SetToY(knY - 2);
     GenerateKnightMove(cGameMove, nPlayer, vGameMoves);
 
     // Two up, one left
-    cGameMove.SetToX(nX + 2);
-    cGameMove.SetToY(nY - 1);
+    cGameMove.SetToX(knX + 2);
+    cGameMove.SetToY(knY - 1);
     GenerateKnightMove(cGameMove, nPlayer, vGameMoves);
 }
 
@@ -721,12 +783,12 @@ void ChessGame::GenerateKnightMoves(GameMove cGameMove, int nPlayer, std::vector
 
 void ChessGame::GenerateKnightMove(GameMove cGameMove, int nPlayer, std::vector<GameMove> &vGameMoves) const
 {
-    int nToX = cGameMove.ToX();
-    int nToY = cGameMove.ToY();
+    const int knToX = cGameMove.ToX();
+    const int knToY = cGameMove.ToY();
 
-    if (cBoard.ValidLocation(nToX, nToY))
+    if (cBoard.ValidLocation(knToX, knToY))
     {
-        if ((!cBoard.PositionOccupied(nToX, nToY)) || (cBoard.PositionOccupiedByPlayer(nToX, nToY, 1 - nPlayer + 2)))
+        if ((!cBoard.PositionOccupied(knToX, knToY)) || (cBoard.PositionOccupiedByPlayer(knToX, knToY, 1 - nPlayer + 2)))
         {
             TestForCheck(nPlayer, cGameMove, vGameMoves);
         }

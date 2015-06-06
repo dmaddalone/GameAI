@@ -68,15 +68,16 @@ class GamePiece
         // Set game piece
         void Set(char cToken, int nPlayer, int nValue) { m_cToken = cToken; m_nPlayer = nPlayer; m_nValue = nValue; }
         // Clear a game piece
-        void Clear()                       { m_cToken = m_kcNoToken; m_nPlayer = m_knNoValue; m_nValue = m_knNoValue; }
+        void Clear()                       { m_cToken = m_kcNoToken; m_nPlayer = m_knNoValue; m_nValue = m_knNoValue; m_bHasMoved = false; }
 
-        bool HasMoved()                 { return m_bHasMoved; }
-        void SetMoved(bool bMoved=true) { m_bHasMoved = bMoved; }
+        bool HasMoved()                    { return m_bHasMoved; }
+        void SetMoved(bool bMoved=true)    { m_bHasMoved = bMoved; }
 
     private:
         // Constants for clear pieces
         static const char m_kcNoToken {32};
         static const int  m_knNoValue {-1};
+
         // Board representation of a piece, for example 'X' and 'O' for tic-tac-toe
         char m_cToken;
         // Player number

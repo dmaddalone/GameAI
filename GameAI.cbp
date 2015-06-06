@@ -11,13 +11,8 @@
 
 TODO: Make hostname work
 
-TODO: Castling is NOT working
-TODO: Evaluate for check mate - Done?
 TODO: Evaluate for stalemate - Done?
 TODO: Chess evaluation
-TODO: Fix Pawn Promotion - was called on a King Move?
-TODO: Moves are generated/recorded twice?
-TODO: Moves are generated that do not get a King out of check
 
 TODO: Check other TODOs
 
@@ -30,7 +25,7 @@ TODO: Check other TODOs
 				<Option object_output="obj/Debug/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
-				<Option parameters="-1 human  -2 human -g chess-gardner -i chess-moves3.txt" />
+				<Option parameters="-1 human  -2 human -g chess-gardner" />
 				<Compiler>
 					<Add option="-std=c++11" />
 					<Add option="-Wextra" />
