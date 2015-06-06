@@ -76,6 +76,8 @@ class GameBoard
         char Token(int nX, int nY) const { return m_vBoard[nY][nX].Token(); }
         // Return the player for a board location
         char Player(int nX, int nY) const { return m_vBoard[nY][nX].Player(); }
+        // Return the value of the piece
+        int Value(int nX, int nY) const { return m_vBoard[nY][nX].Value();}
 
         // Reverse token colors for players
 #if defined(_WIN32)

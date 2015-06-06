@@ -781,7 +781,7 @@ int Reversi::EvaluateGameState(int nPlayer)
 
     // Evaluate the number of tokens for each player. "Greedy evaluation."
     int nCountEval  = CountEvaluation(nPlayer)  - CountEvaluation(2 - nPlayer + 1);
-    // Evaluate  the value of the occupied positions.
+    // Evaluate the value of the occupied positions.
     int nSquareEval = SquareEvaluation(nPlayer) - SquareEvaluation(2 - nPlayer + 1);
     // Evaluate the number of moves available.
     int nMobilityEval = MobilityEvaluation(nPlayer) - MobilityEvaluation(2 - nPlayer + 1);

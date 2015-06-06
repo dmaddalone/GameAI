@@ -105,7 +105,7 @@ GameMove Minimax::MinimaxMove(int nPlayer, Game &cGame, int nDepth)
         std::unique_ptr<Game> pcGameClone = cGame.Clone();
 
         // Log the current move evaluation
-        sMessage = "MinimaxMove Player=" + std::to_string(nPlayer) + " Evaluate Move=" + cGameMove.AnnounceToMove();
+        sMessage = "MinimaxMove Player=" + std::to_string(nPlayer) + " Evaluate Move=" + cGameMove.AnnounceFromMove() + cGameMove.AnnounceToMove();
         m_cLogger.LogInfo(sMessage,3);
 
         // Apply the move to the game clone
@@ -115,7 +115,7 @@ GameMove Minimax::MinimaxMove(int nPlayer, Game &cGame, int nDepth)
         int nScore = MinMove(1 - nPlayer + 2, *pcGameClone, nDepth - 1, nAlpha, nBeta);
 
         // Log the evaluated moves score
-        sMessage = "MinimaxMove Move=" + cGameMove.AnnounceToMove() + " Score=" + std::to_string(nScore);
+        sMessage = "MinimaxMove Move=" + cGameMove.AnnounceFromMove()+ cGameMove.AnnounceToMove() + " Score=" + std::to_string(nScore);
         m_cLogger.LogInfo(sMessage, 2);
 
         // If the current move's score is equal to the best move's score, ask the game to
@@ -182,7 +182,7 @@ int Minimax::MinMove(int nPlayer, Game &cGame, int nDepth, int nAlpha, int nBeta
         pcGameClone = cGame.Clone();
 
         // Log the current move evaluation
-        sMessage = "MinMove Player=" + std::to_string(nPlayer) + " Evaluate Move= " + cGameMove.AnnounceToMove();
+        sMessage = "MinMove Player=" + std::to_string(nPlayer) + " Evaluate Move= " + cGameMove.AnnounceFromMove() + cGameMove.AnnounceToMove();
         m_cLogger.LogInfo(sMessage,3);
 
         // Apply the move to the game clone
@@ -192,7 +192,7 @@ int Minimax::MinMove(int nPlayer, Game &cGame, int nDepth, int nAlpha, int nBeta
         int nScore = MaxMove(1 - nPlayer + 2, *pcGameClone, nDepth - 1, nAlpha, nBeta);
 
         // Log the evaluated moves score
-        sMessage = "MinMove Depth=" + std::to_string(nDepth) + " Player=" + std::to_string(nPlayer) + " Move=" + cGameMove.AnnounceToMove() + " Score=" + std::to_string(nScore);
+        sMessage = "MinMove Depth=" + std::to_string(nDepth) + " Player=" + std::to_string(nPlayer) + " Move=" + cGameMove.AnnounceFromMove() + cGameMove.AnnounceToMove() + " Score=" + std::to_string(nScore);
         m_cLogger.LogInfo(sMessage,3);
 
         // If the score of the current move is less than or equal to the alpha
@@ -237,7 +237,7 @@ int Minimax::MaxMove(int nPlayer, Game &cGame, int nDepth, int nAlpha, int nBeta
         pcGameClone = cGame.Clone();
 
         // Log the current move evaluation
-        sMessage = "MaxMove Player=" + std::to_string(nPlayer) + " Evaluate Move= " + cGameMove.AnnounceToMove();
+        sMessage = "MaxMove Player=" + std::to_string(nPlayer) + " Evaluate Move= " + cGameMove.AnnounceFromMove() + cGameMove.AnnounceToMove();
         m_cLogger.LogInfo(sMessage,3);
 
         // Apply the move to the game clone
@@ -247,7 +247,7 @@ int Minimax::MaxMove(int nPlayer, Game &cGame, int nDepth, int nAlpha, int nBeta
         int nScore = MinMove(1 - nPlayer + 2, *pcGameClone, nDepth -1, nAlpha, nBeta);
 
         // Log the evaluated moves score
-        sMessage = "MaxMove Depth=" + std::to_string(nDepth) + " Player=" + std::to_string(nPlayer) + " Move=" + cGameMove.AnnounceToMove() + " Score=" + std::to_string(nScore);
+        sMessage = "MaxMove Depth=" + std::to_string(nDepth) + " Player=" + std::to_string(nPlayer) + cGameMove.AnnounceFromMove() + " Move=" + cGameMove.AnnounceToMove() + " Score=" + std::to_string(nScore);
         m_cLogger.LogInfo(sMessage,3);
 
         // If the score of the current move is greater than or equal to the beta

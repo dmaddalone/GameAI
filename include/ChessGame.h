@@ -82,6 +82,9 @@ class ChessGame : public BoardGame
         bool KingInCheck(int nPlayer) const;
         bool AttackingTheKing(int nKX, int nKY, int nPlayer, int nX, int nY) const;
 
+        // Count the value of pieces for nPlayer
+        int  CountEvaluation(int nPlayer) const;
+
         //const std::string sPieceSymbols {"RNBKQ"};
         //const std::string sFiles        {"abcdefgh"};
         //const std::string sRanks        {"12345678"};
@@ -104,6 +107,8 @@ class ChessGame : public BoardGame
         bool m_abCastlingAllowed[2]   { true };
         bool m_bDoublePawnMoveAllowed { true };
         bool m_bEnPassantAllowed      { true };
+
+        bool m_bAutomaticPromoteToQueen { true };
 };
 
 #endif // CHESSGAME_H

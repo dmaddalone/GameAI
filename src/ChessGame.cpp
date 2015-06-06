@@ -65,6 +65,17 @@ std::string ChessGame::Title()
         sMessage += "Not Allowed";
     }
 
+    sMessage += "\nAutomatic Pawn Promotion to Queen: ";
+
+    if (m_bAutomaticPromoteToQueen)
+    {
+        sMessage += "True";
+    }
+    else
+    {
+        sMessage += "False";
+    }
+
     return sMessage;
 }
 
@@ -218,6 +229,9 @@ void ChessGame::GeneratePawnMoves(GameMove cGameMove, int nPlayer, std::vector<G
         nNewY = knY + 1;
     else
         nNewY = knY - 1;
+
+    if (!cBoard.ValidLocation(knX, nNewY))
+        return;
 
     if (!cBoard.PositionOccupied(knX, nNewY))
     {
@@ -872,7 +886,7 @@ bool ChessGame::ApplyMove(int nPlayer, GameMove &cGameMove)
 
     // Perform Pawn Promotion
     cToken = cBoard.Token(cGameMove.ToX(), cGameMove.ToY());
-    if ((cToken == m_kcPawnToken) && (cGameMove.ToY() == m_knY - 1))
+    if ((cToken == m_kcPawnToken) && ((cGameMove.ToY() == m_knY - 1) || (cGameMove.ToY() == 0)))
     {
         bool bGoodToken = false;
         char cPromotion {};
@@ -881,6 +895,13 @@ bool ChessGame::ApplyMove(int nPlayer, GameMove &cGameMove)
 
         while (!bGoodToken)
         {
+            if (m_bAutomaticPromoteToQueen)
+            {
+                cPromotion = m_kcQueenToken;
+            }
+            else
+            {
+
             std::cout << "\nPAWN PROMOTION ("
                 << m_kcRookToken << ", "
                 << m_kcKnightToken << ", "
@@ -889,6 +910,7 @@ bool ChessGame::ApplyMove(int nPlayer, GameMove &cGameMove)
 
             std::cin >> cPromotion;
             cPromotion = toupper(cPromotion);
+            }
 
             switch (cPromotion)
             {
@@ -1241,7 +1263,38 @@ int ChessGame::EvaluateGameState(int nPlayer)
     if (m_nWinner == (1 - nPlayer + 2))
         return INT_MIN;
 
-    return 0;
+    // Evaluate the number of tokens for each player. "Greedy evaluation."
+    int nCountEval = CountEvaluation(nPlayer)  - CountEvaluation(2 - nPlayer + 1);
+
+    //return (nCountEval * 10) + (nSquareEval * 15) + (nMobilityEval * 5);
+    return nCountEval;
+    //return 0;
+}
+
+/**
+  * Count the number of pieces, wieghted by value, for a player.
+  *
+  * \param nPlayer The player whose turn it is.
+  *
+  * \return An integer representing the number of tokens for this player.
+  */
+
+int ChessGame::CountEvaluation(int nPlayer) const
+{
+    int nEval = 0;
+
+    for (int yyy = 0; yyy < m_knY; ++yyy)
+    {
+        for (int xxx = 0; xxx < m_knX; ++xxx)
+        {
+            if (cBoard.PositionOccupiedByPlayer(xxx, yyy, nPlayer))
+            {
+                nEval += cBoard.Value(xxx, yyy);
+            }
+        }
+    }
+
+    return nEval;
 }
 
 /**
