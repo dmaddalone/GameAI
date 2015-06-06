@@ -11,10 +11,13 @@
 
 TODO: Make hostname work
 
-TODO: Evaluate for check mate
-TODO: Evaluate for stalemate
+TODO: Castling is NOT working
+TODO: Evaluate for check mate - Done?
+TODO: Evaluate for stalemate - Done?
 TODO: Chess evaluation
 TODO: Fix Pawn Promotion - was called on a King Move?
+TODO: Moves are generated/recorded twice?
+TODO: Moves are generated that do not get a King out of check
 
 TODO: Check other TODOs
 

@@ -70,8 +70,8 @@ class GamePiece
         // Clear a game piece
         void Clear()                       { m_cToken = m_kcNoToken; m_nPlayer = m_knNoValue; m_nValue = m_knNoValue; }
 
-        bool HasMoved() { return m_bHasMoved; }
-        void SetMoved() { m_bHasMoved = true; }
+        bool HasMoved()                 { return m_bHasMoved; }
+        void SetMoved(bool bMoved=true) { m_bHasMoved = bMoved; }
 
     private:
         // Constants for clear pieces

@@ -112,7 +112,6 @@ void ChessGame::TestForCheck(int nPlayer, GameMove cGameMove, std::vector<GameMo
     }
     else // not a test move
     {
-        vGameMoves.push_back(cGameMove);
         // Set as test move
         cGameMove.SetTestMove(true);
         // Clone the game
@@ -469,8 +468,6 @@ void ChessGame::GenerateKingMoves(GameMove cGameMove, int nPlayer, std::vector<G
     GenerateRookMoves(cGameMove, nPlayer, vGameMoves, false);
     GenerateBishopMoves(cGameMove, nPlayer, vGameMoves, false);
     GenerateCastleMoves(cGameMove, nPlayer, vGameMoves);
-
-    // TODO: Evaluate moves for stalemate
 }
 
 /**
@@ -480,8 +477,6 @@ void ChessGame::GenerateKingMoves(GameMove cGameMove, int nPlayer, std::vector<G
   * \param nPlayer The player whose turn it is.
   * \param vGameMoves The vector to add valid moves to
   */
-
-//TODO: BROKEN
 
 void ChessGame::GenerateCastleMoves(GameMove cGameMove, int nPlayer, std::vector<GameMove> &vGameMoves) const
 {
@@ -577,12 +572,12 @@ void ChessGame::GenerateCastleMoves(GameMove cGameMove, int nPlayer, std::vector
                             {
                                  // Ensure the King is not in check on the end castling move.
                                  // This method will add  the castle move as valid.
-                                TestForCheck(nPlayer, cGameMove, vGameMoves); // TODO: BROKEN
+                                TestForCheck(nPlayer, cGameMove, vGameMoves);
                             }
                         }
                     }
-                }
-            }
+                } // bValidCastle
+            } // !cRook.HasMoved()
 
             // Update coordinates to find another Rook
             if (nRX < m_knX - 1)
@@ -793,6 +788,12 @@ bool ChessGame::ApplyMove(int nPlayer, GameMove &cGameMove)
         }
     }
 
+    // If King is in check after the move, the move is not valid
+    if (KingInCheck(nPlayer))
+    {
+        bValidMove = false;
+    }
+
     // If a valid move, capture it for later playback
     if (bValidMove)
     {
@@ -860,7 +861,7 @@ bool ChessGame::ApplyMove(int nPlayer, GameMove &cGameMove)
         }
     }
 
-    // Perform Castling Move
+    // Perform Second Half of Castling Move
     if (m_abCastlingAllowed[nPlayer -1])
     {
         cToken = cBoard.Token(cGameMove.ToX(), cGameMove.ToY());
@@ -869,6 +870,7 @@ bool ChessGame::ApplyMove(int nPlayer, GameMove &cGameMove)
             int nX;
             int nY;
             bool bCastleWest = false;
+            GameMove cRookMove;
 
             if (abs(cGameMove.FromX() - cGameMove.ToX()) > 1)
             {
@@ -897,17 +899,20 @@ bool ChessGame::ApplyMove(int nPlayer, GameMove &cGameMove)
                     //
                     // Move Rook
                     //
-                    cGameMove.SetFromX(nX);
+                    cRookMove.SetFromX(nX);
+                    cRookMove.SetFromY(cGameMove.FromY());
+                    cRookMove.SetToY(cGameMove.FromY());
+
                     if (bCastleWest)
                     {
-                        cGameMove.SetToX(cGameMove.ToX() + 1);
+                        cRookMove.SetToX(cGameMove.ToX() + 1);
                     }
                     else
                     {
-                        cGameMove.SetToX(cGameMove.ToX() - 1);
+                        cRookMove.SetToX(cGameMove.ToX() - 1);
                     }
 
-                    if (cBoard.MovePiece(cGameMove))
+                    if (cBoard.MovePiece(cRookMove))
                     {
                         bValidMove = true;
                         m_abCastlingAllowed[nPlayer - 1] = false;
@@ -1202,6 +1207,17 @@ bool ChessGame::GameEnded(int nPlayer)
     std::vector<GameMove> vGameMoves = GenerateMoves(nPlayer);
     if (vGameMoves.empty())
     {
+        // If King is in checkmate
+        if (KingInCheck(nPlayer))
+        {
+            m_nWinner = 1 - nPlayer + 2;
+            m_sWinBy.assign("by checkmate");
+        }
+        else // If King is not in checkmate
+        {
+            m_sWinBy.assign("by stalemate");
+        }
+        // Game over
         return true;
     }
 

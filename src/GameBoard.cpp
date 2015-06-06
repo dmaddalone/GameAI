@@ -57,7 +57,7 @@ bool GameBoard::SetPiece(int nX, int nY, const GamePiece &cGamePiece)
 /**
   * Move a piece on the board.
   *
-  * Copy piece from location and paste it to the to location.
+  * Copy piece From location and paste it to the To location.
   *
   * \param GameMove The game move
   *
@@ -68,14 +68,16 @@ bool GameBoard::MovePiece(const GameMove &cGameMove)
 {
     GamePiece cGamePiece = m_vBoard[cGameMove.FromY()][cGameMove.FromX()].Piece();
 
-    if (!SetPiece(cGameMove.ToX(), cGameMove.ToY(), cGamePiece))
+    if (SetPiece(cGameMove.ToX(), cGameMove.ToY(), cGamePiece))
+    {
+        m_vBoard[cGameMove.ToY()][cGameMove.ToX()].SetMoved();
+        m_vBoard[cGameMove.FromY()][cGameMove.FromX()].Clear();
+        return true;
+    }
+    else
+    {
         return false;
-
-    cGamePiece.SetMoved();
-
-    m_vBoard[cGameMove.FromY()][cGameMove.FromX()].Clear();
-
-    return true;
+    }
 }
 
 /**
