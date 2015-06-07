@@ -90,8 +90,11 @@ TODO: Check other TODOs
 			<Add option="-fexceptions" />
 		</Compiler>
 		<Unit filename="include/BoardGame.h" />
+		<Unit filename="include/ChessBaby.h" />
 		<Unit filename="include/ChessGame.h" />
 		<Unit filename="include/ChessGardner.h" />
+		<Unit filename="include/ChessJacobsMeirovitz.h" />
+		<Unit filename="include/ChessPetty.h" />
 		<Unit filename="include/Client.h" />
 		<Unit filename="include/ConnectFour.h" />
 		<Unit filename="include/Game.h" />
@@ -114,8 +117,11 @@ TODO: Check other TODOs
 		<Unit filename="include/TTT.h" />
 		<Unit filename="main.cpp" />
 		<Unit filename="src/BoardGame.cpp" />
+		<Unit filename="src/ChessBaby.cpp" />
 		<Unit filename="src/ChessGame.cpp" />
 		<Unit filename="src/ChessGardner.cpp" />
+		<Unit filename="src/ChessJacobsMeirovitz.cpp" />
+		<Unit filename="src/ChessPetty.cpp" />
 		<Unit filename="src/Client.cpp" />
 		<Unit filename="src/ConnectFour.cpp" />
 		<Unit filename="src/Game.cpp" />
