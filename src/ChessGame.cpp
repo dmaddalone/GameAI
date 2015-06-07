@@ -1317,6 +1317,15 @@ bool ChessGame::GameEnded(int nPlayer)
         return true;
 
     // Check for threefold repetition
+    int nCheckSum = CheckSum();
+    m_uomsCheckSums.insert(nCheckSum);
+    if (m_uomsCheckSums.count(nCheckSum) >= m_knMaxCheckSums)
+    {
+        m_sWinBy.assign("draw by threefold repetition");
+        return true;
+    }
+
+/*
     m_adCheckSums[nPlayer -1].push_back(CheckSum());
     if (m_adCheckSums[nPlayer -1].size() > m_knMaxCheckSums)
     {
@@ -1324,17 +1333,17 @@ bool ChessGame::GameEnded(int nPlayer)
 
         m_adCheckSums[nPlayer -1].pop_front();
 
-        std::cout << "Checksums: ";
+        //std::cout << "Checksums: ";
         for (int iii = 1; iii < m_knMaxCheckSums; ++iii)
         {
-            std::cout << std::to_string(m_adCheckSums[nPlayer -1][iii - 1]) << " ";
+            //std::cout << std::to_string(m_adCheckSums[nPlayer -1][iii - 1]) << " ";
             if (m_adCheckSums[nPlayer -1][iii -1] != m_adCheckSums[nPlayer -1][iii])
             {
                 bThreefoldRepetition = false;
                 break;
             }
         }
-        std::cout << std::endl;
+        //std::cout << std::endl;
 
         if (bThreefoldRepetition)
         {
@@ -1342,7 +1351,7 @@ bool ChessGame::GameEnded(int nPlayer)
             return true;
         }
     }
-
+*/
 
     // Evaluate whether the player has any valid moves to make
     std::vector<GameMove> vGameMoves = GenerateMoves(nPlayer);
@@ -1369,7 +1378,7 @@ bool ChessGame::GameEnded(int nPlayer)
   * Create a checksum for the game for evaluation of threefold repition.
   *
   * Walk the board and generate a checksum based on board corrdinates,
-  * piece value, and owner of th piece.
+  * piece value, and owner of the piece.
   *
   * \return The checksum.
   */
@@ -1382,9 +1391,12 @@ int ChessGame::CheckSum() const
     {
         for (int xxx = 0; xxx < m_knX; ++xxx)
         {
-            nCheckSum += (xxx + 1) * (yyy + 1) * (cBoard.Value(xxx, yyy)) * cBoard.Player(xxx, yyy);
+            if (cBoard.PositionOccupied(xxx, yyy))
+                nCheckSum += (xxx + 1) * (yyy + 1) * cBoard.Value(xxx, yyy) * cBoard.Player(xxx, yyy);
         }
     }
+
+    //std::cout << "Checksum=" << std::to_string(nCheckSum) << std::endl;
 
     return nCheckSum;
 }

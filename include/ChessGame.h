@@ -26,11 +26,10 @@
 #ifndef CHESSGAME_H
 #define CHESSGAME_H
 
-#include <array>
+#include <unordered_set>
 #include <climits>
 //#include <cstdlib>
 #include <iostream>
-#include <queue>
 #include <string>
 
 #include "BoardGame.h"
@@ -90,7 +89,7 @@ class ChessGame : public BoardGame
         // Count the value of pieces for nPlayer
         int  CountEvaluation(int nPlayer) const;
 
-        std::array<std::deque<int>, 2> m_adCheckSums {{}};
+        std::unordered_multiset<int> m_uomsCheckSums {};
         static const int m_knMaxCheckSums {3};
 
         //const std::string sPieceSymbols {"RNBKQ"};
