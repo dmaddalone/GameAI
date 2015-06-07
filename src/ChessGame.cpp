@@ -1309,14 +1309,40 @@ int ChessGame::CountEvaluation(int nPlayer) const
 
 bool ChessGame::GameEnded(int nPlayer)
 {
-    // TODO: Check for same position three times in a row
-
     // Clear win variables
     m_nWinner = 0;
     m_sWinBy.assign("nothing");
 
     if (BoardGame::GameEnded(nPlayer))
         return true;
+
+    // Check for threefold repetition
+    m_adCheckSums[nPlayer -1].push_back(CheckSum());
+    if (m_adCheckSums[nPlayer -1].size() > m_knMaxCheckSums)
+    {
+        bool bThreefoldRepetition = false;
+
+        m_adCheckSums[nPlayer -1].pop_front();
+
+        std::cout << "Checksums: ";
+        for (int iii = 1; iii < m_knMaxCheckSums; ++iii)
+        {
+            std::cout << std::to_string(m_adCheckSums[nPlayer -1][iii - 1]) << " ";
+            if (m_adCheckSums[nPlayer -1][iii -1] != m_adCheckSums[nPlayer -1][iii])
+            {
+                bThreefoldRepetition = false;
+                break;
+            }
+        }
+        std::cout << std::endl;
+
+        if (bThreefoldRepetition)
+        {
+            m_sWinBy.assign("draw by threefold repetition");
+            return true;
+        }
+    }
+
 
     // Evaluate whether the player has any valid moves to make
     std::vector<GameMove> vGameMoves = GenerateMoves(nPlayer);
@@ -1337,4 +1363,28 @@ bool ChessGame::GameEnded(int nPlayer)
     }
 
     return false;
+}
+
+/**
+  * Create a checksum for the game for evaluation of threefold repition.
+  *
+  * Walk the board and generate a checksum based on board corrdinates,
+  * piece value, and owner of th piece.
+  *
+  * \return The checksum.
+  */
+
+int ChessGame::CheckSum() const
+{
+    int nCheckSum {0};
+
+    for (int yyy = 0; yyy < m_knY; ++yyy)
+    {
+        for (int xxx = 0; xxx < m_knX; ++xxx)
+        {
+            nCheckSum += (xxx + 1) * (yyy + 1) * (cBoard.Value(xxx, yyy)) * cBoard.Player(xxx, yyy);
+        }
+    }
+
+    return nCheckSum;
 }

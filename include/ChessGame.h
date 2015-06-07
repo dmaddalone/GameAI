@@ -26,9 +26,11 @@
 #ifndef CHESSGAME_H
 #define CHESSGAME_H
 
+#include <array>
 #include <climits>
 //#include <cstdlib>
 #include <iostream>
+#include <queue>
 #include <string>
 
 #include "BoardGame.h"
@@ -82,8 +84,14 @@ class ChessGame : public BoardGame
         bool KingInCheck(int nPlayer) const;
         bool AttackingTheKing(int nKX, int nKY, int nPlayer, int nX, int nY) const;
 
+        // Create a checksum of the game board
+        int CheckSum() const;
+
         // Count the value of pieces for nPlayer
         int  CountEvaluation(int nPlayer) const;
+
+        std::array<std::deque<int>, 2> m_adCheckSums {{}};
+        static const int m_knMaxCheckSums {3};
 
         //const std::string sPieceSymbols {"RNBKQ"};
         //const std::string sFiles        {"abcdefgh"};
