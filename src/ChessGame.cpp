@@ -1263,12 +1263,16 @@ int ChessGame::EvaluateGameState(int nPlayer)
     if (m_nWinner == (1 - nPlayer + 2))
         return INT_MIN;
 
-    // Evaluate the number of tokens for each player. "Greedy evaluation."
-    int nCountEval = CountEvaluation(nPlayer)  - CountEvaluation(2 - nPlayer + 1);
+    // Evaluate the number of peices for each player. "Greedy evaluation."
+    int nCountEval = CountEvaluation(nPlayer)  - CountEvaluation(1 - nPlayer + 2);
+
+    int nDoubledPawns  {0};
+    int nIsolatedPawns {0};
+    int nPassedPawns   {0};
+    CountPawns(nPlayer, nDoubledPawns, nIsolatedPawns, nPassedPawns);
 
     //return (nCountEval * 10) + (nSquareEval * 15) + (nMobilityEval * 5);
-    return nCountEval;
-    //return 0;
+    return (nCountEval * 20) - (nDoubledPawns * 5) - (nIsolatedPawns * 10) + (nPassedPawns * 10);
 }
 
 /**
@@ -1295,6 +1299,155 @@ int ChessGame::CountEvaluation(int nPlayer) const
     }
 
     return nEval;
+}
+
+void ChessGame::CountPawns(int nPlayer, int &nDoubled, int &nIsolated, int &nPassed) const
+{
+    int nX {0};
+    int nY {0};
+    bool bIsolated {false};
+    bool bPassed   {false};
+
+    for (int yyy = 0; yyy < m_knY; ++yyy)
+    {
+        for (int xxx = 0; xxx < m_knX; ++xxx)
+        {
+            // If piece is Pawn
+            if (cBoard.Token(xxx, yyy) == m_kcPawnToken)
+            {
+                // If occupied by nPlayer?
+                if (cBoard.PositionOccupiedByPlayer(xxx, yyy, nPlayer))
+                {
+                    //
+                    // Count Doubled Pawns
+                    //
+
+                    // Calculate correct square to evaluate next
+                    if (nPlayer == 1)
+                        nY = yyy + 1;
+                    else
+                        nY = yyy - 1;
+
+                    // If the piece is a Pawn. increment count
+                    if (cBoard.Token(xxx, nY) == m_kcPawnToken)
+                    {
+                        // If the square ahead of the Pawn is occupied by the player
+                        if (cBoard.PositionOccupiedByPlayer(xxx, nY, nPlayer))
+                        {
+                            ++nDoubled;
+                        }
+                    }
+
+                    //
+                    // Count Isolated Pawns
+                    //
+
+                    bIsolated = true;
+
+                    // Find a friendly pawn to the west
+                    if (cBoard.ValidLocation(xxx - 1, 0))
+                    {
+                        nX = xxx - 1;
+                        nY = 0;
+                        if (FindPiece(nX, nY, nPlayer, m_kcPawnToken))
+                        {
+                            if (nX == xxx - 1)
+                            {
+                                bIsolated = false;
+                            }
+                        }
+                    }
+
+                    // If we did not find one to the west, find a friendly pawn to the east
+                    if ((bIsolated) && (cBoard.ValidLocation(xxx + 1, 0)))
+                    {
+                        nX = xxx + 1;
+                        nY = 0;
+                        if (FindPiece(nX, nY, nPlayer, m_kcPawnToken))
+                        {
+                            if (nX == xxx + 1)
+                            {
+                                bIsolated = false;
+                            }
+                        }
+                    }
+
+                    if (bIsolated)
+                    {
+                        ++nIsolated;
+                    }
+
+                    //
+                    // Count Passed Pawns
+                    //
+
+                    bPassed = true;
+
+                    // Find an unfriendly pawn to the west and ahead of this pawn
+                    if (cBoard.ValidLocation(xxx - 1, 0))
+                    {
+                        nX = xxx - 1;
+                        nY = 0;
+                        if (FindPiece(nX, nY, 1 - nPlayer + 2, m_kcPawnToken))
+                        {
+                            if (nX == xxx - 1)
+                            {
+                                if (nPlayer == 1)
+                                {
+                                    if (nY > yyy)
+                                    {
+                                        bPassed = false;
+                                    }
+                                }
+                                else
+                                {
+                                    if (nY < yyy)
+                                    {
+                                        bPassed = false;
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    // If we did not find one to the west, find a unfriendly pawn to the east
+                    if ((bPassed) && (cBoard.ValidLocation(xxx + 1, 0)))
+                    {
+                        nX = xxx + 1;
+                        nY = 0;
+                        if (FindPiece(nX, nY, nPlayer, m_kcPawnToken))
+                        {
+                            if (nX == xxx - 1)
+                            {
+                                if (nPlayer == 1)
+                                {
+                                    if (nY > yyy)
+                                    {
+                                        bPassed = false;
+                                    }
+                                }
+                                else
+                                {
+                                    if (nY < yyy)
+                                    {
+                                        bPassed = false;
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    if (bPassed)
+                    {
+                        ++nPassed;
+                    }
+
+                }
+            }
+        }
+    }
+
+    return;
 }
 
 /**
@@ -1324,34 +1477,6 @@ bool ChessGame::GameEnded(int nPlayer)
         m_sWinBy.assign("draw by threefold repetition");
         return true;
     }
-
-/*
-    m_adCheckSums[nPlayer -1].push_back(CheckSum());
-    if (m_adCheckSums[nPlayer -1].size() > m_knMaxCheckSums)
-    {
-        bool bThreefoldRepetition = false;
-
-        m_adCheckSums[nPlayer -1].pop_front();
-
-        //std::cout << "Checksums: ";
-        for (int iii = 1; iii < m_knMaxCheckSums; ++iii)
-        {
-            //std::cout << std::to_string(m_adCheckSums[nPlayer -1][iii - 1]) << " ";
-            if (m_adCheckSums[nPlayer -1][iii -1] != m_adCheckSums[nPlayer -1][iii])
-            {
-                bThreefoldRepetition = false;
-                break;
-            }
-        }
-        //std::cout << std::endl;
-
-        if (bThreefoldRepetition)
-        {
-            m_sWinBy.assign("draw by threefold repetition");
-            return true;
-        }
-    }
-*/
 
     // Evaluate whether the player has any valid moves to make
     std::vector<GameMove> vGameMoves = GenerateMoves(nPlayer);
@@ -1395,8 +1520,6 @@ int ChessGame::CheckSum() const
                 nCheckSum += (xxx + 1) * (yyy + 1) * cBoard.Value(xxx, yyy) * cBoard.Player(xxx, yyy);
         }
     }
-
-    //std::cout << "Checksum=" << std::to_string(nCheckSum) << std::endl;
 
     return nCheckSum;
 }
