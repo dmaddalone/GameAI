@@ -1,20 +1,20 @@
-#include "ChessPetty.h"
+#include "ChessSpeed.h"
 
-void ChessPetty::SetBoard()
+void ChessSpeed::SetBoard()
 {
     GamePiece cPiece;
 
     ChessGame::SetBoard();
 
-    cPiece.Set(m_kcQueenToken, 1, m_knQueenValue);
+    cPiece.Set(m_kcRookToken, 1, m_knRookValue);
     cBoard.SetPiece(0, 0, cPiece);
-    cPiece.Set(m_kcKingToken, 1, m_knKingValue);
+    cPiece.Set(m_kcKnightToken, 1, m_knKnightValue);
     cBoard.SetPiece(1, 0, cPiece);
     cPiece.Set(m_kcBishopToken, 1, m_knBishopValue);
     cBoard.SetPiece(2, 0, cPiece);
-    cPiece.Set(m_kcKnightToken, 1, m_knKnightValue);
+    cPiece.Set(m_kcKingToken, 1, m_knKingValue);
     cBoard.SetPiece(3, 0, cPiece);
-    cPiece.Set(m_kcRookToken, 1, m_knRookValue);
+    cPiece.Set(m_kcQueenToken, 1, m_knQueenValue);
     cBoard.SetPiece(4, 0, cPiece);
     cPiece.Set(m_kcPawnToken, 1, m_knPawnValue);
     cBoard.SetPiece(0, 1, cPiece);

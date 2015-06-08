@@ -19,32 +19,32 @@
 
 /** \file
  *
- * \brief The ChessBaby class represents the minichess variant Baby Chess,
- * invented by Martin Gardner.  Played on a 5x5 board and allows all
- * normal chess moves.
+ * \brief The Chess class represents an orthodox chess game.
  *
  */
 
-#ifndef CHESSBABY_H
-#define CHESSBABY_H
+#ifndef CHESS_H
+#define CHESS_H
 
 #include "ChessGame.h"
 
-class ChessBaby : public ChessGame
+class Chess : public ChessGame
 {
     public:
         // Constructor
-        ChessBaby(GameType ecGameType) : ChessGame(ecGameType, 5, 5, true, true, true)
-        { SetBoard(); }
+        Chess(GameType ecGameType) : ChessGame(ecGameType, 8, 8, true, true, true)
+        {
+            SetBoard();
+        }
         // Destructor
-        ~ChessBaby() {}
+        ~Chess() {}
 
         // Clone the current game
-        virtual std::unique_ptr<Game> Clone() const override { return std::unique_ptr<Game>(new ChessBaby(*this)); }
+        virtual std::unique_ptr<Game> Clone() const override { return std::unique_ptr<Game>(new Chess(*this)); }
         // Return the title of the game
-        virtual std::string Title() override { return "Baby Minichess" + ChessGame::Title(); }
+        virtual std::string Title() override { return "Chess" + ChessGame::Title(); }
 
         void SetBoard();
 };
 
-#endif // CHESSBABY_H
+#endif // CHESS_H

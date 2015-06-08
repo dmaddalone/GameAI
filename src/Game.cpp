@@ -22,6 +22,15 @@
 #include "TTT.h"
 #include "Reversi.h"
 #include "ChessGardner.h"
+#include "ChessBaby.h"
+#include "ChessJacobsMeirovitz.h"
+#include "ChessPetty.h"
+#include "ChessSpeed.h"
+#include "ChessQuick.h"
+#include "ChessElena.h"
+#include "ChessAttack.h"
+#include "ChessLosAlamos.h"
+#include "Chess.h"
 
 /**
   * Make a game.
@@ -43,8 +52,26 @@ std::unique_ptr<Game> Game::Make(GameType ecGameType)
             return std::unique_ptr<Game>(new TTT(ecGameType));
         case GameType::TYPE_REVERSI:
             return std::unique_ptr<Game>(new Reversi(ecGameType));
-        case GameType::TYPE_CHESSGARDNER:
+        case GameType::TYPE_CHESS_GARDNER:
             return std::unique_ptr<Game>(new ChessGardner(ecGameType));
+        case GameType::TYPE_CHESS_BABY:
+            return std::unique_ptr<Game>(new ChessBaby(ecGameType));
+        case GameType::TYPE_CHESS_JACOBS_MEIROVITZ:
+            return std::unique_ptr<Game>(new ChessJacobsMeirovitz(ecGameType));
+        case GameType::TYPE_CHESS_PETTY:
+            return std::unique_ptr<Game>(new ChessPetty(ecGameType));
+        case GameType::TYPE_CHESS_SPEED:
+            return std::unique_ptr<Game>(new ChessSpeed(ecGameType));
+        case GameType::TYPE_CHESS_QUICK:
+            return std::unique_ptr<Game>(new ChessQuick(ecGameType));
+        case GameType::TYPE_CHESS_ELENA:
+            return std::unique_ptr<Game>(new ChessElena(ecGameType));
+        case GameType::TYPE_CHESS_ATTACK:
+            return std::unique_ptr<Game>(new ChessAttack(ecGameType));
+        case GameType::TYPE_CHESS_LOS_ALAMOS:
+            return std::unique_ptr<Game>(new ChessLosAlamos(ecGameType));
+        case GameType::TYPE_CHESS:
+            return std::unique_ptr<Game>(new Chess(ecGameType));
         default:
             return nullptr;
     }

@@ -19,32 +19,34 @@
 
 /** \file
  *
- * \brief The ChessBaby class represents the minichess variant Baby Chess,
- * invented by Martin Gardner.  Played on a 5x5 board and allows all
+ * \brief The ChessAttack class represents the minichess variant Chess Attack,
+ * invented by Joseph Miccio.  Played on a 5x6 board and allows all
  * normal chess moves.
  *
  */
 
-#ifndef CHESSBABY_H
-#define CHESSBABY_H
+#ifndef CHESSATTACK_H
+#define CHESSATTACK_H
 
 #include "ChessGame.h"
 
-class ChessBaby : public ChessGame
+class ChessAttack : public ChessGame
 {
     public:
         // Constructor
-        ChessBaby(GameType ecGameType) : ChessGame(ecGameType, 5, 5, true, true, true)
-        { SetBoard(); }
+        ChessAttack(GameType ecGameType) : ChessGame(ecGameType, 5, 6, true, true, true)
+        {
+            SetBoard();
+        }
         // Destructor
-        ~ChessBaby() {}
+        ~ChessAttack() {}
 
         // Clone the current game
-        virtual std::unique_ptr<Game> Clone() const override { return std::unique_ptr<Game>(new ChessBaby(*this)); }
+        virtual std::unique_ptr<Game> Clone() const override { return std::unique_ptr<Game>(new ChessAttack(*this)); }
         // Return the title of the game
-        virtual std::string Title() override { return "Baby Minichess" + ChessGame::Title(); }
+        virtual std::string Title() override { return "Chess Attack Minichess" + ChessGame::Title(); }
 
         void SetBoard();
 };
 
-#endif // CHESSBABY_H
+#endif // CHESSATTACK_H

@@ -19,32 +19,39 @@
 
 /** \file
  *
- * \brief The ChessBaby class represents the minichess variant Baby Chess,
- * invented by Martin Gardner.  Played on a 5x5 board and allows all
- * normal chess moves.
+ * \brief The ChessQuick class represents the minichess variant Quick Chess,
+ * invented by Joseph Miccio.  Played on a 5x6 board and does not allow
+ * double pawn, en passant moves, or castling.
  *
  */
 
-#ifndef CHESSBABY_H
-#define CHESSBABY_H
+#ifndef CHESSQUICK_H
+#define CHESSQUICK_H
 
 #include "ChessGame.h"
 
-class ChessBaby : public ChessGame
+class ChessQuick : public ChessGame
 {
     public:
         // Constructor
-        ChessBaby(GameType ecGameType) : ChessGame(ecGameType, 5, 5, true, true, true)
-        { SetBoard(); }
+        ChessQuick(GameType ecGameType) : ChessGame(ecGameType, 5, 6, true, true, true)
+        {
+            m_abCastlingAllowed[0] = false;
+            m_abCastlingAllowed[1] = false;
+            m_bDoublePawnMoveAllowed = false;
+            m_bEnPassantAllowed = false;
+
+            SetBoard();
+        }
         // Destructor
-        ~ChessBaby() {}
+        ~ChessQuick() {}
 
         // Clone the current game
-        virtual std::unique_ptr<Game> Clone() const override { return std::unique_ptr<Game>(new ChessBaby(*this)); }
+        virtual std::unique_ptr<Game> Clone() const override { return std::unique_ptr<Game>(new ChessQuick(*this)); }
         // Return the title of the game
-        virtual std::string Title() override { return "Baby Minichess" + ChessGame::Title(); }
+        virtual std::string Title() override { return "Quick Minichess" + ChessGame::Title(); }
 
         void SetBoard();
 };
 
-#endif // CHESSBABY_H
+#endif // CHESSQUICK_H

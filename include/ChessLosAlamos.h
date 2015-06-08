@@ -19,32 +19,34 @@
 
 /** \file
  *
- * \brief The ChessBaby class represents the minichess variant Baby Chess,
- * invented by Martin Gardner.  Played on a 5x5 board and allows all
- * normal chess moves.
+ * \brief The ChessLosAlamos class represents the minichess variant Los Alamos
+ * Chess, invented by Paul Stein and Mark Wells.  Played on a 6x6 board and
+ * does not allow double pawn, en passant moves, or castling.
  *
  */
 
-#ifndef CHESSBABY_H
-#define CHESSBABY_H
+#ifndef CHESSLOSALAMOS_H
+#define CHESSLOSALAMOS_H
 
 #include "ChessGame.h"
 
-class ChessBaby : public ChessGame
+class ChessLosAlamos : public ChessGame
 {
     public:
         // Constructor
-        ChessBaby(GameType ecGameType) : ChessGame(ecGameType, 5, 5, true, true, true)
-        { SetBoard(); }
+        ChessLosAlamos(GameType ecGameType) : ChessGame(ecGameType, 6, 6, true, true, true)
+        {
+            SetBoard();
+        }
         // Destructor
-        ~ChessBaby() {}
+        ~ChessLosAlamos() {}
 
         // Clone the current game
-        virtual std::unique_ptr<Game> Clone() const override { return std::unique_ptr<Game>(new ChessBaby(*this)); }
+        virtual std::unique_ptr<Game> Clone() const override { return std::unique_ptr<Game>(new ChessLosAlamos(*this)); }
         // Return the title of the game
-        virtual std::string Title() override { return "Baby Minichess" + ChessGame::Title(); }
+        virtual std::string Title() override { return "Los Alamos Chess Minichess" + ChessGame::Title(); }
 
         void SetBoard();
 };
 
-#endif // CHESSBABY_H
+#endif // CHESSLOSALAMOS_H

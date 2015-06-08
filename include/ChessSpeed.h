@@ -19,32 +19,37 @@
 
 /** \file
  *
- * \brief The ChessBaby class represents the minichess variant Baby Chess,
- * invented by Martin Gardner.  Played on a 5x5 board and allows all
- * normal chess moves.
+ * \brief The ChessSpeed class represents the minichess variant Speed Chess,
+ * invented by  Mr. den Oude.  Played on a 5x6 board and does not allow
+ * double pawn or en passant moves.
  *
  */
 
-#ifndef CHESSBABY_H
-#define CHESSBABY_H
+#ifndef CHESSSPEED_H
+#define CHESSSPEED_H
 
 #include "ChessGame.h"
 
-class ChessBaby : public ChessGame
+class ChessSpeed : public ChessGame
 {
     public:
         // Constructor
-        ChessBaby(GameType ecGameType) : ChessGame(ecGameType, 5, 5, true, true, true)
-        { SetBoard(); }
+        ChessSpeed(GameType ecGameType) : ChessGame(ecGameType, 5, 6, true, true, true)
+        {
+            m_bDoublePawnMoveAllowed = false;
+            m_bEnPassantAllowed = false;
+
+            SetBoard();
+        }
         // Destructor
-        ~ChessBaby() {}
+        ~ChessSpeed() {}
 
         // Clone the current game
-        virtual std::unique_ptr<Game> Clone() const override { return std::unique_ptr<Game>(new ChessBaby(*this)); }
+        virtual std::unique_ptr<Game> Clone() const override { return std::unique_ptr<Game>(new ChessSpeed(*this)); }
         // Return the title of the game
-        virtual std::string Title() override { return "Baby Minichess" + ChessGame::Title(); }
+        virtual std::string Title() override { return "Speed Minichess" + ChessGame::Title(); }
 
         void SetBoard();
 };
 
-#endif // CHESSBABY_H
+#endif // CHESSSPEED_H

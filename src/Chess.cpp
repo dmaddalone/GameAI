@@ -1,0 +1,62 @@
+#include "Chess.h"
+
+void Chess::SetBoard()
+{
+    GamePiece cPiece;
+
+    ChessGame::SetBoard();
+
+    cPiece.Set(m_kcRookToken, 1, m_knRookValue);
+    cBoard.SetPiece(0, 0, cPiece);
+    cPiece.Set(m_kcKnightToken, 1, m_knKnightValue);
+    cBoard.SetPiece(1, 0, cPiece);
+    cPiece.Set(m_kcBishopToken, 1, m_knBishopValue);
+    cBoard.SetPiece(2, 0, cPiece);
+    cPiece.Set(m_kcQueenToken, 1, m_knQueenValue);
+    cBoard.SetPiece(3, 0, cPiece);
+    cPiece.Set(m_kcKingToken, 1, m_knKingValue);
+    cBoard.SetPiece(4, 0, cPiece);
+    cPiece.Set(m_kcBishopToken, 1, m_knBishopValue);
+    cBoard.SetPiece(5, 0, cPiece);
+    cPiece.Set(m_kcKnightToken, 1, m_knKnightValue);
+    cBoard.SetPiece(6, 0, cPiece);
+    cPiece.Set(m_kcRookToken, 1, m_knRookValue);
+    cBoard.SetPiece(7, 0, cPiece);
+    cPiece.Set(m_kcPawnToken, 1, m_knPawnValue);
+    cBoard.SetPiece(0, 1, cPiece);
+    cBoard.SetPiece(1, 1, cPiece);
+    cBoard.SetPiece(2, 1, cPiece);
+    cBoard.SetPiece(3, 1, cPiece);
+    cBoard.SetPiece(4, 1, cPiece);
+    cBoard.SetPiece(5, 1, cPiece);
+    cBoard.SetPiece(6, 1, cPiece);
+    cBoard.SetPiece(7, 1, cPiece);
+
+    cPiece.Set(m_kcRookToken, 2, m_knRookValue);
+    cBoard.SetPiece(0, 7, cPiece);
+    cPiece.Set(m_kcKnightToken, 2, m_knKnightValue);
+    cBoard.SetPiece(1, 7, cPiece);
+    cPiece.Set(m_kcKnightToken, 2, m_knBishopValue);
+    cBoard.SetPiece(2, 7, cPiece);
+    cPiece.Set(m_kcQueenToken, 2, m_knQueenValue);
+    cBoard.SetPiece(3, 7, cPiece);
+    cPiece.Set(m_kcKingToken, 2, m_knKingValue);
+    cBoard.SetPiece(4, 7, cPiece);
+    cPiece.Set(m_kcKnightToken, 2, m_knBishopValue);
+    cBoard.SetPiece(5, 7, cPiece);
+    cPiece.Set(m_kcKnightToken, 2, m_knKnightValue);
+    cBoard.SetPiece(6, 7, cPiece);
+    cPiece.Set(m_kcRookToken, 2, m_knRookValue);
+    cBoard.SetPiece(7, 7, cPiece);
+    cPiece.Set(m_kcPawnToken, 2, m_knPawnValue);
+    cBoard.SetPiece(0, 6, cPiece);
+    cBoard.SetPiece(1, 6, cPiece);
+    cBoard.SetPiece(2, 6, cPiece);
+    cBoard.SetPiece(3, 6, cPiece);
+    cBoard.SetPiece(4, 6, cPiece);
+    cBoard.SetPiece(5, 6, cPiece);
+    cBoard.SetPiece(6, 6, cPiece);
+    cBoard.SetPiece(7, 6, cPiece);
+
+    return;
+}

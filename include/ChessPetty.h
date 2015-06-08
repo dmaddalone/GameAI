@@ -19,7 +19,7 @@
 
 /** \file
  *
- * \brief The ChessPetty class represents the minichess variant, Petty Chess,
+ * \brief The ChessPetty class represents the minichess variant Petty Chess,
  * invented by B. Walker Watson.  Played on a 5x6 board and does not allow
  * double pawn, en passant moves, or castling.
  *
@@ -30,7 +30,7 @@
 
 #include "ChessGame.h"
 
-class ChessPetty : ChessGame
+class ChessPetty : public ChessGame
 {
     public:
         // Constructor
