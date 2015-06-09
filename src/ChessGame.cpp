@@ -1471,9 +1471,13 @@ bool ChessGame::GameEnded(int nPlayer)
 
     // Check for threefold repetition
     int nCheckSum = CheckSum();
+    //std::cout << "Checksum=" << std::to_string(nCheckSum) << std::endl;
     m_uomsCheckSums.insert(nCheckSum);
     if (m_uomsCheckSums.count(nCheckSum) >= m_knMaxCheckSums)
     {
+        for (auto it = m_uomsCheckSums.begin(); it != m_uomsCheckSums.end(); ++it)
+            std::cout << "Checksum=" << *it << std::endl;
+
         m_sWinBy.assign("draw by threefold repetition");
         return true;
     }
@@ -1517,7 +1521,13 @@ int ChessGame::CheckSum() const
         for (int xxx = 0; xxx < m_knX; ++xxx)
         {
             if (cBoard.PositionOccupied(xxx, yyy))
-                nCheckSum += (xxx + 1) * (yyy + 1) * cBoard.Value(xxx, yyy) * cBoard.Player(xxx, yyy);
+                //nCheckSum += (xxx + 1) * (yyy + 1) * cBoard.Value(xxx, yyy) * (cBoard.Player(xxx, yyy) + 1);
+                //nCheckSum += (xxx + 1) * (yyy + 1) * pow(cBoard.Value(xxx, yyy), (cBoard.Player(xxx, yyy) + 1));
+                //nCheckSum += pow(pow(pow(cBoard.Value(xxx, yyy), (cBoard.Player(xxx, yyy) + 1)),yyy + 1), xxx + 1);
+                //nCheckSum += pow(pow(cBoard.Value(xxx, yyy), xxx + 1), yyy + 1);
+                //nCheckSum += pow(pow(pow(xxx + 1, yyy + 1), cBoard.Player(xxx, yyy) + 1), cBoard.Value(xxx, yyy));
+                //nCheckSum += pow(cBoard.Value(xxx, yyy), cBoard.Player(xxx, yyy)) * (xxx + 1) * (yyy + 1) + cBoard.Player(xxx, yyy);
+                nCheckSum += pow((xxx + 2),(yyy + m_knY)) * cBoard.Value(xxx, yyy) * (pow(cBoard.Player(xxx, yyy),2));
         }
     }
 

@@ -116,7 +116,7 @@ class GameBoard
         // Used to provide color for game pieces
 #if defined(_WIN32)
         int m_nPlayer1TokenColor      {FOREGROUND_INTENSITY | FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE}; // White
-        int m_nPlayer2TokenColor      {FOREGROUND_RED};
+        int m_nPlayer2TokenColor      {FOREGROUND_INTENSITY | FOREGROUND_RED};
         const int m_knResetTokenColor {FOREGROUND_INTENSITY | FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE}; // White
 #else
         std::string m_sPlayer1TokenColor       {"\033[1;37m"}; // White

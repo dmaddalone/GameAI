@@ -36,13 +36,13 @@ void Chess::SetBoard()
     cBoard.SetPiece(0, 7, cPiece);
     cPiece.Set(m_kcKnightToken, 2, m_knKnightValue);
     cBoard.SetPiece(1, 7, cPiece);
-    cPiece.Set(m_kcKnightToken, 2, m_knBishopValue);
+    cPiece.Set(m_kcBishopToken, 2, m_knBishopValue);
     cBoard.SetPiece(2, 7, cPiece);
     cPiece.Set(m_kcQueenToken, 2, m_knQueenValue);
     cBoard.SetPiece(3, 7, cPiece);
     cPiece.Set(m_kcKingToken, 2, m_knKingValue);
     cBoard.SetPiece(4, 7, cPiece);
-    cPiece.Set(m_kcKnightToken, 2, m_knBishopValue);
+    cPiece.Set(m_kcBishopToken, 2, m_knBishopValue);
     cBoard.SetPiece(5, 7, cPiece);
     cPiece.Set(m_kcKnightToken, 2, m_knKnightValue);
     cBoard.SetPiece(6, 7, cPiece);

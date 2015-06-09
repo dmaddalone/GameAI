@@ -239,7 +239,7 @@ void GameBoard::Display() const
             }
 
 #if defined(_WIN32)
-            std::cout << m_vBoard[yyy][xxx].Token();
+            std::cout << m_vBoard[nDisplayY][xxx].Token();
             SetConsoleTextAttribute(hConsole, m_knResetTokenColor);
 #else
             std::cout << sColor << m_vBoard[nDisplayY][xxx].Token() << m_ksResetTokenColor;

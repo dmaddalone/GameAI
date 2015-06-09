@@ -26,11 +26,13 @@
 #ifndef CHESSGAME_H
 #define CHESSGAME_H
 
-#include <unordered_set>
+
 #include <climits>
+#include <cmath>
 //#include <cstdlib>
 #include <iostream>
 #include <string>
+#include <unordered_set>
 
 #include "BoardGame.h"
 #include "GameAIException.h"
