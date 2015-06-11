@@ -69,6 +69,8 @@ class ChessGame : public BoardGame
         void SetBoard();
 
     protected:
+        void InitializeZobrist();
+
         void GeneratePawnMoves(GameMove cGameMove,   int nPlayer, std::vector<GameMove> &vGameMoves) const;
         void GenerateRookMoves(GameMove cGameMove,   int nPlayer, std::vector<GameMove> &vGameMoves, bool bUnlimitedMoves=true) const;
         void GenerateBishopMoves(GameMove cGameMove, int nPlayer, std::vector<GameMove> &vGameMoves, bool bUnlimitedMoves=true) const;
@@ -85,9 +87,6 @@ class ChessGame : public BoardGame
         void TestForCheck(int nPlayer, GameMove cGameMove, std::vector<GameMove> &vGameMoves) const;
         bool KingInCheck(int nPlayer) const;
         bool AttackingTheKing(int nKX, int nKY, int nPlayer, int nX, int nY) const;
-
-        // Create a checksum of the game board
-        int CheckSum() const;
 
         // Count the value of pieces for nPlayer
         int  CountEvaluation(int nPlayer) const;

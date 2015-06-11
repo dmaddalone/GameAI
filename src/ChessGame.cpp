@@ -83,14 +83,23 @@ void ChessGame::SetBoard()
 {
     BoardGame::SetBoard();
     cBoard.ReverseY();
+}
 
+void ChessGame::InitializeZobrist()
+{
     //
     // Initialize Zobrist hash table
     //
 
     // Random number generator
-    std::mt19937_64 RandomNumberGenerator;
-    RandomNumberGenerator.seed();
+#if defined(_WIN32)
+    static unsigned seed  = std::chrono::high_resolution_clock::now().time_since_epoch().count();
+    ++seed;
+    std::mt19937 generator{seed};
+#else
+    std::random_device RandomDevice{};
+    std::mt19937_64 RandomNumberGenerator{RandomDevice()};
+#endif // defined
 
     // Fill Zobrist hash table with random numbers
     // one for every piece on every square
@@ -1324,6 +1333,8 @@ int ChessGame::EvaluateGameState(int nPlayer)
     int nPassedPawns   {0};
     CountPawns(nPlayer, nDoubledPawns, nIsolatedPawns, nPassedPawns);
 
+    // TODO: CountMobility
+
     //return (nCountEval * 10) + (nSquareEval * 15) + (nMobilityEval * 5);
     return (nCountEval * 20) - (nDoubledPawns * 5) - (nIsolatedPawns * 10) + (nPassedPawns * 10);
 }
@@ -1531,9 +1542,9 @@ bool ChessGame::GameEnded(int nPlayer)
     if (m_uomsZobrist.count(m_uiZobristKey) >= m_knMaxRepetition)
     {
         ////for (auto it = m_uomsCheckSums.begin(); it != m_uomsCheckSums.end(); ++it)
-        for (auto it = m_uomsZobrist.begin(); it != m_uomsZobrist.end(); ++it)
+        //for (auto it = m_uomsZobrist.begin(); it != m_uomsZobrist.end(); ++it)
             ////std::cout << "Checksum=" << *it << std::endl;
-            std::cout << "Zobrist=" << *it << std::endl;
+            //std::cout << "Zobrist=" << *it << std::endl;
 
         m_sWinBy.assign("draw by threefold repetition");
         return true;
@@ -1558,35 +1569,4 @@ bool ChessGame::GameEnded(int nPlayer)
     }
 
     return false;
-}
-
-/**
-  * Create a checksum for the game for evaluation of threefold repition.
-  *
-  * Walk the board and generate a checksum based on board corrdinates,
-  * piece value, and owner of the piece.
-  *
-  * \return The checksum.
-  */
-
-int ChessGame::CheckSum() const
-{
-    int nCheckSum {0};
-
-    for (int yyy = 0; yyy < m_knY; ++yyy)
-    {
-        for (int xxx = 0; xxx < m_knX; ++xxx)
-        {
-            if (cBoard.PositionOccupied(xxx, yyy))
-                nCheckSum += (xxx + 1) * (yyy + 1) * cBoard.Value(xxx, yyy) * (cBoard.Player(xxx, yyy) + 1);
-                //nCheckSum += (xxx + 1) * (yyy + 1) * pow(cBoard.Value(xxx, yyy), (cBoard.Player(xxx, yyy) + 1));
-                //nCheckSum += pow(pow(pow(cBoard.Value(xxx, yyy), (cBoard.Player(xxx, yyy) + 1)),yyy + 1), xxx + 1);
-                //nCheckSum += pow(pow(cBoard.Value(xxx, yyy), xxx + 1), yyy + 1);
-                //nCheckSum += pow(pow(pow(xxx + 1, yyy + 1), cBoard.Player(xxx, yyy) + 1), cBoard.Value(xxx, yyy));
-                //nCheckSum += pow(cBoard.Value(xxx, yyy), cBoard.Player(xxx, yyy)) * (xxx + 1) * (yyy + 1) + cBoard.Player(xxx, yyy);
-                //nCheckSum += pow((xxx + 2),(yyy + m_knY)) * cBoard.Value(xxx, yyy) * (pow(cBoard.Player(xxx, yyy),2));
-        }
-    }
-
-    return nCheckSum;
 }
