@@ -46,5 +46,4 @@ class Chess : public ChessGame
 
         void SetBoard();
 };
-
 #endif // CHESS_H

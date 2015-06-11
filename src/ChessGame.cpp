@@ -79,6 +79,42 @@ std::string ChessGame::Title()
     return sMessage;
 }
 
+void ChessGame::SetBoard()
+{
+    BoardGame::SetBoard();
+    cBoard.ReverseY();
+
+    //
+    // Initialize Zobrist hash table
+    //
+
+    // Random number generator
+    std::mt19937_64 RandomNumberGenerator;
+    RandomNumberGenerator.seed();
+
+    // Fill Zobrist hash table with random numbers
+    // one for every piece on every square
+    for (int iii = 0; iii < m_knNumberOfPieces; ++iii)
+    {
+        for (int jjj = 0; jjj < m_knNumberOfSquares; ++jjj)
+        {
+            m_auiZobrist[iii][jjj] = RandomNumberGenerator();
+        }
+    }
+
+    // Initialize the Zobrist key
+    for (int yyy = 0; yyy < m_knY; ++yyy)
+    {
+        for (int xxx = 0; xxx < m_knX; ++xxx)
+        {
+            if (cBoard.PositionOccupied(xxx, yyy))
+            {
+                m_uiZobristKey ^= m_auiZobrist[cBoard.Number(xxx, yyy)][(xxx + (yyy * 8))];
+            }
+        }
+    }
+}
+
 /**
   * Generate a GameMove from a string.
   *
@@ -854,13 +890,30 @@ bool ChessGame::ApplyMove(int nPlayer, GameMove &cGameMove)
     {
         if (cValidGameMove.SameTo(cGameMove))
         {
+            // Update the ZobristKey to reflect the move
+            m_uiZobristKey ^= m_auiZobrist[cBoard.Number(cGameMove.FromX(), cGameMove.FromY())][(cGameMove.FromX() + (cGameMove.FromY() * 8))];
+            m_uiZobristKey ^= m_auiZobrist[cBoard.Number(cGameMove.FromX(), cGameMove.FromY())][(cGameMove.ToX() + (cGameMove.ToY() * 8))];
+            if (cBoard.PositionOccupied(cGameMove.ToX(), cGameMove.ToY()))
+            {
+                m_uiZobristKey ^= m_auiZobrist[cBoard.Number(cGameMove.ToX(), cGameMove.ToY())][(cGameMove.ToX() + (cGameMove.ToY() * 8))];
+            }
+
             if (cBoard.MovePiece(cGameMove))
             {
                 bValidMove = true;
+
                 break;
             }
-            else
+            else // Update the ZobristKey to reflect the unmove
+            {
+                m_uiZobristKey ^= m_auiZobrist[cBoard.Number(cGameMove.FromX(), cGameMove.FromY())][(cGameMove.FromX() + (cGameMove.FromY() * 8))];
+                m_uiZobristKey ^= m_auiZobrist[cBoard.Number(cGameMove.FromX(), cGameMove.FromY())][(cGameMove.ToX() + (cGameMove.ToY() * 8))];
+                if (cBoard.PositionOccupied(cGameMove.ToX(), cGameMove.ToY()))
+                {
+                    m_uiZobristKey ^= m_auiZobrist[cBoard.Number(cGameMove.ToX(), cGameMove.ToY())][(cGameMove.ToX() + (cGameMove.ToY() * 8))];
+                }
                 return false;
+            }
         }
     }
 
@@ -1469,14 +1522,18 @@ bool ChessGame::GameEnded(int nPlayer)
     if (BoardGame::GameEnded(nPlayer))
         return true;
 
-    // Check for threefold repetition
-    int nCheckSum = CheckSum();
-    //std::cout << "Checksum=" << std::to_string(nCheckSum) << std::endl;
-    m_uomsCheckSums.insert(nCheckSum);
-    if (m_uomsCheckSums.count(nCheckSum) >= m_knMaxCheckSums)
+    //// Check for threefold repetition
+    ////int nCheckSum = CheckSum();
+    ////std::cout << "Checksum=" << std::to_string(nCheckSum) << std::endl;
+    ////m_uomsCheckSums.insert(nCheckSum);
+    m_uomsZobrist.insert(m_uiZobristKey);
+    //if (m_uomsCheckSums.count(nCheckSum) >= m_knMaxCheckSums)
+    if (m_uomsZobrist.count(m_uiZobristKey) >= m_knMaxRepetition)
     {
-        for (auto it = m_uomsCheckSums.begin(); it != m_uomsCheckSums.end(); ++it)
-            std::cout << "Checksum=" << *it << std::endl;
+        ////for (auto it = m_uomsCheckSums.begin(); it != m_uomsCheckSums.end(); ++it)
+        for (auto it = m_uomsZobrist.begin(); it != m_uomsZobrist.end(); ++it)
+            ////std::cout << "Checksum=" << *it << std::endl;
+            std::cout << "Zobrist=" << *it << std::endl;
 
         m_sWinBy.assign("draw by threefold repetition");
         return true;
@@ -1521,13 +1578,13 @@ int ChessGame::CheckSum() const
         for (int xxx = 0; xxx < m_knX; ++xxx)
         {
             if (cBoard.PositionOccupied(xxx, yyy))
-                //nCheckSum += (xxx + 1) * (yyy + 1) * cBoard.Value(xxx, yyy) * (cBoard.Player(xxx, yyy) + 1);
+                nCheckSum += (xxx + 1) * (yyy + 1) * cBoard.Value(xxx, yyy) * (cBoard.Player(xxx, yyy) + 1);
                 //nCheckSum += (xxx + 1) * (yyy + 1) * pow(cBoard.Value(xxx, yyy), (cBoard.Player(xxx, yyy) + 1));
                 //nCheckSum += pow(pow(pow(cBoard.Value(xxx, yyy), (cBoard.Player(xxx, yyy) + 1)),yyy + 1), xxx + 1);
                 //nCheckSum += pow(pow(cBoard.Value(xxx, yyy), xxx + 1), yyy + 1);
                 //nCheckSum += pow(pow(pow(xxx + 1, yyy + 1), cBoard.Player(xxx, yyy) + 1), cBoard.Value(xxx, yyy));
                 //nCheckSum += pow(cBoard.Value(xxx, yyy), cBoard.Player(xxx, yyy)) * (xxx + 1) * (yyy + 1) + cBoard.Player(xxx, yyy);
-                nCheckSum += pow((xxx + 2),(yyy + m_knY)) * cBoard.Value(xxx, yyy) * (pow(cBoard.Player(xxx, yyy),2));
+                //nCheckSum += pow((xxx + 2),(yyy + m_knY)) * cBoard.Value(xxx, yyy) * (pow(cBoard.Player(xxx, yyy),2));
         }
     }
 

@@ -28,9 +28,9 @@
 
 
 #include <climits>
-#include <cmath>
 //#include <cstdlib>
 #include <iostream>
+#include <random>
 #include <string>
 #include <unordered_set>
 
@@ -65,7 +65,8 @@ class ChessGame : public BoardGame
         // Return the title of the game
         virtual std::string Title() override;
 
-        void SetBoard() { BoardGame::SetBoard(); cBoard.ReverseY(); }
+        //void SetBoard() { BoardGame::SetBoard(); cBoard.ReverseY(); }
+        void SetBoard();
 
     protected:
         void GeneratePawnMoves(GameMove cGameMove,   int nPlayer, std::vector<GameMove> &vGameMoves) const;
@@ -94,6 +95,13 @@ class ChessGame : public BoardGame
 
         std::unordered_multiset<int> m_uomsCheckSums {};
         static const int m_knMaxCheckSums {3};
+        std::unordered_multiset<uint64_t> m_uomsZobrist {};
+        static const int m_knMaxRepetition {3};
+        uint64_t m_uiZobristKey;
+
+        static const int m_knNumberOfPieces  {12};
+        static const int m_knNumberOfSquares {64};
+        uint64_t m_auiZobrist[12][64] {{}};
 
         //const std::string sPieceSymbols {"RNBKQ"};
         //const std::string sFiles        {"abcdefgh"};
@@ -114,10 +122,22 @@ class ChessGame : public BoardGame
         static const int  m_knQueenValue  {9};
         static const int  m_knKingValue   {4};
 
-        bool m_abCastlingAllowed[2]   { true };
-        bool m_bDoublePawnMoveAllowed { true };
-        bool m_bEnPassantAllowed      { true };
+        static const int m_knWhitePawnIndex   {0};
+        static const int m_knWhiteRookIndex   {1};
+        static const int m_knWhiteKnightIndex {2};
+        static const int m_knWhiteBishopIndex {3};
+        static const int m_knWhiteQueenIndex  {4};
+        static const int m_knWhiteKingIndex   {5};
+        static const int m_knBlackPawnIndex   {6};
+        static const int m_knBlackRookIndex   {7};
+        static const int m_knBlackKnightIndex {8};
+        static const int m_knBlackBishopIndex {9};
+        static const int m_knBlackQueenIndex  {10};
+        static const int m_knBlackKingIndex   {11};
 
+        bool m_abCastlingAllowed[2]     { true };
+        bool m_bDoublePawnMoveAllowed   { true };
+        bool m_bEnPassantAllowed        { true };
         bool m_bAutomaticPromoteToQueen { true };
 };
 
