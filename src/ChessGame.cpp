@@ -95,7 +95,7 @@ void ChessGame::InitializeZobrist()
 #if defined(_WIN32)
     static unsigned seed  = std::chrono::high_resolution_clock::now().time_since_epoch().count();
     ++seed;
-    std::mt19937 generator{seed};
+    std::mt19937 RandomNumberGenerator{seed};
 #else
     std::random_device RandomDevice{};
     std::mt19937_64 RandomNumberGenerator{RandomDevice()};
@@ -108,6 +108,8 @@ void ChessGame::InitializeZobrist()
         for (int jjj = 0; jjj < m_knNumberOfSquares; ++jjj)
         {
             m_auiZobrist[iii][jjj] = RandomNumberGenerator();
+
+            ////std::cout << "Position[" << iii << "][" << jjj << "]=" << m_auiZobrist[iii][jjj] << std::endl;
         }
     }
 
@@ -118,7 +120,7 @@ void ChessGame::InitializeZobrist()
         {
             if (cBoard.PositionOccupied(xxx, yyy))
             {
-                m_uiZobristKey ^= m_auiZobrist[cBoard.Number(xxx, yyy)][(xxx + (yyy * 8))];
+                m_uiZobristKey ^= m_auiZobrist[cBoard.PieceNumber(xxx, yyy)][(xxx + (yyy * 8))];
             }
         }
     }
@@ -899,13 +901,35 @@ bool ChessGame::ApplyMove(int nPlayer, GameMove &cGameMove)
     {
         if (cValidGameMove.SameTo(cGameMove))
         {
+            ////if (!cGameMove.TestMove())
+            ////{
+            ////    std::cout << "Before ZKey=" << m_uiZobristKey;
+            ////}
+
             // Update the ZobristKey to reflect the move
-            m_uiZobristKey ^= m_auiZobrist[cBoard.Number(cGameMove.FromX(), cGameMove.FromY())][(cGameMove.FromX() + (cGameMove.FromY() * 8))];
-            m_uiZobristKey ^= m_auiZobrist[cBoard.Number(cGameMove.FromX(), cGameMove.FromY())][(cGameMove.ToX() + (cGameMove.ToY() * 8))];
+            m_uiZobristKey ^= m_auiZobrist[cBoard.PieceNumber(cGameMove.FromX(), cGameMove.FromY())][(cGameMove.FromX() + (cGameMove.FromY() * 8))];
+            ////if (!cGameMove.TestMove())
+            ////{
+            ////    std::cout << " From PieceNumber=" << cBoard.PieceNumber(cGameMove.FromX(), cGameMove.FromY());
+            ////}
+            m_uiZobristKey ^= m_auiZobrist[cBoard.PieceNumber(cGameMove.FromX(), cGameMove.FromY())][(cGameMove.ToX() + (cGameMove.ToY() * 8))];
+            ////if (!cGameMove.TestMove())
+            ////{
+            ////    std::cout << " To Zobrist=" << m_auiZobrist[cBoard.PieceNumber(cGameMove.FromX(), cGameMove.FromY())][(cGameMove.ToX() + (cGameMove.ToY() * 8))];
+            ////}
             if (cBoard.PositionOccupied(cGameMove.ToX(), cGameMove.ToY()))
             {
-                m_uiZobristKey ^= m_auiZobrist[cBoard.Number(cGameMove.ToX(), cGameMove.ToY())][(cGameMove.ToX() + (cGameMove.ToY() * 8))];
+                m_uiZobristKey ^= m_auiZobrist[cBoard.PieceNumber(cGameMove.ToX(), cGameMove.ToY())][(cGameMove.ToX() + (cGameMove.ToY() * 8))];
+                ////if (!cGameMove.TestMove())
+                ////{
+                ////    std::cout << " Capture Zobrist=" << m_auiZobrist[cBoard.PieceNumber(cGameMove.ToX(), cGameMove.ToY())][(cGameMove.ToX() + (cGameMove.ToY() * 8))];
+                ////}
             }
+
+            ////if (!cGameMove.TestMove())
+            ////{
+            ////    std::cout << " After ZKey=" << m_uiZobristKey << std::endl;
+            ////}
 
             if (cBoard.MovePiece(cGameMove))
             {
@@ -915,11 +939,11 @@ bool ChessGame::ApplyMove(int nPlayer, GameMove &cGameMove)
             }
             else // Update the ZobristKey to reflect the unmove
             {
-                m_uiZobristKey ^= m_auiZobrist[cBoard.Number(cGameMove.FromX(), cGameMove.FromY())][(cGameMove.FromX() + (cGameMove.FromY() * 8))];
-                m_uiZobristKey ^= m_auiZobrist[cBoard.Number(cGameMove.FromX(), cGameMove.FromY())][(cGameMove.ToX() + (cGameMove.ToY() * 8))];
+                m_uiZobristKey ^= m_auiZobrist[cBoard.PieceNumber(cGameMove.FromX(), cGameMove.FromY())][(cGameMove.FromX() + (cGameMove.FromY() * 8))];
+                m_uiZobristKey ^= m_auiZobrist[cBoard.PieceNumber(cGameMove.FromX(), cGameMove.FromY())][(cGameMove.ToX() + (cGameMove.ToY() * 8))];
                 if (cBoard.PositionOccupied(cGameMove.ToX(), cGameMove.ToY()))
                 {
-                    m_uiZobristKey ^= m_auiZobrist[cBoard.Number(cGameMove.ToX(), cGameMove.ToY())][(cGameMove.ToX() + (cGameMove.ToY() * 8))];
+                    m_uiZobristKey ^= m_auiZobrist[cBoard.PieceNumber(cGameMove.ToX(), cGameMove.ToY())][(cGameMove.ToX() + (cGameMove.ToY() * 8))];
                 }
                 return false;
             }
@@ -1333,10 +1357,10 @@ int ChessGame::EvaluateGameState(int nPlayer)
     int nPassedPawns   {0};
     CountPawns(nPlayer, nDoubledPawns, nIsolatedPawns, nPassedPawns);
 
-    // TODO: CountMobility
+    // Evaluate the number of moves available.
+    int nMobility = MobilityEvaluation(nPlayer) - MobilityEvaluation(1 - nPlayer + 2);
 
-    //return (nCountEval * 10) + (nSquareEval * 15) + (nMobilityEval * 5);
-    return (nCountEval * 20) - (nDoubledPawns * 5) - (nIsolatedPawns * 10) + (nPassedPawns * 10);
+    return (nCountEval * 20) - (nDoubledPawns * 5) - (nIsolatedPawns * 10) + (nPassedPawns * 10) + (nMobility * 10);
 }
 
 /**
@@ -1357,12 +1381,29 @@ int ChessGame::CountEvaluation(int nPlayer) const
         {
             if (cBoard.PositionOccupiedByPlayer(xxx, yyy, nPlayer))
             {
-                nEval += cBoard.Value(xxx, yyy);
+                nEval += cBoard.PieceValue(xxx, yyy);
             }
         }
     }
 
     return nEval;
+}
+
+/**
+  * Evaluate the number of valid moves for the player.
+  *
+  * \param nPlayer The player whose turn it is.
+  *
+  * \return An integer representing the number of valid moves for the player.
+  */
+
+int ChessGame::MobilityEvaluation(int nPlayer) const
+{
+
+    // Generate all possible valid moves for this player
+    std::vector<GameMove> vGameMoves = GenerateMoves(nPlayer);
+
+    return vGameMoves.size();
 }
 
 void ChessGame::CountPawns(int nPlayer, int &nDoubled, int &nIsolated, int &nPassed) const

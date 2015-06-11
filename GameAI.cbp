@@ -12,7 +12,9 @@
 TODO: Make hostname work
 
 TODO: Evaluate for stalemate - Done?
-TODO: Chess evaluation
+TODO: Chess evaluation - Done?
+TODO: InitializeZobrist for all chess games
+TODO: Update ZKey for pawn promotion and castling
 
 TODO: Check other TODOs
 

@@ -49,7 +49,7 @@ bool GameBoard::SetPiece(int nX, int nY, const GamePiece &cGamePiece)
     if (!ValidLocation(nX, nY))
         return false;
 
-    m_vBoard[nY][nX].Set(cGamePiece.Token(), cGamePiece.Player(), cGamePiece.Value());
+    m_vBoard[nY][nX].Set(cGamePiece.Token(), cGamePiece.Player(), cGamePiece.Value(), cGamePiece.Number());
 
     return true;
 }

@@ -28,7 +28,7 @@
 
 
 #include <climits>
-//#include <cstdlib>
+#include <chrono>
 #include <iostream>
 #include <random>
 #include <string>
@@ -90,6 +90,7 @@ class ChessGame : public BoardGame
 
         // Count the value of pieces for nPlayer
         int  CountEvaluation(int nPlayer) const;
+        int  MobilityEvaluation(int nPlayer) const;
         void CountPawns(int nPlayer, int &nDoubled, int &nIsolated, int &nPassed) const;
 
         std::unordered_multiset<int> m_uomsCheckSums {};
