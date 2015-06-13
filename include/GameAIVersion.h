@@ -54,8 +54,8 @@ namespace GameAIVersion
 	// MINOR version when you add functionality in a backwards-compatible manner, and
 	// PATCH version when you make backwards-compatible bug fixes.
 	static const int MAJOR = 0;
-	static const int MINOR = 5;
-	static const int PATCH = 15;
+	static const int MINOR = 6;
+	static const int PATCH = 0;
 	std::string SemanticVersion() { return (std::to_string(MAJOR) + "." + std::to_string(MINOR) + "." + std::to_string(PATCH)); }
 };
 

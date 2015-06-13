@@ -40,5 +40,7 @@ void ChessElena::SetBoard()
     cBoard.SetPiece(3, 4, cPiece);
     cBoard.SetPiece(4, 4, cPiece);
 
+    InitializeZobrist();
+
     return;
 }

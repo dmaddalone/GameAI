@@ -108,8 +108,6 @@ void ChessGame::InitializeZobrist()
         for (int jjj = 0; jjj < m_knNumberOfSquares; ++jjj)
         {
             m_auiZobrist[iii][jjj] = RandomNumberGenerator();
-
-            ////std::cout << "Position[" << iii << "][" << jjj << "]=" << m_auiZobrist[iii][jjj] << std::endl;
         }
     }
 
@@ -1356,7 +1354,7 @@ int ChessGame::EvaluateGameState(int nPlayer)
     // Evaluate the number of moves available.
     int nMobilityEval = MobilityEvaluation(nPlayer) - MobilityEvaluation(1 - nPlayer + 2);
 
-    return (nCountEval * 20) - (nDoubledPawnsEval * 5) - (nIsolatedPawnsEval * 10) + (nPassedPawnsEval * 10) + (nMobilityEval * 20);
+    return (nCountEval * 50) - (nDoubledPawnsEval * 5) - (nIsolatedPawnsEval * 10) + (nPassedPawnsEval * 10) + (nMobilityEval * 20);
 }
 
 /**
@@ -1606,4 +1604,58 @@ bool ChessGame::GameEnded(int nPlayer)
     }
 
     return false;
+}
+
+int ChessGame::ReadMovesFromFile(const std::string &sFileName)
+{
+    std::fstream fsFile;
+    int nPlayer;
+
+    if (!OpenFileForRead(sFileName, fsFile))
+    {
+        std::cerr << "Could not open " << sFileName << std::endl;
+        return 0;
+    }
+
+    // Read Psuedo PGN
+    // Then read and apply moves
+
+    nPlayer = ReadAndApplyMoves(sFileName, fsFile);
+
+    CloseFile(fsFile);
+
+    return nPlayer;
+}
+
+bool ChessGame::WriteMovesToFile(const std::string &sFileName)
+{
+    std::fstream fsFile;
+
+    if (!OpenFileForWrite(sFileName, fsFile))
+    {
+        std::cerr << "Could not open " << sFileName << std::endl;
+        return false;
+    }
+
+    // Psuedo PGN
+    // Write the following REQUIRED:
+    // Event: the name of the tournament or match event.
+    // Site: the location of the event. This is in "City, Region COUNTRY" format, where COUNTRY is the three-letter International Olympic Committee code for the country. An example is "New York City, NY USA".
+    // Date: the starting date of the game, in YYYY.MM.DD form. "??" are used for unknown values.
+    // Round: the playing round ordinal of the game within the event.
+    // White: the player of the white pieces, in "last name, first name" format.
+    // Black: the player of the black pieces, same format as White.
+    // Result: the result of the game. This can only have four possible values: "1-0" (White won), "0-1" (Black won), "1/2-1/2" (Draw), or "*" (other, e.g., the game is ongoing).
+
+    // Write the following OPTIONAL:
+    // Time: Time the game started, in "HH:MM:SS" format, in local clock time.
+    // WhiteType, BlackType: These tags use string values; these describe the player types.  The value "human" should be used for a person while the value "program" should be used for algorithmic (computer) players.
+    //
+
+    if (!WriteMoves(sFileName, fsFile))
+        return false;
+
+    CloseFile(fsFile);
+
+    return true;
 }

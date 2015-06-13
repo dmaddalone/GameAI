@@ -158,7 +158,9 @@ bool Game::OpenFileForWrite(const std::string &sFileName, std::fstream &fsFile)
 {
     // Log the method entry
     std::string sMessage = "Opening file " + sFileName + " for write";
-    m_cLogger.LogInfo(sMessage,2);    fsFile.open(sFileName, std::fstream::out | std::fstream::trunc);
+    m_cLogger.LogInfo(sMessage,2);
+
+    fsFile.open(sFileName, std::fstream::out | std::fstream::trunc);
 
     return (fsFile.is_open());
 }

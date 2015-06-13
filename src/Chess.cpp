@@ -58,5 +58,7 @@ void Chess::SetBoard()
     cBoard.SetPiece(6, 6, cPiece);
     cBoard.SetPiece(7, 6, cPiece);
 
+    InitializeZobrist();
+
     return;
 }

@@ -64,8 +64,13 @@ class ChessGame : public BoardGame
         // Return the title of the game
         virtual std::string Title() override;
 
-        //void SetBoard() { BoardGame::SetBoard(); cBoard.ReverseY(); }
         void SetBoard();
+
+        // Read moves from a text file and apply them
+        int  ReadMovesFromFile(const std::string &sFileName);
+
+        // Write Moves to a text file
+        bool WriteMovesToFile(const std::string &sFileName);
 
     protected:
         void InitializeZobrist();

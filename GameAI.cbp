@@ -12,9 +12,10 @@
 TODO: Make hostname work
 
 TODO: Evaluate for stalemate - Done?
-TODO: Chess evaluation - Done?
-TODO: InitializeZobrist for all chess games
-TODO: Update ZKey for pawn promotion and castling
+TODO: Comments
+TODO: Remove magic numbers
+TODO: "Think ..." Spin?
+TODO: Minimax can't see checkmate easily??
 
 TODO: Check other TODOs
 

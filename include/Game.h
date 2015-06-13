@@ -123,16 +123,10 @@ class Game
         void SetVerbosity(int n)  { m_cLogger.SetLevel(n); m_cLogger.UseTimeStamp(false); m_cLogger.UseTag(false); m_cLogger.UseLevelIndent(true); }
 
         // Read moves from a text file and apply them
-        bool OpenFileForRead(const std::string &sFileName, std::fstream &fsFile);
-        int  ReadAndApplyMoves(const std::string &sFileName, std::fstream &fsFile);
         int  ReadMovesFromFile(const std::string &sFileName);
 
         // Write Moves to a text file
-        bool OpenFileForWrite(const std::string &sFileName, std::fstream &fsFile);
-        bool WriteMoves(const std::string &sFileName, std::fstream &fsFile);
         bool WriteMovesToFile(const std::string &sFileName);
-
-        bool CloseFile(std::fstream &fsFile);
 
         // Return game information
         GameType Type() const      { return m_ecGameType; }
@@ -144,6 +138,12 @@ class Game
         std::string WinBy() const  { return m_sWinBy; }
 
     protected:
+        // Write and read moves from a file
+        bool OpenFileForWrite(const std::string &sFileName, std::fstream &fsFile);
+        bool WriteMoves(const std::string &sFileName, std::fstream &fsFile);
+        bool OpenFileForRead(const std::string &sFileName, std::fstream &fsFile);
+        int  ReadAndApplyMoves(const std::string &sFileName, std::fstream &fsFile);
+        bool CloseFile(std::fstream &fsFile);
         // Player numbers, defined in the Constructor
         const int m_knPlayer1;//  {1};
         const int m_knPlayer2;//  {2};
