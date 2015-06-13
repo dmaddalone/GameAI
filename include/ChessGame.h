@@ -26,7 +26,6 @@
 #ifndef CHESSGAME_H
 #define CHESSGAME_H
 
-
 #include <climits>
 #include <chrono>
 #include <iostream>
@@ -93,8 +92,8 @@ class ChessGame : public BoardGame
         int  MobilityEvaluation(int nPlayer) const;
         void CountPawns(int nPlayer, int &nDoubled, int &nIsolated, int &nPassed) const;
 
-        std::unordered_multiset<int> m_uomsCheckSums {};
-        static const int m_knMaxCheckSums {3};
+        //std::unordered_multiset<int> m_uomsCheckSums {};
+        //static const int m_knMaxCheckSums {3};
         std::unordered_multiset<uint64_t> m_uomsZobrist {};
         static const int m_knMaxRepetition {3};
         uint64_t m_uiZobristKey;
@@ -122,18 +121,19 @@ class ChessGame : public BoardGame
         static const int  m_knQueenValue  {9};
         static const int  m_knKingValue   {4};
 
+        static const int m_knPieceIndexOffset {6};
         static const int m_knWhitePawnIndex   {0};
         static const int m_knWhiteRookIndex   {1};
         static const int m_knWhiteKnightIndex {2};
         static const int m_knWhiteBishopIndex {3};
         static const int m_knWhiteQueenIndex  {4};
         static const int m_knWhiteKingIndex   {5};
-        static const int m_knBlackPawnIndex   {6};
-        static const int m_knBlackRookIndex   {7};
-        static const int m_knBlackKnightIndex {8};
-        static const int m_knBlackBishopIndex {9};
-        static const int m_knBlackQueenIndex  {10};
-        static const int m_knBlackKingIndex   {11};
+        static const int m_knBlackPawnIndex   {m_knWhitePawnIndex   + m_knPieceIndexOffset};
+        static const int m_knBlackRookIndex   {m_knWhiteRookIndex   + m_knPieceIndexOffset};
+        static const int m_knBlackKnightIndex {m_knWhiteKnightIndex + m_knPieceIndexOffset};
+        static const int m_knBlackBishopIndex {m_knWhiteBishopIndex + m_knPieceIndexOffset};
+        static const int m_knBlackQueenIndex  {m_knWhiteQueenIndex  + m_knPieceIndexOffset};
+        static const int m_knBlackKingIndex   {m_knWhiteKingIndex   + m_knPieceIndexOffset};
 
         bool m_abCastlingAllowed[2]     { true };
         bool m_bDoublePawnMoveAllowed   { true };

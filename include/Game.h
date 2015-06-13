@@ -116,7 +116,6 @@ class Game
         // Return the title of the game
         virtual std::string Title() = 0;
 
-
         // Make a game of ecGameType
         static std::unique_ptr<Game> Make(GameType ecGameType);
 
@@ -124,10 +123,16 @@ class Game
         void SetVerbosity(int n)  { m_cLogger.SetLevel(n); m_cLogger.UseTimeStamp(false); m_cLogger.UseTag(false); m_cLogger.UseLevelIndent(true); }
 
         // Read moves from a text file and apply them
-        int ReadMoves(std::string sFileName);
+        bool OpenFileForRead(const std::string &sFileName, std::fstream &fsFile);
+        int  ReadAndApplyMoves(const std::string &sFileName, std::fstream &fsFile);
+        int  ReadMovesFromFile(const std::string &sFileName);
 
-        // Write moves to a text file
-        bool WriteMoves(std::string sFileName);
+        // Write Moves to a text file
+        bool OpenFileForWrite(const std::string &sFileName, std::fstream &fsFile);
+        bool WriteMoves(const std::string &sFileName, std::fstream &fsFile);
+        bool WriteMovesToFile(const std::string &sFileName);
+
+        bool CloseFile(std::fstream &fsFile);
 
         // Return game information
         GameType Type() const      { return m_ecGameType; }

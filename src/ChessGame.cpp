@@ -337,49 +337,40 @@ void ChessGame::GeneratePawnMoves(GameMove cGameMove, int nPlayer, std::vector<G
     //
     if (m_bEnPassantAllowed)
     {
+        // Get last applied game move
         GameMove cLastGameMove = LastMove();
+
         // Check to see if there was a move
         if (!cLastGameMove.NoMove())
         {
-            // If last move was a Pawn
+            // If last move was an opponent Pawn
             if (cBoard.Token(cLastGameMove.ToX(), cLastGameMove.ToY()) == m_kcPawnToken)
             {
-                // If the Pawn moved two squares
+                // If the opponent Pawn moved two squares
                 if (abs((cLastGameMove.FromY() - cLastGameMove.ToY())) == 2)
                 {
-                    // If the Pawn's movement passed this player's Pawn
-                    if ((cLastGameMove.ToY() > knY) && (cLastGameMove.FromY() < knY))
+                    // If the opponent Pawn's rank now equals this Pawn's rank
+                    if (cLastGameMove.ToY() == knY)
                     {
-                        // If the Pawn's are adjacent
-                        if (knX - cLastGameMove.FromX() == 1)
+                        // If the Pawns' files are adjacent
+                        if ((knX - cLastGameMove.FromX() == 1) || (cLastGameMove.FromX() - knX == 1))
                         {
+                            // Set To X coordinate
                             cGameMove.SetToX(cLastGameMove.FromX());
-                            cGameMove.SetToY(cLastGameMove.FromY() - 1);
+
+                            // Find Y-direction and set Y coordinate
+                            if (cLastGameMove.FromY() > cLastGameMove.ToY())
+                            {
+                                cGameMove.SetToY(cLastGameMove.FromY() - 1);
+                            }
+                            else
+                            {
+                                cGameMove.SetToY(cLastGameMove.FromY() + 1);
+                            }
+
                             TestForCheck(nPlayer, cGameMove, vGameMoves);
-                        }
-                        else if (cLastGameMove.FromX() - knX == 1)
-                        {
-                            cGameMove.SetToX(cLastGameMove.FromX());
-                            cGameMove.SetToY(cLastGameMove.FromY() - 1);
-                            TestForCheck(nPlayer, cGameMove, vGameMoves);
-                        }
-                    }
-                    else if ((cLastGameMove.FromY() > knY) && (cLastGameMove.ToY() < knY))
-                    {
-                        // If the Pawn's are adjacent
-                        if (knX - cLastGameMove.FromX() == 1)
-                        {
-                            cGameMove.SetToX(cLastGameMove.FromX());
-                            cGameMove.SetToY(cLastGameMove.FromY() + 1);
-                            TestForCheck(nPlayer, cGameMove, vGameMoves);
-                        }
-                        else if (cLastGameMove.FromX() - knX == 1)
-                        {
-                            cGameMove.SetToX(cLastGameMove.FromX());
-                            cGameMove.SetToY(cLastGameMove.FromY() + 1);
-                            TestForCheck(nPlayer, cGameMove, vGameMoves);
-                        }
-                    }  // If the Pawn's movement passed this player's Pawn
+                        } // If the Pawns' files are adjacent
+                    }  // If the opponent Pawn's rank now equals this Pawn's rank
                 } // If the Pawn moved two squares
             } // If last move was a Pawn
         } // Check to see if there was a move
@@ -901,35 +892,14 @@ bool ChessGame::ApplyMove(int nPlayer, GameMove &cGameMove)
     {
         if (cValidGameMove.SameTo(cGameMove))
         {
-            ////if (!cGameMove.TestMove())
-            ////{
-            ////    std::cout << "Before ZKey=" << m_uiZobristKey;
-            ////}
 
             // Update the ZobristKey to reflect the move
             m_uiZobristKey ^= m_auiZobrist[cBoard.PieceNumber(cGameMove.FromX(), cGameMove.FromY())][(cGameMove.FromX() + (cGameMove.FromY() * 8))];
-            ////if (!cGameMove.TestMove())
-            ////{
-            ////    std::cout << " From PieceNumber=" << cBoard.PieceNumber(cGameMove.FromX(), cGameMove.FromY());
-            ////}
             m_uiZobristKey ^= m_auiZobrist[cBoard.PieceNumber(cGameMove.FromX(), cGameMove.FromY())][(cGameMove.ToX() + (cGameMove.ToY() * 8))];
-            ////if (!cGameMove.TestMove())
-            ////{
-            ////    std::cout << " To Zobrist=" << m_auiZobrist[cBoard.PieceNumber(cGameMove.FromX(), cGameMove.FromY())][(cGameMove.ToX() + (cGameMove.ToY() * 8))];
-            ////}
             if (cBoard.PositionOccupied(cGameMove.ToX(), cGameMove.ToY()))
             {
                 m_uiZobristKey ^= m_auiZobrist[cBoard.PieceNumber(cGameMove.ToX(), cGameMove.ToY())][(cGameMove.ToX() + (cGameMove.ToY() * 8))];
-                ////if (!cGameMove.TestMove())
-                ////{
-                ////    std::cout << " Capture Zobrist=" << m_auiZobrist[cBoard.PieceNumber(cGameMove.ToX(), cGameMove.ToY())][(cGameMove.ToX() + (cGameMove.ToY() * 8))];
-                ////}
             }
-
-            ////if (!cGameMove.TestMove())
-            ////{
-            ////    std::cout << " After ZKey=" << m_uiZobristKey << std::endl;
-            ////}
 
             if (cBoard.MovePiece(cGameMove))
             {
@@ -970,71 +940,89 @@ bool ChessGame::ApplyMove(int nPlayer, GameMove &cGameMove)
         return false;
     }
 
+    //
     // Perform Pawn Promotion
+    //
     cToken = cBoard.Token(cGameMove.ToX(), cGameMove.ToY());
+
+    // If this is a pawn on the last or first rank, promote the pawn
     if ((cToken == m_kcPawnToken) && ((cGameMove.ToY() == m_knY - 1) || (cGameMove.ToY() == 0)))
     {
         bool bGoodToken = false;
         char cPromotion {};
+        int  nIndexOffset = m_knPieceIndexOffset * (nPlayer - 1);
 
         GamePiece cGamePiece = cBoard.Piece(cGameMove.ToX(), cGameMove.ToY());
 
         while (!bGoodToken)
         {
+            // If automatic Queen promotion has bee set, use the queen as the selected token
             if (m_bAutomaticPromoteToQueen)
             {
                 cPromotion = m_kcQueenToken;
             }
+            // Else ask for input from player.  //TODO: Make this work with Minimax.
             else
             {
 
-            std::cout << "\nPAWN PROMOTION ("
-                << m_kcRookToken << ", "
-                << m_kcKnightToken << ", "
-                << m_kcBishopToken << ", "
-                << m_kcQueenToken << "): ";
+                std::cout << "\nPAWN PROMOTION ("
+                    << m_kcRookToken << ", "
+                    << m_kcKnightToken << ", "
+                    << m_kcBishopToken << ", "
+                    << m_kcQueenToken << "): ";
 
-            std::cin >> cPromotion;
-            cPromotion = toupper(cPromotion);
+                std::cin >> cPromotion;
+                cPromotion = toupper(cPromotion);
             }
 
+            // Based on selected token
             switch (cPromotion)
             {
                 case m_kcRookToken:
-                    cToken = cPromotion;
-                    cGamePiece.Set(cPromotion, nPlayer, m_knRookValue);
-                    cBoard.SetPiece(cGameMove.ToX(), cGameMove.ToY(), cGamePiece);
+                    cGamePiece.Set(cPromotion, nPlayer, m_knRookValue, m_knWhiteRookIndex + nIndexOffset);
                     bGoodToken = true;
                     break;
                 case m_kcKnightToken:
-                    cToken = cPromotion;
-                    cGamePiece.Set(cPromotion, nPlayer, m_knKnightValue);
-                    cBoard.SetPiece(cGameMove.ToX(), cGameMove.ToY(), cGamePiece);
+                    cGamePiece.Set(cPromotion, nPlayer, m_knKnightValue, m_knWhiteKnightIndex + nIndexOffset);
                     bGoodToken = true;
                     break;
                 case m_kcBishopToken:
-                    cToken = cPromotion;
-                    cGamePiece.Set(cPromotion, nPlayer, m_knBishopValue);
-                    cBoard.SetPiece(cGameMove.ToX(), cGameMove.ToY(), cGamePiece);
+                    cGamePiece.Set(cPromotion, nPlayer, m_knBishopValue, m_knWhiteBishopIndex + nIndexOffset);
                     bGoodToken = true;
                     break;
                 case m_kcQueenToken:
-                    cToken = cPromotion;
-                    cGamePiece.Set(cPromotion, nPlayer, m_knQueenValue);
-                    cBoard.SetPiece(cGameMove.ToX(), cGameMove.ToY(), cGamePiece);
+                    cGamePiece.Set(cPromotion, nPlayer, m_knQueenValue, m_knWhiteQueenIndex + nIndexOffset);
                     bGoodToken = true;
                     break;
                 default:
                     std::cout << "Invalid entry: " << cPromotion << std::endl;
                     break;
             }
+
+            if (bGoodToken)
+            {
+                // Update the ZobristKey to reflect the removal of the pawn from the board
+                m_uiZobristKey ^= m_auiZobrist[cBoard.PieceNumber(cGameMove.ToX(), cGameMove.ToY())][(cGameMove.ToX() + (cGameMove.ToY() * 8))];
+
+                // Promote the pawn on the board
+                cBoard.SetPiece(cGameMove.ToX(), cGameMove.ToY(), cGamePiece);
+
+                // Update the ZobristKey to reflect the promotion
+                m_uiZobristKey ^= m_auiZobrist[cBoard.PieceNumber(cGameMove.ToX(), cGameMove.ToY())][(cGameMove.ToX() + (cGameMove.ToY() * 8))];
+            }
         }
     }
 
+    //
     // Perform Second Half of Castling Move
+    //
+
+    // If castling alloed
     if (m_abCastlingAllowed[nPlayer -1])
     {
         cToken = cBoard.Token(cGameMove.ToX(), cGameMove.ToY());
+
+        // If the token is a King
         if (cToken == m_kcKingToken)
         {
             int nX;
@@ -1042,6 +1030,7 @@ bool ChessGame::ApplyMove(int nPlayer, GameMove &cGameMove)
             bool bCastleWest = false;
             GameMove cRookMove;
 
+            // if the King moved movre than 1 square
             if (abs(cGameMove.FromX() - cGameMove.ToX()) > 1)
             {
                 bValidMove = false;
@@ -1062,6 +1051,7 @@ bool ChessGame::ApplyMove(int nPlayer, GameMove &cGameMove)
                     nX = cGameMove.FromX() + 2;
                 }
 
+                // The King's from file
                 nY = cGameMove.FromY();
 
                 if (FindPiece(nX, nY, nPlayer, m_kcRookToken))
@@ -1082,10 +1072,16 @@ bool ChessGame::ApplyMove(int nPlayer, GameMove &cGameMove)
                         cRookMove.SetToX(cGameMove.ToX() - 1);
                     }
 
-                    if (cBoard.MovePiece(cRookMove))
+                    // Update the ZobristKey to reflect the movement of the rook
+                    m_uiZobristKey ^= m_auiZobrist[cBoard.PieceNumber(cGameMove.FromX(), cGameMove.FromY())][(cGameMove.FromX() + (cGameMove.FromY() * 8))];
+
+                    if (cBoard.MovePiece(cRookMove)) //TODO: Check return code
                     {
                         bValidMove = true;
                         m_abCastlingAllowed[nPlayer - 1] = false;
+
+                        // Update the ZobristKey to reflect the movement of the rook
+                        m_uiZobristKey ^= m_auiZobrist[cBoard.PieceNumber(cGameMove.ToX(), cGameMove.ToY())][(cGameMove.ToX() + (cGameMove.ToY() * 8))];
                     }
                 }
             }
@@ -1352,15 +1348,15 @@ int ChessGame::EvaluateGameState(int nPlayer)
     // Evaluate the number of peices for each player. "Greedy evaluation."
     int nCountEval = CountEvaluation(nPlayer)  - CountEvaluation(1 - nPlayer + 2);
 
-    int nDoubledPawns  {0};
-    int nIsolatedPawns {0};
-    int nPassedPawns   {0};
-    CountPawns(nPlayer, nDoubledPawns, nIsolatedPawns, nPassedPawns);
+    int nDoubledPawnsEval  {0};
+    int nIsolatedPawnsEval {0};
+    int nPassedPawnsEval   {0};
+    CountPawns(nPlayer, nDoubledPawnsEval, nIsolatedPawnsEval, nPassedPawnsEval);
 
     // Evaluate the number of moves available.
-    int nMobility = MobilityEvaluation(nPlayer) - MobilityEvaluation(1 - nPlayer + 2);
+    int nMobilityEval = MobilityEvaluation(nPlayer) - MobilityEvaluation(1 - nPlayer + 2);
 
-    return (nCountEval * 20) - (nDoubledPawns * 5) - (nIsolatedPawns * 10) + (nPassedPawns * 10) + (nMobility * 10);
+    return (nCountEval * 20) - (nDoubledPawnsEval * 5) - (nIsolatedPawnsEval * 10) + (nPassedPawnsEval * 10) + (nMobilityEval * 20);
 }
 
 /**

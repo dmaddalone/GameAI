@@ -405,7 +405,7 @@ int main(int argc, char* argv[])
     bool bGameNotEnded = true;
     // If input file specified, read and apply moves.  Returns number of next player.
     if (!sInputFile.empty())
-        nPlayer = pcGame->ReadMoves(sInputFile);
+        nPlayer = pcGame->ReadMovesFromFile(sInputFile);
 
     // Evaluate game ended before moving into player turns loop
     // If nPlayer == 0, an error occured.
@@ -500,5 +500,5 @@ int main(int argc, char* argv[])
 
     // If output file specified, write game moves
     if (!sOutputFile.empty())
-        pcGame->WriteMoves(sOutputFile);
+        pcGame->WriteMovesToFile(sOutputFile);
 }

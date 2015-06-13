@@ -77,35 +77,25 @@ std::unique_ptr<Game> Game::Make(GameType ecGameType)
     }
 }
 
-/**
-  * Write moves to a file.
-  *
-  * \param sFileName Name of the output file
-  *
-  * \return True if successful, false otherwise.
-  */
 
-bool Game::WriteMoves(std::string sFileName)
+
+
+
+bool Game::CloseFile(std::fstream &fsFile)
+{
+    fsFile.close();
+    return true;
+}
+
+bool Game::OpenFileForRead(const std::string &sFileName, std::fstream &fsFile)
 {
     // Log the method entry
-    std::string sMessage = "Writing moves to file " + sFileName;
+    std::string sMessage = "Opening file " + sFileName + " for read";
     m_cLogger.LogInfo(sMessage,2);
 
-    std::ofstream ofsFile(sFileName);
-    if (!ofsFile)
-    {
-        std::cerr << "Could not open " << sFileName << std::endl;
-        return false;
-    }
+    fsFile.open(sFileName, std::fstream::in);
 
-    for (GameMove cGameMove : m_vGameMoves)
-    {
-        ofsFile << cGameMove.AnnounceFromMove() << cGameMove.AnnounceToMove() << std::endl;
-    }
-
-    ofsFile.close();
-
-    return true;
+    return (fsFile.is_open());
 }
 
 /**
@@ -118,7 +108,7 @@ bool Game::WriteMoves(std::string sFileName)
   * \return Number pf th eplayer to play next if successful, otherwise 0.
   */
 
-int Game::ReadMoves(std::string sFileName)
+int Game::ReadAndApplyMoves(const std::string &sFileName, std::fstream &fsFile)
 {
     std::string sMove;
     GameMove cGameMove;
@@ -128,16 +118,9 @@ int Game::ReadMoves(std::string sFileName)
     std::string sMessage = "Reading moves from file " + sFileName;
     m_cLogger.LogInfo(sMessage,2);
 
-    std::ifstream ifsFile(sFileName);
-    if (!ifsFile)
-    {
-        std::cerr << "Could not open " << sFileName << std::endl;
-        return 0;
-    }
-
     int nMoveCounter = 0;
 
-    while (getline(ifsFile, sMove))
+    while (getline(fsFile, sMove))
     {
         cGameMove = GenerateMove(sMove);
 
@@ -146,10 +129,78 @@ int Game::ReadMoves(std::string sFileName)
 
         if (!ApplyMove(nPlayer, cGameMove))
             return 0;
+
         nPlayer = 1 - nPlayer + 2;
     }
 
-    ifsFile.close();
+    return nPlayer;
+}
+
+int Game::ReadMovesFromFile(const std::string &sFileName)
+{
+    std::fstream fsFile;
+    int nPlayer;
+
+    if (!OpenFileForRead(sFileName, fsFile))
+    {
+        std::cerr << "Could not open " << sFileName << std::endl;
+        return 0;
+    }
+
+    nPlayer = ReadAndApplyMoves(sFileName, fsFile);
+
+    CloseFile(fsFile);
 
     return nPlayer;
+}
+
+bool Game::OpenFileForWrite(const std::string &sFileName, std::fstream &fsFile)
+{
+    // Log the method entry
+    std::string sMessage = "Opening file " + sFileName + " for write";
+    m_cLogger.LogInfo(sMessage,2);    fsFile.open(sFileName, std::fstream::out | std::fstream::trunc);
+
+    return (fsFile.is_open());
+}
+
+/**
+  * Write moves to a file.
+  *
+  * \param sFileName Name of the output file
+  *
+  * \return True if successful, false otherwise.
+  */
+
+bool Game::WriteMoves(const std::string &sFileName, std::fstream &fsFile)
+{
+    // Log the method entry
+    std::string sMessage = "Writing moves to file " + sFileName;
+    m_cLogger.LogInfo(sMessage,2);
+
+    for (GameMove cGameMove : m_vGameMoves)
+    {
+        fsFile << cGameMove.AnnounceFromMove() << cGameMove.AnnounceToMove() << std::endl;
+    }
+
+    CloseFile(fsFile);
+
+    return true;
+}
+
+bool Game::WriteMovesToFile(const std::string &sFileName)
+{
+    std::fstream fsFile;
+
+    if (!OpenFileForWrite(sFileName, fsFile))
+    {
+        std::cerr << "Could not open " << sFileName << std::endl;
+        return false;
+    }
+
+    if (!WriteMoves(sFileName, fsFile))
+        return false;
+
+    CloseFile(fsFile);
+
+    return true;
 }
