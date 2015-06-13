@@ -30,15 +30,15 @@
 std::string Logger::TimeStamp() const
 {
     std::string sTimeStamp {};
-    int         nBufLen    {25};
+    static const int nBufLen {50};
 
     if (m_bUseTimeStamp)
     {
         std::time_t t = std::time(nullptr);
         char* pcBuffer = new char[nBufLen];
-
         size_t nLen = strftime(pcBuffer, nBufLen, "%F %T", localtime(&t));
         sTimeStamp = std::string(pcBuffer, nLen);
+        delete[] pcBuffer;
     }
 
     return sTimeStamp;

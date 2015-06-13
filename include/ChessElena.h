@@ -36,6 +36,8 @@ class ChessElena : public ChessGame
         // Constructor
         ChessElena(GameType ecGameType) : ChessGame(ecGameType, 5, 6, true, true, true)
         {
+            m_sTitle.assign("Elena Minichess");
+
             m_abCastlingAllowed[0] = false;
             m_abCastlingAllowed[1] = false;
             m_bDoublePawnMoveAllowed = false;
@@ -49,7 +51,7 @@ class ChessElena : public ChessGame
         // Clone the current game
         virtual std::unique_ptr<Game> Clone() const override { return std::unique_ptr<Game>(new ChessElena(*this)); }
         // Return the title of the game
-        virtual std::string Title() override { return "Elena Minichess" + ChessGame::Title(); }
+        virtual std::string Title() override { return m_sTitle + ChessGame::Title(); }
 
         void SetBoard();
 };

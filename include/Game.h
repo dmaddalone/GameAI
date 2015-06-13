@@ -38,6 +38,7 @@
 #endif
 
 #include "GameMove.h"
+//#include "GameAIVersion.h"
 #include "Logger.h"
 
 // Used to identify the type of game
@@ -63,11 +64,7 @@ class Game
 {
     public:
         // Construct a game of ecGameType and two players
-        Game(GameType ecGameType) :
-        m_knPlayer1(1),
-        m_knPlayer2(2),
-        m_nWinner(0),
-        m_nNumberOfMoves(0)
+        Game(GameType ecGameType)
         { m_ecGameType = ecGameType; }
 
         //
@@ -123,10 +120,16 @@ class Game
         void SetVerbosity(int n)  { m_cLogger.SetLevel(n); m_cLogger.UseTimeStamp(false); m_cLogger.UseTag(false); m_cLogger.UseLevelIndent(true); }
 
         // Read moves from a text file and apply them
-        int  ReadMovesFromFile(const std::string &sFileName);
+        virtual int  ReadMovesFromFile(const std::string &sFileName);
 
         // Write Moves to a text file
-        bool WriteMovesToFile(const std::string &sFileName);
+        virtual bool WriteMovesToFile(const std::string &sFileName);
+
+        // Set Player information
+        void SetPlayer1Name(std::string sName) { m_sPlayer1Name.assign(sName); }
+        void SetPlayer2Name(std::string sName) { m_sPlayer2Name.assign(sName); }
+        void SetPlayer1Type(std::string sType) { m_sPlayer1Type.assign(sType); }
+        void SetPlayer2Type(std::string sType) { m_sPlayer2Type.assign(sType); }
 
         // Return game information
         GameType Type() const      { return m_ecGameType; }
@@ -144,9 +147,18 @@ class Game
         bool OpenFileForRead(const std::string &sFileName, std::fstream &fsFile);
         int  ReadAndApplyMoves(const std::string &sFileName, std::fstream &fsFile);
         bool CloseFile(std::fstream &fsFile);
-        // Player numbers, defined in the Constructor
-        const int m_knPlayer1;//  {1};
-        const int m_knPlayer2;//  {2};
+
+        // Name of the programs
+        const std::string m_sProgramName {"GameAI"};
+
+        // Player numbers
+        const int m_knPlayer1 {1};
+        const int m_knPlayer2 {2};
+
+        std::string m_sPlayer1Name {};
+        std::string m_sPlayer1Type {};
+        std::string m_sPlayer2Name {};
+        std::string m_sPlayer2Type {};
 
         // Default game type
         GameType m_ecGameType {GameType::TYPE_NONE};
@@ -155,15 +167,14 @@ class Game
         std::vector<GameMove> m_vGameMoves;
 
         // Current winning players
-        int m_nWinner;//         {0};
+        int m_nWinner {0};
         // Number of moves
-        int m_nNumberOfMoves;//  {0};
+        int m_nNumberOfMoves {0};
         // How the winner won
         std::string m_sWinBy  {};
 
         // Create a Logger object
         Logger m_cLogger;
-
 };
 
 #endif // GAME_H

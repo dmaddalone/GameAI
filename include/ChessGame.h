@@ -28,6 +28,7 @@
 
 #include <climits>
 #include <chrono>
+#include <ctime>
 #include <iostream>
 #include <random>
 #include <string>
@@ -42,7 +43,22 @@ class ChessGame : public BoardGame
         // Construct a LinearGame
         ChessGame(GameType ecGameType, int nX, int nY, bool bDisplayGrid, bool bDisplayXCoordinates, bool bDisplayYCoordinates) :
             BoardGame(ecGameType, nX, nY, bDisplayGrid, bDisplayXCoordinates, bDisplayYCoordinates)
-            { SetBoard(); }
+            {
+                // Starting date of the game
+                int nBufLen    {25};
+                std::time_t t = std::time(nullptr);
+                char* pcBuffer = new char[nBufLen];
+
+                size_t nLen = strftime(pcBuffer, nBufLen, "%Y.%m.%d", localtime(&t));
+                m_sDateStart = std::string(pcBuffer, nLen);
+
+                nLen = strftime(pcBuffer, nBufLen, "%T", localtime(&t));
+                m_sTimeStart = std::string(pcBuffer, nLen);
+
+                delete[] pcBuffer;
+
+                SetBoard();
+            }
 
         // Destructor
         virtual ~ChessGame() {}
@@ -67,10 +83,10 @@ class ChessGame : public BoardGame
         void SetBoard();
 
         // Read moves from a text file and apply them
-        int  ReadMovesFromFile(const std::string &sFileName);
+        virtual int  ReadMovesFromFile(const std::string &sFileName) override;
 
         // Write Moves to a text file
-        bool WriteMovesToFile(const std::string &sFileName);
+        virtual bool WriteMovesToFile(const std::string &sFileName) override;
 
     protected:
         void InitializeZobrist();
@@ -97,8 +113,9 @@ class ChessGame : public BoardGame
         int  MobilityEvaluation(int nPlayer) const;
         void CountPawns(int nPlayer, int &nDoubled, int &nIsolated, int &nPassed) const;
 
-        //std::unordered_multiset<int> m_uomsCheckSums {};
-        //static const int m_knMaxCheckSums {3};
+        std::string m_sDateStart {};
+        std::string m_sTimeStart {};
+
         std::unordered_multiset<uint64_t> m_uomsZobrist {};
         static const int m_knMaxRepetition {3};
         uint64_t m_uiZobristKey;
@@ -111,6 +128,8 @@ class ChessGame : public BoardGame
         //const std::string sFiles        {"abcdefgh"};
         //const std::string sRanks        {"12345678"};
         //const std::string sCaptures     {"x"};
+
+        std::string m_sTitle {};
 
         static const char m_kcPawnToken   {'P'};
         static const char m_kcRookToken   {'R'};

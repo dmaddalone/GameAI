@@ -35,14 +35,17 @@ class ChessGardner : public ChessGame
     public:
         // Constructor
         ChessGardner(GameType ecGameType) : ChessGame(ecGameType, 5, 5, true, true, true)
-        { SetBoard(); }
+        {
+            m_sTitle.assign("Gardner Minichess");
+            SetBoard();
+        }
         // Destructor
         ~ChessGardner() {}
 
         // Clone the current game
         virtual std::unique_ptr<Game> Clone() const override { return std::unique_ptr<Game>(new ChessGardner(*this)); }
         // Return the title of the game
-        virtual std::string Title() override { return "Gardner Minichess" + ChessGame::Title(); }
+        virtual std::string Title() override { return m_sTitle + ChessGame::Title(); }
 
         void SetBoard();
 };

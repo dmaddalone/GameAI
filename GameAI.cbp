@@ -28,7 +28,7 @@ TODO: Check other TODOs
 				<Option object_output="obj/Debug/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
-				<Option parameters="-1 minimax  -2 minimax -g chess-gardner" />
+				<Option parameters="-1 minimax  -2 minimax -g ttt -name1=bob -name2=bill" />
 				<Compiler>
 					<Add option="-std=c++11" />
 					<Add option="-Wextra" />

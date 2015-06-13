@@ -41,19 +41,20 @@ static void ShowUsage(std::string sName)
               << "Required Options:\n"
               << "    -1 TYPE,  --player1=TYPE  assign TYPE of player to Player 1\n"
               << "    -2 TYPE,  --player2=TYPE  assign TYPE of player to Player 2\n"
-
               << "    -g GAME,  --game=GAME     play GAME"
               << "\n\nNon Required Options:\n"
-              << "              --port=PORT     port for network communications.  Required for TYPE of server and client.\n"
               << "    -h,       --host=HOSTNAME host address or name of the server.  Required for TYPE server.\n"
-              << "    -H,       --help          display this help message and exit\n"
+              << "              --port=PORT     port for network communications.  REQUIRED for TYPE of server and client.\n"
               << "    -i FILE,  --input=FILE    read game moves from FILE\n"
               << "    -o FILE,  --output=FILE   write game moves to FILE\n"
+              << "              --name1=NAME    assign a name to player 1\n"
+              << "              --name2=NAME    assign a name to player 2\n"
               << "    -p PLIES, --plies=PLIES   assign the number of PLIES that minimax players will use\n"
               << "              --plies1=PLIES  assign the number of PLIES to Player 1, if minimax\n"
               << "              --plies2=PLIES  assign the number of PLIES to Player 2, if minimax\n"
               << "    -v LEVEL, --verbose=LEVEL display game information\n"
               << "    -V,       --version       display version and exit\n"
+              << "    -H,       --help          display this help message and exit\n"
               << "\n"
               << "PORT is a port specification for a server and client to communicate over.  The default is 60000.\n"
               << "HOST is a host name or address for a server.  The default is 127.0.0.1.\n"
@@ -173,8 +174,11 @@ static std::unique_ptr<Game> SetGame(char* pcGame)
   *
   */
 
-static void SetPlayers(std::string sName, int nPlies1, int nPlies2, int nVerbosity, std::string sGameTitle,
-                       std::string sHost, int nPort, std::vector<std::unique_ptr<Player>> &vPlayers)
+static void SetPlayers(std::string sName, int nPlies1, int nPlies2,
+                       std::string sPlayer1Name, std::string sPlayer2Name,
+                       int nVerbosity, std::string sGameTitle,
+                       std::string sHost, int nPort,
+                       std::vector<std::unique_ptr<Player>> &vPlayers)
 {
     // Set verbosity
     if (nVerbosity >= 0 && nVerbosity <= 3)
@@ -213,6 +217,10 @@ static void SetPlayers(std::string sName, int nPlies1, int nPlies2, int nVerbosi
     vPlayers[0]->SetGameTitle(sGameTitle);
     vPlayers[1]->SetGameTitle(sGameTitle);
 
+    // Set player names
+    vPlayers[0]->SetPlayerName(sPlayer1Name);
+    vPlayers[1]->SetPlayerName(sPlayer2Name);
+
     // Initialize players
     bool bSwap0 = false;
     bool bSwap1 = false;
@@ -242,13 +250,15 @@ int main(int argc, char* argv[])
 {
     std::vector<std::unique_ptr<Player>> vPlayers;
     std::unique_ptr<Game> pcGame {};
-    int  nPlies1            {4};
-    int  nPlies2            {4};
-    int  nPort              {60000};
-    std::string sHost       {"127.0.0.1"};
-    std::string sInputFile  {};
-    std::string sOutputFile {};
-    int  nVerbosity         {1};
+    int  nPlies1             {4};
+    int  nPlies2             {4};
+    int  nPort               {60000};
+    std::string sHost        {"127.0.0.1"};
+    std::string sPlayer1Name {};
+    std::string sPlayer2Name {};
+    std::string sInputFile   {};
+    std::string sOutputFile  {};
+    int  nVerbosity          {1};
 
     // Check for command line arguments
     if (argc < 2)
@@ -267,6 +277,8 @@ int main(int argc, char* argv[])
         {"plies",   required_argument, nullptr, 'p'},
         {"plies1",  required_argument, nullptr, 'x'},
         {"plies2",  required_argument, nullptr, 'y'},
+        {"name1",   required_argument, nullptr, 'n'},
+        {"name2",   required_argument, nullptr, 'm'},
         {"game",    required_argument, nullptr, 'g'},
         {"port",    required_argument, nullptr, 't'},
         {"host",    required_argument, nullptr, 'h'},
@@ -281,7 +293,7 @@ int main(int argc, char* argv[])
     // Execute getopt_long
     int nC = 0;
     int nOptionIndex = 0;
-    while ((nC = getopt_long(argc, argv, "1:2:p:x:y:g:t:h:i:o:v:HV", stLongOptions, &nOptionIndex)) != -1)
+    while ((nC = getopt_long(argc, argv, "1:2:p:x:y:n:m:g:t:h:i:o:v:HV", stLongOptions, &nOptionIndex)) != -1)
     {
         switch (nC)
         {
@@ -309,9 +321,17 @@ int main(int argc, char* argv[])
             case 'x':
                 nPlies1 = atoi(optarg);
                 break;
-            // Plies for player 3
+            // Plies for player 2
             case 'y':
                 nPlies2 = atoi(optarg);
+                break;
+            // Name for player 1
+            case 'n':
+                sPlayer1Name = optarg;
+                break;
+            // Name for player 2
+            case 'm':
+                sPlayer2Name = optarg;
                 break;
             // Game
             case 'g':
@@ -378,16 +398,23 @@ int main(int argc, char* argv[])
     }
 
     // Set player parameters
-    SetPlayers(argv[0], nPlies1, nPlies2, nVerbosity, pcGame->Title(), sHost, nPort, vPlayers);
+    SetPlayers(argv[0], nPlies1, nPlies2, sPlayer1Name, sPlayer2Name,
+        nVerbosity, pcGame->Title(), sHost, nPort, vPlayers);
 
     // Set verbosity of game
     pcGame->SetVerbosity(nVerbosity);
+
+    // Set game player data
+    pcGame->SetPlayer1Type(vPlayers[0]->TypeName());
+    pcGame->SetPlayer2Type(vPlayers[1]->TypeName());
+    pcGame->SetPlayer1Name(vPlayers[0]->PlayerName());
+    pcGame->SetPlayer2Name(vPlayers[1]->PlayerName());
 
     // Announce game
     std::cout << "Playing " << pcGame->Title() << std::endl;
     for (int iii = 0; iii < 2; ++iii)
     {
-        std::cout << "Player " << iii + 1 << ": " << vPlayers[iii]->TypeName();
+        std::cout << "Player " << iii + 1 << ": Name " << vPlayers[iii]->PlayerName() << " Type " << vPlayers[iii]->TypeName();
         if (vPlayers[iii]->Type() == PlayerType::TYPE_MINIMAX)
         {
             std::cout << " Plies: " << vPlayers[iii]->Plies();

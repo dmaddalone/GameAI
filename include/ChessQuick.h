@@ -36,6 +36,8 @@ class ChessQuick : public ChessGame
         // Constructor
         ChessQuick(GameType ecGameType) : ChessGame(ecGameType, 5, 6, true, true, true)
         {
+            m_sTitle.assign("Quick Minichess");
+
             m_abCastlingAllowed[0] = false;
             m_abCastlingAllowed[1] = false;
             m_bDoublePawnMoveAllowed = false;
@@ -49,7 +51,7 @@ class ChessQuick : public ChessGame
         // Clone the current game
         virtual std::unique_ptr<Game> Clone() const override { return std::unique_ptr<Game>(new ChessQuick(*this)); }
         // Return the title of the game
-        virtual std::string Title() override { return "Quick Minichess" + ChessGame::Title(); }
+        virtual std::string Title() override { return m_sTitle + ChessGame::Title(); }
 
         void SetBoard();
 };

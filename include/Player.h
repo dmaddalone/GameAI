@@ -64,6 +64,10 @@ class Player
         // Return the type of player as a string
         virtual std::string TypeName()  = 0;
 
+        // Set and return the name of the player as a string
+        void SetPlayerName(std::string sName) { m_sPlayerName.assign(sName); }
+        std::string PlayerName() { return m_sPlayerName; }
+
         // Make a player
         static std::unique_ptr<Player> MakePlayer(PlayerType ecPlayerType);
 
@@ -90,12 +94,17 @@ class Player
     protected:
         // Set the default player type to none
         PlayerType m_ecPlayerType {PlayerType::TYPE_NONE};
+
         // Set the player number to zero
         int  m_nPlayerNumber      {0};
+
+        // Player name
+        std::string m_sPlayerName {};
 
         // Set the depth of plies to four
         int  m_nDepth             {4}; // For AI
 
+        // Game title - used for network play to coordinate game
         std::string m_sGameTitle  {""};
 
         // Create a Logger object
