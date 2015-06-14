@@ -1314,7 +1314,8 @@ bool ChessGame::AttackingTheKing(int nKX, int nKY, int nPlayer, int nX, int nY) 
 
 std::string ChessGame::AnnounceMove(int nPlayer, const GameMove &cGameMove) const
 {
-    std::string sMessage = "Move number: " + std::to_string(m_nNumberOfMoves + 1) + "  Player: " + std::to_string(nPlayer) +
+    std::string sMessage = "\rMove number: " + std::to_string(m_nNumberOfMoves + 1) +
+        "  Player: " + std::to_string(nPlayer) +
         "  Moves From: " + cGameMove.AnnounceFromMove() +" To: " + cGameMove.AnnounceToMove();
 
     return sMessage;

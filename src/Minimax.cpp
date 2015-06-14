@@ -98,9 +98,18 @@ GameMove Minimax::MinimaxMove(int nPlayer, Game &cGame, int nDepth)
     // As a default, set the first possible move as the best move
     GameMove cBestMove = vGameMoves[0];
 
+    float fGameMoves = vGameMoves.size();
+    float fPercentComplete = 0.0;
+    float fGameMoveEvaluated = 0.0;
+
     // Evaluate all possible moves
     for (GameMove cGameMove : vGameMoves)
     {
+        // Let them know that we're thinking
+        ++fGameMoveEvaluated;
+        fPercentComplete = fGameMoveEvaluated / fGameMoves * 100;
+        std::cout << "\rThinking " << std::fixed << std::setprecision(0) << fPercentComplete << "%" << std::flush;
+
         // Clone the game board
         std::unique_ptr<Game> pcGameClone = cGame.Clone();
 

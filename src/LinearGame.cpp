@@ -129,7 +129,7 @@ bool LinearGame::ApplyMove(int nPlayer, GameMove &cGameMove)
 
 std::string LinearGame::AnnounceMove(int nPlayer, const GameMove &cGameMove) const
 {
-    std::string sMessage = "Move number: " + std::to_string(m_nNumberOfMoves + 1) + "  Player: " + std::to_string(nPlayer) + "  Moves To: " + cGameMove.AnnounceToMove();
+    std::string sMessage = "\rMove number: " + std::to_string(m_nNumberOfMoves + 1) + "  Player: " + std::to_string(nPlayer) + "  Moves To: " + cGameMove.AnnounceToMove();
 
     return sMessage;
 }

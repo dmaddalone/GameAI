@@ -28,6 +28,8 @@
 #define MINIMAX_H
 
 #include <climits>
+#include <iomanip>
+#include <iostream>
 #include "Player.h"
 #include "Game.h"
 
@@ -62,13 +64,6 @@ class Minimax: public Player
         int MinMove(int nPlayer, Game &cGame, int nDepth, int nAlpha, int nBeta);
         // Generate a move for the player
         int MaxMove(int nPlayer, Game &cGame, int nDepth, int nAlpha, int nBeta);
-
-        //// TODO: Variables for rotating icon
-        ////char m_acSpin[4] = {'|', '/', '--', '\\'};
-        ////char m_acSpin[] = "\\|-/-";
-        ////char m_acSpin[6];
-        ////int  m_nSpinIndex {0};
-        ////char Spin() { ++m_nSpinIndex; if (m_nSpinIndex > 5) m_nSpinIndex = 0; return m_acSpin[m_nSpinIndex]; }
 };
 
 #endif // MINIMAX_H
