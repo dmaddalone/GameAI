@@ -155,10 +155,10 @@ class Game
         const int m_knPlayer1 {1};
         const int m_knPlayer2 {2};
 
-        std::string m_sPlayer1Name {};
-        std::string m_sPlayer1Type {};
-        std::string m_sPlayer2Name {};
-        std::string m_sPlayer2Type {};
+        std::string m_sPlayer1Name {"??"};
+        std::string m_sPlayer1Type {"??"};
+        std::string m_sPlayer2Name {"??"};
+        std::string m_sPlayer2Type {"??"};
 
         // Default game type
         GameType m_ecGameType {GameType::TYPE_NONE};

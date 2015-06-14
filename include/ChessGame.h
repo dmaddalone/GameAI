@@ -26,6 +26,7 @@
 #ifndef CHESSGAME_H
 #define CHESSGAME_H
 
+#include <algorithm>
 #include <climits>
 #include <chrono>
 #include <ctime>
@@ -44,14 +45,15 @@ class ChessGame : public BoardGame
         ChessGame(GameType ecGameType, int nX, int nY, bool bDisplayGrid, bool bDisplayXCoordinates, bool bDisplayYCoordinates) :
             BoardGame(ecGameType, nX, nY, bDisplayGrid, bDisplayXCoordinates, bDisplayYCoordinates)
             {
-                // Starting date of the game
-                int nBufLen    {25};
+                int nBufLen    {50};
                 std::time_t t = std::time(nullptr);
                 char* pcBuffer = new char[nBufLen];
 
+                // Starting date of the game
                 size_t nLen = strftime(pcBuffer, nBufLen, "%Y.%m.%d", localtime(&t));
                 m_sDateStart = std::string(pcBuffer, nLen);
 
+                // Starting time of the game
                 nLen = strftime(pcBuffer, nBufLen, "%T", localtime(&t));
                 m_sTimeStart = std::string(pcBuffer, nLen);
 

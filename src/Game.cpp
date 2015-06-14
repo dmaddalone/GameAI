@@ -78,9 +78,6 @@ std::unique_ptr<Game> Game::Make(GameType ecGameType)
 }
 
 
-
-
-
 bool Game::CloseFile(std::fstream &fsFile)
 {
     fsFile.close();
@@ -113,6 +110,8 @@ int Game::ReadAndApplyMoves(const std::string &sFileName, std::fstream &fsFile)
     std::string sMove;
     GameMove cGameMove;
     int nPlayer {1};
+    //std::string chars = " ~!@#$%^&*()-'=+{}[]|\\/?<>,.;:";
+    std::string chars = " ";
 
     // Log the method entry
     std::string sMessage = "Reading moves from file " + sFileName;
@@ -122,6 +121,15 @@ int Game::ReadAndApplyMoves(const std::string &sFileName, std::fstream &fsFile)
 
     while (getline(fsFile, sMove))
     {
+        for (size_t iii = 0; iii < chars.length(); ++iii)
+        {
+            //sStrategyName.erase(std::remove(sStrategyName.begin(), sStrategyName.end(), chars[iii]), sStrategyName.end());
+            sMove.erase(std::remove(sMove.begin(), sMove.end(), chars[iii]), sMove.end());
+        }
+
+        if (sMove.size() < 2)
+            continue;
+
         cGameMove = GenerateMove(sMove);
 
         sMessage = "Read move " + std::to_string(++nMoveCounter) + ". " + sMove;

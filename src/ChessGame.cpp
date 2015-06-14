@@ -1619,6 +1619,20 @@ int ChessGame::ReadMovesFromFile(const std::string &sFileName)
 
     // Read Psuedo PGN
     // Then read and apply moves
+    char cPeek;
+    std::string sLine;
+    while (true)
+    {
+        cPeek = fsFile.peek();
+        if (cPeek == '[')
+        {
+            getline(fsFile, sLine);
+        }
+        else
+        {
+            break;
+        }
+    }
 
     nPlayer = ReadAndApplyMoves(sFileName, fsFile);
 
