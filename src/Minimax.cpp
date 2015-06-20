@@ -66,7 +66,7 @@ bool Minimax::Move(Game &cGame)
   * best move.
   *
   * \param nPlayer The player whose turn it is.
-  * \param cGame   The game board
+  * \param cGame   The game
   * \param nDepth  The number of plies (depth) to evaluate possible game moves
   *
   * \return The best game move.
@@ -156,7 +156,7 @@ GameMove Minimax::MinimaxMove(int nPlayer, Game &cGame, int nDepth)
   * best move.
   *
   * \param nPlayer The minimizing player whose turn it is.
-  * \param cGame   The game board
+  * \param cGame   The game
   * \param nDepth  The number of plies (depth) to evaluate possible game moves
   * \param nAlpha  The alpha (maximizing) score
   * \param nBeta   The beta (minimizing) score

@@ -108,11 +108,14 @@ class ChessGame : public BoardGame
         void TestForCheck(int nPlayer, GameMove cGameMove, std::vector<GameMove> &vGameMoves) const;
         bool KingInCheck(int nPlayer) const;
         bool AttackingTheKing(int nKX, int nKY, int nPlayer, int nX, int nY) const;
+        bool KingCastled(int nPlayer) const { if (m_abKingCastled[nPlayer - 1]) return true; else return false; }
+        bool RooksConnected(int nPlayer) const;
 
         // Count the value of pieces for nPlayer
         int  CountEvaluation(int nPlayer) const;
         int  MobilityEvaluation(int nPlayer) const;
         void CountPawns(int nPlayer, int &nDoubled, int &nIsolated, int &nPassed) const;
+        int  MinorPiecesDevelopedEvaluation(int nPlayer) const;
 
         // Start date and time of the game
         std::string m_sDateStart {};
@@ -132,6 +135,9 @@ class ChessGame : public BoardGame
         bool m_bEnPassantAllowed        { true };
         bool m_bAutomaticPromoteToQueen { true };
 
+        // King castled?
+        bool m_abKingCastled[2] {false};
+
         // Piece tokens
         static const char m_kcPawnToken   {'P'};
         static const char m_kcRookToken   {'R'};
@@ -141,10 +147,11 @@ class ChessGame : public BoardGame
         static const char m_kcKingToken   {'K'};
 
         // Piece values
+        static const int  m_knMinorPieceValue {3};
         static const int  m_knPawnValue   {1};
         static const int  m_knRookValue   {5};
-        static const int  m_knKnightValue {3};
-        static const int  m_knBishopValue {3};
+        static const int  m_knKnightValue {m_knMinorPieceValue};
+        static const int  m_knBishopValue {m_knMinorPieceValue};
         static const int  m_knQueenValue  {9};
         static const int  m_knKingValue   {4};
 

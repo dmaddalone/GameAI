@@ -1055,6 +1055,7 @@ bool ChessGame::ApplyMove(int nPlayer, GameMove &cGameMove)
                     {
                         bValidMove = true;
                         m_abCastlingAllowed[nPlayer - 1] = false;
+                        m_abKingCastled[nPlayer - 1] = true;
 
                         // Update the ZobristKey to reflect the movement of the rook
                         cBoard.UpdateZobristKey(cGameMove.ToX(), cGameMove.ToY(), cGameMove.ToX(), cGameMove.ToY());
@@ -1333,7 +1334,25 @@ int ChessGame::EvaluateGameState(int nPlayer)
     // Evaluate the number of moves available.
     int nMobilityEval = MobilityEvaluation(nPlayer) - MobilityEvaluation(1 - nPlayer + 2);
 
-    return (nCountEval * 50) - (nDoubledPawnsEval * 5) - (nIsolatedPawnsEval * 10) + (nPassedPawnsEval * 10) + (nMobilityEval * 20);
+    int nKingSafety {0};
+    if (KingCastled(nPlayer))
+        nKingSafety = 10000;
+
+    //int nMinorPiecesDeveloped = MinorPiecesDevelopedEvaluation(nPlayer) - MinorPiecesDevelopedEvaluation(1 - nPlayer + 2);
+    int nMinorPiecesDeveloped = MinorPiecesDevelopedEvaluation(nPlayer);
+
+    int nRooksConnected {0};
+    if (RooksConnected(nPlayer))
+        nRooksConnected = 300;
+
+    return (nCountEval * 30)
+        - (nDoubledPawnsEval * 5)
+        - (nIsolatedPawnsEval * 10)
+        + (nPassedPawnsEval * 20)
+        + (nMobilityEval * 20)
+        + nKingSafety
+        + (nMinorPiecesDeveloped * 200)
+        + nRooksConnected;
 }
 
 /**
@@ -1533,6 +1552,43 @@ void ChessGame::CountPawns(int nPlayer, int &nDoubled, int &nIsolated, int &nPas
     return;
 }
 
+int ChessGame::MinorPiecesDevelopedEvaluation(int nPlayer) const
+{
+    int nEval {0};
+
+    for (int yyy = 0; yyy < m_knY; ++yyy)
+    {
+        for (int xxx = 0; xxx < m_knX; ++xxx)
+        {
+            if (cBoard.PositionOccupiedByPlayer(xxx, yyy, nPlayer))
+            {
+                if (cBoard.PieceValue(xxx, yyy) == 3)
+                {
+                    if (cBoard.Piece(xxx, yyy).HasMoved())
+                    {
+                        ++nEval;
+                    }
+                }
+            }
+        }
+    }
+
+    return nEval;
+}
+
+bool ChessGame::RooksConnected(int nPlayer) const
+{
+    int nX    {0};
+    int nY    {0};
+
+    if (FindPiece(nX, nY, nPlayer, m_kcRookToken))
+    {
+
+    }
+
+    return false;
+}
+
 /**
   * Return a string providing a game score.
   *
@@ -1552,7 +1608,6 @@ std::string ChessGame::GameScore() const
 
     return sMessage;
 }
-
 
 /**
   * Check to see if a player has won the game.

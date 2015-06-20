@@ -88,7 +88,7 @@ class GamePiece
         void Clear()                       { m_cToken = m_kcNoToken; m_nPlayer = m_knNoValue; m_nValue = m_knNoValue; m_bHasMoved = false; }
 
         // Flag for piece movement
-        bool HasMoved()                    { return m_bHasMoved; }
+        bool HasMoved() const              { return m_bHasMoved; }
         void SetMoved(bool bMoved=true)    { m_bHasMoved = bMoved; }
 
     private:

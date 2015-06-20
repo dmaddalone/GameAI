@@ -162,7 +162,7 @@ int LinearGame::EvaluateGameState(int nPlayer)
     m_stOpponentCounts = {};
 
     // Evaluate the entire board and count sequences of tokens in all directions
-    // (horizontal, vertical, and both diagonals) for both players.
+    // (horizontal, vertical, and both diagonals for both players.
     if (m_nWinner == 0)
     {
         for (int yyy = 0; yyy < m_knY; ++yyy)
@@ -191,7 +191,7 @@ int LinearGame::EvaluateGameState(int nPlayer)
 }
 
 /**
-  * Count sequnces of contiguous tokens.
+  * Count sequences of contiguous tokens.
   *
   * Increment a sequence count.
   *
