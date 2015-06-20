@@ -38,6 +38,7 @@ class ChessElena : public ChessGame
         {
             m_sTitle.assign("Elena Minichess");
 
+            // Turn off castling, pawn double move, and en passant
             m_abCastlingAllowed[0] = false;
             m_abCastlingAllowed[1] = false;
             m_bDoublePawnMoveAllowed = false;

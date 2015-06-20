@@ -39,9 +39,6 @@ class Minimax: public Player
         // Construct a Minimax object
         Minimax(PlayerType ecPlayerType) : Player(ecPlayerType) {};
 
-        //// TODO: Consider an rotating icon to indicate "thinking"
-        //// Minimax(PlayerType ecPlayerType) : Player(ecPlayerType), m_acSpin{"\\|-/-"} {};
-
         // Destructor
         ~Minimax() {};
 

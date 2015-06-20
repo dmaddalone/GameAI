@@ -84,6 +84,17 @@ GameMove BoardGame::GetMove(int nPlayer) const
     return GenerateMove(sMove);
 }
 
+/**
+  * Return a GameMove object from a string representing a game move.
+  *
+  * Create a GameMove object from the passed string.  Check for a resignation.
+  *
+  * \param sMove The string representing a game move.
+  *
+  * \return A GameMove object.
+  */
+
+
 GameMove BoardGame::GenerateMove(std::string sMove) const
 {
     // Generic GamevMove
@@ -133,6 +144,16 @@ std::string BoardGame::GameScore() const
 {
     return "";
 }
+
+/**
+  * Check to see if a player has won the game.
+  *
+  * If the last move made was a resignation, return true.
+  *
+  * \param nPlayer The player
+  *
+  * \return True, if any player has won the game.  False otherwise.
+  */
 
 bool BoardGame::GameEnded(int nPlayer)
 {

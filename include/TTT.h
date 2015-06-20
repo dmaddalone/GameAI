@@ -26,9 +26,6 @@
 #ifndef TTT_H
 #define TTT_H
 
-#include <iostream>
-#include "Game.h"
-#include "GameMove.h"
 #include "LinearGame.h"
 
 class TTT : public LinearGame

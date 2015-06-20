@@ -77,12 +77,13 @@ std::unique_ptr<Game> Game::Make(GameType ecGameType)
     }
 }
 
-
-bool Game::CloseFile(std::fstream &fsFile)
-{
-    fsFile.close();
-    return true;
-}
+/**
+  * Open a file for reading.
+  *
+  * \param sFileName Name of the file to read from.
+  *
+  * \return True if the file is opened.  False otherwise.
+  */
 
 bool Game::OpenFileForRead(const std::string &sFileName, std::fstream &fsFile)
 {
@@ -96,9 +97,44 @@ bool Game::OpenFileForRead(const std::string &sFileName, std::fstream &fsFile)
 }
 
 /**
-  * Read moves from a file.
+  * Open a file for writing.
+  *
+  * \param sFileName Name of the file to write to.
+  *
+  * \return True if the file is opened.  False otherwise.
+  */
+
+bool Game::OpenFileForWrite(const std::string &sFileName, std::fstream &fsFile)
+{
+    // Log the method entry
+    std::string sMessage = "Opening file " + sFileName + " for write";
+    m_cLogger.LogInfo(sMessage,2);
+
+    fsFile.open(sFileName, std::fstream::out | std::fstream::trunc);
+
+    return (fsFile.is_open());
+}
+
+
+/**
+  * Close a file.
+  *
+  * \param sFileName Name of the file to close.
+  *
+  */
+
+void Game::CloseFile(std::fstream &fsFile)
+{
+    fsFile.close();
+}
+
+
+/**
+  * Read and apply moves from a file.
   *
   * Read moves from file, generate a GameMove, and apply the move to the game.
+  * This method should be called after any non-moves are already read from a
+  * file.  Keep track of and return the player number whose turn is next.
   *
   * \param sFileName Name of the input file
   *
@@ -110,7 +146,6 @@ int Game::ReadAndApplyMoves(const std::string &sFileName, std::fstream &fsFile)
     std::string sMove;
     GameMove cGameMove;
     int nPlayer {1};
-    //std::string chars = " ~!@#$%^&*()-'=+{}[]|\\/?<>,.;:";
     std::string chars = " ";
 
     // Log the method entry
@@ -121,20 +156,23 @@ int Game::ReadAndApplyMoves(const std::string &sFileName, std::fstream &fsFile)
 
     while (getline(fsFile, sMove))
     {
+        // Remove spaces from the front of the read line
         for (size_t iii = 0; iii < chars.length(); ++iii)
         {
-            //sStrategyName.erase(std::remove(sStrategyName.begin(), sStrategyName.end(), chars[iii]), sStrategyName.end());
             sMove.erase(std::remove(sMove.begin(), sMove.end(), chars[iii]), sMove.end());
         }
 
-        if (sMove.size() < 2)
+        // If nothing left, continue
+        if (sMove.size() < 1)
             continue;
 
+        // Generate a game move object
         cGameMove = GenerateMove(sMove);
 
         sMessage = "Read move " + std::to_string(++nMoveCounter) + ". " + sMove;
         m_cLogger.LogInfo(sMessage,3);
 
+        // Apply the game move to the game
         if (!ApplyMove(nPlayer, cGameMove))
             return 0;
 
@@ -143,6 +181,17 @@ int Game::ReadAndApplyMoves(const std::string &sFileName, std::fstream &fsFile)
 
     return nPlayer;
 }
+
+/**
+  * Read game moves from a file.
+  *
+  * Open the file and pass control to ReadAndApplyMoves().
+  * Keep track of and return the player number whose turn is next.
+  *
+  * \param sFileName Name of the file to read from.
+  *
+  * \return The number of the player whose turn is next.
+  */
 
 int Game::ReadMovesFromFile(const std::string &sFileName)
 {
@@ -162,16 +211,6 @@ int Game::ReadMovesFromFile(const std::string &sFileName)
     return nPlayer;
 }
 
-bool Game::OpenFileForWrite(const std::string &sFileName, std::fstream &fsFile)
-{
-    // Log the method entry
-    std::string sMessage = "Opening file " + sFileName + " for write";
-    m_cLogger.LogInfo(sMessage,2);
-
-    fsFile.open(sFileName, std::fstream::out | std::fstream::trunc);
-
-    return (fsFile.is_open());
-}
 
 /**
   * Write moves to a file.
@@ -196,6 +235,14 @@ bool Game::WriteMoves(const std::string &sFileName, std::fstream &fsFile)
 
     return true;
 }
+
+/**
+  * Write game moves to a file.
+  *
+  * \param sFileName Name of the file to read from.
+  *
+  * \return True if successful.  False otherwise.
+  */
 
 bool Game::WriteMovesToFile(const std::string &sFileName)
 {

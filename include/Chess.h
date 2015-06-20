@@ -44,7 +44,7 @@ class Chess : public ChessGame
         virtual std::unique_ptr<Game> Clone() const override { return std::unique_ptr<Game>(new Chess(*this)); }
         // Return the title of the game
         virtual std::string Title() override { return m_sTitle + ChessGame::Title(); }
-
+        // Set up the board
         void SetBoard();
 };
 #endif // CHESS_H

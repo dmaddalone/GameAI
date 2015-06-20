@@ -27,8 +27,6 @@
 #ifndef BOARDGAME_H
 #define BOARDGAME_H
 
-#include <unordered_set>
-
 #include "Game.h"
 #include "GameBoard.h"
 
@@ -36,7 +34,8 @@ class BoardGame : public Game
 {
     public:
         // Construct a BoardGame
-        BoardGame(GameType ecGameType, int nX, int nY, int nNumberOfPieces, bool bDisplayGrid, bool bDisplayXCoordinates, bool bDisplayYCoordinates) :
+        BoardGame(GameType ecGameType, int nX, int nY, int nNumberOfPieces,
+                  bool bDisplayGrid, bool bDisplayXCoordinates, bool bDisplayYCoordinates) :
             Game(ecGameType),
             m_knX(nX),
             m_knY(nY),
@@ -71,14 +70,6 @@ class BoardGame : public Game
         const int  m_knX;
         // Max Y-coordinate this game
         const int  m_knY;
-
-        std::unordered_multiset<uint64_t> m_uomsZobrist {};
-        static const int m_knMaxRepetition {3};
-        uint64_t m_uiZobristKey;
-
-        static const int m_knNumberOfPieces  {12};
-        static const int m_knNumberOfSquares {64};
-        uint64_t m_auiZobrist[12][64] {{}};
 
         // Resignation move
         const std::string m_ksMoveResign {"RESIGN"};

@@ -32,7 +32,6 @@
 #include <random>
 #include <string>
 #include <vector>
-#include <unordered_set>
 
 #if defined(_WIN32)
 #include <windows.h>
@@ -46,7 +45,8 @@ class GameBoard
 {
     public:
         // Construct a game board of size X & Y, and display characteristics
-        GameBoard(int nX, int nY, int nNumberOfTypesOfPieces, bool bDisplayGrid, bool bDisplayXCoordinates, bool bDisplayYCoordinates) :
+        GameBoard(int nX, int nY, int nNumberOfTypesOfPieces,
+                  bool bDisplayGrid, bool bDisplayXCoordinates, bool bDisplayYCoordinates) :
             m_vBoard(m_knMaxY, Row(m_knMaxX)),
             m_knX(nX),
             m_knY(nY),
@@ -66,6 +66,8 @@ class GameBoard
                 std::string sErrorMessage = "Y-coordinate " + std::to_string(m_knY) + " exceeds max Y-coordinate " + std::to_string(m_knMaxY);
                 throw GameAIException(sErrorMessage);
             }
+
+            // Ensure that the number of types of pieces does not exceed the maximum number
             if (m_knNumberOfTypesOfPieces > m_knMaxNumberOfTypesOfPieces)
             {
                 std::string sErrorMessage = "Number of game pieces " + std::to_string(m_knNumberOfTypesOfPieces) + " exceeds max number of game pieces " + std::to_string(m_knMaxNumberOfTypesOfPieces);
@@ -75,8 +77,6 @@ class GameBoard
 
         // Destructor
         ~GameBoard() {}
-
-        void UpdateZobristKey(int nPX, int nPY, int nSX, int nSY);
 
         // Evaluate location validity
         bool ValidLocation(int nX, int nY) const;
@@ -103,18 +103,22 @@ class GameBoard
         // Return the general number of the piece
         int PieceNumber(int nX, int nY) const { return m_vBoard[nY][nX].Number();}
 
+        // Initialize the Zobrist key
+        void InitializeZobrist();
+        // Update the Zobrist key
+        void UpdateZobristKey(int nPX, int nPY, int nSX, int nSY);
+        // Return the Zobrist key
+        uint64_t ZKey() const { return m_uiZobristKey; }
+
         // Reverse token colors for players
 #if defined(_WIN32)
         void ReverseColors() { int nColor = m_nPlayer1TokenColor; m_nPlayer1TokenColor = m_nPlayer2TokenColor; m_nPlayer2TokenColor = nColor; }
 #else
         void ReverseColors() { std::string sColor = m_sPlayer1TokenColor; m_sPlayer1TokenColor = m_sPlayer2TokenColor; m_sPlayer2TokenColor = sColor; }
 #endif
+
         // Reverse Y-Coordinates of the board
         void ReverseY()      { m_bReverseY = true; }
-
-        void InitializeZobrist();
-
-        uint64_t ZKey() const { return m_uiZobristKey; }
 
     protected:
         // Vector of vectors to represent the board
@@ -158,14 +162,18 @@ class GameBoard
         const std::string m_ksResetTokenColor  {"\033[0m"};    // Reset
 #endif
 
+        // Flag for reversing the Y-Coordinates
         bool m_bReverseY = false;
 
-        std::unordered_multiset<uint64_t> m_uomsZobrist {};
-        static const int m_knMaxRepetition {3};
-        uint64_t m_uiZobristKey;
-
+        // Number of squares on the game board
         static const int m_knNumberOfSquares {m_knMaxX * m_knMaxY};
+
+        // Array representing the number of types of positions on each square, assigned to a random number
+        // used to create the Zobrist hash
         uint64_t m_auiZobrist[m_knMaxNumberOfTypesOfPieces][m_knMaxX * m_knMaxY] {{}};
+
+        // The Zobrist hash, representing the position of the board
+        uint64_t m_uiZobristKey;
 };
 
 #endif // GAMEBOARD_H

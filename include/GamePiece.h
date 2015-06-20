@@ -83,9 +83,11 @@ class GamePiece
             { m_cToken = cToken; m_nPlayer = nPlayer; m_nValue = nValue; m_nNumber = m_knNoValue; }
         void Set(char cToken, int nPlayer, int nValue, int nNumber)
             { m_cToken = cToken; m_nPlayer = nPlayer; m_nValue = nValue; m_nNumber = nNumber; }
+
         // Clear a game piece
         void Clear()                       { m_cToken = m_kcNoToken; m_nPlayer = m_knNoValue; m_nValue = m_knNoValue; m_bHasMoved = false; }
 
+        // Flag for piece movement
         bool HasMoved()                    { return m_bHasMoved; }
         void SetMoved(bool bMoved=true)    { m_bHasMoved = bMoved; }
 

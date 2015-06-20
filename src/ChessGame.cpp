@@ -79,50 +79,19 @@ std::string ChessGame::Title()
     return sMessage;
 }
 
+
+/**
+  * Set up the game board.
+  *
+  * Call parent class SetBoard and reverse the Y-coordinates
+  */
+
 void ChessGame::SetBoard()
 {
     BoardGame::SetBoard();
     cBoard.ReverseY();
 }
 
-void ChessGame::InitializeZobrist()
-{
-    //
-    // Initialize Zobrist hash table
-    //
-
-    // Random number generator
-#if defined(_WIN32)
-    static unsigned seed  = std::chrono::high_resolution_clock::now().time_since_epoch().count();
-    ++seed;
-    std::mt19937 RandomNumberGenerator{seed};
-#else
-    std::random_device RandomDevice{};
-    std::mt19937_64 RandomNumberGenerator{RandomDevice()};
-#endif // defined
-
-    // Fill Zobrist hash table with random numbers
-    // one for every piece on every square
-    for (int iii = 0; iii < m_knNumberOfPieces; ++iii)
-    {
-        for (int jjj = 0; jjj < m_knNumberOfSquares; ++jjj)
-        {
-            m_auiZobrist[iii][jjj] = RandomNumberGenerator();
-        }
-    }
-
-    // Initialize the Zobrist key
-    for (int yyy = 0; yyy < m_knY; ++yyy)
-    {
-        for (int xxx = 0; xxx < m_knX; ++xxx)
-        {
-            if (cBoard.PositionOccupied(xxx, yyy))
-            {
-                m_uiZobristKey ^= m_auiZobrist[cBoard.PieceNumber(xxx, yyy)][(xxx + (yyy * 8))];
-            }
-        }
-    }
-}
 
 /**
   * Generate a GameMove from a string.
@@ -171,13 +140,13 @@ GameMove ChessGame::GenerateMove(std::string sMove) const
 
 void ChessGame::TestForCheck(int nPlayer, GameMove cGameMove, std::vector<GameMove> &vGameMoves) const
 {
-    // If theis is a test move, add it to the vector.
+    // If this is a test move, add it to the vector.
     // We are not looking ahead more than one move.
     if (cGameMove.TestMove())
     {
         vGameMoves.push_back(cGameMove);
     }
-    else // not a test move
+    else // Not a test move
     {
         // Set as test move
         cGameMove.SetTestMove(true);
@@ -214,16 +183,19 @@ std::vector<GameMove> ChessGame::GenerateMoves(int nPlayer) const
     GameMove cGameMove;
     char cToken;
 
+    // Run through all squares on the board
     for (int yyy = 0; yyy < m_knY; ++yyy)
     {
         for (int xxx = 0; xxx < m_knX; ++xxx)
         {
+            // If the square is occupied by this player ...
             if (cBoard.PositionOccupiedByPlayer(xxx, yyy, nPlayer))
             {
                 cGameMove.SetFromX(xxx);
                 cGameMove.SetFromY(yyy);
                 cGameMove.SetUseFrom(true);
 
+                // Generate the appropriate moves depending on the piece token
                 cToken = cBoard.Token(xxx, yyy);
 
                 if (cToken == m_kcPawnToken)
@@ -705,11 +677,10 @@ void ChessGame::GenerateCastleMoves(GameMove cGameMove, int nPlayer, std::vector
     } // end of if castling is allowed
 }
 
-
 /**
   * Generic method to test and add linear moves to the game moves vector.
   *
-  * Evaluates a move,  If legal before considering adjacent Kings or checks, it
+  * Evaluates a move.  If legal before considering adjacent Kings or checks, it
   * returns true.  True means continue checking for valid linear moves. It calls
   * TestForCheck() to add the move to the vector of moves.
   *
@@ -881,7 +852,7 @@ bool ChessGame::ApplyMove(int nPlayer, GameMove &cGameMove)
     if (!cBoard.ValidLocation(cGameMove.ToX(), cGameMove.ToY()))
         return false;
 
-    // Generate a vector of all possible valid moves for the from square
+    // Generate a vector of all possible valid moves for the piece on the from square
     std::vector<GameMove> vGameMoves = GenerateMovesForPiece(nPlayer, cGameMove);
 
     // Compare passed GameMove to generated game moves.  If one is found to be
@@ -890,32 +861,35 @@ bool ChessGame::ApplyMove(int nPlayer, GameMove &cGameMove)
     {
         if (cValidGameMove.SameTo(cGameMove))
         {
-            // Update the ZobristKey to reflect the move
-            ////m_uiZobristKey ^= m_auiZobrist[cBoard.PieceNumber(cGameMove.FromX(), cGameMove.FromY())][(cGameMove.FromX() + (cGameMove.FromY() * 8))];
+            //
+            // Update the ZobristKey to reflect the MOVE
+            //
+
+            // The piece on the FROM square
             cBoard.UpdateZobristKey(cGameMove.FromX(), cGameMove.FromY(), cGameMove.FromX(), cGameMove.FromY());
-            ////m_uiZobristKey ^= m_auiZobrist[cBoard.PieceNumber(cGameMove.FromX(), cGameMove.FromY())][(cGameMove.ToX() + (cGameMove.ToY() * 8))];
+            // The piece on the TO square
             cBoard.UpdateZobristKey(cGameMove.FromX(), cGameMove.FromY(), cGameMove.ToX(), cGameMove.ToY());
+            // If this was a capture, remove the captured piece from the Zobrist hash
             if (cBoard.PositionOccupied(cGameMove.ToX(), cGameMove.ToY()))
             {
-                ////m_uiZobristKey ^= m_auiZobrist[cBoard.PieceNumber(cGameMove.ToX(), cGameMove.ToY())][(cGameMove.ToX() + (cGameMove.ToY() * 8))];
+                // The capture piece on the TO square
                 cBoard.UpdateZobristKey(cGameMove.ToX(), cGameMove.ToY(), cGameMove.ToX(), cGameMove.ToY());
             }
 
+            // Move the piece
             if (cBoard.MovePiece(cGameMove))
             {
                 bValidMove = true;
 
                 break;
             }
-            else // Update the ZobristKey to reflect the un-move
+            else // If not a valid move, update the ZobristKey to reflect the UN-MOVE
             {
-                ////m_uiZobristKey ^= m_auiZobrist[cBoard.PieceNumber(cGameMove.FromX(), cGameMove.FromY())][(cGameMove.FromX() + (cGameMove.FromY() * 8))];
+
                 cBoard.UpdateZobristKey(cGameMove.FromX(), cGameMove.FromY(), cGameMove.FromX(), cGameMove.FromY());
-                ////m_uiZobristKey ^= m_auiZobrist[cBoard.PieceNumber(cGameMove.FromX(), cGameMove.FromY())][(cGameMove.ToX() + (cGameMove.ToY() * 8))];
                 cBoard.UpdateZobristKey(cGameMove.FromX(), cGameMove.FromY(), cGameMove.ToX(), cGameMove.ToY());
                 if (cBoard.PositionOccupied(cGameMove.ToX(), cGameMove.ToY()))
                 {
-                    ////m_uiZobristKey ^= m_auiZobrist[cBoard.PieceNumber(cGameMove.ToX(), cGameMove.ToY())][(cGameMove.ToX() + (cGameMove.ToY() * 8))];
                     cBoard.UpdateZobristKey(cGameMove.ToX(), cGameMove.ToY(), cGameMove.ToX(), cGameMove.ToY());
                 }
                 return false;
@@ -923,7 +897,7 @@ bool ChessGame::ApplyMove(int nPlayer, GameMove &cGameMove)
         }
     }
 
-    // If King is in check after the move, the move is not valid
+    // If King is in check after the move, the move is not valid // TODO: Should not ever trip this condition?
     if (KingInCheck(nPlayer))
     {
         bValidMove = false;
@@ -967,7 +941,6 @@ bool ChessGame::ApplyMove(int nPlayer, GameMove &cGameMove)
             // Else ask for input from player.  //TODO: Make this work with Minimax.
             else
             {
-
                 std::cout << "\nPAWN PROMOTION ("
                     << m_kcRookToken << ", "
                     << m_kcKnightToken << ", "
@@ -1005,13 +978,13 @@ bool ChessGame::ApplyMove(int nPlayer, GameMove &cGameMove)
             if (bGoodToken)
             {
                 // Update the ZobristKey to reflect the removal of the pawn from the board
-                m_uiZobristKey ^= m_auiZobrist[cBoard.PieceNumber(cGameMove.ToX(), cGameMove.ToY())][(cGameMove.ToX() + (cGameMove.ToY() * 8))];
+                cBoard.UpdateZobristKey(cGameMove.ToX(), cGameMove.ToY(), cGameMove.ToX(), cGameMove.ToY());
 
                 // Promote the pawn on the board
                 cBoard.SetPiece(cGameMove.ToX(), cGameMove.ToY(), cGamePiece);
 
                 // Update the ZobristKey to reflect the promotion
-                m_uiZobristKey ^= m_auiZobrist[cBoard.PieceNumber(cGameMove.ToX(), cGameMove.ToY())][(cGameMove.ToX() + (cGameMove.ToY() * 8))];
+                cBoard.UpdateZobristKey(cGameMove.ToX(), cGameMove.ToY(), cGameMove.ToX(), cGameMove.ToY());
             }
         }
     }
@@ -1020,7 +993,7 @@ bool ChessGame::ApplyMove(int nPlayer, GameMove &cGameMove)
     // Perform Second Half of Castling Move
     //
 
-    // If castling alloed
+    // If castling allowed
     if (m_abCastlingAllowed[nPlayer -1])
     {
         cToken = cBoard.Token(cGameMove.ToX(), cGameMove.ToY());
@@ -1076,7 +1049,7 @@ bool ChessGame::ApplyMove(int nPlayer, GameMove &cGameMove)
                     }
 
                     // Update the ZobristKey to reflect the movement of the rook
-                    m_uiZobristKey ^= m_auiZobrist[cBoard.PieceNumber(cGameMove.FromX(), cGameMove.FromY())][(cGameMove.FromX() + (cGameMove.FromY() * 8))];
+                    cBoard.UpdateZobristKey(cGameMove.FromX(), cGameMove.FromY(), cGameMove.FromX(), cGameMove.FromY());
 
                     if (cBoard.MovePiece(cRookMove)) //TODO: Check return code
                     {
@@ -1084,7 +1057,7 @@ bool ChessGame::ApplyMove(int nPlayer, GameMove &cGameMove)
                         m_abCastlingAllowed[nPlayer - 1] = false;
 
                         // Update the ZobristKey to reflect the movement of the rook
-                        m_uiZobristKey ^= m_auiZobrist[cBoard.PieceNumber(cGameMove.ToX(), cGameMove.ToY())][(cGameMove.ToX() + (cGameMove.ToY() * 8))];
+                        cBoard.UpdateZobristKey(cGameMove.ToX(), cGameMove.ToY(), cGameMove.ToX(), cGameMove.ToY());
                     }
                 }
             }
@@ -1364,11 +1337,11 @@ int ChessGame::EvaluateGameState(int nPlayer)
 }
 
 /**
-  * Count the number of pieces, wieghted by value, for a player.
+  * Count the number of pieces, weighted by value, for a player.
   *
   * \param nPlayer The player whose turn it is.
   *
-  * \return An integer representing the number of tokens for this player.
+  * \return An integer representing the value of pieces for this player.
   */
 
 int ChessGame::CountEvaluation(int nPlayer) const
@@ -1390,7 +1363,7 @@ int ChessGame::CountEvaluation(int nPlayer) const
 }
 
 /**
-  * Evaluate the number of valid moves for the player.
+  * Evaluate the mobility (number of moves) for this player.
   *
   * \param nPlayer The player whose turn it is.
   *
@@ -1399,12 +1372,17 @@ int ChessGame::CountEvaluation(int nPlayer) const
 
 int ChessGame::MobilityEvaluation(int nPlayer) const
 {
-
-    // Generate all possible valid moves for this player
     std::vector<GameMove> vGameMoves = GenerateMoves(nPlayer);
 
     return vGameMoves.size();
 }
+
+/**
+  * Count the number of doubled, isolated, and passed pawns for this player.
+  *
+  * \param nPlayer The player whose turn it is.
+  */
+
 
 void ChessGame::CountPawns(int nPlayer, int &nDoubled, int &nIsolated, int &nPassed) const
 {
@@ -1556,11 +1534,11 @@ void ChessGame::CountPawns(int nPlayer, int &nDoubled, int &nIsolated, int &nPas
 }
 
 /**
-  * Return a  string providing a current score of the game.
+  * Return a string providing a game score.
   *
-  * This function is a NOP and should be overridden in derived classes.
+  * This method returns the Zobrist hash if the logging level is set to 3.
   *
-  * \return ""
+  * \return String representing the Zobrist hash.
   */
 
 std::string ChessGame::GameScore() const
@@ -1579,7 +1557,7 @@ std::string ChessGame::GameScore() const
 /**
   * Check to see if a player has won the game.
   *
-  * For a each player, evaluate the board for a ... TODO
+  * For this player, check various conditions of an ended game.
   *
   * \param nPlayer The player
   *
@@ -1595,21 +1573,16 @@ bool ChessGame::GameEnded(int nPlayer)
     if (BoardGame::GameEnded(nPlayer))
         return true;
 
-    //// Check for threefold repetition
-    ////int nCheckSum = CheckSum();
-    ////std::cout << "Checksum=" << std::to_string(nCheckSum) << std::endl;
-    ////m_uomsCheckSums.insert(nCheckSum);
-    //m_uomsZobrist.insert(m_uiZobristKey);
+    //
+    // Check for threefold repetition
+    //
+
+    // Insert current Zobrist hash into the container
     m_uomsZobrist.insert(cBoard.ZKey());
-    //if (m_uomsCheckSums.count(nCheckSum) >= m_knMaxCheckSums)
-    //if (m_uomsZobrist.count(m_uiZobristKey) >= m_knMaxRepetition)
+
+    // If this Zobrist hash has been seen three times, this is a threefold repetition of a move and therefore a draw
     if (m_uomsZobrist.count(cBoard.ZKey()) >= m_knMaxRepetition)
     {
-        ////for (auto it = m_uomsCheckSums.begin(); it != m_uomsCheckSums.end(); ++it)
-        //for (auto it = m_uomsZobrist.begin(); it != m_uomsZobrist.end(); ++it)
-            ////std::cout << "Checksum=" << *it << std::endl;
-            //std::cout << "Zobrist=" << *it << std::endl;
-
         m_sWinBy.assign("draw by threefold repetition");
         return true;
     }
@@ -1628,12 +1601,24 @@ bool ChessGame::GameEnded(int nPlayer)
         {
             m_sWinBy.assign("by stalemate");
         }
-        // Game over
+
         return true;
     }
 
     return false;
 }
+
+
+/**
+  * Read game moves from a file.
+  *
+  * Read the file until game moves are available and pass control to ReadAndApplyMoves().
+  * Keep track of and return the player number whose turn is next.
+  *
+  * \param sFileName Name of the file to read from.
+  *
+  * \return The number of the player whose turn is next.
+  */
 
 int ChessGame::ReadMovesFromFile(const std::string &sFileName)
 {
@@ -1653,6 +1638,7 @@ int ChessGame::ReadMovesFromFile(const std::string &sFileName)
     while (true)
     {
         cPeek = fsFile.peek();
+        // If first character is [, this is not a move
         if (cPeek == '[')
         {
             getline(fsFile, sLine);
@@ -1663,12 +1649,23 @@ int ChessGame::ReadMovesFromFile(const std::string &sFileName)
         }
     }
 
+    // Read the moves from the file and apply them to the game
     nPlayer = ReadAndApplyMoves(sFileName, fsFile);
 
     CloseFile(fsFile);
 
     return nPlayer;
 }
+
+/**
+  * Write game moves to a file.
+  *
+  * Write pseudo PGN tags and game moves to a file.
+  *
+  * \param sFileName Name of the file to read from.
+  *
+  * \return True if successful.  False otherwise.
+  */
 
 bool ChessGame::WriteMovesToFile(const std::string &sFileName)
 {

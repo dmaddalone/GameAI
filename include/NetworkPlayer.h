@@ -28,12 +28,12 @@
 
 #include <string>
 
-#include "Player.h"
-#include "Socket.h"
-#include "SocketException.h"
 #include "Game.h"
 #include "GameVocabulary.h"
 #include "GameAIException.h"
+#include "Player.h"
+#include "Socket.h"
+#include "SocketException.h"
 
 class NetworkPlayer: public Socket, public Player
 {

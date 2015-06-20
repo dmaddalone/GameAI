@@ -26,14 +26,9 @@
 #ifndef CHESSGAME_H
 #define CHESSGAME_H
 
-#include <algorithm>
-#include <climits>
-#include <chrono>
-#include <ctime>
 #include <iostream>
-#include <random>
 #include <string>
-//#include <unordered_set>
+#include <unordered_set>
 
 #include "BoardGame.h"
 #include "GameAIException.h"
@@ -42,7 +37,8 @@ class ChessGame : public BoardGame
 {
     public:
         // Construct a LinearGame
-        ChessGame(GameType ecGameType, int nX, int nY, int nNumberOfPieces, bool bDisplayGrid, bool bDisplayXCoordinates, bool bDisplayYCoordinates) :
+        ChessGame(GameType ecGameType, int nX, int nY, int nNumberOfPieces,
+                  bool bDisplayGrid, bool bDisplayXCoordinates, bool bDisplayYCoordinates) :
             BoardGame(ecGameType, nX, nY, nNumberOfPieces, bDisplayGrid, bDisplayXCoordinates, bDisplayYCoordinates)
             {
                 int nBufLen    {50};
@@ -84,6 +80,7 @@ class ChessGame : public BoardGame
         // Return the title of the game
         virtual std::string Title() override;
 
+        // Set up the board
         void SetBoard();
 
         // Read moves from a text file and apply them
@@ -93,8 +90,7 @@ class ChessGame : public BoardGame
         virtual bool WriteMovesToFile(const std::string &sFileName) override;
 
     protected:
-        void InitializeZobrist();
-
+        // Generate piece moves
         void GeneratePawnMoves(GameMove cGameMove,   int nPlayer, std::vector<GameMove> &vGameMoves) const;
         void GenerateRookMoves(GameMove cGameMove,   int nPlayer, std::vector<GameMove> &vGameMoves, bool bUnlimitedMoves=true) const;
         void GenerateBishopMoves(GameMove cGameMove, int nPlayer, std::vector<GameMove> &vGameMoves, bool bUnlimitedMoves=true) const;
@@ -107,6 +103,7 @@ class ChessGame : public BoardGame
         std::vector<GameMove> GenerateMovesForPiece(int nPlayer, const GameMove &cGameMove) const;
         bool FindPiece(int &nX, int &nY, int nPlayer, char cToken) const;
 
+        // Tests for various chess positions
         bool TestForAdjacentKings(const GameMove &cGameMove, int nPlayer) const;
         void TestForCheck(int nPlayer, GameMove cGameMove, std::vector<GameMove> &vGameMoves) const;
         bool KingInCheck(int nPlayer) const;
@@ -117,24 +114,25 @@ class ChessGame : public BoardGame
         int  MobilityEvaluation(int nPlayer) const;
         void CountPawns(int nPlayer, int &nDoubled, int &nIsolated, int &nPassed) const;
 
+        // Start date and time of the game
         std::string m_sDateStart {};
         std::string m_sTimeStart {};
-
-        //std::unordered_multiset<uint64_t> m_uomsZobrist {};
-        //static const int m_knMaxRepetition {3};
-        //uint64_t m_uiZobristKey;
-
-        //static const int m_knNumberOfPieces  {12};
-        //static const int m_knNumberOfSquares {64};
-        //uint64_t m_auiZobrist[12][64] {{}};
 
         //const std::string sPieceSymbols {"RNBKQ"};
         //const std::string sFiles        {"abcdefgh"};
         //const std::string sRanks        {"12345678"};
         //const std::string sCaptures     {"x"};
 
+        // Create a title from the game options
         std::string m_sTitle {};
 
+        // Game options
+        bool m_abCastlingAllowed[2]     { true };
+        bool m_bDoublePawnMoveAllowed   { true };
+        bool m_bEnPassantAllowed        { true };
+        bool m_bAutomaticPromoteToQueen { true };
+
+        // Piece tokens
         static const char m_kcPawnToken   {'P'};
         static const char m_kcRookToken   {'R'};
         static const char m_kcKnightToken {'N'};
@@ -142,6 +140,7 @@ class ChessGame : public BoardGame
         static const char m_kcQueenToken  {'Q'};
         static const char m_kcKingToken   {'K'};
 
+        // Piece values
         static const int  m_knPawnValue   {1};
         static const int  m_knRookValue   {5};
         static const int  m_knKnightValue {3};
@@ -149,6 +148,7 @@ class ChessGame : public BoardGame
         static const int  m_knQueenValue  {9};
         static const int  m_knKingValue   {4};
 
+        // Piece indices, used in Zobrist hashing
         static const int m_knPieceIndexOffset {6};
         static const int m_knWhitePawnIndex   {0};
         static const int m_knWhiteRookIndex   {1};
@@ -163,10 +163,11 @@ class ChessGame : public BoardGame
         static const int m_knBlackQueenIndex  {m_knWhiteQueenIndex  + m_knPieceIndexOffset};
         static const int m_knBlackKingIndex   {m_knWhiteKingIndex   + m_knPieceIndexOffset};
 
-        bool m_abCastlingAllowed[2]     { true };
-        bool m_bDoublePawnMoveAllowed   { true };
-        bool m_bEnPassantAllowed        { true };
-        bool m_bAutomaticPromoteToQueen { true };
+        // Capture Zobrist keys in an unordered set
+        std::unordered_multiset<uint64_t> m_uomsZobrist {};
+
+        // Max repetitions of board position before a draw is called
+        static const int m_knMaxRepetition {3};
 };
 
 #endif // CHESSGAME_H

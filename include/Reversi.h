@@ -32,23 +32,30 @@ class Reversi : public LinearGame
 {
     public:
         // Construct a Reversi game, and set up the board
-        Reversi(GameType ecGameType) : LinearGame(ecGameType, m_kiDimension, m_kiDimension, 'D', 'L', 0, true, true, true, true) { SetBoard(); }
+        Reversi(GameType ecGameType) : LinearGame(ecGameType, m_kiDimension, m_kiDimension, 'D', 'L', 0, true, true, true, true)
+        { SetBoard(); }
+
         // Deconstructor
         ~Reversi() {}
 
         // Apply the move to the game
-        //virtual bool ApplyMove(int nPlayer, GameMove &cGameMove) override;
-        bool ApplyMove(int nPlayer, GameMove &cGameMove);
+        virtual bool ApplyMove(int nPlayer, GameMove &cGameMove) override;
+
         // Evaluate the game state from the perspective of the nPlayer
         virtual int  EvaluateGameState(int nPlayer) override;
+
         // Return the score of the game
         virtual std::string GameScore() const override;
+
         // Check to see if the game has ended
         virtual bool GameEnded(int nPlayer) override;
+
         // Generate a vector of valid moves
         virtual std::vector<GameMove> GenerateMoves(int nPlayer) const override;
+
         // Clone the current game
         virtual std::unique_ptr<Game> Clone() const override { return std::unique_ptr<Game>(new Reversi(*this)); }
+
         // Return the title of the game
         virtual std::string Title() override { return "Reversi"; }
 
@@ -88,7 +95,7 @@ class Reversi : public LinearGame
         int  MobilityEvaluation(int nPlayer) const;
 
         // Board dimension
-        static const int m_kiDimension = 8;
+        static const int m_kiDimension {8};
 
         // Static evaluation table
         const int m_kaiEvalTable[m_kiDimension][m_kiDimension] =

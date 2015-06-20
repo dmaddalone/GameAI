@@ -59,6 +59,19 @@ void GameBoard::InitializeZobrist()
     }
 }
 
+/**
+  * Update the Zobrist hash key.
+  *
+  * Using the passed coordinates, find the random number for the piece
+  * on the designated square and XOR it against the current key.
+  *
+  * \param nPX X-coordinate of the piece
+  * \param nPY Y-coordinate of the piece
+  * \param nSX X-coordinate of the square
+  * \para, nSY Y-coordinate of the square
+  */
+
+
 void GameBoard::UpdateZobristKey(int nPX, int nPY, int nSX, int nSY)
 {
     m_uiZobristKey ^= m_auiZobrist[PieceNumber(nPX, nPY)][nSX + (nSY * m_knMaxY)];
@@ -200,7 +213,6 @@ bool GameBoard::PositionOccupiedByPlayer(int nX, int nY, int nPlayer) const
     else
         return false;
 }
-
 
 /**
   * Display the game board.

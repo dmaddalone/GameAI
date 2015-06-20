@@ -19,7 +19,7 @@
 
 /** \file
  *
- * \brief Provides game vocbulary between server and client.
+ * \brief Provides game vocabulary between server and client.
  *
  */
 
@@ -46,9 +46,9 @@ namespace GameVocabulary
     static const std::string FATAL_EXIT                     {"FATAL_EXIT"};
 
     // Return command from networked messages
-    std::string ParseCommand(std::string sText);
+    std::string ParseCommand(const std::string sText);
     // Return argument from networked messages
-    std::string ParseArgument(std::string sText);
+    std::string ParseArgument(const std::string sText);
 };
 
 #endif // GAMEVOCABULARY_H

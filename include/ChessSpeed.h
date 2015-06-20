@@ -38,6 +38,7 @@ class ChessSpeed : public ChessGame
         {
             m_sTitle.assign("Speed Minichess");
 
+            // Turn off pawn double move and en passant
             m_bDoublePawnMoveAllowed = false;
             m_bEnPassantAllowed = false;
 

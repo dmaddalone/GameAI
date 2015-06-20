@@ -26,19 +26,13 @@
 #ifndef GAME_H
 #define GAME_H
 
+#include <algorithm>
 #include <iostream>
 #include <fstream>
 #include <memory>
 #include <vector>
 
-#if defined(_WIN32)
-//#include <winsock2.h>
-//#include <windows.h>
-//#include <wincon.h>
-#endif
-
 #include "GameMove.h"
-//#include "GameAIVersion.h"
 #include "Logger.h"
 
 // Used to identify the type of game
@@ -146,7 +140,7 @@ class Game
         bool WriteMoves(const std::string &sFileName, std::fstream &fsFile);
         bool OpenFileForRead(const std::string &sFileName, std::fstream &fsFile);
         int  ReadAndApplyMoves(const std::string &sFileName, std::fstream &fsFile);
-        bool CloseFile(std::fstream &fsFile);
+        void CloseFile(std::fstream &fsFile);
 
         // Name of the programs
         const std::string m_sProgramName {"GameAI"};

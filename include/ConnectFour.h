@@ -26,7 +26,6 @@
 #ifndef CONNECTFOUR_H
 #define CONNECTFOUR_H
 
-#include "Game.h"
 #include "LinearGame.h"
 
 class ConnectFour : public LinearGame
@@ -42,8 +41,7 @@ class ConnectFour : public LinearGame
         virtual int  PreferredMove(const GameMove &cGameMove) const override;
 
         // Apply the move to the game
-        //virtual bool ApplyMove(int nPlayer, GameMove &cGameMove) override;
-        bool ApplyMove(int nPlayer, GameMove &cGameMove);
+        virtual bool ApplyMove(int nPlayer, GameMove &cGameMove) override;
 
         // Generate a vector of valis moves
         virtual std::vector<GameMove> GenerateMoves(int nPlayer) const override;

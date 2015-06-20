@@ -210,7 +210,7 @@ int Minimax::MinMove(int nPlayer, Game &cGame, int nDepth, int nAlpha, int nBeta
             return nAlpha; // fail hard alpha-cutoff
 
         // If the score of the current move is less than the beta
-        // minimzing score, beta is assigned the score of the current move
+        // minimizing score, beta is assigned the score of the current move
         if (nScore < nBeta)
             nBeta = nScore; // nBeta acts like min
     }

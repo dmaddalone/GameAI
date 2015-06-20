@@ -34,6 +34,7 @@ class GameMove
         // Construct a GameMove
         GameMove() {}
 
+        // Construct using integer values and flags
         GameMove(int nFromX, int nFromY, int nToX, int nToY, bool bUseY, bool bUseFrom) :
             m_nFromX(nFromX),
             m_nFromY(nFromY),
@@ -48,6 +49,7 @@ class GameMove
             m_cToY   = m_nToY + m_kcYOffset;
         }
 
+        // Construct from character values
         GameMove(char cFromX, char cFromY, char cToX, char cToY)
         {
             SetFromX(cFromX);
@@ -70,6 +72,7 @@ class GameMove
         void SetToY(char cY)             { m_cToY = tolower(cY); m_nToY = m_cToY - m_kcYOffset; }
         void SetToY(int nY)              { m_nToY = nY; m_cToY = m_nToY + m_kcYOffset; }
 
+        // Modify several coordinates in one call
         void Set(int nFromX, int nFromY, int nToX, int nToY, bool bUseY, bool bUseFrom)
         {
             SetFromX(nFromX);

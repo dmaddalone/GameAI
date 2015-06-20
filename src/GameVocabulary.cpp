@@ -19,5 +19,32 @@
 
 #include "GameVocabulary.h"
 
-std::string GameVocabulary::ParseCommand(std::string sText)  { return sText.substr(0, sText.find(GameVocabulary::DELIMETER));  }
-std::string GameVocabulary::ParseArgument(std::string sText) { return sText.substr(sText.find(GameVocabulary::DELIMETER) + 1); }
+/**
+  * Parse the string for the command.
+  *
+  * Find and return the command portion of the string.
+  *
+  * \param sText The string to parse.
+  *
+  * \return A string containing the command.
+  */
+
+std::string GameVocabulary::ParseCommand(const std::string sText)
+{
+    return sText.substr(0, sText.find(GameVocabulary::DELIMETER));
+}
+
+/**
+  * Parse the string for the argument.
+  *
+  * Find and return the argument portion of the string.
+  *
+  * \param sText The string to parse.
+  *
+  * \return A string containing the argument.
+  */
+
+std::string GameVocabulary::ParseArgument(const std::string sText)
+{
+    return sText.substr(sText.find(GameVocabulary::DELIMETER) + 1);
+}
