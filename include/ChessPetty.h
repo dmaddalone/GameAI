@@ -34,7 +34,7 @@ class ChessPetty : public ChessGame
 {
     public:
         // Constructor
-        ChessPetty(GameType ecGameType) : ChessGame(ecGameType, 5, 6, true, true, true)
+        ChessPetty(GameType ecGameType) : ChessGame(ecGameType, 5, 6, 12, true, true, true)
         {
             m_sTitle.assign("Petty Minichess");
 

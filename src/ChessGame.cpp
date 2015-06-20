@@ -890,13 +890,15 @@ bool ChessGame::ApplyMove(int nPlayer, GameMove &cGameMove)
     {
         if (cValidGameMove.SameTo(cGameMove))
         {
-
             // Update the ZobristKey to reflect the move
-            m_uiZobristKey ^= m_auiZobrist[cBoard.PieceNumber(cGameMove.FromX(), cGameMove.FromY())][(cGameMove.FromX() + (cGameMove.FromY() * 8))];
-            m_uiZobristKey ^= m_auiZobrist[cBoard.PieceNumber(cGameMove.FromX(), cGameMove.FromY())][(cGameMove.ToX() + (cGameMove.ToY() * 8))];
+            ////m_uiZobristKey ^= m_auiZobrist[cBoard.PieceNumber(cGameMove.FromX(), cGameMove.FromY())][(cGameMove.FromX() + (cGameMove.FromY() * 8))];
+            cBoard.UpdateZobristKey(cGameMove.FromX(), cGameMove.FromY(), cGameMove.FromX(), cGameMove.FromY());
+            ////m_uiZobristKey ^= m_auiZobrist[cBoard.PieceNumber(cGameMove.FromX(), cGameMove.FromY())][(cGameMove.ToX() + (cGameMove.ToY() * 8))];
+            cBoard.UpdateZobristKey(cGameMove.FromX(), cGameMove.FromY(), cGameMove.ToX(), cGameMove.ToY());
             if (cBoard.PositionOccupied(cGameMove.ToX(), cGameMove.ToY()))
             {
-                m_uiZobristKey ^= m_auiZobrist[cBoard.PieceNumber(cGameMove.ToX(), cGameMove.ToY())][(cGameMove.ToX() + (cGameMove.ToY() * 8))];
+                ////m_uiZobristKey ^= m_auiZobrist[cBoard.PieceNumber(cGameMove.ToX(), cGameMove.ToY())][(cGameMove.ToX() + (cGameMove.ToY() * 8))];
+                cBoard.UpdateZobristKey(cGameMove.ToX(), cGameMove.ToY(), cGameMove.ToX(), cGameMove.ToY());
             }
 
             if (cBoard.MovePiece(cGameMove))
@@ -905,13 +907,16 @@ bool ChessGame::ApplyMove(int nPlayer, GameMove &cGameMove)
 
                 break;
             }
-            else // Update the ZobristKey to reflect the unmove
+            else // Update the ZobristKey to reflect the un-move
             {
-                m_uiZobristKey ^= m_auiZobrist[cBoard.PieceNumber(cGameMove.FromX(), cGameMove.FromY())][(cGameMove.FromX() + (cGameMove.FromY() * 8))];
-                m_uiZobristKey ^= m_auiZobrist[cBoard.PieceNumber(cGameMove.FromX(), cGameMove.FromY())][(cGameMove.ToX() + (cGameMove.ToY() * 8))];
+                ////m_uiZobristKey ^= m_auiZobrist[cBoard.PieceNumber(cGameMove.FromX(), cGameMove.FromY())][(cGameMove.FromX() + (cGameMove.FromY() * 8))];
+                cBoard.UpdateZobristKey(cGameMove.FromX(), cGameMove.FromY(), cGameMove.FromX(), cGameMove.FromY());
+                ////m_uiZobristKey ^= m_auiZobrist[cBoard.PieceNumber(cGameMove.FromX(), cGameMove.FromY())][(cGameMove.ToX() + (cGameMove.ToY() * 8))];
+                cBoard.UpdateZobristKey(cGameMove.FromX(), cGameMove.FromY(), cGameMove.ToX(), cGameMove.ToY());
                 if (cBoard.PositionOccupied(cGameMove.ToX(), cGameMove.ToY()))
                 {
-                    m_uiZobristKey ^= m_auiZobrist[cBoard.PieceNumber(cGameMove.ToX(), cGameMove.ToY())][(cGameMove.ToX() + (cGameMove.ToY() * 8))];
+                    ////m_uiZobristKey ^= m_auiZobrist[cBoard.PieceNumber(cGameMove.ToX(), cGameMove.ToY())][(cGameMove.ToX() + (cGameMove.ToY() * 8))];
+                    cBoard.UpdateZobristKey(cGameMove.ToX(), cGameMove.ToY(), cGameMove.ToX(), cGameMove.ToY());
                 }
                 return false;
             }
@@ -1551,6 +1556,27 @@ void ChessGame::CountPawns(int nPlayer, int &nDoubled, int &nIsolated, int &nPas
 }
 
 /**
+  * Return a  string providing a current score of the game.
+  *
+  * This function is a NOP and should be overridden in derived classes.
+  *
+  * \return ""
+  */
+
+std::string ChessGame::GameScore() const
+{
+    std::string sMessage {};
+
+    if (m_cLogger.Level() >= 3)
+    {
+        sMessage += "ZKey=" + std::to_string(cBoard.ZKey());
+    }
+
+    return sMessage;
+}
+
+
+/**
   * Check to see if a player has won the game.
   *
   * For a each player, evaluate the board for a ... TODO
@@ -1573,9 +1599,11 @@ bool ChessGame::GameEnded(int nPlayer)
     ////int nCheckSum = CheckSum();
     ////std::cout << "Checksum=" << std::to_string(nCheckSum) << std::endl;
     ////m_uomsCheckSums.insert(nCheckSum);
-    m_uomsZobrist.insert(m_uiZobristKey);
+    //m_uomsZobrist.insert(m_uiZobristKey);
+    m_uomsZobrist.insert(cBoard.ZKey());
     //if (m_uomsCheckSums.count(nCheckSum) >= m_knMaxCheckSums)
-    if (m_uomsZobrist.count(m_uiZobristKey) >= m_knMaxRepetition)
+    //if (m_uomsZobrist.count(m_uiZobristKey) >= m_knMaxRepetition)
+    if (m_uomsZobrist.count(cBoard.ZKey()) >= m_knMaxRepetition)
     {
         ////for (auto it = m_uomsCheckSums.begin(); it != m_uomsCheckSums.end(); ++it)
         //for (auto it = m_uomsZobrist.begin(); it != m_uomsZobrist.end(); ++it)

@@ -34,7 +34,7 @@ class ChessLosAlamos : public ChessGame
 {
     public:
         // Constructor
-        ChessLosAlamos(GameType ecGameType) : ChessGame(ecGameType, 6, 6, true, true, true)
+        ChessLosAlamos(GameType ecGameType) : ChessGame(ecGameType, 6, 6, 10, true, true, true)
         {
             m_sTitle.assign("Los Alamos Minichess");
             SetBoard();

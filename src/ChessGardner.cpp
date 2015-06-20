@@ -40,7 +40,8 @@ void ChessGardner::SetBoard()
     cBoard.SetPiece(3, 3, cPiece);
     cBoard.SetPiece(4, 3, cPiece);
 
-    InitializeZobrist();
+    //InitializeZobrist();
+    cBoard.InitializeZobrist();
 
     return;
 }

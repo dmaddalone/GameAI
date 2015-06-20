@@ -75,7 +75,7 @@ bool Minimax::Move(Game &cGame)
 GameMove Minimax::MinimaxMove(int nPlayer, Game &cGame, int nDepth)
 {
     // Initialize the best score for a move to the minimum integer
-    int nBestScore = {INT_MIN};
+    int nBestScore {INT_MIN};
     // Initialiaze the alpha score, the maximum score for the maximizing player, to the minimum integer
     int nAlpha {INT_MIN};
     // Initialize the beta score, the minimum score for the minimizing playerm, to the maximum integer

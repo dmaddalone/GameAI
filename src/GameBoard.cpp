@@ -19,6 +19,51 @@
 
 #include "GameBoard.h"
 
+void GameBoard::InitializeZobrist()
+{
+    //
+    // Initialize Zobrist hash table
+    //
+
+    // Random number generator
+#if defined(_WIN32)
+    static unsigned seed  = std::chrono::high_resolution_clock::now().time_since_epoch().count();
+    ++seed;
+    std::mt19937 RandomNumberGenerator{seed};
+#else
+    std::random_device RandomDevice{};
+    std::mt19937_64 RandomNumberGenerator{RandomDevice()};
+#endif // defined
+
+    // Fill Zobrist hash table with random numbers
+    // one for every piece on every square
+    for (int iii = 0; iii < m_knNumberOfTypesOfPieces; ++iii)
+    {
+        for (int jjj = 0; jjj < m_knNumberOfSquares; ++jjj)
+        {
+            m_auiZobrist[iii][jjj] = RandomNumberGenerator();
+        }
+    }
+
+    // Initialize the Zobrist key
+    for (int yyy = 0; yyy < m_knY; ++yyy)
+    {
+        for (int xxx = 0; xxx < m_knX; ++xxx)
+        {
+            if (PositionOccupied(xxx, yyy))
+            {
+                //m_uiZobristKey ^= m_auiZobrist[PieceNumber(xxx, yyy)][(xxx + (yyy * m_knMaxY))];
+                UpdateZobristKey(xxx, yyy, xxx, yyy);
+            }
+        }
+    }
+}
+
+void GameBoard::UpdateZobristKey(int nPX, int nPY, int nSX, int nSY)
+{
+    m_uiZobristKey ^= m_auiZobrist[PieceNumber(nPX, nPY)][nSX + (nSY * m_knMaxY)];
+}
+
 /**
   * Clear the game board.
   *

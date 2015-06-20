@@ -46,7 +46,8 @@ void ChessLosAlamos::SetBoard()
     cBoard.SetPiece(4, 4, cPiece);
     cBoard.SetPiece(5, 4, cPiece);
 
-    InitializeZobrist();
+    //InitializeZobrist();
+    cBoard.InitializeZobrist();
 
     return;
 }

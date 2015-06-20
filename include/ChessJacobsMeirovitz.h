@@ -34,7 +34,7 @@ class ChessJacobsMeirovitz : public ChessGame
 {
     public:
         // Constructor
-        ChessJacobsMeirovitz(GameType ecGameType) : ChessGame(ecGameType, 5, 5, true, true, true)
+        ChessJacobsMeirovitz(GameType ecGameType) : ChessGame(ecGameType, 5, 5, 12, true, true, true)
         {
             m_sTitle.assign("Jacobs-Meirovitz Minichess");
             SetBoard();

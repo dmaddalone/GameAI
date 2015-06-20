@@ -38,7 +38,7 @@ class LinearGame : public BoardGame
     public:
         // Construct a LinearGame
         LinearGame(GameType ecGameType, int nX, int nY, char cToken1, char cToken2, int nInARow, bool bUseY, bool bDisplayGrid, bool bDisplayXCoordinates, bool bDisplayYCoordinates) :
-            BoardGame(ecGameType, nX, nY, bDisplayGrid, bDisplayXCoordinates, bDisplayYCoordinates),
+            BoardGame(ecGameType, nX, nY, 2, bDisplayGrid, bDisplayXCoordinates, bDisplayYCoordinates),
             m_kcToken1(cToken1),
             m_kcToken2(cToken2),
             m_knTokensInARowWin(nInARow),

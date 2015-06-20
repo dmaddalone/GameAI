@@ -34,7 +34,7 @@ class ChessSpeed : public ChessGame
 {
     public:
         // Constructor
-        ChessSpeed(GameType ecGameType) : ChessGame(ecGameType, 5, 6, true, true, true)
+        ChessSpeed(GameType ecGameType) : ChessGame(ecGameType, 5, 6, 12, true, true, true)
         {
             m_sTitle.assign("Speed Minichess");
 

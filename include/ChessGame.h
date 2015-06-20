@@ -33,7 +33,7 @@
 #include <iostream>
 #include <random>
 #include <string>
-#include <unordered_set>
+//#include <unordered_set>
 
 #include "BoardGame.h"
 #include "GameAIException.h"
@@ -42,8 +42,8 @@ class ChessGame : public BoardGame
 {
     public:
         // Construct a LinearGame
-        ChessGame(GameType ecGameType, int nX, int nY, bool bDisplayGrid, bool bDisplayXCoordinates, bool bDisplayYCoordinates) :
-            BoardGame(ecGameType, nX, nY, bDisplayGrid, bDisplayXCoordinates, bDisplayYCoordinates)
+        ChessGame(GameType ecGameType, int nX, int nY, int nNumberOfPieces, bool bDisplayGrid, bool bDisplayXCoordinates, bool bDisplayYCoordinates) :
+            BoardGame(ecGameType, nX, nY, nNumberOfPieces, bDisplayGrid, bDisplayXCoordinates, bDisplayYCoordinates)
             {
                 int nBufLen    {50};
                 std::time_t t = std::time(nullptr);
@@ -77,6 +77,8 @@ class ChessGame : public BoardGame
         virtual bool GameEnded(int nPlayer) override;
         // Generate a vector of valid moves
         virtual std::vector<GameMove> GenerateMoves(int nPlayer) const override;
+        // Return the score of the game
+        virtual std::string GameScore() const override;
         // Clone the current game
         virtual std::unique_ptr<Game> Clone() const = 0;
         // Return the title of the game
@@ -118,13 +120,13 @@ class ChessGame : public BoardGame
         std::string m_sDateStart {};
         std::string m_sTimeStart {};
 
-        std::unordered_multiset<uint64_t> m_uomsZobrist {};
-        static const int m_knMaxRepetition {3};
-        uint64_t m_uiZobristKey;
+        //std::unordered_multiset<uint64_t> m_uomsZobrist {};
+        //static const int m_knMaxRepetition {3};
+        //uint64_t m_uiZobristKey;
 
-        static const int m_knNumberOfPieces  {12};
-        static const int m_knNumberOfSquares {64};
-        uint64_t m_auiZobrist[12][64] {{}};
+        //static const int m_knNumberOfPieces  {12};
+        //static const int m_knNumberOfSquares {64};
+        //uint64_t m_auiZobrist[12][64] {{}};
 
         //const std::string sPieceSymbols {"RNBKQ"};
         //const std::string sFiles        {"abcdefgh"};

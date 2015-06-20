@@ -27,34 +27,56 @@
 #ifndef GAMEBOARD_H
 #define GAMEBOARD_H
 
+#include <chrono>
 #include <iostream>
+#include <random>
 #include <string>
 #include <vector>
+#include <unordered_set>
 
 #if defined(_WIN32)
-//#include <winsock2.h>
 #include <windows.h>
-//#include <wincon.h>
 #endif
 
 #include "GameMove.h"
 #include "GamePiece.h"
+#include "GameAIException.h"
 
 class GameBoard
 {
     public:
         // Construct a game board of size X & Y, and display characteristics
-        GameBoard(int nX, int nY, bool bDisplayGrid, bool bDisplayXCoordinates, bool bDisplayYCoordinates) :
+        GameBoard(int nX, int nY, int nNumberOfTypesOfPieces, bool bDisplayGrid, bool bDisplayXCoordinates, bool bDisplayYCoordinates) :
             m_vBoard(m_knMaxY, Row(m_knMaxX)),
             m_knX(nX),
             m_knY(nY),
+            m_knNumberOfTypesOfPieces(nNumberOfTypesOfPieces),
             m_kbDisplayGrid(bDisplayGrid),
             m_kbDisplayXCoordinates(bDisplayXCoordinates),
             m_kbDisplayYCoordinates(bDisplayYCoordinates)
-        {}
+        {
+            // Ensure X- and Y-coordinates do not exceed maximum board sizes
+            if (m_knX > m_knMaxX)
+            {
+                std::string sErrorMessage = "X-coordinate " + std::to_string(m_knX) + " exceeds max X-coordinate " + std::to_string(m_knMaxX);
+                throw GameAIException(sErrorMessage);
+            }
+            if (m_knY > m_knMaxY)
+            {
+                std::string sErrorMessage = "Y-coordinate " + std::to_string(m_knY) + " exceeds max Y-coordinate " + std::to_string(m_knMaxY);
+                throw GameAIException(sErrorMessage);
+            }
+            if (m_knNumberOfTypesOfPieces > m_knMaxNumberOfTypesOfPieces)
+            {
+                std::string sErrorMessage = "Number of game pieces " + std::to_string(m_knNumberOfTypesOfPieces) + " exceeds max number of game pieces " + std::to_string(m_knMaxNumberOfTypesOfPieces);
+                throw GameAIException(sErrorMessage);
+            }
+        }
 
         // Destructor
         ~GameBoard() {}
+
+        void UpdateZobristKey(int nPX, int nPY, int nSX, int nSY);
 
         // Evaluate location validity
         bool ValidLocation(int nX, int nY) const;
@@ -90,6 +112,10 @@ class GameBoard
         // Reverse Y-Coordinates of the board
         void ReverseY()      { m_bReverseY = true; }
 
+        void InitializeZobrist();
+
+        uint64_t ZKey() const { return m_uiZobristKey; }
+
     protected:
         // Vector of vectors to represent the board
         typedef std::vector<GamePiece> Row;
@@ -106,6 +132,12 @@ class GameBoard
         const int  m_knX;
         // Max Y-coordinate this game
         const int  m_knY;
+
+        // Max number of types of pieces allowed
+        static const int m_knMaxNumberOfTypesOfPieces {12};
+
+        // Number of types of pieces for this game
+        const int m_knNumberOfTypesOfPieces;
 
         // Booleans to display game information
         const bool m_kbDisplayGrid;
@@ -127,6 +159,13 @@ class GameBoard
 #endif
 
         bool m_bReverseY = false;
+
+        std::unordered_multiset<uint64_t> m_uomsZobrist {};
+        static const int m_knMaxRepetition {3};
+        uint64_t m_uiZobristKey;
+
+        static const int m_knNumberOfSquares {m_knMaxX * m_knMaxY};
+        uint64_t m_auiZobrist[m_knMaxNumberOfTypesOfPieces][m_knMaxX * m_knMaxY] {{}};
 };
 
 #endif // GAMEBOARD_H
