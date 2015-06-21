@@ -1400,8 +1400,10 @@ int ChessGame::MobilityEvaluation(int nPlayer) const
   * Count the number of doubled, isolated, and passed pawns for this player.
   *
   * \param nPlayer The player whose turn it is.
+  * \param nDoubled The count of doubled pawns
+  * \param nIsolated The count of isolated pawns
+  * \param nPassed the count of passed pawns
   */
-
 
 void ChessGame::CountPawns(int nPlayer, int &nDoubled, int &nIsolated, int &nPassed) const
 {
@@ -1552,6 +1554,15 @@ void ChessGame::CountPawns(int nPlayer, int &nDoubled, int &nIsolated, int &nPas
     return;
 }
 
+/**
+  * Evaluate whether minor pieces have been developed for this player.
+  *
+  * \param nPlayer The player whose turn it is.
+  *
+  * \return An integer representing the number of minor pieces developed for
+  * the player.
+  */
+
 int ChessGame::MinorPiecesDevelopedEvaluation(int nPlayer) const
 {
     int nEval {0};
@@ -1576,17 +1587,80 @@ int ChessGame::MinorPiecesDevelopedEvaluation(int nPlayer) const
     return nEval;
 }
 
+/**
+  * Evaluate whether the Rooks are connected for this player.
+  *
+  * \param nPlayer The player whose turn it is.
+  *
+  * \return True if Rooks are connected, false otherwise.
+  */
+
 bool ChessGame::RooksConnected(int nPlayer) const
 {
-    int nX    {0};
-    int nY    {0};
+    bool bRooksConnected {false};
+    int nFirstX  {0};
+    int nFirstY  {0};
+    int nSecondX {0};
+    int nSecondY {0};
 
-    if (FindPiece(nX, nY, nPlayer, m_kcRookToken))
+    // Find first Rook
+    if (FindPiece(nFirstX, nFirstY, nPlayer, m_kcRookToken))
     {
+        nSecondX = nFirstX;
+        nSecondY = nFirstY;
 
+        // Update coordinates to find another Rook
+        if (nFirstX < m_knX - 1)
+        {
+            ++nSecondX;
+        }
+        else
+        {
+            nSecondX = 0;
+            ++nSecondY;
+        }
+
+        // Find second Rook
+        if (FindPiece(nSecondX, nSecondY, nPlayer, m_kcRookToken))
+        {
+            bRooksConnected = true;
+
+            //
+            // Ensure it is clear between Rooks
+            //
+
+            // If same file
+            if (nFirstX == nSecondX)
+            {
+                for (int yyy = nFirstY + 1; yyy != nSecondY; ++yyy)
+                {
+                    if (cBoard.PositionOccupied(yyy, nFirstX))
+                    {
+                        bRooksConnected = false;
+                        break;
+                    }
+                }
+            }
+            // else if same rank
+            else if (nFirstY == nSecondY)
+            {
+                for (int xxx = nFirstX + 1; xxx != nSecondX; ++xxx)
+                {
+                    if (cBoard.PositionOccupied(nFirstY, xxx))
+                    {
+                        bRooksConnected = false;
+                        break;
+                    }
+                }
+            }
+            else
+            {
+                bRooksConnected = false;
+            }
+        }
     }
 
-    return false;
+    return bRooksConnected;
 }
 
 /**

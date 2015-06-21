@@ -27,6 +27,8 @@
 #ifndef BOARDGAME_H
 #define BOARDGAME_H
 
+#include <climits>
+
 #include "Game.h"
 #include "GameBoard.h"
 

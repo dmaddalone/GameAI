@@ -36,7 +36,7 @@
 class ChessGame : public BoardGame
 {
     public:
-        // Construct a LinearGame
+        // Construct a ChessGame
         ChessGame(GameType ecGameType, int nX, int nY, int nNumberOfPieces,
                   bool bDisplayGrid, bool bDisplayXCoordinates, bool bDisplayYCoordinates) :
             BoardGame(ecGameType, nX, nY, nNumberOfPieces, bDisplayGrid, bDisplayXCoordinates, bDisplayYCoordinates)
@@ -63,20 +63,28 @@ class ChessGame : public BoardGame
 
         // Generate a GameMove from text input
         virtual GameMove GenerateMove(std::string sMove) const override;
+
         // Apply the move to the game
         virtual bool ApplyMove(int nPlayer, GameMove &cGameMove) override;
+
         // Announce the move made
         virtual std::string AnnounceMove(int nPlayer, const GameMove &cGameMove) const override;
+
         // Evaluate the game state from the perspective of the nPlayer
         virtual int  EvaluateGameState(int nPlayer) override;
+
         // Check to see if the game has ended
         virtual bool GameEnded(int nPlayer) override;
+
         // Generate a vector of valid moves
         virtual std::vector<GameMove> GenerateMoves(int nPlayer) const override;
+
         // Return the score of the game
         virtual std::string GameScore() const override;
+
         // Clone the current game
         virtual std::unique_ptr<Game> Clone() const = 0;
+
         // Return the title of the game
         virtual std::string Title() override;
 
