@@ -11,10 +11,7 @@
 
 TODO: Make hostname work
 
-TODO: Evaluate for stalemate - Done?
-TODO: Comments
 TODO: Remove magic numbers
-TODO: "Think ..." Spin?
 TODO: Minimax can't see checkmate easily??
 
 TODO: Check other TODOs
@@ -28,7 +25,7 @@ TODO: Check other TODOs
 				<Option object_output="obj/Debug/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
-				<Option parameters="-1 minimax  -2 minimax -g ttt -name1=bob -name2=bill" />
+				<Option parameters="-1 minimax  -2 minimax -g ttt --name1=bob --name2=bill -v0" />
 				<Compiler>
 					<Add option="-std=c++11" />
 					<Add option="-Wextra" />

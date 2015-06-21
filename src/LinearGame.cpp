@@ -439,6 +439,36 @@ int LinearGame::CheckDiagonalUpperRightLowerLeft(int nPlayer, int y, int x) cons
 }
 
 /**
+  * Return a measure of the preference of a move.
+  *
+  * This method is called if the score of two moves are the same.  To provide
+  * some variability in linear games, this method will return a random number.
+  *
+  * \param cGameMove  The GameMove to be evaluated.
+  *
+  * \return A random integer.
+  */
+
+int LinearGame::PreferredMove(const GameMove &cGameMove) const
+{
+    (void)cGameMove;
+
+    // Random number generator
+#if defined(_WIN32)
+    static unsigned seed  = std::chrono::high_resolution_clock::now().time_since_epoch().count();
+    ++seed;
+    static std::mt19937 RandomNumberGenerator{seed};
+#else
+    static std::random_device RandomDevice{};
+    static std::mt19937 RandomNumberGenerator{RandomDevice()};
+#endif // defined
+
+    static std::uniform_int_distribution<int> Distribution(0,9999);
+
+    return Distribution(RandomNumberGenerator);
+}
+
+/**
   * Check to see if a player has won the game.
   *
   * For a each player, evaluate the board for a contiguous line of

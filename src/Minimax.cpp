@@ -110,9 +110,12 @@ GameMove Minimax::MinimaxMove(int nPlayer, Game &cGame, int nDepth)
     for (GameMove cGameMove : vGameMoves)
     {
         // Let them know that we're thinking
-        ++fGameMoveEvaluated;
-        fPercentComplete = fGameMoveEvaluated / fGameMoves * 100;
-        std::cout << "\rThinking " << std::fixed << std::setprecision(0) << fPercentComplete << "%" << std::flush;
+        if (m_cLogger.Level() >= 1)
+        {
+            ++fGameMoveEvaluated;
+            fPercentComplete = fGameMoveEvaluated / fGameMoves * 100;
+            std::cout << "\rThinking " << std::fixed << std::setprecision(0) << fPercentComplete << "%" << std::flush;
+        }
 
         // Log the current move evaluation
         sMessage = "MinimaxMove Player=" + std::to_string(nPlayer) + " Evaluate Move=" + cGameMove.AnnounceFromMove() + cGameMove.AnnounceToMove();

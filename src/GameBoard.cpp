@@ -29,7 +29,7 @@ void GameBoard::InitializeZobrist()
 #if defined(_WIN32)
     static unsigned seed  = std::chrono::high_resolution_clock::now().time_since_epoch().count();
     ++seed;
-    std::mt19937 RandomNumberGenerator{seed};
+    std::mt19937_64 RandomNumberGenerator{seed};
 #else
     std::random_device RandomDevice{};
     std::mt19937_64 RandomNumberGenerator{RandomDevice()};

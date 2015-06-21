@@ -462,6 +462,7 @@ int main(int argc, char* argv[])
     }
 
     // Have each player play in turn
+    std::string sGameScore {};
     while (bGameNotEnded)
     {
         // if nPlayer == 2, set from ReadMoves, set nPlayer to another number and for this round skip Player 1.
@@ -481,7 +482,9 @@ int main(int argc, char* argv[])
         }
 
         // Announce game score
-        std::cout << pcGame->GameScore() << std::endl;
+        sGameScore = pcGame->GameScore();
+        if (!sGameScore.empty())
+            std::cout << pcGame->GameScore() << std::endl;
 
         // Evaluate game state from player 2 perspective.  If game ended, allow player 2 to finish.
         // Then break from loop.
@@ -499,7 +502,9 @@ int main(int argc, char* argv[])
         }
 
         // Announce game score
-        std::cout << pcGame->GameScore() << std::endl;
+        sGameScore = pcGame->GameScore();
+        if (!sGameScore.empty())
+            std::cout << pcGame->GameScore() << std::endl;
 
         // Evaluate game state from player 1 perspective.  If game ended, allow player 1 to finish.
         // Then break from loop.

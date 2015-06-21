@@ -50,6 +50,8 @@ class LinearGame : public BoardGame
 
         // Generate a GameMove from text input
         virtual GameMove GenerateMove(std::string sMove) const override;
+        // Provide a preferred move
+        virtual int  PreferredMove(const GameMove &cGameMove) const override;
         // Apply the move to the game
         virtual bool ApplyMove(int nPlayer, GameMove &cGameMove) override;
         // Announce the move made
