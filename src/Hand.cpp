@@ -40,6 +40,11 @@ std::string Hand::DisplayCards() const
     return sCards;
 }
 
+int Hand::HasCards() const
+{
+    return m_vCards.size();
+}
+
 
 
 

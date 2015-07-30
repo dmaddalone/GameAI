@@ -43,6 +43,7 @@ class Hand
         }
 
         void AddCard(Card cCard);
+        int  HasCards() const;
 
         std::string DisplayCards() const;
 

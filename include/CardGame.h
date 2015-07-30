@@ -1,8 +1,3 @@
-
-
-
-
-
 /*
     Copyright 2015 Dom Maddalone
 
