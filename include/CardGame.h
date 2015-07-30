@@ -1,3 +1,8 @@
+
+
+
+
+
 /*
     Copyright 2015 Dom Maddalone
 
@@ -19,38 +24,38 @@
 
 /** \file
  *
- * \brief The BoardGame class represents a virtual game played on a
- * two-dimensonal space, navigated with X and Y coordinates.
+ * \brief The CardGame class represents a virtual card game with two or more
+ * players.
  *
  */
 
-#ifndef BOARDGAME_H
-#define BOARDGAME_H
-
-#include <climits>
+#ifndef CARDGAME_H
+#define CARDGAME_H
 
 #include "Game.h"
-#include "GameBoard.h"
+#include "Deck.h"
+#include "Hand.h"
 
-class BoardGame : public Game
+class CardGame : public Game
 {
     public:
-        // Construct a BoardGame
-        BoardGame(GameType ecGameType, int nX, int nY, int nNumberOfPieces,
-                  bool bDisplayGrid, bool bDisplayXCoordinates, bool bDisplayYCoordinates) :
-            Game(ecGameType),
-            m_knX(nX),
-            m_knY(nY),
-            cBoard(nX, nY, nNumberOfPieces, bDisplayGrid, bDisplayXCoordinates, bDisplayYCoordinates)
-            {  SetBoard(); }
+        // Construct a CardGame
+        CardGame(GameType ecGameType, int nNumberOfHands) :
+            Game(ecGameType)
+        {
+            for (int iii = 0; iii < nNumberOfHands; ++iii)
+            {
+                m_vHands.emplace_back();
+            }
+        }
 
         // Destructor
-        virtual ~BoardGame() {}
+        virtual ~CardGame() {}
 
-        // Display the game board
+        // Display the game
         virtual void Display() const override;
-        // Return a list of valid moves in string format
-        virtual std::string ValidMoves(int nPlayer) const override;
+        //// Return a list of valid moves in string format
+        //virtual std::string ValidMoves(int nPlayer) const override;
         // Get the move from the designated player
         virtual GameMove GetMove(int nPlayer) const override;
         // Generate a GameMove from text input
@@ -64,17 +69,19 @@ class BoardGame : public Game
         // Clone the current game
         virtual std::unique_ptr<Game> Clone() const = 0;
 
-        // Set up the board
-        void SetBoard() { cBoard.Clear(); };
+        // Set and get flags
+        void SetFoldingAllowed(bool b) { m_bFoldingAllowed = b; }
+        bool FoldingAllowed() const    { return m_bFoldingAllowed; }
+        void SetDrawingAllowed(bool b) { m_bDrawingAllowed = b; }
+        bool DrawingAllowed() const    { return m_bDrawingAllowed; }
 
     protected:
-        // Max X-coordinate for this game
-        const int  m_knX;
-        // Max Y-coordinate this game
-        const int  m_knY;
+        Deck m_cDeck;
+        std::vector<Hand> m_vHands;
 
-        // The game board, initialized in the constructor
-        GameBoard cBoard;
+        // Flags
+        bool m_bFoldingAllowed { true };
+        bool m_bDrawingAllowed { false };
 };
 
-#endif // BOARDGAME_H
+#endif // CARDGAME_H

@@ -33,6 +33,7 @@
 #include <vector>
 
 #include "GameMove.h"
+#include "GameVocabulary.h"
 #include "Logger.h"
 
 // Used to identify the type of game

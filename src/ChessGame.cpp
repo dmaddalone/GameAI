@@ -1724,11 +1724,11 @@ bool ChessGame::GameEnded(int nPlayer)
         if (KingInCheck(nPlayer))
         {
             m_nWinner = 1 - nPlayer + 2;
-            m_sWinBy.assign("by checkmate");
+            m_sWinBy.assign("checkmate");
         }
         else // If King is not in checkmate
         {
-            m_sWinBy.assign("by stalemate");
+            m_sWinBy.assign("stalemate");
         }
 
         return true;

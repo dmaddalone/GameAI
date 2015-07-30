@@ -43,6 +43,11 @@ namespace GameVocabulary
     static const std::string CONFIRM                        {"CONFIRM"};
     static const std::string UNCONFIRM                      {"UNCONFIRM"};
 
+    static const std::string FOLD                           {"FOLD"};
+    static const std::string FOLD_SHORT                     {"F"};
+    static const std::string DRAW                           {"DRAW"};
+    static const std::string DRAW_SHORT                     {"D"};
+
     static const std::string FATAL_EXIT                     {"FATAL_EXIT"};
 
     // Return command from networked messages

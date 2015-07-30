@@ -109,6 +109,14 @@ class GameMove
         void SetResignation(bool b) { m_bResignation = b; }
         bool Resignation()          { return m_bResignation; }
 
+        // Set and return whether a fold has been made
+        void SetFold(bool b) { m_bFold = b; }
+        bool Fold()          { return m_bFold; }
+
+        // Set and return whether a draw has been made
+        void SetDraw(bool b) { m_bDraw = b; }
+        bool Draw()          { return m_bDraw; }
+
         // Set and return whether this is a test move
         void SetTestMove(bool b) { m_bTestMove = b; }
         bool TestMove()          { return m_bTestMove; }
@@ -150,7 +158,13 @@ class GameMove
         // Whether this is a resignation
         bool m_bResignation {false};
 
-        // Whather this is a test move
+        // Whether this is a fold
+        bool m_bFold {false};
+
+        // Whether this is a draw
+        bool m_bDraw {false};
+
+        // Whether this is a test move
         bool m_bTestMove {false};
 };
 

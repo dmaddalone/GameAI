@@ -17,18 +17,21 @@
     along with GameAI.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "BoardGame.h"
+#include "CardGame.h"
 
 /**
-  * Display the game board.
+  * Display the cards.
   *
-  * Run through every space on the board and display it's token.  Also display
-  * coordinates and grid lines, depending on settings.
+  * //Run through every space on the board and display it's token.  Also display
+  * //coordinates and grid lines, depending on settings.
   */
 
-void BoardGame::Display() const
+void CardGame::Display() const
 {
-    cBoard.Display();
+    for (const Hand &cHand : m_vHands)
+    {
+        std::cout << "P" << cHand.ID() << ": " << cHand.DisplayCards() << std::endl;
+    }
 }
 
 /**
@@ -40,8 +43,8 @@ void BoardGame::Display() const
   *
   * \return A string of valid moves.
   */
-
-std::string BoardGame::ValidMoves(int nPlayer) const
+/*
+std::string CardGame::ValidMoves(int nPlayer) const
 {
     std::string sValidMoves {};
 
@@ -61,6 +64,7 @@ std::string BoardGame::ValidMoves(int nPlayer) const
 
     return sValidMoves;
 }
+*/
 
 /**
   * Get the player's move.
@@ -72,15 +76,13 @@ std::string BoardGame::ValidMoves(int nPlayer) const
   * \return A GameMove object.
   */
 
-GameMove BoardGame::GetMove(int nPlayer) const
+GameMove CardGame::GetMove(int nPlayer) const
 {
     (void)nPlayer;
 
     std::string sMove {};
 
-    std::cin >> sMove;
-
-    // Genterate and return a GameMove
+    std::cin >> sMove; // (F)OLD, (D)RAW, (H)IT, (ST)AND, (DO)UBLE-DOWN, (SP)LIT, ...
     return GenerateMove(sMove);
 }
 
@@ -95,7 +97,7 @@ GameMove BoardGame::GetMove(int nPlayer) const
   */
 
 
-GameMove BoardGame::GenerateMove(std::string sMove) const
+GameMove CardGame::GenerateMove(std::string sMove) const
 {
     // Generic GamevMove
     GameMove cGameMove(-1, -1, -1, -1, false, false);
@@ -112,6 +114,26 @@ GameMove BoardGame::GenerateMove(std::string sMove) const
         return cGameMove;
     }
 
+    // Compare move against folding
+    if (FoldingAllowed())
+    {
+        if (sMove.compare(GameVocabulary::FOLD) == 0)
+        {
+            cGameMove.SetFold(true);
+            return cGameMove;
+        }
+    }
+
+    // Compare move against drawing
+    if (DrawingAllowed())
+    {
+        if (sMove.compare(GameVocabulary::DRAW) == 0)
+        {
+            cGameMove.SetDraw(true);
+            return cGameMove;
+        }
+    }
+
     return cGameMove;
 }
 
@@ -125,7 +147,7 @@ GameMove BoardGame::GenerateMove(std::string sMove) const
   * \return 0
   */
 
-int BoardGame::PreferredMove(const GameMove &cGameMove) const
+int CardGame::PreferredMove(const GameMove &cGameMove) const
 {
     (void)cGameMove;
 
@@ -140,7 +162,7 @@ int BoardGame::PreferredMove(const GameMove &cGameMove) const
   * \return ""
   */
 
-std::string BoardGame::GameScore() const
+std::string CardGame::GameScore() const
 {
     return "";
 }
@@ -155,7 +177,7 @@ std::string BoardGame::GameScore() const
   * \return True, if any player has won the game.  False otherwise.
   */
 
-bool BoardGame::GameEnded(int nPlayer)
+bool CardGame::GameEnded(int nPlayer)
 {
     if (!m_vGameMoves.empty())
     {
