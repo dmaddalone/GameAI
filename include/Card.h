@@ -28,16 +28,17 @@
 
 #include <string>
 
-const std::string asRank[] { "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A" };
-const std::string asSuit[] { "h", "d", "c", "s" };
+const std::string asRank[]  { "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A" };
+const std::string asSuit[]  { "h", "d", "c", "s" };
+const int         aiValue[] {  2,   3,   4,   5,   6,   7,   8,   9,   10,   11,  12,  13,  14 };
 
 class Card
 {
     public:
-        Card(std::string sRank, std::string sSuit) :
+        Card(std::string sRank, std::string sSuit, int nValue) :
             m_sRank(sRank),
-            m_sSuit(sSuit)
-
+            m_sSuit(sSuit),
+            m_nValue(nValue)
         {
             m_nID = ++m_nCardCount;
         }
@@ -53,6 +54,7 @@ class Card
         // Rank and Suit
         std::string m_sRank;
         std::string m_sSuit;
+        int         m_nValue {0};
 
         bool m_bTurnedUp { false };
 

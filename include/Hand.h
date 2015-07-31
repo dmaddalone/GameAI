@@ -44,6 +44,7 @@ class Hand
 
         void AddCard(Card cCard);
         int  HasCards() const;
+        // Card TurnUpTopCard();
 
         std::string DisplayCards() const;
 

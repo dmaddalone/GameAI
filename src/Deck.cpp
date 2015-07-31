@@ -28,7 +28,7 @@ Deck::Deck()
     {
         for (std::size_t jjj = 0; jjj < sizeof(asSuit); ++jjj)
         {
-            m_vCards.emplace_back(asRank[iii], asSuit[jjj]);
+            m_vCards.emplace_back(asRank[iii], asSuit[jjj], aiValue[iii]);
         }
     }
 }
@@ -48,7 +48,26 @@ void Deck::Shuffle()
     std::shuffle(m_vCards.begin(), m_vCards.end(), RandomNumberGenerator);
 }
 
-void Deck::Deal(int nNumberOfCards)
+void Deck::Deal(int nNumberOfCardsPerHand, std::vector<Hand> &vHands)
 {
+    int nTotalCards {0};
 
+    if (nNumberOfCardsPerHand == 0)
+    {
+        nTotalCards = m_vCards.size();
+    }
+    else
+    {
+        nTotalCards = nNumberOfCardsPerHand * m_vCards.size();
+        // TODO: Ensure we have enough cards
+    }
+
+    for (int iii = 0; iii < nTotalCards; ++iii)
+    {
+        for (Hand &cHand : vHands)
+        {
+            cHand.AddCard(m_vCards[0]);
+            m_vCards.erase(m_vCards.begin());
+        }
+    }
 }

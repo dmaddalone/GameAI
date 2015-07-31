@@ -32,6 +32,7 @@
 #include <vector>
 
 #include "Card.h"
+#include "Hand.h"
 
 class Deck
 {
@@ -43,7 +44,7 @@ class Deck
         void Shuffle();
 
         // Deal the deck
-        void Deal(int nNumberOfCards);
+        void Deal(int nNumberOfCardsPerHand, std::vector<Hand> &vHands);
 
     private:
         std::vector<Card> m_vCards;

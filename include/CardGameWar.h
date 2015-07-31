@@ -28,6 +28,8 @@
 #ifndef CARDGAMEWAR_H
 #define CARDGAMEWAR_H
 
+#include <map>
+
 #include "CardGame.h"
 
 class CardGameWar : public CardGame
@@ -36,7 +38,10 @@ class CardGameWar : public CardGame
         // Construct a War card game
         CardGameWar(GameType ecGameType, int nNumberOfHands) :
             CardGame(ecGameType, nNumberOfHands)
-        {}
+        {
+            // Deal cards
+            m_cDeck.Deal(0, m_vHands);
+        }
 
         // Destructor
         virtual ~CardGameWar();
@@ -62,8 +67,12 @@ class CardGameWar : public CardGame
         // Return the title of the game
         virtual std::string Title() override { return "War"; }
 
+        // Add player's card to the battle
+
+
     protected:
     private:
+        std::map<int, Card> m_mBattle;
 };
 
 #endif // CARDGAMEWAR_H

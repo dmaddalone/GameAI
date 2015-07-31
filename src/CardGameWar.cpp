@@ -33,7 +33,7 @@ std::vector<GameMove> CardGameWar::GenerateMoves(int nPlayer) const
 {
     std::vector<GameMove> vGameMoves {};
 
-    if (m_vHands[nPlayer].HasCards() > 0)
+    if (m_vHands[nPlayer - 1].HasCards() > 0)
     {
         GameMove cGameMove;
         cGameMove.SetDraw(true);
@@ -55,7 +55,7 @@ std::vector<GameMove> CardGameWar::GenerateMoves(int nPlayer) const
   */
 
 bool CardGameWar::ApplyMove(int nPlayer, GameMove &cGameMove)
-{/*
+{
     // Check player number
     if ((nPlayer != m_knPlayer1) && (nPlayer != m_knPlayer2))
         return false;
@@ -68,16 +68,8 @@ bool CardGameWar::ApplyMove(int nPlayer, GameMove &cGameMove)
         return true;
     }
 
-    if (!cBoard.ValidLocation(cGameMove.ToX(), cGameMove.ToY()))
-        return false;
+    // Apply move to the game
 
-    // Check to see if a space is clear
-    if (cBoard.PositionOccupied(cGameMove.ToX(), cGameMove.ToY()))
-        return false;
-
-    // Apply move to the board
-    GamePiece cGamePiece(m_acTokens[nPlayer], nPlayer);
-    cBoard.SetPiece(cGameMove.ToX(), cGameMove.ToY(), cGamePiece);
 
     // Increment move counter
     ++m_nNumberOfMoves;
@@ -85,7 +77,7 @@ bool CardGameWar::ApplyMove(int nPlayer, GameMove &cGameMove)
     // Capture move for later playback or analysis
     m_vGameMoves.push_back(cGameMove);
 
-    return true;*/
+    return true;
 }
 
 
