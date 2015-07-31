@@ -27,6 +27,12 @@ void Hand::AddCard(Card cCard)
     m_vCards.push_back(cCard);
 }
 
+void Hand::AddCardToTop(Card cCard)
+{
+    std::vector<Card>::iterator it = m_vCards.begin();
+    m_vCards.insert(it, cCard);
+}
+
 std::string Hand::DisplayCards() const
 {
     std::string sCards {};
@@ -43,6 +49,15 @@ std::string Hand::DisplayCards() const
 int Hand::HasCards() const
 {
     return m_vCards.size();
+}
+
+Card Hand::DrawTopCard()
+{
+    Card cCard = m_vCards.front();
+
+    m_vCards.erase(m_vCards.begin());
+
+    return cCard;
 }
 
 

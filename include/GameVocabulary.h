@@ -19,7 +19,7 @@
 
 /** \file
  *
- * \brief Provides game vocabulary between server and client.
+ * \brief Provides game vocabulary.
  *
  */
 

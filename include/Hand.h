@@ -26,9 +26,6 @@
 #ifndef HAND_H
 #define HAND_H
 
-//#include <algorithm>
-//#include <chrono>
-//#include <random>
 #include <vector>
 
 #include "Card.h"
@@ -43,8 +40,9 @@ class Hand
         }
 
         void AddCard(Card cCard);
+        void AddCardToTop(Card cCard);
         int  HasCards() const;
-        // Card TurnUpTopCard();
+        Card DrawTopCard();
 
         std::string DisplayCards() const;
 

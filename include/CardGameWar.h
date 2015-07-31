@@ -28,7 +28,8 @@
 #ifndef CARDGAMEWAR_H
 #define CARDGAMEWAR_H
 
-#include <map>
+#include <unordered_map>
+//#include <utility>
 
 #include "CardGame.h"
 
@@ -61,6 +62,12 @@ class CardGameWar : public CardGame
         // Return a list of valid moves in string format
         virtual std::string ValidMoves(int nPlayer) const override;
 
+        // Return the score of the game
+        virtual std::string GameScore() const override;
+
+        // Check to see if the game has ended
+        virtual bool GameEnded(int nPlayer) override;
+
         // Clone the current game
         virtual std::unique_ptr<Game> Clone() const override { return std::unique_ptr<Game>(new CardGameWar(*this)); }
 
@@ -72,7 +79,9 @@ class CardGameWar : public CardGame
 
     protected:
     private:
-        std::map<int, Card> m_mBattle;
+        std::unordered_map<int, Card> m_uomBattle;
+        std::vector<Card>             m_vWarCards;
+        bool                          m_bWar {false};
 };
 
 #endif // CARDGAMEWAR_H

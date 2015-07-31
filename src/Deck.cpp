@@ -48,7 +48,7 @@ void Deck::Shuffle()
     std::shuffle(m_vCards.begin(), m_vCards.end(), RandomNumberGenerator);
 }
 
-void Deck::Deal(int nNumberOfCardsPerHand, std::vector<Hand> &vHands)
+void Deck::Deal(int nNumberOfCardsPerHand, std::vector<Hand> &vHands, bool bDealCardsEqually)
 {
     int nTotalCards {0};
 
@@ -59,15 +59,33 @@ void Deck::Deal(int nNumberOfCardsPerHand, std::vector<Hand> &vHands)
     else
     {
         nTotalCards = nNumberOfCardsPerHand * m_vCards.size();
-        // TODO: Ensure we have enough cards
+
+        // Ensure equal amount of cards are dealt
+        if (bDealCardsEqually)
+        {
+            int nRemainder = nTotalCards % vHands.size();
+            if (nRemainder != 0 )
+            {
+                nTotalCards -= nRemainder;
+            }
+        }
+
+        // Ensure we have enough cards to deal
+        if (nTotalCards > static_cast<int>(m_vCards.size()))
+        {
+            std::string sErrorMessage = "Total number of cards to be dealt (" + std::to_string(nTotalCards) + ") is greater than the number of cards in the deck (" + std::to_string(m_vCards.size()) + ")";
+            throw GameAIException(sErrorMessage);
+        }
     }
 
     for (int iii = 0; iii < nTotalCards; ++iii)
     {
         for (Hand &cHand : vHands)
         {
-            cHand.AddCard(m_vCards[0]);
+            cHand.AddCard(m_vCards.front());
             m_vCards.erase(m_vCards.begin());
         }
     }
+
+    //std::cout << "Dealt " <<
 }

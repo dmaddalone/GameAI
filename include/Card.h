@@ -43,12 +43,13 @@ class Card
             m_nID = ++m_nCardCount;
         }
 
-        std::string Suit() const { return m_sSuit; }
-        std::string Rank() const { return m_sRank; }
+        std::string Suit() const      { return m_sSuit; }
+        std::string Rank() const      { return m_sRank; }
+        int         Value() const     { return m_nValue; }
         std::string ShortName() const { return m_sRank + m_sSuit; }
-        void TurnUp()            { m_bTurnedUp = true; }
-        bool TurnedUp()    const { return m_bTurnedUp; }
-        int ID()           const { return m_nID; }
+        void TurnUp(bool b)           { m_bTurnedUp = b; }
+        bool TurnedUp()    const      { return m_bTurnedUp; }
+        int ID()           const      { return m_nID; }
 
     private:
         // Rank and Suit

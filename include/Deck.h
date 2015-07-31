@@ -32,6 +32,7 @@
 #include <vector>
 
 #include "Card.h"
+#include "GameAIException.h"
 #include "Hand.h"
 
 class Deck
@@ -44,7 +45,7 @@ class Deck
         void Shuffle();
 
         // Deal the deck
-        void Deal(int nNumberOfCardsPerHand, std::vector<Hand> &vHands);
+        void Deal(int nNumberOfCardsPerHand, std::vector<Hand> &vHands, bool bDealCardsEqually=true);
 
     private:
         std::vector<Card> m_vCards;

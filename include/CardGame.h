@@ -77,6 +77,8 @@ class CardGame : public Game
         // Flags
         bool m_bFoldingAllowed { true };
         bool m_bDrawingAllowed { false };
+
+        const int m_knUnknownValue {-1};
 };
 
 #endif // CARDGAME_H

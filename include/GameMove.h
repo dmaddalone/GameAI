@@ -114,8 +114,10 @@ class GameMove
         bool Fold()          { return m_bFold; }
 
         // Set and return whether a draw has been made
-        void SetDraw(bool b) { m_bDraw = b; }
-        bool Draw()          { return m_bDraw; }
+        void SetDraw(bool b)      { m_bDraw = b; m_nDraw = 1;}
+        void SetDrawNumber(int n) { m_nDraw = n; }
+        bool Draw()               { return m_bDraw; }
+        int  DrawNumber()         { return m_nDraw; }
 
         // Set and return whether this is a test move
         void SetTestMove(bool b) { m_bTestMove = b; }
@@ -163,6 +165,7 @@ class GameMove
 
         // Whether this is a draw
         bool m_bDraw {false};
+        int  m_nDraw {0};
 
         // Whether this is a test move
         bool m_bTestMove {false};
