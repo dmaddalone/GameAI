@@ -52,7 +52,8 @@ enum class GameType
     TYPE_CHESS_ELENA,
     TYPE_CHESS_ATTACK,
     TYPE_CHESS_LOS_ALAMOS,
-    TYPE_CHESS
+    TYPE_CHESS,
+    TYPE_CARDGAME_WAR
 };
 
 class Game

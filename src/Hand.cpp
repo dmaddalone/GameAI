@@ -22,12 +22,12 @@
 // Initial static int to zero; used to generate unique identifier numbers for hands
 int Hand::m_nHandCount {0};
 
-void Hand::AddCard(Card cCard)
+void Hand::AddCard(Card &cCard)
 {
     m_vCards.push_back(cCard);
 }
 
-void Hand::AddCardToTop(Card cCard)
+void Hand::AddCardToTop(Card &cCard)
 {
     std::vector<Card>::iterator it = m_vCards.begin();
     m_vCards.insert(it, cCard);

@@ -27,6 +27,8 @@
 #ifndef CARDGAME_H
 #define CARDGAME_H
 
+#include <climits>
+
 #include "Game.h"
 #include "Deck.h"
 #include "Hand.h"
@@ -36,8 +38,10 @@ class CardGame : public Game
     public:
         // Construct a CardGame
         CardGame(GameType ecGameType, int nNumberOfHands) :
+        //CardGame(GameType ecGameType) :
             Game(ecGameType)
         {
+            // Setup hands (players)
             for (int iii = 0; iii < nNumberOfHands; ++iii)
             {
                 m_vHands.emplace_back();
@@ -49,14 +53,16 @@ class CardGame : public Game
 
         // Display the game
         virtual void Display() const override;
-        //// Return a list of valid moves in string format
-        //virtual std::string ValidMoves(int nPlayer) const override;
+        // Return a list of valid moves in string format
+        virtual std::string ValidMoves(int nPlayer) const override;
         // Get the move from the designated player
         virtual GameMove GetMove(int nPlayer) const override;
         // Generate a GameMove from text input
         virtual GameMove GenerateMove(std::string sMove) const override;
         // Provide a preferred move
         virtual int  PreferredMove(const GameMove &cGameMove) const override;
+        // Announce the move made
+        virtual std::string AnnounceMove(int nPlayer, const GameMove &cGameMove) const override;
         // Return the score of the game
         virtual std::string GameScore() const override;
         // Check to see if the game has ended
@@ -64,15 +70,17 @@ class CardGame : public Game
         // Clone the current game
         virtual std::unique_ptr<Game> Clone() const = 0;
 
-        // Set and get flags
-        void SetFoldingAllowed(bool b) { m_bFoldingAllowed = b; }
+        // Get flags
         bool FoldingAllowed() const    { return m_bFoldingAllowed; }
-        void SetDrawingAllowed(bool b) { m_bDrawingAllowed = b; }
         bool DrawingAllowed() const    { return m_bDrawingAllowed; }
 
     protected:
+        // Set flags
+        void SetFoldingAllowed(bool b) { m_bFoldingAllowed = b; }
+        void SetDrawingAllowed(bool b) { m_bDrawingAllowed = b; }
+
         Deck m_cDeck;
-        std::vector<Hand> m_vHands;
+        std::vector<Hand> m_vHands {};
 
         // Flags
         bool m_bFoldingAllowed { true };

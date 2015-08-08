@@ -43,28 +43,13 @@ void CardGame::Display() const
   *
   * \return A string of valid moves.
   */
-/*
+
 std::string CardGame::ValidMoves(int nPlayer) const
 {
-    std::string sValidMoves {};
+    (void) nPlayer;
 
-    std::vector<GameMove> vGameMoves = GenerateMoves(nPlayer);
-
-    if (vGameMoves.empty())
-    {
-        sValidMoves = "NO VALID MOVE";
-    }
-    else
-    {
-        for (GameMove cGameMove : vGameMoves)
-        {
-            sValidMoves += cGameMove.AnnounceFromMove() + cGameMove.AnnounceToMove() + " ";
-        }
-    }
-
-    return sValidMoves;
+    return "";
 }
-*/
 
 /**
   * Get the player's move.
@@ -152,6 +137,33 @@ int CardGame::PreferredMove(const GameMove &cGameMove) const
     (void)cGameMove;
 
     return 0;
+}
+
+/**
+  * Announce game move.
+  *
+  * Construct and return a string containing the move.
+  *
+  * \param nPlayer   The player whose turn it is.
+  * \param cGameMove The player's move
+  *
+  * \return A string containing the move.
+  */
+
+std::string CardGame::AnnounceMove(int nPlayer, const GameMove &cGameMove) const
+{
+    (void) nPlayer;
+    (void) cGameMove;
+
+    std::string sMessage {};
+
+/*
+    = "\rMove number: " + std::to_string(m_nNumberOfMoves + 1) +
+        "  Player: " + std::to_string(nPlayer) +
+        "  Moves From: " + cGameMove.AnnounceFromMove() +" To: " + cGameMove.AnnounceToMove();
+*/
+
+    return sMessage;
 }
 
 /**

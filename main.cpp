@@ -157,6 +157,8 @@ static std::unique_ptr<Game> SetGame(char* pcGame)
         return Game::Make(GameType::TYPE_CHESS_LOS_ALAMOS);
     else if (sGame == "chess")
         return Game::Make(GameType::TYPE_CHESS);
+    else if (sGame == "cardgame-war")
+        return Game::Make(GameType::TYPE_CARDGAME_WAR);
     else
         return nullptr;
 }
@@ -414,7 +416,10 @@ int main(int argc, char* argv[])
     std::cout << "Playing " << pcGame->Title() << std::endl;
     for (int iii = 0; iii < 2; ++iii)
     {
-        std::cout << "Player " << iii + 1 << ": Name " << vPlayers[iii]->PlayerName() << " Type " << vPlayers[iii]->TypeName();
+        std::cout << "Player " << iii + 1;
+        if (vPlayers[iii]->PlayerName().size() > 0)
+            std::cout << " Name " << vPlayers[iii]->PlayerName();
+        std::cout << " Type " << vPlayers[iii]->TypeName();
         if (vPlayers[iii]->Type() == PlayerType::TYPE_MINIMAX)
         {
             std::cout << " Plies: " << vPlayers[iii]->Plies();

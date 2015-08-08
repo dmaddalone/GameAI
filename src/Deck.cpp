@@ -24,9 +24,11 @@ Deck::Deck()
     // Create standard 52 card deck
     m_vCards.clear();
 
-    for (std::size_t iii = 0; iii < sizeof(asRank); ++iii)
+    //for (std::size_t iii = 0; iii < sizeof(asRank); ++iii)
+    for (std::size_t iii = 0; iii < asRank.size(); ++iii)
     {
-        for (std::size_t jjj = 0; jjj < sizeof(asSuit); ++jjj)
+        //for (std::size_t jjj = 0; jjj < sizeof(asSuit); ++jjj)
+        for (std::size_t jjj = 0; jjj < asSuit.size(); ++jjj)
         {
             m_vCards.emplace_back(asRank[iii], asSuit[jjj], aiValue[iii]);
         }
@@ -50,7 +52,8 @@ void Deck::Shuffle()
 
 void Deck::Deal(int nNumberOfCardsPerHand, std::vector<Hand> &vHands, bool bDealCardsEqually)
 {
-    int nTotalCards {0};
+    //int nTotalCards {0};
+    std::vector<Card>::size_type nTotalCards {0};
 
     if (nNumberOfCardsPerHand == 0)
     {
@@ -71,19 +74,21 @@ void Deck::Deal(int nNumberOfCardsPerHand, std::vector<Hand> &vHands, bool bDeal
         }
 
         // Ensure we have enough cards to deal
-        if (nTotalCards > static_cast<int>(m_vCards.size()))
+        //if (nTotalCards > static_cast<int>(m_vCards.size()))
+        if (nTotalCards > m_vCards.size())
         {
             std::string sErrorMessage = "Total number of cards to be dealt (" + std::to_string(nTotalCards) + ") is greater than the number of cards in the deck (" + std::to_string(m_vCards.size()) + ")";
             throw GameAIException(sErrorMessage);
         }
     }
 
-    for (int iii = 0; iii < nTotalCards; ++iii)
+    while (nTotalCards && nTotalCards >= vHands.size())
     {
         for (Hand &cHand : vHands)
         {
             cHand.AddCard(m_vCards.front());
             m_vCards.erase(m_vCards.begin());
+            --nTotalCards;
         }
     }
 

@@ -29,7 +29,6 @@
 #define CARDGAMEWAR_H
 
 #include <unordered_map>
-//#include <utility>
 
 #include "CardGame.h"
 
@@ -37,15 +36,24 @@ class CardGameWar : public CardGame
 {
     public:
         // Construct a War card game
-        CardGameWar(GameType ecGameType, int nNumberOfHands) :
-            CardGame(ecGameType, nNumberOfHands)
+        //CardGameWar(GameType ecGameType, int nNumberOfHands) :
+        CardGameWar(GameType ecGameType) :
+            CardGame(ecGameType, 2)
         {
-            // Deal cards
+            // Shuffle and Deal cards
+            m_cDeck.Shuffle();
             m_cDeck.Deal(0, m_vHands);
+            SetDrawingAllowed(true);
         }
 
         // Destructor
-        virtual ~CardGameWar();
+        ~CardGameWar() {}
+
+        // Display the game
+        virtual void Display() const override;
+
+        //// Return a list of valid moves in string format
+        //virtual std::string ValidMoves(int nPlayer) const override;
 
         // Generate a vector of valid moves
         virtual std::vector<GameMove> GenerateMoves(int nPlayer) const override;
@@ -53,17 +61,14 @@ class CardGameWar : public CardGame
         // Apply the move to the game
         virtual bool ApplyMove(int nPlayer, GameMove &cGameMove) override;
 
-        // Announce the move made
-        virtual std::string AnnounceMove(int nPlayer, const GameMove &cGameMove) const override;
+        //// Announce the move made
+        //virtual std::string AnnounceMove(int nPlayer, const GameMove &cGameMove) const override;
 
         // Evaluate the game state from the perspective of the nPlayer
         virtual int  EvaluateGameState(int nPlayer) override;
 
-        // Return a list of valid moves in string format
-        virtual std::string ValidMoves(int nPlayer) const override;
-
-        // Return the score of the game
-        virtual std::string GameScore() const override;
+        //// Return the score of the game
+        //virtual std::string GameScore() const override;
 
         // Check to see if the game has ended
         virtual bool GameEnded(int nPlayer) override;
@@ -72,7 +77,7 @@ class CardGameWar : public CardGame
         virtual std::unique_ptr<Game> Clone() const override { return std::unique_ptr<Game>(new CardGameWar(*this)); }
 
         // Return the title of the game
-        virtual std::string Title() override { return "War"; }
+        virtual std::string Title() override { return "War (Valid moves are " + GameVocabulary::DRAW + ", " + GameVocabulary::RESIGN + ")"; }
 
         // Add player's card to the battle
 

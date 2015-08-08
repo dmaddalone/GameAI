@@ -20,6 +20,50 @@
 #include "CardGameWar.h"
 
 /**
+  * Display the cards.
+  *
+  * //Run through every space on the board and display it's token.  Also display
+  * //coordinates and grid lines, depending on settings.
+  */
+
+void CardGameWar::Display() const
+{
+    std::cout << "Card Count";
+
+    for (const Hand &cHand : m_vHands)
+    {
+        std::cout << " Player " << cHand.ID() << ": " << cHand.HasCards();
+    }
+
+    if (m_vWarCards.size() > 0)
+    {
+        std::cout << " War Chest: " << m_vWarCards.size();
+    }
+
+    std::cout << std::endl;
+}
+
+/**
+  * Return a string of valid moves.
+  *
+  * Call GenerateMoves and collect information into a string.
+  *
+  * \param nPlayer The player whose turn it is.
+  *
+  * \return A string of valid moves.
+  */
+/*
+std::string CardGameWar::ValidMoves(int nPlayer) const
+{
+    (void) nPlayer;
+
+    std::string sValidMoves = GameVocabulary::DRAW + ", " + GameVocabulary::RESIGN;
+
+    return sValidMoves;
+}
+*/
+
+/**
   * Return a vector of valid game moves.
   *
   * For War, the only move is to draw, if the player has cards in their hand.
@@ -81,11 +125,16 @@ bool CardGameWar::ApplyMove(int nPlayer, GameMove &cGameMove)
     // If War, draw two cards: one down and one up for play
     if (m_bWar)
     {
+        // The down card goes into the war cards vector
+        std::cout << "Player " << nPlayer << " draws a down-facing card" << std::endl;
+        Card cCard = m_vHands[nPlayer - 1].DrawTopCard();
+        m_vWarCards.push_back(cCard);
     }
 
-    // Insert players's card into battle
+    // Insert players's up card into battle
     Card cCard = m_vHands[nPlayer - 1].DrawTopCard();
     cCard.TurnUp(true);
+    std::cout << "Player " << nPlayer << " draws " << cCard.ShortName() << std::endl;
     bool bInserted = m_uomBattle.insert(std::make_pair(nPlayer, cCard)).second;
     if (!bInserted)
     {
@@ -99,10 +148,14 @@ bool CardGameWar::ApplyMove(int nPlayer, GameMove &cGameMove)
     // If all players have added their cards to the battle, perform the battle
     if (m_uomBattle.size() == m_vHands.size())
     {
-        int  nCurrentPlayer          {m_knUnknownValue};
+        //int  nCurrentPlayer          {m_knUnknownValue};
         int  nCurrentCardValue       {m_knUnknownValue};
         int  nBestPlayer             {m_knUnknownValue};
         int  nBestCardValue          {m_knUnknownValue};
+
+        m_bWar = false;
+
+        std::cout << "Battle!" << std::endl;
 
         // Gather cards and card values
         for (auto &paPlayerCard : m_uomBattle)
@@ -121,11 +174,8 @@ bool CardGameWar::ApplyMove(int nPlayer, GameMove &cGameMove)
                 // Set flag to true
                 m_bWar = true;
 
-                // Add LAST current player to vector
-                if (nCurrentPlayer != m_knUnknownValue)
-                {
-                    nCurrentPlayer = m_knUnknownValue;
-                }
+                // Clear best player
+                nBestPlayer = m_knUnknownValue;
             }
             // If current value greater,
             else if (nCurrentCardValue > nBestCardValue)
@@ -139,19 +189,23 @@ bool CardGameWar::ApplyMove(int nPlayer, GameMove &cGameMove)
             }
         }
 
+        // Clear battle
+        m_uomBattle.clear();
+
         // War?
         if (m_bWar)
         {
-
+            std::cout << "WAR! Previous battle cards placed in war chest." << std::endl;
         }
         // No War
         else
         {
             // Winning player gets all cards in the war cards vector
+            std::cout << "Player " << nBestPlayer << " Wins" << std::endl;
             for (Card &cCard : m_vWarCards)
             {
                 cCard.TurnUp(false);
-                m_vHands[nBestPlayer].AddCard(cCard);
+                m_vHands[nBestPlayer - 1].AddCard(cCard);
             }
 
             // Clear war cards vector
@@ -169,13 +223,39 @@ bool CardGameWar::ApplyMove(int nPlayer, GameMove &cGameMove)
 }
 
 /**
+  * Evaluate the game state.
+  *
+  * From a player's perspective, return a value cooresponding to the player's
+  * standing in the game.  If the player has won the game, return a large,
+  * positive integer.  If winning, a smaller, positive integer. If lost or
+  * losing, a negative integer.
+  *
+  * \param nPlayer   The player whose turn it is.
+  *
+  * \return An integer representing game state for the player.
+  */
+
+int CardGameWar::EvaluateGameState(int nPlayer)
+{
+    // If won, return largest positive integer // TODO: make these constants
+    if (m_nWinner == nPlayer)
+        return INT_MAX;
+
+    // If lost, return largest negative integer // TODO: make these constants
+    if (m_nWinner == (1 - nPlayer + 2))
+        return INT_MIN;
+
+    return 0;
+}
+
+/**
   * Return a string providing a current score of the game.
   *
   * TCount the cards for each player.
   *
   * \return ""
   */
-
+/*
 std::string CardGameWar::GameScore() const
 {
     std::string sScore {};
@@ -193,6 +273,7 @@ std::string CardGameWar::GameScore() const
 
     return sScore;
 }
+*/
 
 /**
   * Check to see if a player has won the game.

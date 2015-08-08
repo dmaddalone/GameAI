@@ -39,8 +39,8 @@ class Hand
             m_nID = ++m_nHandCount;
         }
 
-        void AddCard(Card cCard);
-        void AddCardToTop(Card cCard);
+        void AddCard(Card &cCard);
+        void AddCardToTop(Card &cCard);
         int  HasCards() const;
         Card DrawTopCard();
 
@@ -49,7 +49,7 @@ class Hand
         int ID() const { return m_nID; }
 
     private:
-        std::vector<Card> m_vCards;
+        std::vector<Card> m_vCards {};
 
         // Used to create unique hand identifier numbers
         static int m_nHandCount;

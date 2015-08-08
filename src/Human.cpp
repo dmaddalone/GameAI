@@ -37,7 +37,11 @@ bool Human::Move(Game &cGame)
     if (m_cLogger.Level() >= 1)
     {
         cGame.Display();
-        std::cout << "Valid moves: " << cGame.ValidMoves(m_nPlayerNumber) << std::endl;
+        std::string sMoves = cGame.ValidMoves(m_nPlayerNumber);
+        if (sMoves.size() > 0)
+        {
+            std::cout << "Valid moves: " << cGame.ValidMoves(m_nPlayerNumber) << std::endl;
+        }
     }
 
     // Generate all possible valid moves for this player
