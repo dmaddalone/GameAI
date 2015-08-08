@@ -56,6 +56,10 @@ std::string Logger::TimeStamp() const
 
 void Logger::Log(const std::string sTag, const std::string sMessage, int nLevel) const
 {
+    // If message is empty, return
+    if (sMessage.empty())
+        return;
+
     // Generate a time stamp
     std::string sLog(TimeStamp());
 

@@ -65,9 +65,24 @@ GameMove CardGame::GetMove(int nPlayer) const
 {
     (void)nPlayer;
 
+    static std::string sDefaultMove = DefaultMove();
+
     std::string sMove {};
 
-    std::cin >> sMove; // (F)OLD, (D)RAW, (H)IT, (ST)AND, (DO)UBLE-DOWN, (SP)LIT, ...
+    if (!sDefaultMove.empty())
+    {
+        std::cout << "[" << sDefaultMove << "] ";
+        std::getline(std::cin, sMove);
+        if (sMove.empty())
+        {
+            sMove = sDefaultMove;
+        }
+    }
+    else
+    {
+        std::cin >> sMove; // (F)OLD, (D)RAW, (H)IT, (ST)AND, (DO)UBLE-DOWN, (SP)LIT, ...
+    }
+
     return GenerateMove(sMove);
 }
 

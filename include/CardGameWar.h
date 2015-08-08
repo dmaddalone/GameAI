@@ -44,6 +44,7 @@ class CardGameWar : public CardGame
             m_cDeck.Shuffle();
             m_cDeck.Deal(0, m_vHands);
             SetDrawingAllowed(true);
+            SetDefaultMove(GameVocabulary::DRAW);
         }
 
         // Destructor
@@ -67,8 +68,8 @@ class CardGameWar : public CardGame
         // Evaluate the game state from the perspective of the nPlayer
         virtual int  EvaluateGameState(int nPlayer) override;
 
-        //// Return the score of the game
-        //virtual std::string GameScore() const override;
+        // Return the score of the game
+        virtual std::string GameScore() const override;
 
         // Check to see if the game has ended
         virtual bool GameEnded(int nPlayer) override;

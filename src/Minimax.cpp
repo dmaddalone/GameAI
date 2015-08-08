@@ -41,8 +41,12 @@ bool Minimax::Move(Game &cGame)
     // Display valid moves
     if (m_cLogger.Level() >= 3)
     {
-        sMessage = "Valid moves: " + cGame.ValidMoves(m_nPlayerNumber);
-        m_cLogger.LogInfo(sMessage, 3);
+        std::string sMoves = cGame.ValidMoves(m_nPlayerNumber);
+        if (sMoves.size() > 0)
+        {
+            sMessage = "Valid moves: " + cGame.ValidMoves(m_nPlayerNumber);
+            m_cLogger.LogInfo(sMessage, 3);
+        }
     }
 
     // Get best game move
@@ -96,6 +100,12 @@ GameMove Minimax::MinimaxMove(int nPlayer, Game &cGame, int nDepth)
         GameMove cNoMove = GameMove();
         cNoMove.SetNoMove(true);
         return cNoMove;
+    }
+
+    // If only one move valid, return it
+    if (vGameMoves.size() == 1)
+    {
+        return vGameMoves[0];
     }
 
     // As a default, set the first possible move as the best move

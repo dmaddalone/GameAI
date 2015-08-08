@@ -74,19 +74,26 @@ class CardGame : public Game
         bool FoldingAllowed() const    { return m_bFoldingAllowed; }
         bool DrawingAllowed() const    { return m_bDrawingAllowed; }
 
+        std::string DefaultMove() const { return m_sDefaultMove; }
+
     protected:
         // Set flags
         void SetFoldingAllowed(bool b) { m_bFoldingAllowed = b; }
         void SetDrawingAllowed(bool b) { m_bDrawingAllowed = b; }
 
+        void SetDefaultMove(std::string sMove) { m_sDefaultMove = sMove; }
+
         Deck m_cDeck;
         std::vector<Hand> m_vHands {};
 
+        const int m_knUnknownValue {-1};
+
+    private:
         // Flags
         bool m_bFoldingAllowed { true };
         bool m_bDrawingAllowed { false };
 
-        const int m_knUnknownValue {-1};
+        std::string m_sDefaultMove {};
 };
 
 #endif // CARDGAME_H

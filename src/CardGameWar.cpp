@@ -28,20 +28,8 @@
 
 void CardGameWar::Display() const
 {
-    std::cout << "Card Count";
-
-    for (const Hand &cHand : m_vHands)
-    {
-        std::cout << " Player " << cHand.ID() << ": " << cHand.HasCards();
-    }
-
-    if (m_vWarCards.size() > 0)
-    {
-        std::cout << " War Chest: " << m_vWarCards.size();
-    }
-
-    std::cout << std::endl;
 }
+
 
 /**
   * Return a string of valid moves.
@@ -134,7 +122,7 @@ bool CardGameWar::ApplyMove(int nPlayer, GameMove &cGameMove)
     // Insert players's up card into battle
     Card cCard = m_vHands[nPlayer - 1].DrawTopCard();
     cCard.TurnUp(true);
-    std::cout << "Player " << nPlayer << " draws " << cCard.ShortName() << std::endl;
+    std::cout << "Player " << nPlayer << " draws " << cCard.Rank() << std::endl;
     bool bInserted = m_uomBattle.insert(std::make_pair(nPlayer, cCard)).second;
     if (!bInserted)
     {
@@ -155,7 +143,7 @@ bool CardGameWar::ApplyMove(int nPlayer, GameMove &cGameMove)
 
         m_bWar = false;
 
-        std::cout << "Battle!" << std::endl;
+        std::cout << "Battle! ";// << std::endl;
 
         // Gather cards and card values
         for (auto &paPlayerCard : m_uomBattle)
@@ -213,8 +201,9 @@ bool CardGameWar::ApplyMove(int nPlayer, GameMove &cGameMove)
         }
     }
 
-    //// Increment move counter
-    //++m_nNumberOfMoves;
+    // Increment move counter after second player draws
+    if (nPlayer == m_knPlayer2)
+        ++m_nNumberOfMoves;
 
     //// Capture move for later playback or analysis
     //m_vGameMoves.push_back(cGameMove);
@@ -255,25 +244,31 @@ int CardGameWar::EvaluateGameState(int nPlayer)
   *
   * \return ""
   */
-/*
+
 std::string CardGameWar::GameScore() const
 {
-    std::string sScore {};
+    // Display the score after the second player has played
+    static bool bDisplayScore = true;
 
-    if (m_uomBattle.size() == 0)
+    bDisplayScore = !bDisplayScore;
+    if (!bDisplayScore)
+        return "";
+
+    // Display card counts for the game score
+    std::string sScore {"Card Count"};
+
+    for (const Hand &cHand : m_vHands)
     {
-        int iii {0};
+        sScore += " Player " + std::to_string(cHand.ID()) + ": " + std::to_string(cHand.HasCards());
+    }
 
-        for (const Hand &cHand : m_vHands)
-        {
-            ++iii;
-            sScore += "Player" + std::to_string(iii) + "=" + std::to_string(cHand.HasCards()) + " ";
-        }
+    if (m_vWarCards.size() > 0)
+    {
+        sScore += " War Chest: " + std::to_string(m_vWarCards.size());
     }
 
     return sScore;
 }
-*/
 
 /**
   * Check to see if a player has won the game.
@@ -302,6 +297,8 @@ bool CardGameWar::GameEnded(int nPlayer)
         std::unordered_map<int, Card>::const_iterator kit = m_uomBattle.find(nPlayer);
         if (kit == m_uomBattle.end())
         {
+            m_nWinner = 1 - nPlayer + 2;
+            m_sWinBy.assign("attrition");
             return true;
         }
     }
