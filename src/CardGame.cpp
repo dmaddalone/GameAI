@@ -22,8 +22,8 @@
 /**
   * Display the cards.
   *
-  * //Run through every space on the board and display it's token.  Also display
-  * //coordinates and grid lines, depending on settings.
+  * Display the cards in each player's hand.
+  *
   */
 
 void CardGame::Display() const
@@ -37,7 +37,7 @@ void CardGame::Display() const
 /**
   * Return a string of valid moves.
   *
-  * Call GenerateMoves and collect information into a string.
+  * This is NOP.  Dervied classes may override.
   *
   * \param nPlayer The player whose turn it is.
   *
@@ -54,7 +54,7 @@ std::string CardGame::ValidMoves(int nPlayer) const
 /**
   * Get the player's move.
   *
-  * From std::cin, generate a GameMove object.
+  * From std::cin, generate a GameMove object.  Provide a default move.
   *
   * \param nPlayer The player whose turn it is.
   *
@@ -95,7 +95,6 @@ GameMove CardGame::GetMove(int nPlayer) const
   *
   * \return A GameMove object.
   */
-
 
 GameMove CardGame::GenerateMove(std::string sMove) const
 {
@@ -157,7 +156,7 @@ int CardGame::PreferredMove(const GameMove &cGameMove) const
 /**
   * Announce game move.
   *
-  * Construct and return a string containing the move.
+  * This function is a NOP and should be overridden in derived classes.
   *
   * \param nPlayer   The player whose turn it is.
   * \param cGameMove The player's move
@@ -170,15 +169,7 @@ std::string CardGame::AnnounceMove(int nPlayer, const GameMove &cGameMove) const
     (void) nPlayer;
     (void) cGameMove;
 
-    std::string sMessage {};
-
-/*
-    = "\rMove number: " + std::to_string(m_nNumberOfMoves + 1) +
-        "  Player: " + std::to_string(nPlayer) +
-        "  Moves From: " + cGameMove.AnnounceFromMove() +" To: " + cGameMove.AnnounceToMove();
-*/
-
-    return sMessage;
+    return "";
 }
 
 /**

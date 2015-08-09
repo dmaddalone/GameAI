@@ -52,7 +52,6 @@ void Deck::Shuffle()
 
 void Deck::Deal(int nNumberOfCardsPerHand, std::vector<Hand> &vHands, bool bDealCardsEqually)
 {
-    //int nTotalCards {0};
     std::vector<Card>::size_type nTotalCards {0};
 
     if (nNumberOfCardsPerHand == 0)
@@ -74,7 +73,7 @@ void Deck::Deal(int nNumberOfCardsPerHand, std::vector<Hand> &vHands, bool bDeal
         }
 
         // Ensure we have enough cards to deal
-        //if (nTotalCards > static_cast<int>(m_vCards.size()))
+
         if (nTotalCards > m_vCards.size())
         {
             std::string sErrorMessage = "Total number of cards to be dealt (" + std::to_string(nTotalCards) + ") is greater than the number of cards in the deck (" + std::to_string(m_vCards.size()) + ")";

@@ -17,7 +17,7 @@
     along with GameAI.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "CardGameWar.h"
+#include "CardGameGoFish.h"
 
 /**
   * Display the cards.
@@ -25,28 +25,29 @@
   * For War, this is NOP.
   */
 
-void CardGameWar::Display() const
+void CardGameGoFish::Display() const
 {
 }
 
 /**
   * Return a vector of valid game moves.
   *
-  * For War, the only move is to draw, if the player has cards in their hand.
+  * For Go Fish, the only move is to ask for cards, if the player has the
+  * card rank in their hand.
   *
   * \param nPlayer The player whose turn it is.
   *
   * \return A vector of valid moves.
   */
 
-std::vector<GameMove> CardGameWar::GenerateMoves(int nPlayer) const
+std::vector<GameMove> CardGameGoFish::GenerateMoves(int nPlayer) const
 {
     std::vector<GameMove> vGameMoves {};
 
     if (m_vHands[nPlayer - 1].HasCards() > 0)
     {
         GameMove cGameMove;
-        cGameMove.SetDraw(true);
+        cGameMove.SetAsk(true);
         vGameMoves.push_back(cGameMove);
     }
 
@@ -68,7 +69,7 @@ std::vector<GameMove> CardGameWar::GenerateMoves(int nPlayer) const
   * \return True, if valid.  False otherwise.
   */
 
-bool CardGameWar::ApplyMove(int nPlayer, GameMove &cGameMove)
+bool CardGameGoFish::ApplyMove(int nPlayer, GameMove &cGameMove)
 {
     // Check player number
     if ((nPlayer != m_knPlayer1) && (nPlayer != m_knPlayer2))
@@ -217,7 +218,7 @@ bool CardGameWar::ApplyMove(int nPlayer, GameMove &cGameMove)
   * \return An integer representing game state for the player.
   */
 
-int CardGameWar::EvaluateGameState(int nPlayer)
+int CardGameGoFish::EvaluateGameState(int nPlayer)
 {
     // If won, return largest positive integer // TODO: make these constants
     if (m_nWinner == nPlayer)
@@ -238,7 +239,7 @@ int CardGameWar::EvaluateGameState(int nPlayer)
   * \return ""
   */
 
-std::string CardGameWar::GameScore() const
+std::string CardGameGoFish::GameScore() const
 {
     // Display the score after the second player has played
     static bool bDisplayScore = true;
@@ -278,7 +279,7 @@ std::string CardGameWar::GameScore() const
   * \return True, if any player has won the game.  False otherwise.
   */
 
-bool CardGameWar::GameEnded(int nPlayer)
+bool CardGameGoFish::GameEnded(int nPlayer)
 {
     // Clear win variables
     m_nWinner = 0;
@@ -303,3 +304,6 @@ bool CardGameWar::GameEnded(int nPlayer)
 
     return false;
 }
+
+
+

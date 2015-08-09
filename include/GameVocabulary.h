@@ -43,6 +43,8 @@ namespace GameVocabulary
     static const std::string CONFIRM                        {"CONFIRM"};
     static const std::string UNCONFIRM                      {"UNCONFIRM"};
 
+    static const std::string ASK                            {"ASK"};
+    static const std::string ASK_SHORT                      {"A"};
     static const std::string FOLD                           {"FOLD"};
     static const std::string FOLD_SHORT                     {"F"};
     static const std::string DRAW                           {"DRAW"};

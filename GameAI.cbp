@@ -93,6 +93,7 @@ TODO: Check other TODOs
 		<Unit filename="include/BoardGame.h" />
 		<Unit filename="include/Card.h" />
 		<Unit filename="include/CardGame.h" />
+		<Unit filename="include/CardGameGoFish.h" />
 		<Unit filename="include/CardGameWar.h" />
 		<Unit filename="include/Chess.h" />
 		<Unit filename="include/ChessAttack.h" />
@@ -131,6 +132,7 @@ TODO: Check other TODOs
 		<Unit filename="src/BoardGame.cpp" />
 		<Unit filename="src/Card.cpp" />
 		<Unit filename="src/CardGame.cpp" />
+		<Unit filename="src/CardGameGoFish.cpp" />
 		<Unit filename="src/CardGameWar.cpp" />
 		<Unit filename="src/Chess.cpp" />
 		<Unit filename="src/ChessAttack.cpp" />

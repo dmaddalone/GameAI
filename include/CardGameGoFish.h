@@ -19,39 +19,41 @@
 
 /** \file
  *
- * \brief The CardGameWar class represents the War card game with two
- * players.
+ * \brief The CardGameGoFish class represents the Go Fish card game with
+ * two players.
  *
  */
 
 
-#ifndef CARDGAMEWAR_H
-#define CARDGAMEWAR_H
+#ifndef CARDGAMEGOFISH_H
+#define CARDGAMEGOFISH_H
 
 #include <unordered_map>
 
 #include "CardGame.h"
 
-class CardGameWar : public CardGame
+class CardGameGoFish : public CardGame
 {
     public:
         // Construct a War card game
-        //CardGameWar(GameType ecGameType, int nNumberOfHands) :
-        CardGameWar(GameType ecGameType) :
+        CardGameGoFish(GameType ecGameType) :
             CardGame(ecGameType, 2)
         {
             // Shuffle and Deal cards
             m_cDeck.Shuffle();
-            m_cDeck.Deal(0, m_vHands);
-            SetDrawingAllowed(true);
-            SetDefaultMove(GameVocabulary::DRAW);
+            m_cDeck.Deal(7, m_vHands);
+            //SetDrawingAllowed(true);
+            //SetDefaultMove(GameVocabulary::DRAW);
         }
 
         // Destructor
-        ~CardGameWar() {}
+        ~CardGameGoFish() {}
 
         // Display the game
         virtual void Display() const override;
+
+        //// Return a list of valid moves in string format
+        //virtual std::string ValidMoves(int nPlayer) const override;
 
         // Generate a vector of valid moves
         virtual std::vector<GameMove> GenerateMoves(int nPlayer) const override;
@@ -72,13 +74,13 @@ class CardGameWar : public CardGame
         virtual bool GameEnded(int nPlayer) override;
 
         // Clone the current game
-        virtual std::unique_ptr<Game> Clone() const override { return std::unique_ptr<Game>(new CardGameWar(*this)); }
+        virtual std::unique_ptr<Game> Clone() const override { return std::unique_ptr<Game>(new CardGameGoFish(*this)); }
 
         // Return the title of the game
-        virtual std::string Title() override { return "War"; }
+        virtual std::string Title() override { return "Go Fish"; }
 
         // Return the description of the game
-        virtual std::string Description() override { return "Aces are High.  Valid moves are " + GameVocabulary::DRAW + ", " + GameVocabulary::RESIGN + "."; }
+        virtual std::string Description() override { return "Valid moves are " + GameVocabulary::ASK + ", " + GameVocabulary::RESIGN + "."; }
 
     protected:
     private:
@@ -87,4 +89,4 @@ class CardGameWar : public CardGame
         bool                          m_bWar {false};
 };
 
-#endif // CARDGAMEWAR_H
+#endif // CARDGAMEGOFISH_H

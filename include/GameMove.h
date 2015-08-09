@@ -119,6 +119,9 @@ class GameMove
         bool Draw()               { return m_bDraw; }
         int  DrawNumber()         { return m_nDraw; }
 
+        // Sdet and return whether an ask has been made
+        void SetAsk(bool b)       { m_bAsk = b; }
+
         // Set and return whether this is a test move
         void SetTestMove(bool b) { m_bTestMove = b; }
         bool TestMove()          { return m_bTestMove; }
@@ -163,9 +166,12 @@ class GameMove
         // Whether this is a fold
         bool m_bFold {false};
 
-        // Whether this is a draw
+        // Whether this is a draw and the number to draw
         bool m_bDraw {false};
         int  m_nDraw {0};
+
+        // Whether this is an ask
+        bool m_bAsk {false};
 
         // Whether this is a test move
         bool m_bTestMove {false};

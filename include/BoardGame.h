@@ -49,18 +49,25 @@ class BoardGame : public Game
 
         // Display the game board
         virtual void Display() const override;
+
         // Return a list of valid moves in string format
         virtual std::string ValidMoves(int nPlayer) const override;
+
         // Get the move from the designated player
         virtual GameMove GetMove(int nPlayer) const override;
+
         // Generate a GameMove from text input
         virtual GameMove GenerateMove(std::string sMove) const override;
+
         // Provide a preferred move
         virtual int  PreferredMove(const GameMove &cGameMove) const override;
+
         // Return the score of the game
         virtual std::string GameScore() const override;
+
         // Check to see if the game has ended
         virtual bool GameEnded(int nPlayer) override;
+
         // Clone the current game
         virtual std::unique_ptr<Game> Clone() const = 0;
 
