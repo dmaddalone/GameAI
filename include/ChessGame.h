@@ -85,8 +85,11 @@ class ChessGame : public BoardGame
         // Clone the current game
         virtual std::unique_ptr<Game> Clone() const = 0;
 
-        // Return the title of the game
-        virtual std::string Title() override;
+        //// Return the title of the game
+        //virtual std::string Title() override;
+
+        // Return the description of the game
+        virtual std::string Description() override;
 
         // Set up the board
         void SetBoard();
@@ -133,9 +136,6 @@ class ChessGame : public BoardGame
         //const std::string sFiles        {"abcdefgh"};
         //const std::string sRanks        {"12345678"};
         //const std::string sCaptures     {"x"};
-
-        // Create a title from the game options
-        std::string m_sTitle {};
 
         // Game options
         bool m_abCastlingAllowed[2]     { true };

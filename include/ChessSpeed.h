@@ -36,8 +36,6 @@ class ChessSpeed : public ChessGame
         // Constructor
         ChessSpeed(GameType ecGameType) : ChessGame(ecGameType, 5, 6, 12, true, true, true)
         {
-            m_sTitle.assign("Speed Minichess");
-
             // Turn off pawn double move and en passant
             m_bDoublePawnMoveAllowed = false;
             m_bEnPassantAllowed = false;
@@ -49,8 +47,9 @@ class ChessSpeed : public ChessGame
 
         // Clone the current game
         virtual std::unique_ptr<Game> Clone() const override { return std::unique_ptr<Game>(new ChessSpeed(*this)); }
+
         // Return the title of the game
-        virtual std::string Title() override { return m_sTitle + ChessGame::Title(); }
+        virtual std::string Title() override { return "Speed Minichess"; }
 
         void SetBoard();
 };

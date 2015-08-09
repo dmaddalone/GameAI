@@ -52,6 +52,9 @@ class ConnectFour : public LinearGame
         // Return the title of the game
         virtual std::string Title() override { return "Connect Four"; }
 
+        // Return the description of the game
+        virtual std::string Description() override { return ""; }
+
     private:
         // Return the bottom row in the Connect Four grid
         int  FindBottom(int x) const;

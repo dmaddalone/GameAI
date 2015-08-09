@@ -36,8 +36,6 @@ class ChessPetty : public ChessGame
         // Constructor
         ChessPetty(GameType ecGameType) : ChessGame(ecGameType, 5, 6, 12, true, true, true)
         {
-            m_sTitle.assign("Petty Minichess");
-
             // Turn off castling, pawn double move, and en passant
             m_abCastlingAllowed[0] = false;
             m_abCastlingAllowed[1] = false;
@@ -52,7 +50,7 @@ class ChessPetty : public ChessGame
         // Clone the current game
         virtual std::unique_ptr<Game> Clone() const override { return std::unique_ptr<Game>(new ChessPetty(*this)); }
         // Return the title of the game
-        virtual std::string Title() override { return m_sTitle + ChessGame::Title(); }
+        virtual std::string Title() override { return "Petty Minichess"; }
 
         void SetBoard();
 };

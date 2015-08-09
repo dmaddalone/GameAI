@@ -20,7 +20,7 @@
 #include "ChessGame.h"
 
 /**
-  * Generate a game title.
+  * Generate a game description.
   *
   * This class will create a titlemade up of Chess game
   * options.
@@ -28,11 +28,11 @@
   * \return A string containing the game title.
   */
 
-std::string ChessGame::Title()
+std::string ChessGame::Description()
 {
     std::string sMessage {};
 
-    sMessage += "\nCastling is ";
+    sMessage += "Castling is ";
 
     if (m_abCastlingAllowed[0])
     {
@@ -1810,7 +1810,7 @@ bool ChessGame::WriteMovesToFile(const std::string &sFileName)
     // Write the following REQUIRED:
 
     // Event: the name of the tournament or match event.
-    fsFile << "[Event \"" << m_sProgramName << " " << m_sTitle << "\"]" << std::endl;
+    fsFile << "[Event \"" << m_sProgramName << " " << Title() << "\"]" << std::endl;
         // TODO:
         //GameAIVersion::SemanticVersion() << " " <<
         //GameAIVersion::DateVersion() <<

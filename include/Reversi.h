@@ -59,6 +59,9 @@ class Reversi : public LinearGame
         // Return the title of the game
         virtual std::string Title() override { return "Reversi"; }
 
+        // Return the description of the game
+        virtual std::string Description() override { return ""; }
+
     private:
         // Set up the board for initial play
         void SetBoard();

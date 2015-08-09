@@ -38,10 +38,15 @@ class TTT : public LinearGame
 
         // Generate a vector of valis moves
         virtual std::vector<GameMove> GenerateMoves(int nPlayer) const override;
+
         // Clone the current game
         virtual std::unique_ptr<Game> Clone() const override { return std::unique_ptr<Game>(new TTT(*this)); }
+
         // Return the title of the game
         virtual std::string Title() override { return "Tic-Tac-Toe"; }
+
+        // Return the description of the game
+        virtual std::string Description() override { return ""; }
 };
 
 #endif // TTT_H

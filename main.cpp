@@ -157,7 +157,7 @@ static std::unique_ptr<Game> SetGame(char* pcGame)
         return Game::Make(GameType::TYPE_CHESS_LOS_ALAMOS);
     else if (sGame == "chess")
         return Game::Make(GameType::TYPE_CHESS);
-    else if (sGame == "cardgame-war")
+    else if (sGame == "war")
         return Game::Make(GameType::TYPE_CARDGAME_WAR);
     else
         return nullptr;
@@ -414,11 +414,17 @@ int main(int argc, char* argv[])
 
     // Announce game
     std::cout << "Playing " << pcGame->Title() << std::endl;
+    std::string sDesc = pcGame->Description();
+    if (!sDesc.empty())
+        std::cout << sDesc << std::endl;
+
+    // Announce players
     for (int iii = 0; iii < 2; ++iii)
     {
         std::cout << "Player " << iii + 1;
         if (vPlayers[iii]->PlayerName().size() > 0)
             std::cout << " Name " << vPlayers[iii]->PlayerName();
+
         std::cout << " Type " << vPlayers[iii]->TypeName();
         if (vPlayers[iii]->Type() == PlayerType::TYPE_MINIMAX)
         {

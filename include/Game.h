@@ -109,6 +109,9 @@ class Game
         // Return the title of the game
         virtual std::string Title() = 0;
 
+        // Return the description of the game
+        virtual std::string Description() = 0;
+
         // Make a game of ecGameType
         static std::unique_ptr<Game> Make(GameType ecGameType);
 
@@ -144,7 +147,7 @@ class Game
         int  ReadAndApplyMoves(const std::string &sFileName, std::fstream &fsFile);
         void CloseFile(std::fstream &fsFile);
 
-        // Name of the programs
+        // Name of the program
         const std::string m_sProgramName {"GameAI"};
 
         // Player numbers

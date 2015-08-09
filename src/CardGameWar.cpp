@@ -113,10 +113,13 @@ bool CardGameWar::ApplyMove(int nPlayer, GameMove &cGameMove)
     // If War, draw two cards: one down and one up for play
     if (m_bWar)
     {
-        // The down card goes into the war cards vector
-        std::cout << "Player " << nPlayer << " draws a down-facing card" << std::endl;
-        Card cCard = m_vHands[nPlayer - 1].DrawTopCard();
-        m_vWarCards.push_back(cCard);
+        if (m_vHands[nPlayer -1].HasCards() >= 2)
+        {
+            // The down card goes into the war cards vector
+            std::cout << "Player " << nPlayer << " draws a down-facing card" << std::endl;
+            Card cCard = m_vHands[nPlayer - 1].DrawTopCard();
+            m_vWarCards.push_back(cCard);
+        }
     }
 
     // Insert players's up card into battle
