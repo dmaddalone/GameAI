@@ -29,18 +29,14 @@
 #include <array>
 #include <string>
 
-//const std::string asRank[]  { "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A" };
-const std::array< std::string, 13> asRank { { "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A" } };
-//const std::string asSuit[]  { "h", "d", "c", "s" };
-const std::array<std::string, 4>   asSuit { { "h", "d", "c", "s" } };
-//const int         aiValue[] {  2,   3,   4,   5,   6,   7,   8,   9,   10,   11,  12,  13,  14 };
+const std::array<std::string, 13>  asRank  { { "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A" } };
+const std::array<std::string, 4>   asSuit  { { "h", "d", "c", "s" } };
 const std::array<int, 13>          aiValue { {  2,   3,   4,   5,   6,   7,   8,   9,   10,   11,  12,  13,  14 } };
-
-
 
 class Card
 {
     public:
+        // Standard constructor
         Card(std::string sRank, std::string sSuit, int nValue) :
             m_sRank(sRank),
             m_sSuit(sSuit),
@@ -49,16 +45,27 @@ class Card
             m_nID = ++m_nCardCount;
         }
 
+        // Non standard constructor
+        Card() :
+            m_sRank(""),
+            m_sSuit(""),
+            m_nValue(0)
+        {
+            m_nID = 0;
+        }
+
         std::string Suit() const      { if (m_bTurnedUp) return m_sSuit; else return m_sNotTurnedUp; }
-        //std::string Suit() const      { return m_sSuit; }
         std::string Rank() const      { if (m_bTurnedUp) return m_sRank; else return m_sNotTurnedUp; }
-        //std::string Rank() const      { return m_sRank; }
         int         Value() const     { return m_nValue; }
-        std::string ShortName() const { return Rank() + Suit(); }//m_sRank + m_sSuit; }
-        //std::string ShortName() const { return m_sRank + m_sSuit; }
-        void TurnUp(bool b)           { m_bTurnedUp = b; }
-        bool TurnedUp()    const      { return m_bTurnedUp; }
-        int ID()           const      { return m_nID; }
+        std::string ShortName() const { return Rank() + Suit(); }
+
+        bool        SetRank(std::string sRank) { m_sRank = sRank; return RankValid(); }
+        bool        RankValid()       { for (const std::string &sRank : asRank) { if (sRank == m_sRank) { return true; } }  return false; }
+
+        void        TurnUp(bool b)    { m_bTurnedUp = b; }
+        bool        TurnedUp() const  { return m_bTurnedUp; }
+
+        int         ID() const        { return m_nID; }
 
     private:
         // Rank and Suit

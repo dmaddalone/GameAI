@@ -199,9 +199,6 @@ bool CardGameWar::ApplyMove(int nPlayer, GameMove &cGameMove)
     if (nPlayer == m_knPlayer2)
         ++m_nNumberOfMoves;
 
-    //// Capture move for later playback or analysis
-    //m_vGameMoves.push_back(cGameMove);
-
     return true;
 }
 

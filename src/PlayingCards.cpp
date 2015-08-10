@@ -17,18 +17,17 @@
     along with GameAI.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "Hand.h"
+#include "PlayingCards.h"
 
-/*
-// Initial static int to zero; used to generate unique identifier numbers for hands
-int Hand::m_nHandCount {0};
+// Initial static int to zero; used to generate unique identifier numbers
+int PlayingCards::m_nCount {0};
 
-int Hand::HasCards() const
+int PlayingCards::HasCards() const
 {
     return m_vCards.size();
 }
 
-bool Hand::RankInHand(std::string sRank) const
+bool PlayingCards::HasRank(std::string sRank) const
 {
     for (const Card &cCard : m_vCards)
     {
@@ -41,18 +40,31 @@ bool Hand::RankInHand(std::string sRank) const
     return false;
 }
 
-void Hand::AddCard(Card &cCard)
+bool PlayingCards::HasSuit(std::string sSuit) const
+{
+    for (const Card &cCard : m_vCards)
+    {
+        if (sSuit == cCard.Suit())
+        {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+void PlayingCards::AddCard(Card &cCard)
 {
     m_vCards.push_back(cCard);
 }
 
-void Hand::AddCardToTop(Card &cCard)
+void PlayingCards::AddCardToTop(Card &cCard)
 {
     std::vector<Card>::iterator it = m_vCards.begin();
     m_vCards.insert(it, cCard);
 }
 
-void Hand::AddCards(std::vector<Card> &vCards)
+void PlayingCards::AddCards(std::vector<Card> &vCards)
 {
     for (Card &cCard : vCards)
     {
@@ -60,7 +72,7 @@ void Hand::AddCards(std::vector<Card> &vCards)
     }
 }
 
-Card Hand::DrawTopCard()
+Card PlayingCards::DrawTopCard()
 {
     Card cCard = m_vCards.front();
 
@@ -69,7 +81,7 @@ Card Hand::DrawTopCard()
     return cCard;
 }
 
-Card Hand::RemoveCard(std::string sRank, std::string sSuit)
+Card PlayingCards::RemoveCard(std::string sRank, std::string sSuit)
 {
     Card cCard;
 
@@ -85,7 +97,7 @@ Card Hand::RemoveCard(std::string sRank, std::string sSuit)
     return cCard;
 }
 
-std::vector<Card> Hand::RemoveCardsOfRank(std::string sRank)
+std::vector<Card> PlayingCards::RemoveCardsOfRank(std::string sRank)
 {
     std::vector<Card> vCards {};
 
@@ -101,7 +113,7 @@ std::vector<Card> Hand::RemoveCardsOfRank(std::string sRank)
     return vCards;
 }
 
-std::vector<Card> Hand::RemoveCardsOfSuit(std::string sSuit)
+std::vector<Card> PlayingCards::RemoveCardsOfSuit(std::string sSuit)
 {
     std::vector<Card> vCards {};
 
@@ -117,7 +129,7 @@ std::vector<Card> Hand::RemoveCardsOfSuit(std::string sSuit)
     return vCards;
 }
 
-std::string Hand::DisplayCards() const
+std::string PlayingCards::DisplayCards() const
 {
     std::string sCards {};
 
@@ -130,5 +142,3 @@ std::string Hand::DisplayCards() const
     return sCards;
 }
 
-
-*/

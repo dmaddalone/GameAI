@@ -34,21 +34,22 @@
 #include "Card.h"
 #include "GameAIException.h"
 #include "Hand.h"
+#include "PlayingCards.h"
 
-class Deck
+class Deck : public PlayingCards
 {
     public:
         // Constructor
         Deck();
+
+        // Destructor
+        ~Deck() {}
 
         // Shuffle the deck
         void Shuffle();
 
         // Deal the deck
         void Deal(int nNumberOfCardsPerHand, std::vector<Hand> &vHands, bool bDealCardsEqually=true);
-
-    private:
-        std::vector<Card> m_vCards;
 };
 
 #endif // DECK_H

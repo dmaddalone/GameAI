@@ -123,6 +123,7 @@ TODO: Check other TODOs
 		<Unit filename="include/Minimax.h" />
 		<Unit filename="include/NetworkPlayer.h" />
 		<Unit filename="include/Player.h" />
+		<Unit filename="include/PlayingCards.h" />
 		<Unit filename="include/Reversi.h" />
 		<Unit filename="include/Server.h" />
 		<Unit filename="include/Socket.h" />
@@ -159,6 +160,7 @@ TODO: Check other TODOs
 		<Unit filename="src/Minimax.cpp" />
 		<Unit filename="src/NetworkPlayer.cpp" />
 		<Unit filename="src/Player.cpp" />
+		<Unit filename="src/PlayingCards.cpp" />
 		<Unit filename="src/Reversi.cpp" />
 		<Unit filename="src/Server.cpp" />
 		<Unit filename="src/Socket.cpp" />

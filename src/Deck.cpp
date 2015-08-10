@@ -19,7 +19,7 @@
 
 #include "Deck.h"
 
-Deck::Deck()
+Deck::Deck() : PlayingCards()
 {
     // Create standard 52 card deck
     m_vCards.clear();

@@ -133,6 +133,29 @@ GameMove CardGame::GenerateMove(std::string sMove) const
         }
     }
 
+    // Compare move against asking for a card
+    if (AskingAllowed())
+    {
+        // Evaluate against an ASK command
+        std::string sToken = GameVocabulary::ParseCommand(sMove);
+        if (sToken.compare(GameVocabulary::ASK) == 0)
+        {
+            // Grab argument, which should be card rank
+            sToken = GameVocabulary::ParseArgument(sMove);
+
+            // Create blank card
+            Card cCard;
+
+            // Evaluate for valid rank
+            if (cCard.SetRank(sToken))
+            {
+                cGameMove.SetAsk(true);
+                cGameMove.UpdateCard(cCard);
+                return cGameMove;
+            }
+        }
+    }
+
     return cGameMove;
 }
 

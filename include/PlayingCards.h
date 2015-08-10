@@ -19,34 +19,31 @@
 
 /** \file
  *
- * \brief The Hand class represents a hand of playing cards.
+ * \brief The PlayingCards class represents playing cards.
  *
  */
 
-#ifndef HAND_H
-#define HAND_H
+#ifndef PLAYINGCARDS_H
+#define PLAYINGCARDS_H
 
 #include <vector>
 
 #include "Card.h"
-#include "PlayingCards.h"
 
-class Hand : public PlayingCards
+class PlayingCards
 {
     public:
         // Constructor
-        /*
-        Hand()
+        PlayingCards()
         {
-            m_nID = ++m_nHandCount;
+            m_nID = ++m_nCount;
         }
-        */
 
-        Hand() : PlayingCards() {};
-        ~Hand() {};
-/*
+        ~PlayingCards() {};
+
         int  HasCards() const;
-        bool RankInHand(std::string sRank) const;
+        bool HasRank(std::string sRank) const;
+        bool HasSuit(std::string sSuit) const;
 
         void AddCard(Card &cCard);
         void AddCardToTop(Card &cCard);
@@ -61,15 +58,15 @@ class Hand : public PlayingCards
 
         int ID() const { return m_nID; }
 
-    private:
+    protected:
         std::vector<Card> m_vCards {};
 
+    private:
         // Used to create unique hand identifier numbers
-        static int m_nHandCount;
+        static int m_nCount;
 
         // Set the card ID to zero
         int m_nID {0};
-*/
 };
 
-#endif // HAND_H
+#endif // PLAYINGCARDS_H

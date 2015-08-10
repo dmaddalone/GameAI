@@ -28,6 +28,8 @@
 
 #include <string>
 
+#include "Card.h"
+
 class GameMove
 {
     public:
@@ -121,6 +123,11 @@ class GameMove
 
         // Sdet and return whether an ask has been made
         void SetAsk(bool b)       { m_bAsk = b; }
+        bool Ask()                { return m_bAsk; }
+
+        // Whether another turn may be had
+        void SetAnotherTurn(bool b) { m_bAnotherTurn = b; }
+        bool AnotherTurn()          { return m_bAnotherTurn; }
 
         // Set and return whether this is a test move
         void SetTestMove(bool b) { m_bTestMove = b; }
@@ -128,6 +135,10 @@ class GameMove
 
         // Compare two moves and whether their to-moves are the same
         bool SameTo(const GameMove &cGameMove) { if ((cGameMove.ToX() == m_nToX) && (cGameMove.ToY() == m_nToY)) return true; else return false;}
+
+        // Add card to move
+        void UpdateCard(Card &cCard) { m_cCard = cCard; }
+        Card GetCard()               { return m_cCard; }
 
         // Announce the moves
         std::string AnnounceFromMove() const;
@@ -173,8 +184,14 @@ class GameMove
         // Whether this is an ask
         bool m_bAsk {false};
 
+        // Whether another turn may be had
+        bool m_bAnotherTurn {false};
+
         // Whether this is a test move
         bool m_bTestMove {false};
+
+        // Card
+        Card m_cCard;
 };
 
 #endif // GAMEMOVE_H

@@ -65,6 +65,10 @@ bool Human::Move(Game &cGame)
         {
             std::cout << "Invalid move" << std::endl;
         }
+        else if (cGameMove.AnotherTurn())
+        {
+            continue;
+        }
         else
         {
             break;

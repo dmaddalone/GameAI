@@ -42,8 +42,8 @@ class CardGameGoFish : public CardGame
             // Shuffle and Deal cards
             m_cDeck.Shuffle();
             m_cDeck.Deal(7, m_vHands);
-            //SetDrawingAllowed(true);
-            //SetDefaultMove(GameVocabulary::DRAW);
+            SetAskingAllowed(true);
+            SetDefaultMove(GameVocabulary::ASK);
         }
 
         // Destructor

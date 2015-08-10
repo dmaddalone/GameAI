@@ -38,7 +38,6 @@ class CardGame : public Game
     public:
         // Construct a CardGame
         CardGame(GameType ecGameType, int nNumberOfHands) :
-        //CardGame(GameType ecGameType) :
             Game(ecGameType)
         {
             // Setup hands (players)
@@ -71,8 +70,9 @@ class CardGame : public Game
         virtual std::unique_ptr<Game> Clone() const = 0;
 
         // Get flags
-        bool FoldingAllowed() const    { return m_bFoldingAllowed; }
-        bool DrawingAllowed() const    { return m_bDrawingAllowed; }
+        bool FoldingAllowed() const   { return m_bFoldingAllowed; }
+        bool DrawingAllowed() const   { return m_bDrawingAllowed; }
+        bool AskingAllowed() const    { return m_bAskingAllowed; }
 
         std::string DefaultMove() const { return m_sDefaultMove; }
 
@@ -80,11 +80,13 @@ class CardGame : public Game
         // Set flags
         void SetFoldingAllowed(bool b) { m_bFoldingAllowed = b; }
         void SetDrawingAllowed(bool b) { m_bDrawingAllowed = b; }
+        void SetAskingAllowed(bool b)  { m_bAskingAllowed = b; }
 
         void SetDefaultMove(std::string sMove) { m_sDefaultMove = sMove; }
 
         Deck m_cDeck;
         std::vector<Hand> m_vHands {};
+        //std::vector<Card> m_vBooks {};
 
         const int m_knUnknownValue {-1};
 
@@ -92,6 +94,7 @@ class CardGame : public Game
         // Flags
         bool m_bFoldingAllowed { true };
         bool m_bDrawingAllowed { false };
+        bool m_bAskingAllowed  { false };
 
         std::string m_sDefaultMove {};
 };

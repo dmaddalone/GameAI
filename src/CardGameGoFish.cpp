@@ -83,8 +83,15 @@ bool CardGameGoFish::ApplyMove(int nPlayer, GameMove &cGameMove)
         return true;
     }
 
-    // If not Resignation, then must be Draw
-    if (!cGameMove.Draw())
+    // If not Resignation, then must be Ask
+    if (!cGameMove.Ask())
+    {
+        return false;
+    }
+
+    // Ensure that asked-for rank is in the players hand.  You can't ask for it
+    // unless it's in your hand.
+    if (!m_vHands[nPlayer - 1].HasRank(cGameMove.GetCard().Rank()))
     {
         return false;
     }
@@ -93,115 +100,64 @@ bool CardGameGoFish::ApplyMove(int nPlayer, GameMove &cGameMove)
     // Apply move to the game
     //
 
-    // If War, draw two cards: one down and one up for play
-    if (m_bWar)
-    {
-        if (m_vHands[nPlayer -1].HasCards() >= 2)
-        {
-            // The down card goes into the war cards vector
-            if (m_cLogger.Level() >= 1)
-            {
-                std::cout << "Player " << nPlayer << " draws a down-facing card" << std::endl;
-            }
-            Card cCard = m_vHands[nPlayer - 1].DrawTopCard();
-            m_vWarCards.push_back(cCard);
-        }
-    }
-
-    // Insert players's up card into battle
-    Card cCard = m_vHands[nPlayer - 1].DrawTopCard();
-    cCard.TurnUp(true);
+    // Announce move
     if (m_cLogger.Level() >= 1)
     {
-        std::cout << "Player " << nPlayer << " draws " << cCard.Rank() << std::endl;
-    }
-    bool bInserted = m_uomBattle.insert(std::make_pair(nPlayer, cCard)).second;
-    if (!bInserted)
-    {
-        // Since DrawTopCard is destructive, add the card back
-        cCard.TurnUp(false);
-        m_vHands[nPlayer -1].AddCardToTop(cCard);
-
-        return false;
+        std::cout << "Player " << nPlayer << " asks for " << cGameMove.GetCard().Rank() << std::endl;
     }
 
-    // If all players have added their cards to the battle, perform the battle
-    if (m_uomBattle.size() == m_vHands.size())
+    // Find rank in opposing player's hand
+    if (m_vHands[nPlayer].HasRank(cGameMove.GetCard().Rank()))
     {
-        //int  nCurrentPlayer          {m_knUnknownValue};
-        int  nCurrentCardValue       {m_knUnknownValue};
-        int  nBestPlayer             {m_knUnknownValue};
-        int  nBestCardValue          {m_knUnknownValue};
-
-        m_bWar = false;
+        // Pass cards from asked player to asking player
+        std::vector<Card> vCards = m_vHands[nPlayer].RemoveCardsOfRank(cGameMove.GetCard().Rank());
 
         if (m_cLogger.Level() >= 1)
-            std::cout << "Battle! ";
-
-        // Gather cards and card values
-        for (auto &paPlayerCard : m_uomBattle)
         {
-            // Add card to war cards vector for winning player
-            m_vWarCards.push_back(paPlayerCard.second);
-
-            //
-            // Evaluate values and select winning card
-            //
-            nCurrentCardValue = paPlayerCard.second.Value();
-
-            // If current value equals best value, we have a potential war
-            if (nCurrentCardValue == nBestCardValue)
-            {
-                // Set flag to true
-                m_bWar = true;
-
-                // Clear best player
-                nBestPlayer = m_knUnknownValue;
-            }
-            // If current value greater,
-            else if (nCurrentCardValue > nBestCardValue)
-            {
-                // Clear war flag
-                m_bWar = false;
-
-                // Update best values
-                nBestCardValue = nCurrentCardValue;
-                nBestPlayer    = paPlayerCard.first;
-            }
+            std::cout << "Player " << 2 - nPlayer + 1 << " hands over " << vCards.size() << std::endl;
         }
 
-        // Clear battle
-        m_uomBattle.clear();
+        m_vHands[nPlayer - 1].AddCards(vCards);
 
-        // War?
-        if (m_bWar)
+        cGameMove.SetAnotherTurn(true);
+    }
+    else // Go Fish
+    {
+        if (m_cLogger.Level() >= 1)
+        {
+            std::cout << "Player " << 2 - nPlayer + 1 << " says Go Fish" << std::endl;
+        }
+
+        if (m_cDeck.HasCards())
         {
             if (m_cLogger.Level() >= 1)
-                std::cout << "WAR! Previous battle cards placed in war chest." << std::endl;
+            {
+                std::cout << "Player " << nPlayer << " draws from the stock" << std::endl;
+            }
+
+            Card cCard = m_cDeck.DrawTopCard();
+
+            if (cGameMove.GetCard().Rank() == cCard.Rank())
+            {
+                if (m_cLogger.Level() >= 1)
+                {
+                    std::cout << "Card drawn has the same rank as originally asked for" << std::endl;
+                }
+
+                cGameMove.SetAnotherTurn(true);
+            }
         }
-        // No War
         else
         {
-            // Winning player gets all cards in the war cards vector
             if (m_cLogger.Level() >= 1)
-                std::cout << "Player " << nBestPlayer << " Wins" << std::endl;
-            for (Card &cCard : m_vWarCards)
             {
-                cCard.TurnUp(false);
-                m_vHands[nBestPlayer - 1].AddCard(cCard);
+                std::cout << "No cards left in the stock to draw from" << std::endl;
             }
-
-            // Clear war cards vector
-            m_vWarCards.clear();
         }
     }
 
-    // Increment move counter after second player draws
-    if (nPlayer == m_knPlayer2)
-        ++m_nNumberOfMoves;
-
-    //// Capture move for later playback or analysis
-    //m_vGameMoves.push_back(cGameMove);
+    // Increment move counter
+    ++m_nNumberOfMoves;
 
     return true;
 }
