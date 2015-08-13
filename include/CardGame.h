@@ -28,6 +28,7 @@
 #define CARDGAME_H
 
 #include <climits>
+#include <unordered_map>
 
 #include "Game.h"
 #include "Deck.h"
@@ -86,7 +87,7 @@ class CardGame : public Game
 
         Deck m_cDeck;
         std::vector<Hand> m_vHands {};
-        //std::vector<Card> m_vBooks {};
+        std::unordered_map<int, Hand> m_uomBooks {};
 
         const int m_knUnknownValue {-1};
 

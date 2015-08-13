@@ -49,6 +49,8 @@ bool Minimax::Move(Game &cGame)
         }
     }
 
+    // TODO: Update for games that provide Another Turn
+
     // Get best game move
     GameMove cGameMove = MinimaxMove(m_nPlayerNumber, cGame, m_nDepth);
 

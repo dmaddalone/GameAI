@@ -143,6 +143,7 @@ class GameMove
         // Announce the moves
         std::string AnnounceFromMove() const;
         std::string AnnounceToMove() const;
+        std::string AnnounceCard() const;
 
     private:
         // Used to convert int coordinates to char values for internal representation using ASCII representation

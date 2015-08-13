@@ -61,8 +61,8 @@ class CardGameGoFish : public CardGame
         // Apply the move to the game
         virtual bool ApplyMove(int nPlayer, GameMove &cGameMove) override;
 
-        //// Announce the move made
-        //virtual std::string AnnounceMove(int nPlayer, const GameMove &cGameMove) const override;
+        // Announce the move made
+        virtual std::string AnnounceMove(int nPlayer, const GameMove &cGameMove) const override;
 
         // Evaluate the game state from the perspective of the nPlayer
         virtual int  EvaluateGameState(int nPlayer) override;

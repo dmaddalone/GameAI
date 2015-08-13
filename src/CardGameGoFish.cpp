@@ -71,6 +71,9 @@ std::vector<GameMove> CardGameGoFish::GenerateMoves(int nPlayer) const
 
 bool CardGameGoFish::ApplyMove(int nPlayer, GameMove &cGameMove)
 {
+    // For logging
+    std::string sMessage {};
+
     // Check player number
     if ((nPlayer != m_knPlayer1) && (nPlayer != m_knPlayer2))
         return false;
@@ -101,10 +104,7 @@ bool CardGameGoFish::ApplyMove(int nPlayer, GameMove &cGameMove)
     //
 
     // Announce move
-    if (m_cLogger.Level() >= 1)
-    {
-        std::cout << "Player " << nPlayer << " asks for " << cGameMove.GetCard().Rank() << std::endl;
-    }
+    m_cLogger.LogInfo(AnnounceMove(nPlayer + 1, cGameMove),1);
 
     // Find rank in opposing player's hand
     if (m_vHands[nPlayer].HasRank(cGameMove.GetCard().Rank()))
@@ -112,10 +112,8 @@ bool CardGameGoFish::ApplyMove(int nPlayer, GameMove &cGameMove)
         // Pass cards from asked player to asking player
         std::vector<Card> vCards = m_vHands[nPlayer].RemoveCardsOfRank(cGameMove.GetCard().Rank());
 
-        if (m_cLogger.Level() >= 1)
-        {
-            std::cout << "Player " << 2 - nPlayer + 1 << " hands over " << vCards.size() << std::endl;
-        }
+        sMessage = "Player " + std::to_string(2 - nPlayer + 1) + " hands over " + std::to_string(vCards.size());
+        m_cLogger.LogInfo(sMessage,1);
 
         m_vHands[nPlayer - 1].AddCards(vCards);
 
@@ -123,43 +121,66 @@ bool CardGameGoFish::ApplyMove(int nPlayer, GameMove &cGameMove)
     }
     else // Go Fish
     {
-        if (m_cLogger.Level() >= 1)
-        {
-            std::cout << "Player " << 2 - nPlayer + 1 << " says Go Fish" << std::endl;
-        }
+        sMessage = "Player " + std::to_string(2 - nPlayer + 1) + "  says Go Fish";
+        m_cLogger.LogInfo(sMessage,1);
 
         if (m_cDeck.HasCards())
         {
-            if (m_cLogger.Level() >= 1)
-            {
-                std::cout << "Player " << nPlayer << " draws from the stock" << std::endl;
-            }
+            sMessage = "Player " + std::to_string(2 - nPlayer + 1) + "  draws from the stock";
+            m_cLogger.LogInfo(sMessage,1);
 
             Card cCard = m_cDeck.DrawTopCard();
 
             if (cGameMove.GetCard().Rank() == cCard.Rank())
             {
-                if (m_cLogger.Level() >= 1)
-                {
-                    std::cout << "Card drawn has the same rank as originally asked for" << std::endl;
-                }
+                m_cLogger.LogInfo("Card drawn has the same rank as originally asked for" ,1);
 
                 cGameMove.SetAnotherTurn(true);
             }
         }
         else
         {
-            if (m_cLogger.Level() >= 1)
-            {
-                std::cout << "No cards left in the stock to draw from" << std::endl;
-            }
+            m_cLogger.LogInfo("No cards left in the stock to draw from" ,1);
         }
     }
+
+    // Check for books
+    /*
+    do
+    {
+        Hand cHand = m_vHands[nPlayer - 1].FindBookByRank(4);
+        if (cHand.HasCards())
+        {
+            m_uomBooks.insert(nPlayer, cHand);
+            // check insert
+        }
+        else
+        {
+            break
+        }
+    } while(true);
+    */
 
     // Increment move counter
     ++m_nNumberOfMoves;
 
     return true;
+}
+
+/**
+  * Announce game move.
+  *
+  * Construct and return a string containing the move.
+  *
+  * \param nPlayer   The player whose turn it is.
+  * \param cGameMove The player's move
+  *
+  * \return A string containing the move.
+  */
+
+std::string CardGameGoFish::AnnounceMove(int nPlayer, const GameMove &cGameMove) const
+{
+    return "\rPlayer " + std::to_string(nPlayer) + "  asks for: " + cGameMove.AnnounceCard();;
 }
 
 /**

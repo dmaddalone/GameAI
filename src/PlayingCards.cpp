@@ -129,16 +129,5 @@ std::vector<Card> PlayingCards::RemoveCardsOfSuit(std::string sSuit)
     return vCards;
 }
 
-std::string PlayingCards::DisplayCards() const
-{
-    std::string sCards {};
 
-    for (const Card &cCard : m_vCards)
-    {
-        sCards.append(cCard.ShortName());
-        sCards.append(" ");
-    }
-
-    return sCards;
-}
 

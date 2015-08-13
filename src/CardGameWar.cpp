@@ -70,6 +70,9 @@ std::vector<GameMove> CardGameWar::GenerateMoves(int nPlayer) const
 
 bool CardGameWar::ApplyMove(int nPlayer, GameMove &cGameMove)
 {
+    // For logging
+    std::string sMessage {};
+
     // Check player number
     if ((nPlayer != m_knPlayer1) && (nPlayer != m_knPlayer2))
         return false;
@@ -97,11 +100,9 @@ bool CardGameWar::ApplyMove(int nPlayer, GameMove &cGameMove)
     {
         if (m_vHands[nPlayer -1].HasCards() >= 2)
         {
-            // The down card goes into the war cards vector
-            if (m_cLogger.Level() >= 1)
-            {
-                std::cout << "Player " << nPlayer << " draws a down-facing card" << std::endl;
-            }
+            sMessage = "Player " + std::to_string(nPlayer) + " draws a down-facing card";
+            m_cLogger.LogInfo(sMessage,1);
+
             Card cCard = m_vHands[nPlayer - 1].DrawTopCard();
             m_vWarCards.push_back(cCard);
         }
@@ -110,10 +111,10 @@ bool CardGameWar::ApplyMove(int nPlayer, GameMove &cGameMove)
     // Insert players's up card into battle
     Card cCard = m_vHands[nPlayer - 1].DrawTopCard();
     cCard.TurnUp(true);
-    if (m_cLogger.Level() >= 1)
-    {
-        std::cout << "Player " << nPlayer << " draws " << cCard.Rank() << std::endl;
-    }
+
+    sMessage = "Player " + std::to_string(nPlayer) + " draws " + cCard.Rank();
+    m_cLogger.LogInfo(sMessage,1);
+
     bool bInserted = m_uomBattle.insert(std::make_pair(nPlayer, cCard)).second;
     if (!bInserted)
     {
@@ -134,8 +135,7 @@ bool CardGameWar::ApplyMove(int nPlayer, GameMove &cGameMove)
 
         m_bWar = false;
 
-        if (m_cLogger.Level() >= 1)
-            std::cout << "Battle! ";
+        m_cLogger.LogInfo("Battle! ",1);
 
         // Gather cards and card values
         for (auto &paPlayerCard : m_uomBattle)
@@ -175,15 +175,15 @@ bool CardGameWar::ApplyMove(int nPlayer, GameMove &cGameMove)
         // War?
         if (m_bWar)
         {
-            if (m_cLogger.Level() >= 1)
-                std::cout << "WAR! Previous battle cards placed in war chest." << std::endl;
+            m_cLogger.LogInfo("WAR! Previous battle cards placed in war chest.",1);
         }
         // No War
         else
         {
             // Winning player gets all cards in the war cards vector
-            if (m_cLogger.Level() >= 1)
-                std::cout << "Player " << nBestPlayer << " Wins" << std::endl;
+            sMessage = "Player " + std::to_string(nBestPlayer) + " Wins";
+            m_cLogger.LogInfo(sMessage,1);
+
             for (Card &cCard : m_vWarCards)
             {
                 cCard.TurnUp(false);

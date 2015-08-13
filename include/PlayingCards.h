@@ -54,8 +54,6 @@ class PlayingCards
         std::vector<Card> RemoveCardsOfRank(std::string sRank);
         std::vector<Card> RemoveCardsOfSuit(std::string sSuit);
 
-        std::string DisplayCards() const;
-
         int ID() const { return m_nID; }
 
     protected:

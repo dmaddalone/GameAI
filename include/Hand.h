@@ -35,41 +35,14 @@ class Hand : public PlayingCards
 {
     public:
         // Constructor
-        /*
-        Hand()
-        {
-            m_nID = ++m_nHandCount;
-        }
-        */
-
         Hand() : PlayingCards() {};
+
+        // Deconstructor
         ~Hand() {};
-/*
-        int  HasCards() const;
-        bool RankInHand(std::string sRank) const;
-
-        void AddCard(Card &cCard);
-        void AddCardToTop(Card &cCard);
-        void AddCards(std::vector<Card> &vCards);
-
-        Card              DrawTopCard();
-        Card              RemoveCard(std::string sRank, std::string sSuit);
-        std::vector<Card> RemoveCardsOfRank(std::string sRank);
-        std::vector<Card> RemoveCardsOfSuit(std::string sSuit);
 
         std::string DisplayCards() const;
 
-        int ID() const { return m_nID; }
-
-    private:
-        std::vector<Card> m_vCards {};
-
-        // Used to create unique hand identifier numbers
-        static int m_nHandCount;
-
-        // Set the card ID to zero
-        int m_nID {0};
-*/
+        Hand FindBookByRank(int nCount);
 };
 
 #endif // HAND_H

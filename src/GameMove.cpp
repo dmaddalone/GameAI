@@ -80,3 +80,16 @@ std::string GameMove::AnnounceToMove() const
     return sMove;
 }
 
+/**
+  * Announce the card object.
+  *
+  * Construct a string containing the card object.
+  *
+  * \return A string containing the card rank and suit.
+  */
+
+std::string GameMove::AnnounceCard() const
+{
+    return m_cCard.ShortName();
+}
+
