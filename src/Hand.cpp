@@ -19,6 +19,9 @@
 
 #include "Hand.h"
 
+// Initial static int to zero; used to generate unique identifier numbers
+int Hand::m_nCount {0};
+
 std::string Hand::DisplayCards() const
 {
     std::string sCards {};
@@ -32,14 +35,20 @@ std::string Hand::DisplayCards() const
     return sCards;
 }
 
-
-
-Hand Hand::FindBookByRank(int nCount)
+Hand Hand::RemoveBookByRank(int nSizeOfBook)
 {
     Hand cHand {};
+    std::vector<Card> vCards {};
 
-    for (const Card &cCard : m_vCards)
+    for (const std::string &sRank : asRank)
     {
+        if (HasCardsOfRank(sRank) == nSizeOfBook)
+        {
+            vCards.clear();
+            vCards = RemoveCardsOfRank(sRank);
+            cHand.AddCards(vCards);
+            return cHand;
+        }
     }
 
     return cHand;

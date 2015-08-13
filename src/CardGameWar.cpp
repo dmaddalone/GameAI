@@ -23,6 +23,7 @@
   * Display the cards.
   *
   * For War, this is NOP.
+  *
   */
 
 void CardGameWar::Display() const
@@ -128,7 +129,6 @@ bool CardGameWar::ApplyMove(int nPlayer, GameMove &cGameMove)
     // If all players have added their cards to the battle, perform the battle
     if (m_uomBattle.size() == m_vHands.size())
     {
-        //int  nCurrentPlayer          {m_knUnknownValue};
         int  nCurrentCardValue       {m_knUnknownValue};
         int  nBestPlayer             {m_knUnknownValue};
         int  nBestCardValue          {m_knUnknownValue};
@@ -200,31 +200,6 @@ bool CardGameWar::ApplyMove(int nPlayer, GameMove &cGameMove)
         ++m_nNumberOfMoves;
 
     return true;
-}
-
-/**
-  * Evaluate the game state.
-  *
-  * From a player's perspective, return a value cooresponding to the player's
-  * standing in the game.  If the player has won the game, return a large,
-  * positive integer.  If lost return a large negative integer.  Else return zero.
-  *
-  * \param nPlayer   The player whose turn it is.
-  *
-  * \return An integer representing game state for the player.
-  */
-
-int CardGameWar::EvaluateGameState(int nPlayer)
-{
-    // If won, return largest positive integer // TODO: make these constants
-    if (m_nWinner == nPlayer)
-        return INT_MAX;
-
-    // If lost, return largest negative integer // TODO: make these constants
-    if (m_nWinner == (1 - nPlayer + 2))
-        return INT_MIN;
-
-    return 0;
 }
 
 /**

@@ -60,7 +60,7 @@ void Deck::Deal(int nNumberOfCardsPerHand, std::vector<Hand> &vHands, bool bDeal
     }
     else
     {
-        nTotalCards = nNumberOfCardsPerHand * m_vCards.size();
+        nTotalCards = nNumberOfCardsPerHand * vHands.size();
 
         // Ensure equal amount of cards are dealt
         if (bDealCardsEqually)
@@ -73,7 +73,6 @@ void Deck::Deal(int nNumberOfCardsPerHand, std::vector<Hand> &vHands, bool bDeal
         }
 
         // Ensure we have enough cards to deal
-
         if (nTotalCards > m_vCards.size())
         {
             std::string sErrorMessage = "Total number of cards to be dealt (" + std::to_string(nTotalCards) + ") is greater than the number of cards in the deck (" + std::to_string(m_vCards.size()) + ")";
@@ -81,7 +80,8 @@ void Deck::Deal(int nNumberOfCardsPerHand, std::vector<Hand> &vHands, bool bDeal
         }
     }
 
-    while (nTotalCards && nTotalCards >= vHands.size())
+    //while (nTotalCards && nTotalCards >= vHands.size())
+    while (nTotalCards)
     {
         for (Hand &cHand : vHands)
         {
@@ -90,6 +90,4 @@ void Deck::Deal(int nNumberOfCardsPerHand, std::vector<Hand> &vHands, bool bDeal
             --nTotalCards;
         }
     }
-
-    //std::cout << "Dealt " <<
 }

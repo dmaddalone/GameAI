@@ -43,7 +43,7 @@ class CardGameGoFish : public CardGame
             m_cDeck.Shuffle();
             m_cDeck.Deal(7, m_vHands);
             SetAskingAllowed(true);
-            SetDefaultMove(GameVocabulary::ASK);
+            //SetDefaultMove(GameVocabulary::ASK);
         }
 
         // Destructor
@@ -52,8 +52,8 @@ class CardGameGoFish : public CardGame
         // Display the game
         virtual void Display() const override;
 
-        //// Return a list of valid moves in string format
-        //virtual std::string ValidMoves(int nPlayer) const override;
+        // Return a list of valid moves in string format
+        virtual std::string ValidMoves(int nPlayer) const override;
 
         // Generate a vector of valid moves
         virtual std::vector<GameMove> GenerateMoves(int nPlayer) const override;
@@ -63,9 +63,6 @@ class CardGameGoFish : public CardGame
 
         // Announce the move made
         virtual std::string AnnounceMove(int nPlayer, const GameMove &cGameMove) const override;
-
-        // Evaluate the game state from the perspective of the nPlayer
-        virtual int  EvaluateGameState(int nPlayer) override;
 
         // Return the score of the game
         virtual std::string GameScore() const override;
@@ -82,8 +79,11 @@ class CardGameGoFish : public CardGame
         // Return the description of the game
         virtual std::string Description() override { return "Valid moves are " + GameVocabulary::ASK + ", " + GameVocabulary::RESIGN + "."; }
 
+        bool GoFish(int nPlayer);
+
     protected:
     private:
+        std::unordered_multimap<int, Hand> m_uommBooks;
         std::unordered_map<int, Card> m_uomBattle;
         std::vector<Card>             m_vWarCards;
         bool                          m_bWar {false};

@@ -24,6 +24,7 @@
   *
   * Run through every space on the board and display it's token.  Also display
   * coordinates and grid lines, depending on settings.
+  *
   */
 
 void BoardGame::Display() const

@@ -163,6 +163,8 @@ static std::unique_ptr<Game> SetGame(char* pcGame)
         return Game::Make(GameType::TYPE_CHESS);
     else if (sGame == "war")
         return Game::Make(GameType::TYPE_CARDGAME_WAR);
+    else if (sGame == "go-fish")
+        return Game::Make(GameType::TYPE_CARDGAME_GO_FISH);
     else
         return nullptr;
 }

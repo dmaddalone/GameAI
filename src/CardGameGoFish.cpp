@@ -22,11 +22,29 @@
 /**
   * Display the cards.
   *
-  * For War, this is NOP.
+  * For Go Fish, this is NOP.
+  *
   */
 
 void CardGameGoFish::Display() const
 {
+}
+
+/**
+  * Return a string of valid moves.
+  *
+  * \param nPlayer The player whose turn it is.
+  *
+  * \return A string of valid moves.
+  */
+
+std::string CardGameGoFish::ValidMoves(int nPlayer) const
+{
+    std::string sValidMoves = "Cards: " + m_vHands[nPlayer - 1].DisplayCards();
+
+    m_vHands[nPlayer - 1].DisplayCards();
+
+    return sValidMoves;
 }
 
 /**
@@ -43,15 +61,38 @@ void CardGameGoFish::Display() const
 std::vector<GameMove> CardGameGoFish::GenerateMoves(int nPlayer) const
 {
     std::vector<GameMove> vGameMoves {};
+    GameMove cGameMove;
 
     if (m_vHands[nPlayer - 1].HasCards() > 0)
     {
-        GameMove cGameMove;
         cGameMove.SetAsk(true);
+        vGameMoves.push_back(cGameMove);
+    }
+    else if (m_cDeck.HasCards())
+    {
+        cGameMove.SetDraw(true);
         vGameMoves.push_back(cGameMove);
     }
 
     return vGameMoves;
+}
+
+bool CardGameGoFish::GoFish(int nPlayer)
+{
+    if (m_cDeck.HasCards())
+    {
+        std::string sMessage = "Player " + std::to_string(2 - nPlayer + 1) + "  draws from the stock";
+        m_cLogger.LogInfo(sMessage,1);
+
+        Card cCard = m_cDeck.DrawTopCard();
+        m_vHands[nPlayer - 1].AddCard(cCard);
+
+        return true;
+    }
+
+    m_cLogger.LogInfo("No cards left in the stock to draw from" ,1);
+
+    return false;
 }
 
 /**
@@ -86,7 +127,16 @@ bool CardGameGoFish::ApplyMove(int nPlayer, GameMove &cGameMove)
         return true;
     }
 
-    // If not Resignation, then must be Ask
+    // Check for draw
+    if (cGameMove.Draw())
+    {
+        if (GoFish(nPlayer))
+        {
+            cGameMove.SetAsk(true);
+        }
+    }
+
+    // If not Resignation or Draw, then must be Ask
     if (!cGameMove.Ask())
     {
         return false;
@@ -124,12 +174,9 @@ bool CardGameGoFish::ApplyMove(int nPlayer, GameMove &cGameMove)
         sMessage = "Player " + std::to_string(2 - nPlayer + 1) + "  says Go Fish";
         m_cLogger.LogInfo(sMessage,1);
 
-        if (m_cDeck.HasCards())
+        if (GoFish(nPlayer))
         {
-            sMessage = "Player " + std::to_string(2 - nPlayer + 1) + "  draws from the stock";
-            m_cLogger.LogInfo(sMessage,1);
-
-            Card cCard = m_cDeck.DrawTopCard();
+            Card cCard = m_vHands[nPlayer - 1].PeekAtBottomCard();
 
             if (cGameMove.GetCard().Rank() == cCard.Rank())
             {
@@ -138,28 +185,23 @@ bool CardGameGoFish::ApplyMove(int nPlayer, GameMove &cGameMove)
                 cGameMove.SetAnotherTurn(true);
             }
         }
-        else
-        {
-            m_cLogger.LogInfo("No cards left in the stock to draw from" ,1);
-        }
     }
 
     // Check for books
-    /*
     do
     {
-        Hand cHand = m_vHands[nPlayer - 1].FindBookByRank(4);
+        Hand cHand = m_vHands[nPlayer - 1].RemoveBookByRank(4);
         if (cHand.HasCards())
         {
-            m_uomBooks.insert(nPlayer, cHand);
-            // check insert
+            m_uommBooks.insert(std::make_pair(m_vHands[nPlayer - 1].ID(), cHand));
+            continue;
         }
         else
         {
-            break
+            break;
         }
     } while(true);
-    */
+
 
     // Increment move counter
     ++m_nNumberOfMoves;
@@ -184,31 +226,6 @@ std::string CardGameGoFish::AnnounceMove(int nPlayer, const GameMove &cGameMove)
 }
 
 /**
-  * Evaluate the game state.
-  *
-  * From a player's perspective, return a value cooresponding to the player's
-  * standing in the game.  If the player has won the game, return a large,
-  * positive integer.  If lost return a large negative integer.  Else return zero.
-  *
-  * \param nPlayer   The player whose turn it is.
-  *
-  * \return An integer representing game state for the player.
-  */
-
-int CardGameGoFish::EvaluateGameState(int nPlayer)
-{
-    // If won, return largest positive integer // TODO: make these constants
-    if (m_nWinner == nPlayer)
-        return INT_MAX;
-
-    // If lost, return largest negative integer // TODO: make these constants
-    if (m_nWinner == (1 - nPlayer + 2))
-        return INT_MIN;
-
-    return 0;
-}
-
-/**
   * Return a string providing a current score of the game.
   *
   * Count the cards for each player and the war chest.
@@ -218,29 +235,16 @@ int CardGameGoFish::EvaluateGameState(int nPlayer)
 
 std::string CardGameGoFish::GameScore() const
 {
-    // Display the score after the second player has played
-    static bool bDisplayScore = true;
-
     // Do not display game score if logging turned off
     if (m_cLogger.Level() < 1)
         return "";
 
-    // Flip flag
-    bDisplayScore = !bDisplayScore;
-    if (!bDisplayScore)
-        return "";
-
-    // Display card counts for the game score
-    std::string sScore {"Card Count"};
+    // Display book counts for the game score
+    std::string sScore {"Book Count"};
 
     for (const Hand &cHand : m_vHands)
     {
-        sScore += " Player " + std::to_string(cHand.ID()) + ": " + std::to_string(cHand.HasCards());
-    }
-
-    if (m_vWarCards.size() > 0)
-    {
-        sScore += " War Chest: " + std::to_string(m_vWarCards.size());
+        sScore += " Player " + std::to_string(cHand.ID()) + ": " + std::to_string(m_uommBooks.count(cHand.ID()));
     }
 
     return sScore;
@@ -259,7 +263,7 @@ std::string CardGameGoFish::GameScore() const
 bool CardGameGoFish::GameEnded(int nPlayer)
 {
     // Clear win variables
-    m_nWinner = 0;
+    m_nWinner = -1;
     m_sWinBy.assign("nothing");
 
     if (CardGame::GameEnded(nPlayer))
@@ -269,14 +273,18 @@ bool CardGameGoFish::GameEnded(int nPlayer)
     std::vector<GameMove> vGameMoves = GenerateMoves(nPlayer);
     if (vGameMoves.empty())
     {
-        // Evaluate whether the player has a card in the battle
-        std::unordered_map<int, Card>::const_iterator kit = m_uomBattle.find(nPlayer);
-        if (kit == m_uomBattle.end())
+        int nNumberOfBooks {-1};
+        for (const Hand &cHand : m_vHands)
         {
-            m_nWinner = 1 - nPlayer + 2;
-            m_sWinBy.assign("attrition");
-            return true;
+            if (static_cast<int>(m_uommBooks.count(cHand.ID())) > nNumberOfBooks)
+            {
+                nNumberOfBooks = m_uommBooks.count(cHand.ID());
+                m_nWinner = cHand.ID();
+            }
         }
+
+        m_sWinBy = "having " + std::to_string(nNumberOfBooks) + "  books";
+        return true;
     }
 
     return false;

@@ -19,15 +19,15 @@
 
 #include "PlayingCards.h"
 
-// Initial static int to zero; used to generate unique identifier numbers
-int PlayingCards::m_nCount {0};
+//// Initial static int to zero; used to generate unique identifier numbers
+//int PlayingCards::m_nCount {0};
 
 int PlayingCards::HasCards() const
 {
     return m_vCards.size();
 }
 
-bool PlayingCards::HasRank(std::string sRank) const
+bool PlayingCards::HasRank(const std::string &sRank) const
 {
     for (const Card &cCard : m_vCards)
     {
@@ -40,7 +40,7 @@ bool PlayingCards::HasRank(std::string sRank) const
     return false;
 }
 
-bool PlayingCards::HasSuit(std::string sSuit) const
+bool PlayingCards::HasSuit(const std::string &sSuit) const
 {
     for (const Card &cCard : m_vCards)
     {
@@ -51,6 +51,36 @@ bool PlayingCards::HasSuit(std::string sSuit) const
     }
 
     return false;
+}
+
+int PlayingCards::HasCardsOfRank(const std::string &sRank) const
+{
+    int nCount {0};
+
+    for (const Card &cCard : m_vCards)
+    {
+        if (sRank == cCard.Rank())
+        {
+            ++nCount;
+        }
+    }
+
+    return nCount;
+}
+
+int PlayingCards::HasCardsOfSuit(const std::string &sSuit) const
+{
+    int nCount {0};
+
+    for (const Card &cCard : m_vCards)
+    {
+        if (sSuit == cCard.Suit())
+        {
+            ++nCount;
+        }
+    }
+
+    return nCount;
 }
 
 void PlayingCards::AddCard(Card &cCard)
@@ -77,6 +107,13 @@ Card PlayingCards::DrawTopCard()
     Card cCard = m_vCards.front();
 
     m_vCards.erase(m_vCards.begin());
+
+    return cCard;
+}
+
+Card PlayingCards::PeekAtBottomCard() const
+{
+    Card cCard = m_vCards.back();
 
     return cCard;
 }

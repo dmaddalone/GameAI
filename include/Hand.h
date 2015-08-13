@@ -35,14 +35,26 @@ class Hand : public PlayingCards
 {
     public:
         // Constructor
-        Hand() : PlayingCards() {};
+        Hand() : PlayingCards()
+        {
+            m_nID = ++m_nCount;
+        };
 
         // Deconstructor
         ~Hand() {};
 
         std::string DisplayCards() const;
 
-        Hand FindBookByRank(int nCount);
+        Hand RemoveBookByRank(int nCount);
+
+        int ID() const { return m_nID; }
+
+    private:
+        // Used to create unique hand identifier numbers
+        static int m_nCount;
+
+        // Set the card ID to zero
+        int m_nID {0};
 };
 
 #endif // HAND_H

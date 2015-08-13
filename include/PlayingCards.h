@@ -36,35 +36,38 @@ class PlayingCards
         // Constructor
         PlayingCards()
         {
-            m_nID = ++m_nCount;
+            //m_nID = ++m_nCount;
         }
 
         ~PlayingCards() {};
 
         int  HasCards() const;
-        bool HasRank(std::string sRank) const;
-        bool HasSuit(std::string sSuit) const;
+        bool HasRank(const std::string &sRank) const;
+        bool HasSuit(const std::string &sSuit) const;
+        int  HasCardsOfRank(const std::string &sRank) const;
+        int  HasCardsOfSuit(const std::string &sSuit) const;
 
         void AddCard(Card &cCard);
         void AddCardToTop(Card &cCard);
         void AddCards(std::vector<Card> &vCards);
 
         Card              DrawTopCard();
+        Card              PeekAtBottomCard() const;
         Card              RemoveCard(std::string sRank, std::string sSuit);
         std::vector<Card> RemoveCardsOfRank(std::string sRank);
         std::vector<Card> RemoveCardsOfSuit(std::string sSuit);
 
-        int ID() const { return m_nID; }
+        //int ID() const { return m_nID; }
 
     protected:
         std::vector<Card> m_vCards {};
 
     private:
-        // Used to create unique hand identifier numbers
-        static int m_nCount;
+        //// Used to create unique hand identifier numbers
+        //static int m_nCount;
 
-        // Set the card ID to zero
-        int m_nID {0};
+        //// Set the card ID to zero
+        //int m_nID {0};
 };
 
 #endif // PLAYINGCARDS_H

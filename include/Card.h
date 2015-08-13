@@ -65,6 +65,9 @@ class Card
         void        TurnUp(bool b)    { m_bTurnedUp = b; }
         bool        TurnedUp() const  { return m_bTurnedUp; }
 
+        bool operator<(const Card &cCard) const { return Value() < cCard.Value(); }
+        bool operator>(const Card &cCard) const { return Value() > cCard.Value(); }
+
         int         ID() const        { return m_nID; }
 
     private:
@@ -73,7 +76,7 @@ class Card
         std::string m_sSuit;
         int         m_nValue {0};
 
-        bool m_bTurnedUp { false };
+        mutable bool m_bTurnedUp { false };
 
         // Used to create unique card identifier numbers
         static int m_nCardCount;

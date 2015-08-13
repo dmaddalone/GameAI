@@ -32,6 +32,7 @@
 #include "ChessLosAlamos.h"
 #include "Chess.h"
 #include "CardGameWar.h"
+#include "CardGameGoFish.h"
 
 /**
   * Make a game.
@@ -75,6 +76,8 @@ std::unique_ptr<Game> Game::Make(GameType ecGameType)
             return std::unique_ptr<Game>(new Chess(ecGameType));
         case GameType::TYPE_CARDGAME_WAR:
             return std::unique_ptr<Game>(new CardGameWar(ecGameType));
+        case GameType::TYPE_CARDGAME_GO_FISH:
+            return std::unique_ptr<Game>(new CardGameGoFish(ecGameType));
         default:
             return nullptr;
     }

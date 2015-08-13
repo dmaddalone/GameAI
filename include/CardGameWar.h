@@ -62,9 +62,6 @@ class CardGameWar : public CardGame
         //// Announce the move made
         //virtual std::string AnnounceMove(int nPlayer, const GameMove &cGameMove) const override;
 
-        // Evaluate the game state from the perspective of the nPlayer
-        virtual int  EvaluateGameState(int nPlayer) override;
-
         // Return the score of the game
         virtual std::string GameScore() const override;
 

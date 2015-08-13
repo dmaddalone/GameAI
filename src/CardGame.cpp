@@ -196,6 +196,31 @@ std::string CardGame::AnnounceMove(int nPlayer, const GameMove &cGameMove) const
 }
 
 /**
+  * Evaluate the game state.
+  *
+  * From a player's perspective, return a value corresponding to the player's
+  * standing in the game.  If the player has won the game, return a large,
+  * positive integer.  If lost return a large negative integer.  Else return zero.
+  *
+  * \param nPlayer   The player whose turn it is.
+  *
+  * \return An integer representing game state for the player.
+  */
+
+int CardGame::EvaluateGameState(int nPlayer)
+{
+    // If won, return largest positive integer // TODO: make these constants
+    if (m_nWinner == nPlayer)
+        return INT_MAX;
+
+    // If lost, return largest negative integer // TODO: make these constants
+    if (m_nWinner == (1 - nPlayer + 2))
+        return INT_MIN;
+
+    return 0;
+}
+
+/**
   * Return a  string providing a current score of the game.
   *
   * This function is a NOP and should be overridden in derived classes.
