@@ -40,6 +40,7 @@ namespace GameVocabulary
     static const std::string DECLARE_WIN                    {"DECLARE_WIN"};
     static const std::string RESIGN                         {"RESIGN"};
     static const std::string MOVE                           {"MOVE"};
+    static const std::string NO_MOVE                        {"NO_MOVE"};
     static const std::string CONFIRM                        {"CONFIRM"};
     static const std::string UNCONFIRM                      {"UNCONFIRM"};
 

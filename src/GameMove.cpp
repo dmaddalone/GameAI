@@ -106,3 +106,23 @@ std::string GameMove::AnnounceCardRank() const
     return m_cCard.Rank();
 }
 
+/**
+  * Return the game move argument
+  *
+  * Construct a string containing the argument.
+  *
+  * \return If this is a 'Move', return the FromMove and ToMove.
+  * Otherwise return the m_sArgument.
+  */
+
+std::string GameMove::Argument()
+{
+    if (Move())
+    {
+        return AnnounceFromMove() + AnnounceToMove();
+    }
+    else
+    {
+        return m_sArgument;
+    }
+}

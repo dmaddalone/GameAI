@@ -199,6 +199,9 @@ bool CardGameWar::ApplyMove(int nPlayer, GameMove &cGameMove)
     if (nPlayer == m_knPlayer2)
         ++m_nNumberOfMoves;
 
+    // Capture move for network play
+    m_vGameMoves.push_back(cGameMove);
+
     return true;
 }
 

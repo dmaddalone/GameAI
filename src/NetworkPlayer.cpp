@@ -58,7 +58,6 @@ bool NetworkPlayer::Move(Game &cGame)
             return false;
 
         // Wait for opponent's (Player #2) move
-
         return RecvLastMove(cGame); // Receive opponent's (Player #2) last move
     }
     else // Network Player #1
@@ -75,14 +74,13 @@ bool NetworkPlayer::Move(Game &cGame)
                 return false;
 
             // Wait for opponent's (Player #2) move
-
             return RecvLastMove(cGame); // Receive opponent's (Player #2) last move
         }
         else // Receiving
         {
             SetToSending(); // For next turn
 
-            return RecvLastMove(cGame); // Receive opponent's (Player #1) last move
+            return RecvLastMove(cGame); // Receive opponent's (Player #2) last move
         }
     }
 }
@@ -107,8 +105,7 @@ bool NetworkPlayer::SendLastMove(Game &cGame)
     GameMove cGameMove = cGame.LastMove();
 
     // Create command string
-    std::string sMessage = GameVocabulary::MOVE + " ";
-    sMessage += cGameMove.AnnounceFromMove() + cGameMove.AnnounceToMove();
+    std::string sMessage = cGameMove.Command() + GameVocabulary::DELIMETER + cGameMove.Argument();
 
     m_cLogger.LogInfo("Sending move to opponent", 2);
 

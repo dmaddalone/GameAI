@@ -62,7 +62,7 @@ static void ShowUsage(std::string sName)
               << "PLIES are from 1 to 9.  The default is 4.\n"
               << "GAME is one of the following:\n"
               << "    connectfour chess         chess-jm         war\n"
-              << "    reversi     chess-attack  chess-los-alamos \n"
+              << "    reversi     chess-attack  chess-los-alamos go-fish\n"
               << "    ttt         chess-baby    chess-petty      \n"
               << "                chess-elena   chess-quick      \n"
               << "                chess-gardner chess-speed      \n"

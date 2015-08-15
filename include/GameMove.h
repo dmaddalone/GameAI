@@ -29,6 +29,7 @@
 #include <string>
 
 #include "Card.h"
+#include "GameVocabulary.h"
 
 class GameMove
 {
@@ -62,6 +63,13 @@ class GameMove
 
         // Destructor
         virtual ~GameMove() {};
+
+        // Return move command and argument
+        std::string Command() { return m_sCommand; }
+
+        // Set and return move command and argument
+        void SetArgument(std::string sArg) { m_sArgument.assign(sArg); }
+        std::string Argument();
 
         // Modify the coordinates of a move
         void SetFromX(char cX)           { m_cFromX = tolower(cX); m_nFromX = m_cFromX - m_kcXOffset; }
@@ -103,34 +111,38 @@ class GameMove
         void SetUseFrom(bool b)   { m_bUseFrom = b; }
         bool UseFrom() const      { return m_bUseFrom; }
 
-        // Set and return whether a move has been made
-        void SetNoMove(bool b) { m_bNoMove = b; }
+        //  Set and return whether a Move has been made - the default is set to true
+        void SetMove(bool b) { m_bMove = b; if (b) m_sCommand = GameVocabulary::MOVE; else m_sCommand.clear(); }
+        bool Move()          { return m_bMove; }
+
+        // Set and return whether a No-move has been made
+        void SetNoMove(bool b) { m_bNoMove = b; if (b) m_sCommand = GameVocabulary::NO_MOVE; else m_sCommand.clear(); }
         bool NoMove()          { return m_bNoMove; }
 
         // Set and return whether a resignation has been made
-        void SetResignation(bool b) { m_bResignation = b; }
+        void SetResignation(bool b) { m_bResignation = b; if (b) m_sCommand = GameVocabulary::RESIGN; else m_sCommand.clear(); }
         bool Resignation()          { return m_bResignation; }
 
         // Set and return whether a fold has been made
-        void SetFold(bool b) { m_bFold = b; }
+        void SetFold(bool b) { m_bFold = b; if (b) m_sCommand = GameVocabulary::FOLD; else m_sCommand.clear(); }
         bool Fold()          { return m_bFold; }
 
         // Set and return whether a draw has been made
-        void SetDraw(bool b)      { m_bDraw = b; m_nDraw = 1;}
+        void SetDraw(bool b)      { m_bDraw = b; m_nDraw = 1; if (b) m_sCommand = GameVocabulary::DRAW; else m_sCommand.clear(); }
         void SetDrawNumber(int n) { m_nDraw = n; }
         bool Draw()               { return m_bDraw; }
         int  DrawNumber()         { return m_nDraw; }
 
         // Set and return whether an ask has been made
-        void SetAsk(bool b)       { m_bAsk = b; }
+        void SetAsk(bool b)       { m_bAsk = b; if (b) m_sCommand = GameVocabulary::ASK; else m_sCommand.clear(); }
         bool Ask()                { return m_bAsk; }
 
         // Set and return whether a show has been made
-        void SetShow(bool b)       { m_bShow = b; }
+        void SetShow(bool b)       { m_bShow = b; if (b) m_sCommand = GameVocabulary::SHOW; else m_sCommand.clear(); }
         bool Show()                { return m_bShow; }
 
         // Set and return whether a score request has been made
-        void SetScore(bool b)      { m_bScore = b; }
+        void SetScore(bool b)      { m_bScore = b; if (b) m_sCommand = GameVocabulary::SCORE; else m_sCommand.clear(); }
         bool Score()               { return m_bScore; }
 
         // Whether another turn may be had
@@ -159,6 +171,10 @@ class GameMove
         static const char m_kcXOffset {'a'};
         static const char m_kcYOffset {'1'};
 
+        // Command and Argument
+        std::string m_sCommand  {GameVocabulary::MOVE};
+        std::string m_sArgument {};
+
         // Game move coordinates - initialize to garbage
         int  m_nFromX {-1};   // Start = 0
         char m_cFromX {'?'};  // Start = 'a'
@@ -177,6 +193,9 @@ class GameMove
 
         // Whether the From coordinates are used
         bool m_bUseFrom {false};
+
+        // Whether this is a Move
+        bool m_bMove {true};
 
         // Whether this is a move or not; used if no move is possible
         bool m_bNoMove {false};

@@ -239,6 +239,9 @@ bool CardGameGoFish::ApplyMove(int nPlayer, GameMove &cGameMove)
     // Increment move counter
     ++m_nNumberOfMoves;
 
+    // Capture move for network play
+    m_vGameMoves.push_back(cGameMove);
+
     return true;
 }
 

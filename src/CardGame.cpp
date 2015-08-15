@@ -99,7 +99,9 @@ GameMove CardGame::GetMove(int nPlayer) const
 GameMove CardGame::GenerateMove(std::string sMove) const
 {
     // Generic GamevMove
-    GameMove cGameMove(-1, -1, -1, -1, false, false);
+    GameMove cGameMove;
+    // Turn off 'Move' for card games
+    cGameMove.SetMove(false);
 
     // Upper case the move string
     std::locale loc;
