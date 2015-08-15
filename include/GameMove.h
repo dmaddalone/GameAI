@@ -121,9 +121,17 @@ class GameMove
         bool Draw()               { return m_bDraw; }
         int  DrawNumber()         { return m_nDraw; }
 
-        // Sdet and return whether an ask has been made
+        // Set and return whether an ask has been made
         void SetAsk(bool b)       { m_bAsk = b; }
         bool Ask()                { return m_bAsk; }
+
+        // Set and return whether a show has been made
+        void SetShow(bool b)       { m_bShow = b; }
+        bool Show()                { return m_bShow; }
+
+        // Set and return whether a score request has been made
+        void SetScore(bool b)      { m_bScore = b; }
+        bool Score()               { return m_bScore; }
 
         // Whether another turn may be had
         void SetAnotherTurn(bool b) { m_bAnotherTurn = b; }
@@ -188,6 +196,12 @@ class GameMove
 
         // Whether this is an ask
         bool m_bAsk {false};
+
+        // Whether this is a show
+        bool m_bShow {false};
+
+        // Whether this is a show
+        bool m_bScore {false};
 
         // Whether another turn may be had
         bool m_bAnotherTurn {false};

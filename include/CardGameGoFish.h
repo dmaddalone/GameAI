@@ -52,6 +52,8 @@ class CardGameGoFish : public CardGame
             // Set flags
             SetAskingAllowed(true);
             SetFoldingAllowed(false);
+            SetShowingAllowed(true);
+            SetScoringAllowed(true);
         }
 
         // Destructor
@@ -85,8 +87,13 @@ class CardGameGoFish : public CardGame
         virtual std::string Title() override { return "Go Fish"; }
 
         // Return the description of the game
-        virtual std::string Description() override { return "Valid moves are " + GameVocabulary::ASK + ", " + GameVocabulary::RESIGN + "."; }
+        virtual std::string Description() override { return "Valid moves are " +
+            GameVocabulary::ASK + ", " +
+            GameVocabulary::SHOW + ", " +
+            GameVocabulary::SCORE + ", " +
+            GameVocabulary::RESIGN + "."; }
 
+        // Draw a card from the stock
         bool GoFish(int nPlayer);
 
     protected:

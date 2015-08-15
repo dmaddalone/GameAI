@@ -135,12 +135,17 @@ std::vector<Card> PlayingCards::RemoveCardsOfRank(std::string sRank)
 {
     std::vector<Card> vCards {};
 
-    for (std::vector<Card>::iterator it = m_vCards.begin(); it != m_vCards.end(); ++it)
+    std::vector<Card>::iterator it = m_vCards.begin();
+    while(it != m_vCards.end())
     {
         if (it->Rank() == sRank)
         {
             vCards.push_back(*it);
-            m_vCards.erase(it);
+            it = m_vCards.erase(it);
+        }
+        else
+        {
+            ++it;
         }
     }
 
@@ -151,12 +156,17 @@ std::vector<Card> PlayingCards::RemoveCardsOfSuit(std::string sSuit)
 {
     std::vector<Card> vCards {};
 
-    for (std::vector<Card>::iterator it = m_vCards.begin(); it != m_vCards.end(); ++it)
+    std::vector<Card>::iterator it = m_vCards.begin();
+    while(it != m_vCards.end())
     {
         if (it->Suit() == sSuit)
         {
             vCards.push_back(*it);
-            m_vCards.erase(it);
+            it = m_vCards.erase(it);
+        }
+        else
+        {
+            ++it;
         }
     }
 

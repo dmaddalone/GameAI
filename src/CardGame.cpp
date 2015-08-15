@@ -156,6 +156,26 @@ GameMove CardGame::GenerateMove(std::string sMove) const
         }
     }
 
+    // Compare move against showing
+    if (ShowingAllowed())
+    {
+        if (sMove.compare(GameVocabulary::SHOW) == 0)
+        {
+            cGameMove.SetShow(true);
+            return cGameMove;
+        }
+    }
+
+    // Compare move against scoring
+    if (ScoringAllowed())
+    {
+        if (sMove.compare(GameVocabulary::SCORE) == 0)
+        {
+            cGameMove.SetScore(true);
+            return cGameMove;
+        }
+    }
+
     return cGameMove;
 }
 

@@ -85,6 +85,8 @@ class CardGame : public Game
         bool FoldingAllowed() const   { return m_bFoldingAllowed; }
         bool DrawingAllowed() const   { return m_bDrawingAllowed; }
         bool AskingAllowed() const    { return m_bAskingAllowed; }
+        bool ShowingAllowed() const   { return m_bShowingAllowed; }
+        bool ScoringAllowed() const   { return m_bScoringAllowed; }
 
         std::string DefaultMove() const { return m_sDefaultMove; }
 
@@ -93,6 +95,8 @@ class CardGame : public Game
         void SetFoldingAllowed(bool b) { m_bFoldingAllowed = b; }
         void SetDrawingAllowed(bool b) { m_bDrawingAllowed = b; }
         void SetAskingAllowed(bool b)  { m_bAskingAllowed = b; }
+        void SetShowingAllowed(bool b) { m_bShowingAllowed = b; }
+        void SetScoringAllowed(bool b) { m_bScoringAllowed = b; }
 
         void SetDefaultMove(std::string sMove) { m_sDefaultMove = sMove; }
 
@@ -107,6 +111,8 @@ class CardGame : public Game
         bool m_bFoldingAllowed { true };
         bool m_bDrawingAllowed { false };
         bool m_bAskingAllowed  { false };
+        bool m_bShowingAllowed { false };
+        bool m_bScoringAllowed { false };
 
         std::string m_sDefaultMove {};
 };

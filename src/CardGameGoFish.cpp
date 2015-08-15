@@ -40,7 +40,7 @@ void CardGameGoFish::Display() const
 
 std::string CardGameGoFish::ValidMoves(int nPlayer) const
 {
-    std::string sValidMoves = "Cards: " + m_vHands[nPlayer - 1].Ranks();
+    std::string sValidMoves = "Hand: " + m_vHands[nPlayer - 1].Ranks();
 
     return sValidMoves;
 }
@@ -125,12 +125,31 @@ bool CardGameGoFish::ApplyMove(int nPlayer, GameMove &cGameMove)
         return true;
     }
 
+    // Check for show
+    if (cGameMove.Show())
+    {
+        std::cout << ValidMoves(nPlayer) << std::endl;
+        cGameMove.SetAnotherTurn(true);
+        cGameMove.SetShow(false);
+        return true;
+    }
+
+    // Check for score
+    if (cGameMove.Score())
+    {
+        std::cout << GameScore() << std::endl;
+        cGameMove.SetAnotherTurn(true);
+        cGameMove.SetScore(false);
+        return true;
+    }
+
     // Check for draw
     if (cGameMove.Draw())
     {
         if (GoFish(nPlayer))
         {
             cGameMove.SetAsk(true);
+            cGameMove.SetDraw(false);
         }
     }
 
@@ -185,9 +204,6 @@ bool CardGameGoFish::ApplyMove(int nPlayer, GameMove &cGameMove)
         }
     }
 
-    // Sort cards
-    m_vHands[nPlayer - 1].SortByRank();
-
     // Check for books
     do
     {
@@ -203,6 +219,22 @@ bool CardGameGoFish::ApplyMove(int nPlayer, GameMove &cGameMove)
         }
     } while(true);
 
+    // If players has cards, sort them
+    if (m_vHands[nPlayer - 1].HasCards())
+    {
+        // Sort cards
+        m_vHands[nPlayer - 1].SortByRank();
+    }
+    // If no cards in hand and player has another turn, draw from stock
+    else if (cGameMove.AnotherTurn())
+    {
+        // Draw a card from the stock
+        // If no more stock (and no cards in hand), the turn is over
+        if (!GoFish(nPlayer))
+        {
+            cGameMove.SetAnotherTurn(false);
+        }
+    }
 
     // Increment move counter
     ++m_nNumberOfMoves;
@@ -241,12 +273,14 @@ std::string CardGameGoFish::GameScore() const
         return "";
 
     // Display book counts for the game score
-    std::string sScore {"Book Count"};
+    std::string sScore {"\nBook Count:"};
 
     for (const Hand &cHand : m_vHands)
     {
-        sScore += " Player " + std::to_string(cHand.ID()) + ": " + std::to_string(m_uommBooks.count(cHand.ID()));
+        sScore += " Player " + std::to_string(cHand.ID()) + "=" + std::to_string(m_uommBooks.count(cHand.ID()));
     }
+
+    sScore += "\n";
 
     return sScore;
 }

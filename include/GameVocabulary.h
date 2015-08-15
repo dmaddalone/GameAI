@@ -50,6 +50,11 @@ namespace GameVocabulary
     static const std::string DRAW                           {"DRAW"};
     static const std::string DRAW_SHORT                     {"D"};
 
+    static const std::string SHOW                           {"SHOW"};
+    static const std::string SHOW_SHORT                     {"SH"};
+    static const std::string SCORE                          {"SCORE"};
+    static const std::string SCORE_SHORT                    {"SC"};
+
     static const std::string FATAL_EXIT                     {"FATAL_EXIT"};
 
     // Return command from networked messages
