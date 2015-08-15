@@ -28,7 +28,33 @@ std::string Hand::DisplayCards() const
 
     for (const Card &cCard : m_vCards)
     {
-        sCards.append(cCard.ShortName());
+        sCards.append(cCard.DisplayShortName());
+        sCards.append(" ");
+    }
+
+    return sCards;
+}
+
+std::string Hand::DisplayRanks() const
+{
+    std::string sCards {};
+
+    for (const Card &cCard : m_vCards)
+    {
+        sCards.append(cCard.DisplayRank());
+        sCards.append(" ");
+    }
+
+    return sCards;
+}
+
+std::string Hand::Ranks() const
+{
+    std::string sCards {};
+
+    for (const Card &cCard : m_vCards)
+    {
+        sCards.append(cCard.Rank());
         sCards.append(" ");
     }
 
@@ -44,7 +70,6 @@ Hand Hand::RemoveBookByRank(int nSizeOfBook)
     {
         if (HasCardsOfRank(sRank) == nSizeOfBook)
         {
-            vCards.clear();
             vCards = RemoveCardsOfRank(sRank);
             cHand.AddCards(vCards);
             return cHand;
@@ -52,4 +77,9 @@ Hand Hand::RemoveBookByRank(int nSizeOfBook)
     }
 
     return cHand;
+}
+
+void Hand::SortByRank()
+{
+    std::sort(m_vCards.begin(), m_vCards.end());
 }

@@ -19,9 +19,6 @@
 
 #include "PlayingCards.h"
 
-//// Initial static int to zero; used to generate unique identifier numbers
-//int PlayingCards::m_nCount {0};
-
 int PlayingCards::HasCards() const
 {
     return m_vCards.size();

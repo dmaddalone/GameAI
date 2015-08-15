@@ -144,6 +144,7 @@ class GameMove
         std::string AnnounceFromMove() const;
         std::string AnnounceToMove() const;
         std::string AnnounceCard() const;
+        std::string AnnounceCardRank() const;
 
     private:
         // Used to convert int coordinates to char values for internal representation using ASCII representation
@@ -175,6 +176,9 @@ class GameMove
         // Whether this is a resignation
         bool m_bResignation {false};
 
+        // Card
+        Card m_cCard;
+
         // Whether this is a fold
         bool m_bFold {false};
 
@@ -190,9 +194,6 @@ class GameMove
 
         // Whether this is a test move
         bool m_bTestMove {false};
-
-        // Card
-        Card m_cCard;
 };
 
 #endif // GAMEMOVE_H

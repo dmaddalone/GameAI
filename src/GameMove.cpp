@@ -90,6 +90,19 @@ std::string GameMove::AnnounceToMove() const
 
 std::string GameMove::AnnounceCard() const
 {
-    return m_cCard.ShortName();
+    return m_cCard.DisplayShortName();
+}
+
+/**
+  * Announce the card object - Rank only.
+  *
+  * Construct a string containing the card object.
+  *
+  * \return A string containing the card rank.
+  */
+
+std::string GameMove::AnnounceCardRank() const
+{
+    return m_cCard.Rank();
 }
 

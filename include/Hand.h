@@ -26,6 +26,7 @@
 #ifndef HAND_H
 #define HAND_H
 
+#include <algorithm>
 #include <vector>
 
 #include "Card.h"
@@ -43,9 +44,13 @@ class Hand : public PlayingCards
         // Deconstructor
         ~Hand() {};
 
+        std::string Ranks() const;
         std::string DisplayCards() const;
+        std::string DisplayRanks() const;
 
         Hand RemoveBookByRank(int nCount);
+
+        void SortByRank();
 
         int ID() const { return m_nID; }
 

@@ -113,7 +113,7 @@ bool CardGameWar::ApplyMove(int nPlayer, GameMove &cGameMove)
     Card cCard = m_vHands[nPlayer - 1].DrawTopCard();
     cCard.TurnUp(true);
 
-    sMessage = "Player " + std::to_string(nPlayer) + " draws " + cCard.Rank();
+    sMessage = "Player " + std::to_string(nPlayer) + " draws " + cCard.DisplayRank();
     m_cLogger.LogInfo(sMessage,1);
 
     bool bInserted = m_uomBattle.insert(std::make_pair(nPlayer, cCard)).second;
@@ -121,7 +121,7 @@ bool CardGameWar::ApplyMove(int nPlayer, GameMove &cGameMove)
     {
         // Since DrawTopCard is destructive, add the card back
         cCard.TurnUp(false);
-        m_vHands[nPlayer -1].AddCardToTop(cCard);
+        m_vHands[nPlayer - 1].AddCardToTop(cCard);
 
         return false;
     }

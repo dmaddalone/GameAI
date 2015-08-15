@@ -42,8 +42,16 @@ class CardGameGoFish : public CardGame
             // Shuffle and Deal cards
             m_cDeck.Shuffle();
             m_cDeck.Deal(7, m_vHands);
+
+            // Sort hands
+            for (Hand &cHand : m_vHands)
+            {
+                cHand.SortByRank();
+            }
+
+            // Set flags
             SetAskingAllowed(true);
-            //SetDefaultMove(GameVocabulary::ASK);
+            SetFoldingAllowed(false);
         }
 
         // Destructor
@@ -84,9 +92,6 @@ class CardGameGoFish : public CardGame
     protected:
     private:
         std::unordered_multimap<int, Hand> m_uommBooks;
-        std::unordered_map<int, Card> m_uomBattle;
-        std::vector<Card>             m_vWarCards;
-        bool                          m_bWar {false};
 };
 
 #endif // CARDGAMEGOFISH_H

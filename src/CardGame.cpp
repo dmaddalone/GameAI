@@ -80,7 +80,7 @@ GameMove CardGame::GetMove(int nPlayer) const
     }
     else
     {
-        std::cin >> sMove; // (F)OLD, (D)RAW, (H)IT, (ST)AND, (DO)UBLE-DOWN, (SP)LIT, ...
+        std::getline(std::cin, sMove); // (F)OLD, (D)RAW, (H)IT, (ST)AND, (DO)UBLE-DOWN, (SP)LIT, ...
     }
 
     return GenerateMove(sMove);

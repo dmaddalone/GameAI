@@ -34,10 +34,7 @@ class PlayingCards
 {
     public:
         // Constructor
-        PlayingCards()
-        {
-            //m_nID = ++m_nCount;
-        }
+        PlayingCards() {};
 
         ~PlayingCards() {};
 
@@ -57,17 +54,8 @@ class PlayingCards
         std::vector<Card> RemoveCardsOfRank(std::string sRank);
         std::vector<Card> RemoveCardsOfSuit(std::string sSuit);
 
-        //int ID() const { return m_nID; }
-
     protected:
         std::vector<Card> m_vCards {};
-
-    private:
-        //// Used to create unique hand identifier numbers
-        //static int m_nCount;
-
-        //// Set the card ID to zero
-        //int m_nID {0};
 };
 
 #endif // PLAYINGCARDS_H

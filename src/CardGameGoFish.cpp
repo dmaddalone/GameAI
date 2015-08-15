@@ -40,9 +40,7 @@ void CardGameGoFish::Display() const
 
 std::string CardGameGoFish::ValidMoves(int nPlayer) const
 {
-    std::string sValidMoves = "Cards: " + m_vHands[nPlayer - 1].DisplayCards();
-
-    m_vHands[nPlayer - 1].DisplayCards();
+    std::string sValidMoves = "Cards: " + m_vHands[nPlayer - 1].Ranks();
 
     return sValidMoves;
 }
@@ -81,7 +79,7 @@ bool CardGameGoFish::GoFish(int nPlayer)
 {
     if (m_cDeck.HasCards())
     {
-        std::string sMessage = "Player " + std::to_string(2 - nPlayer + 1) + "  draws from the stock";
+        std::string sMessage = "Player " + std::to_string(nPlayer) + " draws from the stock";
         m_cLogger.LogInfo(sMessage,1);
 
         Card cCard = m_cDeck.DrawTopCard();
@@ -154,15 +152,15 @@ bool CardGameGoFish::ApplyMove(int nPlayer, GameMove &cGameMove)
     //
 
     // Announce move
-    m_cLogger.LogInfo(AnnounceMove(nPlayer + 1, cGameMove),1);
+    m_cLogger.LogInfo(AnnounceMove(nPlayer, cGameMove),1);
 
     // Find rank in opposing player's hand
-    if (m_vHands[nPlayer].HasRank(cGameMove.GetCard().Rank()))
+    if (m_vHands[2 - nPlayer + 1 - 1].HasRank(cGameMove.GetCard().Rank()))
     {
         // Pass cards from asked player to asking player
-        std::vector<Card> vCards = m_vHands[nPlayer].RemoveCardsOfRank(cGameMove.GetCard().Rank());
+        std::vector<Card> vCards = m_vHands[2 - nPlayer + 1 - 1].RemoveCardsOfRank(cGameMove.GetCard().Rank());
 
-        sMessage = "Player " + std::to_string(2 - nPlayer + 1) + " hands over " + std::to_string(vCards.size());
+        sMessage = "Player " + std::to_string(2 - nPlayer + 1) + " hands over " + m_asNumbers[vCards.size()] + " " +  cGameMove.AnnounceCardRank();
         m_cLogger.LogInfo(sMessage,1);
 
         m_vHands[nPlayer - 1].AddCards(vCards);
@@ -171,7 +169,7 @@ bool CardGameGoFish::ApplyMove(int nPlayer, GameMove &cGameMove)
     }
     else // Go Fish
     {
-        sMessage = "Player " + std::to_string(2 - nPlayer + 1) + "  says Go Fish";
+        sMessage = "Player " + std::to_string(2 - nPlayer + 1) + " says Go Fish";
         m_cLogger.LogInfo(sMessage,1);
 
         if (GoFish(nPlayer))
@@ -186,6 +184,9 @@ bool CardGameGoFish::ApplyMove(int nPlayer, GameMove &cGameMove)
             }
         }
     }
+
+    // Sort cards
+    m_vHands[nPlayer - 1].SortByRank();
 
     // Check for books
     do
@@ -222,7 +223,7 @@ bool CardGameGoFish::ApplyMove(int nPlayer, GameMove &cGameMove)
 
 std::string CardGameGoFish::AnnounceMove(int nPlayer, const GameMove &cGameMove) const
 {
-    return "\rPlayer " + std::to_string(nPlayer) + "  asks for: " + cGameMove.AnnounceCard();;
+    return "\rPlayer " + std::to_string(nPlayer) + " asks for " + cGameMove.AnnounceCardRank();
 }
 
 /**
@@ -230,7 +231,7 @@ std::string CardGameGoFish::AnnounceMove(int nPlayer, const GameMove &cGameMove)
   *
   * Count the cards for each player and the war chest.
   *
-  * \return ""
+  * \return A string containing the game score.
   */
 
 std::string CardGameGoFish::GameScore() const

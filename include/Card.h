@@ -54,10 +54,12 @@ class Card
             m_nID = 0;
         }
 
-        std::string Suit() const      { if (m_bTurnedUp) return m_sSuit; else return m_sNotTurnedUp; }
-        std::string Rank() const      { if (m_bTurnedUp) return m_sRank; else return m_sNotTurnedUp; }
-        int         Value() const     { return m_nValue; }
-        std::string ShortName() const { return Rank() + Suit(); }
+        std::string Suit() const             { return m_sSuit; }
+        std::string Rank() const             { return m_sRank; }
+        std::string DisplaySuit() const      { if (m_bTurnedUp) return m_sSuit; else return m_sNotTurnedUp; }
+        std::string DisplayRank() const      { if (m_bTurnedUp) return m_sRank; else return m_sNotTurnedUp; }
+        std::string DisplayShortName() const { return DisplayRank() + DisplaySuit(); }
+        int         Value() const            { return m_nValue; }
 
         bool        SetRank(std::string sRank) { m_sRank = sRank; return RankValid(); }
         bool        RankValid()       { for (const std::string &sRank : asRank) { if (sRank == m_sRank) { return true; } }  return false; }

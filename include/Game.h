@@ -175,6 +175,8 @@ class Game
 
         // Create a Logger object
         Logger m_cLogger;
+
+        const std::string m_asNumbers[5] {"zero", "one", "two", "three", "four"};
 };
 
 #endif // GAME_H
