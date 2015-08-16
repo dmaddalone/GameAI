@@ -117,7 +117,7 @@ bool NetworkPlayer::SendLastMove(Game &cGame)
         throw SocketException(sErrorMessage);
     }
 
-    // Receieve command string (networked player's confirmation)
+    // Receive command string (networked player's confirmation)
     // Limit received message to CONFIRM
     if (!Socket::Recv(sCommand, GameVocabulary::CONFIRM.length()) < 0)
         throw SocketException("Did not receive move confirmation");
@@ -150,20 +150,59 @@ bool NetworkPlayer::RecvLastMove(Game &cGame)
 {
     GameMove cGameMove;
     std::string sCommand;
-    std::string sToken;
+    std::string sArgument;
     std::string sErrorMessage;
     std::string sMessage;
 
-    m_cLogger.LogInfo("Waiting for opponent's move", 2);
+    m_cLogger.LogInfo("Waiting for opponent's message", 2);
 
     // Receive the last move made from the networked player
-    if (!Socket::Recv(sCommand) < 0)
+    if (!Socket::Recv(sMessage) < 0)
         throw SocketException("Did not receive move command");
 
+    std::cout << "Received move " << sMessage << " from opponent" << std::endl;
+
     // Evaluate command
-    sToken = GameVocabulary::ParseCommand(sCommand);
+    sCommand = GameVocabulary::ParseCommand(sMessage);
+
+    // Check for FATAL_EXIT
+    if (sCommand.compare(GameVocabulary::FATAL_EXIT) == 0)
+    {
+        sErrorMessage = "Opponent experienced a fatal error.";
+        std::cerr << sErrorMessage << std::endl;
+        std::cout << "Exiting." << std::endl;
+        exit(EXIT_FAILURE);
+    }
+
+    // Evaluate for DELCARE_WIN
+    else if (sCommand.compare(GameVocabulary::DECLARE_WIN) == 0)
+    {
+        return true;
+    }
+
+    // Evaluate for RESIGN
+    else if (sCommand.compare(GameVocabulary::RESIGN) == 0)
+    {
+        cGameMove.SetMove(false);
+        cGameMove.SetResignation(true);
+    }
+
+    // Evaluate for MOVE
+    else if (sCommand.compare(GameVocabulary::MOVE) == 0)
+    {
+        sArgument = GameVocabulary::ParseArgument(sMessage);
+        cGameMove = cGame.GenerateMove(sArgument);
+    }
+
+    // Evaluate for all other commands
+    else
+    {
+    }
+
+/*
     if (sToken.compare(GameVocabulary::MOVE) != 0)
     {
+
         if (sToken.compare(GameVocabulary::FATAL_EXIT) == 0)
         {
             sErrorMessage = "Opponent experienced a fatal error.";
@@ -172,10 +211,12 @@ bool NetworkPlayer::RecvLastMove(Game &cGame)
             exit(EXIT_FAILURE);
         }
 
+
         else if (sToken.compare(GameVocabulary::DECLARE_WIN) == 0)
         {
             return true;
         }
+
 
         else
         {
@@ -186,13 +227,13 @@ bool NetworkPlayer::RecvLastMove(Game &cGame)
             throw GameAIException(sErrorMessage);
         }
     }
+*/
+    //// Evaluate move
+    //sToken = GameVocabulary::ParseArgument(sCommand);
+    //std::cout << "Received move " << sToken << " from opponent" << std::endl;
 
-    // Evaluate move
-    sToken = GameVocabulary::ParseArgument(sCommand);
-    std::cout << "Received move " << sToken << " from opponent" << std::endl;
-
-    // Generate a game move from the received move
-    cGameMove = cGame.GenerateMove(sToken);
+    //// Generate a game move from the received move
+    //cGameMove = cGame.GenerateMove(sToken);
 
     // Test game move for validity.
     if (cGame.ApplyMove(m_nPlayerNumber, cGameMove))
@@ -219,7 +260,8 @@ bool NetworkPlayer::RecvLastMove(Game &cGame)
     }
     else // Game move is not valid
     {
-        sErrorMessage = "Move " + sToken + " is invalid";
+        //sErrorMessage = "Move " + sToken + " is invalid";
+        sErrorMessage = "Move " + sMessage + " is invalid";
         std::cerr << sErrorMessage << std::endl;
         std::cout << "Exiting" << std::endl;
         Socket::Send(GameVocabulary::UNCONFIRM);
