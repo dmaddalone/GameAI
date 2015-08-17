@@ -126,3 +126,93 @@ std::string GameMove::Argument()
         return m_sArgument;
     }
 }
+
+Json::Value GameMove::JsonSerialization()
+{
+    Json::Value jValue(Json::objectValue);
+
+    jValue["sCommand"]     = m_sCommand;
+    jValue["sArgument"]    = m_sArgument;
+
+    jValue["nFromX"]       = m_nFromX;
+    jValue["cFromX"]       = m_cFromX;
+    jValue["nFromY"]       = m_nFromY;
+    jValue["cFromY"]       = m_cFromY;
+    jValue["nToX"]         = m_nToX;
+    jValue["cToX"]         = m_cToX;
+    jValue["nToY"]         = m_nToY;
+    jValue["cToY"]         = m_cToY;
+
+    jValue["bUseY"]        = m_bUseY;
+    jValue["bUseFrom"]     = m_bUseFrom;
+    jValue["bMove"]        = m_bMove;
+    jValue["bNoMove"]      = m_bNoMove;
+    jValue["bResignation"] = m_bResignation;
+    jValue["bFold"]        = m_bFold;
+    jValue["bDraw"]        = m_bDraw;
+    jValue["nDraw"]        = m_nDraw;
+    jValue["bAsk"]         = m_bAsk;
+    jValue["bShow"]        = m_bShow;
+    jValue["bScore"]       = m_bScore;
+    jValue["bAnotherTurn"] = m_bAnotherTurn;
+    jValue["bTestMove"]    = m_bTestMove;
+
+    Json::Value jCardValue(Json::objectValue);
+    jCardValue = m_cCard.JsonSerialization();
+
+    jValue["Card"] = jCardValue;
+
+    //Json::StyledWriter jWriter;
+    //std::cout << jWriter.write(jValue) << std::endl;
+    //
+    //Json::FastWriter jFWriter;
+    //std::cout << jFWriter.write(jValue) << std::endl;
+
+    return jValue;
+}
+
+bool GameMove::JsonDeserialization(const std::string &sJsonGameMove, std::string &sErrorMessage)
+{
+    Json::Value jValue(Json::objectValue);
+    Json::Reader jReader;
+
+    if (jReader.parse(sJsonGameMove, jValue, false))
+    {
+        m_sCommand     = jValue["sCommand"].asString();
+        m_sArgument    = jValue["sArgument"].asString();
+
+        m_nFromX       = jValue["nFromX"].asInt();
+        m_cFromX       = jValue["cFromX"].asInt();
+        m_nFromY       = jValue["nFromY"].asInt();
+        m_cFromY       = jValue["cFromY"].asInt();
+        m_nToX         = jValue["nToX"].asInt();
+        m_cToX         = jValue["cToX"].asInt();
+        m_nToY         = jValue["nToY"].asInt();
+        m_cToY         = jValue["cToY"].asInt();
+
+        m_bUseY        = jValue["bUseY"].asBool();
+        m_bUseFrom     = jValue["bUseFrom"].asBool();
+        m_bMove        = jValue["bMove"].asBool();
+        m_bNoMove      = jValue["bNoMove"].asBool();
+        m_bResignation = jValue["bResignation"].asBool();
+        m_bFold        = jValue["bFold"].asBool();
+        m_bDraw        = jValue["bDraw"].asBool();
+        m_bAsk         = jValue["bAsk"].asBool();
+        m_bShow        = jValue["bShow"].asBool();
+        m_bScore       = jValue["bScore"].asBool();
+        m_bAnotherTurn = jValue["bAnotherTurn"].asBool();
+        m_bTestMove    = jValue["bTestMove"].asBool();
+
+        if (m_cCard.JsonDeserialization(sJsonGameMove, sErrorMessage))
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    sErrorMessage = jReader.getFormattedErrorMessages();
+    return false;
+}

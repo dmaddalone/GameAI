@@ -104,13 +104,19 @@ bool NetworkPlayer::SendLastMove(Game &cGame)
     // Get last move made
     GameMove cGameMove = cGame.LastMove();
 
-    // Create command string
-    std::string sMessage = cGameMove.Command() + GameVocabulary::DELIMETER + cGameMove.Argument();
+    //// Create command string
+    //std::string sMessage = cGameMove.Command() + GameVocabulary::DELIMETER + cGameMove.Argument();
+
+    // Create JSON of GameMove
+    Json::Value jGameMove = cGameMove.JsonSerialization();
+    Json::FastWriter jFWriter;
 
     m_cLogger.LogInfo("Sending move to opponent", 2);
 
     // Send command string to networked player
-    if (!Socket::Send(sMessage))
+    //if (!Socket::Send(sMessage))
+    // Send JSON GameMOve to networked player
+    if (!Socket::Send(jFWriter.write(jGameMove)))
     {
         sErrorMessage = "Could not send command: " + sCommand;
         Socket::Send(GameVocabulary::FATAL_EXIT);
@@ -153,51 +159,51 @@ bool NetworkPlayer::RecvLastMove(Game &cGame)
     std::string sArgument;
     std::string sErrorMessage;
     std::string sMessage;
+    std::string sJsonGameMove;
 
-    m_cLogger.LogInfo("Waiting for opponent's message", 2);
+    //m_cLogger.LogInfo("Waiting for opponent's message", 2);
+    m_cLogger.LogInfo("Waiting for opponent's move", 2);
 
     // Receive the last move made from the networked player
-    if (!Socket::Recv(sMessage) < 0)
-        throw SocketException("Did not receive move command");
+    //if (!Socket::Recv(sMessage) < 0)
+    if (!Socket::Recv(sJsonGameMove) < 0)
+        //throw SocketException("Did not receive move command");
+        throw SocketException("Did not receive move");
 
-    std::cout << "Received move " << sMessage << " from opponent" << std::endl;
+    //std::cout << "Received move " << sMessage << " from opponent" << std::endl;
+    sMessage = "Received move\n" + sJsonGameMove + "\nfrom opponent";
+    m_cLogger.LogInfo("Waiting for opponent's move", 3);
 
-    // Evaluate command
-    sCommand = GameVocabulary::ParseCommand(sMessage);
+    //// Evaluate command
+    //sCommand = GameVocabulary::ParseCommand(sMessage);
 
-    // Check for FATAL_EXIT
-    if (sCommand.compare(GameVocabulary::FATAL_EXIT) == 0)
+    if (!cGameMove.JsonDeserialization(sJsonGameMove, sErrorMessage))
     {
-        sErrorMessage = "Opponent experienced a fatal error.";
-        std::cerr << sErrorMessage << std::endl;
-        std::cout << "Exiting." << std::endl;
-        exit(EXIT_FAILURE);
+        // Check for FATAL_EXIT
+        //if (sCommand.compare(GameVocabulary::FATAL_EXIT) == 0)
+        if (sJsonGameMove.compare(GameVocabulary::FATAL_EXIT) == 0)
+        {
+            sErrorMessage = "Opponent experienced a fatal error.";
+            std::cerr << sErrorMessage << std::endl;
+            std::cout << "Exiting." << std::endl;
+            exit(EXIT_FAILURE);
+        }
+        else
+        {
+            std::cerr << sErrorMessage << std::endl;
+            std::cout << "Exiting." << std::endl;
+            exit(EXIT_FAILURE);
+        }
+
     }
 
+/*
     // Evaluate for DELCARE_WIN
     else if (sCommand.compare(GameVocabulary::DECLARE_WIN) == 0)
     {
         return true;
     }
-
-    // Evaluate for RESIGN
-    else if (sCommand.compare(GameVocabulary::RESIGN) == 0)
-    {
-        cGameMove.SetMove(false);
-        cGameMove.SetResignation(true);
-    }
-
-    // Evaluate for MOVE
-    else if (sCommand.compare(GameVocabulary::MOVE) == 0)
-    {
-        sArgument = GameVocabulary::ParseArgument(sMessage);
-        cGameMove = cGame.GenerateMove(sArgument);
-    }
-
-    // Evaluate for all other commands
-    else
-    {
-    }
+*/
 
 /*
     if (sToken.compare(GameVocabulary::MOVE) != 0)

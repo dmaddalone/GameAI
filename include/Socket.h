@@ -41,7 +41,7 @@
 // Maximum number of backlogged messages in queue
 const int BACKLOG = 5;
 // Largest message to receive
-const int MAXRECV = 500;
+const int MAXRECV = 1000;
 
 class Socket
 {

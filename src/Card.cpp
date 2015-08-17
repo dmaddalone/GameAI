@@ -22,5 +22,36 @@
 // Initial static int to zero; used to generate unique identifier numbers for cards
 int Card::m_nCardCount {0};
 
+Json::Value Card::JsonSerialization()
+{
+    Json::Value jValue(Json::objectValue);
 
+    jValue["Rank"]  = m_sRank;
+    jValue["Suit"]  = m_sSuit;
+    jValue["Value"] = m_nValue;
+    jValue["nID"]   = m_nID;
+
+    return jValue;
+}
+
+bool Card::JsonDeserialization(const std::string &sJsonGameMove, std::string &sErrorMessage)
+{
+    Json::Value jValue(Json::objectValue);
+    Json::Reader jReader;
+
+    if (jReader.parse(sJsonGameMove, jValue, false))
+    {
+        m_sRank  = jValue["sRank"].asString();
+        m_sSuit  = jValue["sSuit"].asString();
+        m_nValue = jValue["nValue"].asInt();
+        m_nID    = jValue["nID"].asInt();
+
+        return true;
+    }
+    else
+    {
+        sErrorMessage = jReader.getFormattedErrorMessages();
+        return false;
+    }
+}
 

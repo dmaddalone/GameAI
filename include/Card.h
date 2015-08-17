@@ -29,6 +29,8 @@
 #include <array>
 #include <string>
 
+#include "json/json.h"
+
 const std::array<std::string, 13>  asRank  { { "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A" } };
 const std::array<std::string, 4>   asSuit  { { "h", "d", "c", "s" } };
 const std::array<int, 13>          aiValue { {  2,   3,   4,   5,   6,   7,   8,   9,   10,   11,  12,  13,  14 } };
@@ -70,7 +72,12 @@ class Card
         bool operator<(const Card &cCard) const { return Value() < cCard.Value(); }
         bool operator>(const Card &cCard) const { return Value() > cCard.Value(); }
 
-        int         ID() const        { return m_nID; }
+        bool        SetID(int nID)    { if (m_nID == 0) { m_nID = nID; return true; } else return false; }
+        //int         ID() const        { return m_nID; }
+
+        // Json object serialization and deserialization
+        Json::Value JsonSerialization();
+        bool        JsonDeserialization(const std::string &sJsonGameMove, std::string &sErrorMessage);
 
     private:
         // Rank and Suit

@@ -31,6 +31,8 @@
 #include "Card.h"
 #include "GameVocabulary.h"
 
+#include "json/json.h"
+
 class GameMove
 {
     public:
@@ -165,6 +167,10 @@ class GameMove
         std::string AnnounceToMove() const;
         std::string AnnounceCard() const;
         std::string AnnounceCardRank() const;
+
+        // Json object serialization
+        Json::Value JsonSerialization();
+        bool        JsonDeserialization(const std::string &sJsonGameValue, std::string &sErrorMessage);
 
     private:
         // Used to convert int coordinates to char values for internal representation using ASCII representation
