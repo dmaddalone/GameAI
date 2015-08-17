@@ -55,7 +55,7 @@ TODO: Check other TODOs
 				<Option object_output="obj/Debug/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
-				<Option parameters="-1 human -2 human -g go-fish" />
+				<Option parameters="-1 human -2 client -g ttt" />
 				<Compiler>
 					<Add option="-std=c++11" />
 					<Add option="-Wextra" />
@@ -90,6 +90,8 @@ TODO: Check other TODOs
 			<Add option="-Wall" />
 			<Add option="-fexceptions" />
 		</Compiler>
+		<Unit filename="../jsoncpp/dist/json/json.h" />
+		<Unit filename="../jsoncpp/dist/jsoncpp.cpp" />
 		<Unit filename="include/BoardGame.h" />
 		<Unit filename="include/Card.h" />
 		<Unit filename="include/CardGame.h" />

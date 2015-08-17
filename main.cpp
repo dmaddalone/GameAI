@@ -444,7 +444,7 @@ int main(int argc, char* argv[])
     // If input file specified, read and apply game moves
     //
 
-    // nPlayer used to capture next player's turn after reading and applying omves
+    // nPlayer used to capture next player's turn after reading and applying moves
     // Also used in the player turn loop below.  Initially set to a number other than 0, 1, or 2.
     int nPlayer = -1;
     bool bGameNotEnded = true;

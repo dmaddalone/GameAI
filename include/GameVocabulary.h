@@ -35,8 +35,7 @@ namespace GameVocabulary
     static const std::string ESTABLISH_GAME                 {"ESTABLISH_GAME"};
     static const std::string REQUEST_CLIENT_PLAYER_NUMBER   {"REQUEST_CLIENT_PLAYER_NUMBER"};
     static const std::string ESTABLISH_CLIENT_PLAYER_NUMBER {"ESTABLISH_CLIENT_PLAYER_NUMBER"};
-    static const std::string START_GAME                     {"START_GAME"};
-    //static const std::string END_GAME                       {"END_GAME"};
+
     static const std::string DECLARE_WIN                    {"DECLARE_WIN"};
     static const std::string RESIGN                         {"RESIGN"};
     static const std::string MOVE                           {"MOVE"};
@@ -44,12 +43,14 @@ namespace GameVocabulary
     static const std::string CONFIRM                        {"CONFIRM"};
     static const std::string UNCONFIRM                      {"UNCONFIRM"};
 
+    static const std::string DEAL                           {"DEAL"};
+    static const std::string DEAL_SHORT                     {"DE"};
     static const std::string ASK                            {"ASK"};
     static const std::string ASK_SHORT                      {"A"};
     static const std::string FOLD                           {"FOLD"};
     static const std::string FOLD_SHORT                     {"F"};
     static const std::string DRAW                           {"DRAW"};
-    static const std::string DRAW_SHORT                     {"D"};
+    static const std::string DRAW_SHORT                     {"DR"};
 
     static const std::string SHOW                           {"SHOW"};
     static const std::string SHOW_SHORT                     {"SH"};
