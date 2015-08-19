@@ -64,7 +64,7 @@ class Socket
 
         // Data transimission
         bool Send(const std::string &sMessage) const;
-        int  Recv(std::string &sMessage, int len=0) const;
+        int  Recv(std::string &sMessage, int nLength=0) const;
 
         //void SetNonBlocking(const bool);
 

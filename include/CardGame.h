@@ -41,6 +41,11 @@ class CardGame : public Game
         CardGame(GameType ecGameType, int nNumberOfHands) :
             Game(ecGameType)
         {
+            //// Flag for all card games
+            //SetCardGame(true);
+
+            SetSyncCards(true);
+
             // Setup hands (players)
             for (int iii = 0; iii < nNumberOfHands; ++iii)
             {

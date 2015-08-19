@@ -131,6 +131,12 @@ class Game
         void SetPlayer1Type(std::string sType) { m_sPlayer1Type.assign(sType); }
         void SetPlayer2Type(std::string sType) { m_sPlayer2Type.assign(sType); }
 
+        // Set card game information
+        //void SetCardGame(bool b) { m_bCardGame = b; }
+        //bool CardGame()          { return m_bCardGame; }
+        bool SyncCards() const     { return m_bSyncCards; }
+        void SetSyncCards(bool b)  { m_bSyncCards = b; }
+
         // Return game information
         GameType Type() const      { return m_ecGameType; }
         int  Player1() const       { return m_knPlayer1; }
@@ -155,6 +161,7 @@ class Game
         const int m_knPlayer1 {1};
         const int m_knPlayer2 {2};
 
+        // Player attributes
         std::string m_sPlayer1Name {"??"};
         std::string m_sPlayer1Type {"??"};
         std::string m_sPlayer2Name {"??"};
@@ -162,6 +169,9 @@ class Game
 
         // Default game type
         GameType m_ecGameType {GameType::TYPE_NONE};
+
+        //// Flag for Card Games
+        //bool m_bCardGame {false};
 
         // List of all game moves
         std::vector<GameMove> m_vGameMoves;
@@ -173,9 +183,12 @@ class Game
         // How the winner won
         std::string m_sWinBy  {};
 
+        bool m_bSyncCards      { false };
+
         // Create a Logger object
         Logger m_cLogger;
 
+        // Number words
         const std::string m_asNumbers[5] {"zero", "one", "two", "three", "four"};
 };
 

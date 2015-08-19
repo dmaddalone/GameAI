@@ -173,5 +173,54 @@ std::vector<Card> PlayingCards::RemoveCardsOfSuit(std::string sSuit)
     return vCards;
 }
 
+Json::Value PlayingCards::JsonSerialization() const
+{
+    Json::Value jCards(Json::objectValue);
+    Json::Value jCard(Json::arrayValue);
+
+    jCards["Cards"] = "Cards";
+
+    for (Card const &cCard : m_vCards)
+    {
+        jCard = cCard.JsonSerialization();
+        jCards.append(jCard);
+    }
+
+    return jCards;
+}
+
+bool PlayingCards::JsonDeserialization(const std::string &sJsonPlayingCards, std::string &sErrorMessage)
+{
+    Json::Value jCards(Json::arrayValue);
+    Json::Value jCard(Json::arrayValue);
+    Json::Reader jReader;
+    Card cCard;
+
+    if (jReader.parse(sJsonPlayingCards, jCards, false))
+    {
+        m_vCards.clear();
+
+        for (Json::ValueIterator it = jCards.begin(); it != jCards.end(); ++it)
+        {
+            jCard = (*it);
+            if (cCard.JsonDeserialization(jCard.toStyledString(), sErrorMessage))
+            {
+                m_vCards.push_back(cCard);
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+    else
+    {
+        sErrorMessage = jReader.getFormattedErrorMessages();
+        return false;
+    }
+}
+
 
 

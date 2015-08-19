@@ -100,6 +100,13 @@ bool NetworkPlayer::SendLastMove(Game &cGame)
     std::string sCommand;
     std::string sErrorMessage;
 
+    if (cGame.SyncCards())
+    {
+        //
+
+        cGame.SetSyncCards(false);
+    }
+
     m_cLogger.LogInfo("Sending move to opponent", 2);
 
     // Get last move made

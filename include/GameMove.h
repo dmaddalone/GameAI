@@ -169,7 +169,7 @@ class GameMove
         std::string AnnounceCardRank() const;
 
         // Json object serialization
-        Json::Value JsonSerialization();
+        Json::Value JsonSerialization() const;
         bool        JsonDeserialization(const std::string &sJsonGameValue, std::string &sErrorMessage);
 
     private:

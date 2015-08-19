@@ -22,29 +22,31 @@
 // Initial static int to zero; used to generate unique identifier numbers for cards
 int Card::m_nCardCount {0};
 
-Json::Value Card::JsonSerialization()
+Json::Value Card::JsonSerialization() const
 {
-    Json::Value jValue(Json::objectValue);
+    Json::Value jValue(Json::arrayValue);
 
-    jValue["Rank"]  = m_sRank;
-    jValue["Suit"]  = m_sSuit;
-    jValue["Value"] = m_nValue;
-    jValue["nID"]   = m_nID;
+    jValue["Rank"]      = m_sRank;
+    jValue["Suit"]      = m_sSuit;
+    jValue["Value"]     = m_nValue;
+    jValue["nID"]       = m_nID;
+    jValue["bTurnedUp"] = m_bTurnedUp;
 
     return jValue;
 }
 
-bool Card::JsonDeserialization(const std::string &sJsonGameMove, std::string &sErrorMessage)
+bool Card::JsonDeserialization(const std::string &sJsonCard, std::string &sErrorMessage)
 {
-    Json::Value jValue(Json::objectValue);
+    Json::Value jValue(Json::arrayValue);
     Json::Reader jReader;
 
-    if (jReader.parse(sJsonGameMove, jValue, false))
+     if (jReader.parse(sJsonCard, jValue, false))
     {
-        m_sRank  = jValue["sRank"].asString();
-        m_sSuit  = jValue["sSuit"].asString();
-        m_nValue = jValue["nValue"].asInt();
-        m_nID    = jValue["nID"].asInt();
+        m_sRank     = jValue["sRank"].asString();
+        m_sSuit     = jValue["sSuit"].asString();
+        m_nValue    = jValue["nValue"].asInt();
+        m_nID       = jValue["nID"].asInt();
+        m_bTurnedUp = jValue["bTurnedUp"].asBool();
 
         return true;
     }

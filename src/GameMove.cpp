@@ -127,7 +127,7 @@ std::string GameMove::Argument()
     }
 }
 
-Json::Value GameMove::JsonSerialization()
+Json::Value GameMove::JsonSerialization() const
 {
     Json::Value jValue(Json::objectValue);
 
