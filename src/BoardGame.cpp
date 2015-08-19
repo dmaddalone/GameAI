@@ -33,6 +33,37 @@ void BoardGame::Display() const
 }
 
 /**
+  * Return information to be synchronized and sent to a networked opponent
+  *
+  * This function is a NOP and should be overridden in derived classes.
+  *
+  * \param sGameInformation String representing game information to be synchronized
+  * between players.
+  *
+  * \return True if information is available to be sent, false otherwise.
+  */
+
+bool BoardGame::GetSyncInfo(std::string &sGameInformation)
+{
+    (void) sGameInformation;
+    return false;
+}
+
+/**
+  * Receive information to be synchronized from a networked opponent
+  *
+  * This function is a NOP and should be overridden in derived classes.
+  *
+  * \return True if information is available to be sent, false otherwise.
+  */
+
+bool BoardGame::ApplySyncInfo(const std::string &sGameInformation, std::string &sErrorMessage)
+{
+    return true;
+}
+
+
+/**
   * Return a string of valid moves.
   *
   * Call GenerateMoves and collect information into a string.

@@ -28,6 +28,8 @@
 
 #include <vector>
 
+#include <iostream> // remove after testing
+
 #include "Card.h"
 
 class PlayingCards

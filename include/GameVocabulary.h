@@ -42,9 +42,11 @@ namespace GameVocabulary
     static const std::string NO_MOVE                        {"NO_MOVE"};
     static const std::string CONFIRM                        {"CONFIRM"};
     static const std::string UNCONFIRM                      {"UNCONFIRM"};
+    static const std::string SYNC                           {"SYNC"};
+    static const std::string END_SYNC                       {"END_SYNC"};
 
-    static const std::string DEAL                           {"DEAL"};
-    static const std::string DEAL_SHORT                     {"DE"};
+    //static const std::string DEAL                           {"DEAL"};
+    //static const std::string DEAL_SHORT                     {"DE"};
     static const std::string ASK                            {"ASK"};
     static const std::string ASK_SHORT                      {"A"};
     static const std::string FOLD                           {"FOLD"};

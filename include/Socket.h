@@ -41,7 +41,7 @@
 // Maximum number of backlogged messages in queue
 const int BACKLOG = 5;
 // Largest message to receive
-const int MAXRECV = 1000;
+const int MAXRECV = 3000;
 
 class Socket
 {
@@ -62,7 +62,7 @@ class Socket
         // Client setup
         bool Connect (const std::string host, const int port);
 
-        // Data transimission
+        // Data transmission
         bool Send(const std::string &sMessage) const;
         int  Recv(std::string &sMessage, int nLength=0) const;
 

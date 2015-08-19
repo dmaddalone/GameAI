@@ -74,6 +74,10 @@ class Game
         // Display the game
         virtual void Display() const  = 0;
 
+        // Synchronize the game environment across networked players
+        virtual bool GetSyncInfo(std::string &sGameInformation) = 0;
+        virtual bool ApplySyncInfo(const std::string &sGameInformation, std::string &sErrorMessage) = 0;
+
         // Return a list of valid moves in string format
         virtual std::string ValidMoves(int nPlayer) const = 0;
 
@@ -131,11 +135,9 @@ class Game
         void SetPlayer1Type(std::string sType) { m_sPlayer1Type.assign(sType); }
         void SetPlayer2Type(std::string sType) { m_sPlayer2Type.assign(sType); }
 
-        // Set card game information
-        //void SetCardGame(bool b) { m_bCardGame = b; }
-        //bool CardGame()          { return m_bCardGame; }
-        bool SyncCards() const     { return m_bSyncCards; }
-        void SetSyncCards(bool b)  { m_bSyncCards = b; }
+        // Set sync game information
+        bool Sync() const     { return m_bSync; }
+        void SetSync(bool b)  { m_bSync = b; }
 
         // Return game information
         GameType Type() const      { return m_ecGameType; }
@@ -170,9 +172,6 @@ class Game
         // Default game type
         GameType m_ecGameType {GameType::TYPE_NONE};
 
-        //// Flag for Card Games
-        //bool m_bCardGame {false};
-
         // List of all game moves
         std::vector<GameMove> m_vGameMoves;
 
@@ -183,7 +182,8 @@ class Game
         // How the winner won
         std::string m_sWinBy  {};
 
-        bool m_bSyncCards      { false };
+        // Flag to sync game information between networked players
+        bool m_bSync      { false };
 
         // Create a Logger object
         Logger m_cLogger;

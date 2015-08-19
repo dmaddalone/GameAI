@@ -34,6 +34,8 @@
 #include "Deck.h"
 #include "Hand.h"
 
+#include "json/json.h"
+
 class CardGame : public Game
 {
     public:
@@ -41,10 +43,8 @@ class CardGame : public Game
         CardGame(GameType ecGameType, int nNumberOfHands) :
             Game(ecGameType)
         {
-            //// Flag for all card games
-            //SetCardGame(true);
-
-            SetSyncCards(true);
+            // Set sync to true to sync game information between networked players
+            SetSync(true);
 
             // Setup hands (players)
             for (int iii = 0; iii < nNumberOfHands; ++iii)
@@ -58,6 +58,10 @@ class CardGame : public Game
 
         // Display the game
         virtual void Display() const override;
+
+        // Synchronize the game environment across networked players
+        virtual bool GetSyncInfo(std::string &sGameInformation) override;
+        virtual bool ApplySyncInfo(const std::string &sGameInformation, std::string &sErrorMessage) override;
 
         // Return a list of valid moves in string format
         virtual std::string ValidMoves(int nPlayer) const override;
@@ -93,6 +97,9 @@ class CardGame : public Game
         bool ShowingAllowed() const   { return m_bShowingAllowed; }
         bool ScoringAllowed() const   { return m_bScoringAllowed; }
 
+        // Override Game::SetSync()
+        void SetSync(bool b)  { Game::SetSync(b); m_bSyncDeck = m_bSyncFirstHand = m_bSyncSecondHand = b; }
+
         std::string DefaultMove() const { return m_sDefaultMove; }
 
     protected:
@@ -112,12 +119,17 @@ class CardGame : public Game
         const int m_knUnknownValue {-1};
 
     private:
-        // Flags
+        // Play option flags
         bool m_bFoldingAllowed { true };
         bool m_bDrawingAllowed { false };
         bool m_bAskingAllowed  { false };
         bool m_bShowingAllowed { false };
         bool m_bScoringAllowed { false };
+
+        // Sync flags
+        bool m_bSyncDeck { false };
+        bool m_bSyncFirstHand { false };
+        bool m_bSyncSecondHand { false };
 
         std::string m_sDefaultMove {};
 };

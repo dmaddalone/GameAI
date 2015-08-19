@@ -59,6 +59,15 @@ class NetworkPlayer: public Socket, public Player
         // Player receives last move from networked opponent
         bool RecvLastMove(Game &cGame);
 
+        // Send message
+        void Send(const std::string &sMessage);
+
+        // Player receives confirmation from networked opponent of last send
+        void RecvConfirmation();
+
+        // Receives game information to be synchronized
+        void RecvSyncInfo(Game &cGame);
+
         // Manage state of sending and receiving messages
         bool Sending()        { return m_bSetToSend; }
         bool Receiving()      { return !m_bSetToSend; }

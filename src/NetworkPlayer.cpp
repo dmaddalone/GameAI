@@ -97,50 +97,62 @@ bool NetworkPlayer::Move(Game &cGame)
 
 bool NetworkPlayer::SendLastMove(Game &cGame)
 {
-    std::string sCommand;
-    std::string sErrorMessage;
+    std::string sMessage {};
 
-    if (cGame.SyncCards())
+    //
+    // Sync game environment, if required
+    //
+    if (cGame.Sync())
     {
-        //
+        m_cLogger.LogInfo("Synchronizing game environment with opponent", 2);
 
-        cGame.SetSyncCards(false);
+        Send(GameVocabulary::SYNC);
+        RecvConfirmation();
+
+        // Receive commands or JSON to send to opponent
+        while (cGame.GetSyncInfo(sMessage))
+        {
+            Send(sMessage);
+            RecvConfirmation();
+        }
+
+        Send(GameVocabulary::END_SYNC);
+        RecvConfirmation();
+
+        // Set sync to false
+        cGame.SetSync(false);
     }
 
     m_cLogger.LogInfo("Sending move to opponent", 2);
 
-    // Get last move made
-    GameMove cGameMove = cGame.LastMove();
+    // Get last move made and create JSON of game move
+    sMessage = cGame.LastMove().JsonSerialization().toStyledString();
 
-    // Create JSON of GameMove
-    Json::Value jGameMove = cGameMove.JsonSerialization();
-    Json::FastWriter jFWriter;
+    std::string sLogMessage = "Sending move\n" + sMessage + "\nto opponent";
+    m_cLogger.LogInfo(sLogMessage, 3);
 
-    // Send JSON GameMove to networked player
-    if (!Socket::Send(jFWriter.write(jGameMove)))
+    //if (!Socket::Send(cGameMove.JsonSerialization().toStyledString()))
+    if (!Socket::Send(sMessage))
     {
-        sErrorMessage = "Could not send command: " + sCommand;
+        std::string sErrorMessage = "Could not send command: " + sMessage;
         Socket::Send(GameVocabulary::FATAL_EXIT);
         throw SocketException(sErrorMessage);
     }
 
-    // Receive command string (networked player's confirmation)
-    // Limit received message to UNCONFIRM
-    if (!Socket::Recv(sCommand, GameVocabulary::UNCONFIRM.length()) < 0)
-        throw SocketException("Did not receive move confirmation");
-
-    // Evaluate CONFIRM command
-    std::string sToken = GameVocabulary::ParseCommand(sCommand);
-    if (sToken.compare(GameVocabulary::CONFIRM) != 0)
-    {
-        sErrorMessage  = "Expected command " + GameVocabulary::CONFIRM + ", but received " + sCommand;
-        std::cerr << sErrorMessage << std::endl;
-        std::cout << "Exiting" << std::endl;
-        Socket::Send(GameVocabulary::FATAL_EXIT);
-        throw GameAIException(sErrorMessage);
-    }
+    // Receive confirmation from networked opponent
+    RecvConfirmation();
 
     return true;
+}
+
+void NetworkPlayer::Send(const std::string &sMessage)
+{
+    if (!Socket::Send(sMessage))
+    {
+        std::string sErrorMessage = "Could not send command: " + sMessage;
+        Socket::Send(GameVocabulary::FATAL_EXIT);
+        throw SocketException(sErrorMessage);
+    }
 }
 
 /**
@@ -158,30 +170,61 @@ bool NetworkPlayer::RecvLastMove(Game &cGame)
     GameMove cGameMove;
     std::string sCommand;
     std::string sErrorMessage;
-    std::string sJsonGameMove;
+    std::string sMessage;
 
     if (m_cLogger.Level() >= 1)
     {
-        std::cout << "Waiting for opponent's move" << std::endl;
+        std::cout << "Waiting for opponent's move or message" << std::endl;
     }
 
     // Receive the last move made from the networked player
-    if (!Socket::Recv(sJsonGameMove) < 0)
-        throw SocketException("Did not receive move");
+    if (!Socket::Recv(sMessage) < 0)
+        throw SocketException("Did not receive move or message");
 
-    std::string sMessage = "Received move\n" + sJsonGameMove + "\nfrom opponent";
-    m_cLogger.LogInfo(sMessage, 3);
+    std::string sLogMessage = "Received\n" + sMessage + "\nfrom opponent";
+    m_cLogger.LogInfo(sLogMessage, 3);
 
+    // Evaluate for SYNC
+    if (sMessage.compare(GameVocabulary::SYNC) == 0)
+    {
+        RecvSyncInfo(cGame);
+        return RecvLastMove(cGame);
+    }
+    // Evaluate for DECLARE_WIN
+    else if (sMessage.compare(GameVocabulary::DECLARE_WIN)== 0)
+    {
+        return true;
+    }
+
+    // Evaluate for FATAL_EXIT
+    else if (sMessage.compare(GameVocabulary::FATAL_EXIT) == 0)
+    {
+        sErrorMessage = "Opponent experienced a fatal error.";
+        std::cerr << sErrorMessage << std::endl;
+        std::cout << "Exiting." << std::endl;
+        exit(EXIT_FAILURE);
+    }
+
+    // Assume JSON game move and parse into GameMove
+    else if (!cGameMove.JsonDeserialization(sMessage, sErrorMessage))
+    {
+         // else report Json parse error
+        std::cerr << sErrorMessage << std::endl;
+        std::cout << "Exiting." << std::endl;
+        exit(EXIT_FAILURE);
+    }
+
+/*
     // Parse Json Game Move into GameMove
-    if (!cGameMove.JsonDeserialization(sJsonGameMove, sErrorMessage))
+    if (!cGameMove.JsonDeserialization(sMessage, sErrorMessage))
     {
         // If parse was not successful, check for DECLARE_WIN
-        if (sJsonGameMove.compare(GameVocabulary::DECLARE_WIN) == 0)
+        if (sMessage.compare(GameVocabulary::DECLARE_WIN) == 0)
         {
             return true;
         }
         // else check for FATAL_EXIT
-        else if (sJsonGameMove.compare(GameVocabulary::FATAL_EXIT) == 0)
+        else if (sMessage.compare(GameVocabulary::FATAL_EXIT) == 0)
         {
             sErrorMessage = "Opponent experienced a fatal error.";
             std::cerr << sErrorMessage << std::endl;
@@ -196,6 +239,7 @@ bool NetworkPlayer::RecvLastMove(Game &cGame)
             exit(EXIT_FAILURE);
         }
     }
+*/
 
     // Announce move
     std::cout << cGame.AnnounceMove(m_nPlayerNumber, cGameMove) << std::endl;
@@ -234,4 +278,66 @@ bool NetworkPlayer::RecvLastMove(Game &cGame)
     }
 
     return true;
+}
+
+void NetworkPlayer::RecvConfirmation()
+{
+    std::string sCommand;
+
+    // Receive networked player's confirmation
+    // Limit received message to UNCONFIRM
+    if (!Socket::Recv(sCommand) < 0)
+        throw SocketException("Did not receive move confirmation");
+
+    // Evaluate CONFIRM command
+    std::string sToken = GameVocabulary::ParseCommand(sCommand);
+    if (sToken.compare(GameVocabulary::CONFIRM) != 0)
+    {
+        std::string sErrorMessage  = "Expected command " + GameVocabulary::CONFIRM + ", but received " + sCommand;
+        std::cerr << sErrorMessage << std::endl;
+        std::cout << "Exiting" << std::endl;
+        Socket::Send(GameVocabulary::FATAL_EXIT);
+        throw GameAIException(sErrorMessage);
+    }
+}
+
+void NetworkPlayer::RecvSyncInfo(Game &cGame)
+{
+    std::string sMessage {};
+    std::string sErrorMessage {};
+
+    // Alert game to synchronization
+    cGame.SetSync(true);
+
+    // Confirm initial SYNC message
+    Send(GameVocabulary::CONFIRM);
+
+    // Loop through all messages until END_SYNC received
+    while (true)
+    {
+        // Receive the synchronization information
+        if (!Socket::Recv(sMessage) < 0)
+            throw SocketException("Did not receive move");
+
+        if (sMessage.compare(GameVocabulary::END_SYNC) == 0)
+        {
+            // Alert game to synchronization end
+            cGame.SetSync(false);
+
+            Send(GameVocabulary::CONFIRM);
+            return;
+        }
+
+        if (cGame.ApplySyncInfo(sMessage, sErrorMessage))
+        {
+            Send(GameVocabulary::CONFIRM);
+        }
+        else
+        {
+            std::cerr << "Error in ApplySyncInfo(): " << sErrorMessage << std::endl;
+            std::cout << "Exiting" << std::endl;
+            Socket::Send(GameVocabulary::FATAL_EXIT);
+            throw GameAIException(sErrorMessage);
+        }
+    }
 }

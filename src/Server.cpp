@@ -126,12 +126,7 @@ void Server::Initialize(std::string sHost, int nPort, bool &bSwap)
     sMessage = "Confirming game of " + GameTitle() + " with client.";
     m_cLogger.LogInfo(sMessage, 2);
 
-    sCommand = GameVocabulary::CONFIRM;
-    if (!Socket::Send(sCommand))
-    {
-        sErrorMessage = "Could not send command: " + sCommand;
-        throw SocketException(sErrorMessage);
-    }
+    Send(GameVocabulary::CONFIRM);
 
     // 6. Receive Request Player Number
     if (!Socket::Recv(sCommand) < 0)

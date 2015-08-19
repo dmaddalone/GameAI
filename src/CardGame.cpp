@@ -35,6 +35,78 @@ void CardGame::Display() const
 }
 
 /**
+  * Return information to be synchronized between networked players.
+  *
+  * This function is a NOP and should be overridden in derived classes.
+  *
+  * \param sGameInformation String representing game information to be synchronized
+  * between players.
+  *
+  * \return True if information received to synchronize, false otherwise.
+  */
+
+bool CardGame::GetSyncInfo(std::string &sGameInformation)
+{
+    sGameInformation.clear();
+
+    if (m_bSyncDeck)
+    {
+        sGameInformation = m_cDeck.JsonSerialization().toStyledString();
+        m_bSyncDeck = false;
+        return true;
+    }
+    else if (m_bSyncFirstHand)
+    {
+        sGameInformation = m_vHands[0].JsonSerialization().toStyledString();
+        m_bSyncFirstHand = false;
+        return true;
+    }
+    else if (m_bSyncSecondHand)
+    {
+        sGameInformation = m_vHands[1].JsonSerialization().toStyledString();
+        m_bSyncSecondHand = false;
+        return true;
+    }
+
+    return false;
+}
+
+/**
+  * Receive information to be synchronized from a networked opponent
+  *
+  * This function is a NOP and should be overridden in derived classes.
+  *
+  * \return True if information is available to be sent, false otherwise.
+  */
+
+bool CardGame::ApplySyncInfo(const std::string &sGameInformation, std::string &sErrorMessage)
+{
+    if (m_bSyncDeck)
+    {
+        if (m_cDeck.JsonDeserialization(sGameInformation, sErrorMessage))
+            m_bSyncDeck = false;
+        else
+            return false;
+    }
+    else if (m_bSyncFirstHand)
+    {
+        if (m_vHands[0].JsonDeserialization(sGameInformation, sErrorMessage))
+            m_bSyncFirstHand = false;
+        else
+            return false;
+    }
+    else if (m_bSyncSecondHand)
+    {
+        if (m_vHands[1].JsonDeserialization(sGameInformation, sErrorMessage))
+            m_bSyncFirstHand = false;
+        else
+            return false;
+    }
+
+    return true;
+}
+
+/**
   * Return a string of valid moves.
   *
   * This is NOP.  Dervied classes may override.

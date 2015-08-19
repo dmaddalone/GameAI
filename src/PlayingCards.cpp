@@ -178,23 +178,28 @@ Json::Value PlayingCards::JsonSerialization() const
     Json::Value jCards(Json::objectValue);
     Json::Value jCard(Json::arrayValue);
 
-    jCards["Cards"] = "Cards";
-
     for (Card const &cCard : m_vCards)
     {
-        jCard = cCard.JsonSerialization();
-        jCards.append(jCard);
+        //jCard = cCard.JsonSerialization();
+        //jCards.append(jCard);
+        jCard.append(cCard.JsonSerialization());
     }
+
+    jCards["Cards"] = jCard;
+
+    std::cout << "[DEBUG] jCards serialized:\n" << jCards.toStyledString() << std::endl;
 
     return jCards;
 }
 
 bool PlayingCards::JsonDeserialization(const std::string &sJsonPlayingCards, std::string &sErrorMessage)
 {
-    Json::Value jCards(Json::arrayValue);
+    Json::Value jCards(Json::objectValue);
     Json::Value jCard(Json::arrayValue);
     Json::Reader jReader;
     Card cCard;
+
+    std::cout << "[DEBUG] jCards to be deserialized:\n" << sJsonPlayingCards << std::endl;
 
     if (jReader.parse(sJsonPlayingCards, jCards, false))
     {

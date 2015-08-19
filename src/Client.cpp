@@ -83,51 +83,21 @@ void Client::Initialize(std::string sHost, int nPort, bool &bSwap)
     // 7.                                   Send Client Player Number
     // 8.    Receive Client Player Number
 
-    // 1. Send Establish Game
     sMessage = "Establishing game of " + GameTitle() + " with server.";
     m_cLogger.LogInfo(sMessage, 2);
 
+    // 1. Send Establish Game
     sCommand = GameVocabulary::ESTABLISH_GAME + GameVocabulary::DELIMETER + GameTitle();
-    if (!Socket::Send(sCommand))
-    {
-        sErrorMessage = "Could not send command: " + sCommand;
-        throw SocketException(sErrorMessage);
-    }
+    Send(sCommand);
 
     // 4. Receive Confirm
-    if (!Socket::Recv(sCommand) < 0)
-        throw SocketException("Did not receive game confirmation");
-
-    sToken = GameVocabulary::ParseCommand(sCommand);
-    if (sToken.compare(GameVocabulary::CONFIRM) != 0)
-    {
-        if (sToken.compare(GameVocabulary::UNCONFIRM) == 0)
-        {
-            sErrorMessage  = "Server did not confirm game of " + GameTitle();
-            std::cerr << sErrorMessage << std::endl;
-            std::cout << "Exiting";
-            Socket::Send(GameVocabulary::FATAL_EXIT);
-            throw GameAIException(sErrorMessage);
-        }
-        else
-        {
-            sErrorMessage  = "Expected command " + GameVocabulary::CONFIRM + ", but received " + sCommand;
-            std::cerr << sErrorMessage << std::endl;
-            std::cout << "Exiting" << std::endl;
-            Socket::Send(GameVocabulary::FATAL_EXIT);
-            throw GameAIException(sErrorMessage);
-        }
-    }
+    RecvConfirmation();
 
     // 5. Request Player Number
     m_cLogger.LogInfo("Requesting player number from server.", 2);
 
     sCommand = GameVocabulary::REQUEST_CLIENT_PLAYER_NUMBER;
-    if (!Socket::Send(sCommand))
-    {
-        sErrorMessage = "Could not send command: " + sCommand;
-        throw SocketException(sErrorMessage);
-    }
+    Send(sCommand);
 
     // 8. Receive Client Player Number
     if (!Socket::Recv(sCommand) < 0)

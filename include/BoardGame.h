@@ -50,6 +50,10 @@ class BoardGame : public Game
         // Display the game board
         virtual void Display() const override;
 
+        // Synchronize the game environment across networked players
+        virtual bool GetSyncInfo(std::string &sGameInformation) override;
+        virtual bool ApplySyncInfo(const std::string &sGameInformation, std::string &sErrorMessage) override;
+
         // Return a list of valid moves in string format
         virtual std::string ValidMoves(int nPlayer) const override;
 
