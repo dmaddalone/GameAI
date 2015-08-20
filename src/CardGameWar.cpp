@@ -109,13 +109,17 @@ bool CardGameWar::ApplyMove(int nPlayer, GameMove &cGameMove)
         }
     }
 
-    // Insert players's up card into battle
+    // Draw card for battle
     Card cCard = m_vHands[nPlayer - 1].DrawTopCard();
     cCard.TurnUp(true);
+
+    // Add card to GameMove
+    cGameMove.UpdateCard(cCard);
 
     sMessage = "Player " + std::to_string(nPlayer) + " draws " + cCard.DisplayRank();
     m_cLogger.LogInfo(sMessage,1);
 
+    // Insert players's up card into battle
     bool bInserted = m_uomBattle.insert(std::make_pair(nPlayer, cCard)).second;
     if (!bInserted)
     {

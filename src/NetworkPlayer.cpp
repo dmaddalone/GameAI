@@ -128,7 +128,7 @@ bool NetworkPlayer::SendLastMove(Game &cGame)
     // Get last move made and create JSON of game move
     sMessage = cGame.LastMove().JsonSerialization().toStyledString();
 
-    std::string sLogMessage = "Sending move\n" + sMessage + "\nto opponent";
+    std::string sLogMessage = "Sending move->\n" + sMessage + "<-to opponent";
     m_cLogger.LogInfo(sLogMessage, 3);
 
     //if (!Socket::Send(cGameMove.JsonSerialization().toStyledString()))
@@ -181,7 +181,7 @@ bool NetworkPlayer::RecvLastMove(Game &cGame)
     if (!Socket::Recv(sMessage) < 0)
         throw SocketException("Did not receive move or message");
 
-    std::string sLogMessage = "Received\n" + sMessage + "\nfrom opponent";
+    std::string sLogMessage = "Received move->\n" + sMessage + "<-from opponent";
     m_cLogger.LogInfo(sLogMessage, 3);
 
     // Evaluate for SYNC
@@ -305,6 +305,8 @@ void NetworkPlayer::RecvSyncInfo(Game &cGame)
 {
     std::string sMessage {};
     std::string sErrorMessage {};
+
+    m_cLogger.LogInfo("Synchronizing game environment with opponent", 2);
 
     // Alert game to synchronization
     cGame.SetSync(true);

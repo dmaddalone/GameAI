@@ -175,31 +175,23 @@ std::vector<Card> PlayingCards::RemoveCardsOfSuit(std::string sSuit)
 
 Json::Value PlayingCards::JsonSerialization() const
 {
-    Json::Value jCards(Json::objectValue);
-    Json::Value jCard(Json::arrayValue);
+    Json::Value jCards;
+    Json::Value jCard;
 
     for (Card const &cCard : m_vCards)
     {
-        //jCard = cCard.JsonSerialization();
-        //jCards.append(jCard);
-        jCard.append(cCard.JsonSerialization());
+        jCards[std::to_string(cCard.ID())] = cCard.JsonSerialization();
     }
-
-    jCards["Cards"] = jCard;
-
-    std::cout << "[DEBUG] jCards serialized:\n" << jCards.toStyledString() << std::endl;
 
     return jCards;
 }
 
 bool PlayingCards::JsonDeserialization(const std::string &sJsonPlayingCards, std::string &sErrorMessage)
 {
-    Json::Value jCards(Json::objectValue);
-    Json::Value jCard(Json::arrayValue);
+    Json::Value jCards;
+    Json::Value jCard;
     Json::Reader jReader;
     Card cCard;
-
-    std::cout << "[DEBUG] jCards to be deserialized:\n" << sJsonPlayingCards << std::endl;
 
     if (jReader.parse(sJsonPlayingCards, jCards, false))
     {

@@ -24,7 +24,8 @@ int Card::m_nCardCount {0};
 
 Json::Value Card::JsonSerialization() const
 {
-    Json::Value jValue(Json::arrayValue);
+    //Json::Value jValue(Json::arrayValue);
+    Json::Value jValue;
 
     jValue["Rank"]      = m_sRank;
     jValue["Suit"]      = m_sSuit;
@@ -37,7 +38,8 @@ Json::Value Card::JsonSerialization() const
 
 bool Card::JsonDeserialization(const std::string &sJsonCard, std::string &sErrorMessage)
 {
-    Json::Value jValue(Json::arrayValue);
+    //Json::Value jValue(Json::arrayValue);
+    Json::Value jValue;
     Json::Reader jReader;
 
      if (jReader.parse(sJsonCard, jValue, false))
