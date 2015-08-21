@@ -31,6 +31,99 @@ void CardGameWar::Display() const
 }
 
 /**
+  * Return information to be synchronized between networked players.
+  *
+  * This function is a NOP and should be overridden in derived classes.
+  *
+  * \param sGameInformation String representing game information to be synchronized
+  * between players.
+  *
+  * \return True if information received to synchronize, false otherwise.
+  */
+
+bool CardGameWar::GetSyncInfo(std::string &sGameInformation)
+{
+    sGameInformation.clear();
+
+    if (m_bSyncBattle)
+    {
+        m_cLogger.LogInfo("Gathering synchronization on battle deck", 2);
+        sGameInformation = BattleJsonSerialization().toStyledString();
+        m_bSyncBattle = false;
+        return true;
+    }
+    else if (m_bSyncWarCards)
+    {
+        m_cLogger.LogInfo("Gathering synchronization on war cards", 2);
+        sGameInformation = WarCardsJsonSerialization().toStyledString();
+        m_bSyncWarCards = false;
+        return true;
+    }
+    else if (m_bSyncWar)
+    {
+        m_cLogger.LogInfo("Gathering synchronization on war flag", 2);
+        Json::Value jValue;
+        jValue["War"] = m_bWar;
+        sGameInformation = jValue.toStyledString();
+        m_bSyncWar = false;
+        return true;
+    }
+
+    return CardGame::GetSyncInfo(sGameInformation);
+}
+
+/**
+  * Receive information to be synchronized from a networked opponent
+  *
+  * This function is a NOP and should be overridden in derived classes.
+  *
+  * \return True if information is available to be sent, false otherwise.
+  */
+
+bool CardGameWar::ApplySyncInfo(const std::string &sGameInformation, std::string &sErrorMessage)
+{
+    if (m_bSyncBattle)
+    {
+        m_cLogger.LogInfo("Applying synchronization on battle deck", 2);
+        if (BattleJsonDeserialization(sGameInformation, sErrorMessage))
+            m_bSyncBattle = false;
+        else
+            return false;
+    }
+    else if (m_bSyncWarCards)
+    {
+        m_cLogger.LogInfo("Applying synchronization on war cards", 2);
+        if (WarCardsJsonDeserialization(sGameInformation, sErrorMessage))
+            m_bSyncWarCards = false;
+        else
+            return false;
+    }
+    else if (m_bSyncWar)
+    {
+        m_cLogger.LogInfo("Applying synchronization on war flag", 2);
+        Json::Reader jReader;
+        Json::Value jValue;
+        if (jReader.parse(sGameInformation, jValue, false))
+        {
+            m_bWar = jValue["War"].asBool();
+            m_bSyncWar = false;
+        }
+        else
+        {
+            //sErrorMessage = jReader.getFormatedErrorMessages();
+            sErrorMessage = jReader.getFormattedErrorMessages();
+            return false;
+        }
+    }
+    else
+    {
+        return CardGame::ApplySyncInfo(sGameInformation, sErrorMessage);
+    }
+
+    return true;
+}
+
+/**
   * Return a vector of valid game moves.
   *
   * For War, the only move is to draw, if the player has cards in their hand.
@@ -121,11 +214,17 @@ bool CardGameWar::ApplyMove(int nPlayer, GameMove &cGameMove)
 
     // Insert players's up card into battle
     bool bInserted = m_uomBattle.insert(std::make_pair(nPlayer, cCard)).second;
+
+    // If not inserted successfully, return the card to hand
     if (!bInserted)
     {
         // Since DrawTopCard is destructive, add the card back
         cCard.TurnUp(false);
         m_vHands[nPlayer - 1].AddCardToTop(cCard);
+
+        // Replace the card in th GameMove with a blank card
+        Card cBlankCard;
+        cGameMove.UpdateCard(cBlankCard);
 
         return false;
     }
@@ -281,4 +380,109 @@ bool CardGameWar::GameEnded(int nPlayer)
     }
 
     return false;
+}
+
+Json::Value CardGameWar::BattleJsonSerialization() const
+{
+    Json::Value jValue;
+    Json::Value jBattle;
+    Card cCard;
+
+    for (const auto &PlayerCard : m_uomBattle)
+    {
+        jValue["Player"] = PlayerCard.first;
+        cCard            = PlayerCard.second;
+        jValue["Card"]   = cCard.JsonSerialization();
+        jBattle[std::to_string(cCard.ID())] = jValue;
+    }
+
+    return jBattle;
+}
+
+bool CardGameWar::BattleJsonDeserialization(const std::string &sJsonBattle, std::string &sErrorMessage)
+{
+    Json::Reader jReader;
+    Json::Value jBattle;
+    int nPlayer;
+    Card cCard;
+
+    if (jReader.parse(sJsonBattle, jBattle, false))
+    {
+        m_uomBattle.clear();
+
+        for (const Json::Value &jValue : jBattle)
+        {
+            nPlayer = jValue["Player"].asInt();
+
+            if (cCard.JsonDeserialization(jValue["Card"].toStyledString(), sErrorMessage))
+            {
+                // Insert players's up card into battle
+                bool bInserted = m_uomBattle.insert(std::make_pair(nPlayer, cCard)).second;
+
+                // If not inserted successfully, return the card to hand
+                if (!bInserted)
+                {
+                    sErrorMessage = "Could not insert pair <Player, Card> into Battle";
+                    return false;
+                }
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+    else
+    {
+        sErrorMessage = jReader.getFormattedErrorMessages();
+        return false;
+    }
+}
+
+Json::Value CardGameWar::WarCardsJsonSerialization() const
+{
+    Json::Value jValue;
+    Json::Value jWarCards;
+    Card cCard;
+
+    for (const Card &cCard : m_vWarCards)
+    {
+        jValue = cCard.JsonSerialization();
+        jWarCards[std::to_string(cCard.ID())] = jValue;
+    }
+
+    return jWarCards;
+}
+
+bool CardGameWar::WarCardsJsonDeserialization(const std::string &sJsonWarCards, std::string &sErrorMessage)
+{
+    Json::Reader jReader;
+    Json::Value  jWarCards;
+    Card cCard;
+
+    if (jReader.parse(sJsonWarCards, jWarCards, false))
+    {
+        m_vWarCards.clear();
+
+        for (const Json::Value &jCard : jWarCards)
+        {
+            if (cCard.JsonDeserialization(jCard.toStyledString(), sErrorMessage))
+            {
+                m_vWarCards.push_back(cCard);
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+    else
+    {
+        sErrorMessage = jReader.getFormattedErrorMessages();
+        return false;
+    }
 }

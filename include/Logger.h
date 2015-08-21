@@ -47,7 +47,7 @@ class Logger
         void UseLevelIndent(bool b) { m_bUseLevelIndent = b; }
 
         // Calls for different types of logging
-        void LogInfo(const std::string sMessage, int nLevel) const;
+        void LogInfo(const std::string sMessage, int nLevel=0) const;
         void LogWarn(const std::string sMessage);
         void LogError(const std::string sMessage);
         void LogFatal(const std::string sMessage);

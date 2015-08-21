@@ -157,16 +157,11 @@ Json::Value GameMove::JsonSerialization() const
     jValue["bAnotherTurn"] = m_bAnotherTurn;
     jValue["bTestMove"]    = m_bTestMove;
 
-    Json::Value jCardValue(Json::objectValue);
+    //Json::Value jCardValue(Json::objectValue);
+    Json::Value jCardValue;
     jCardValue = m_cCard.JsonSerialization();
 
     jValue["Card"] = jCardValue;
-
-    //Json::StyledWriter jWriter;
-    //std::cout << jWriter.write(jValue) << std::endl;
-    //
-    //Json::FastWriter jFWriter;
-    //std::cout << jFWriter.write(jValue) << std::endl;
 
     return jValue;
 }
@@ -203,12 +198,16 @@ bool GameMove::JsonDeserialization(const std::string &sJsonGameMove, std::string
         m_bAnotherTurn = jValue["bAnotherTurn"].asBool();
         m_bTestMove    = jValue["bTestMove"].asBool();
 
-        if (m_cCard.JsonDeserialization(sJsonGameMove, sErrorMessage))
+        //std::cout << "{DEBUG] jValue[CARD]=" << jValue["Card"] << std::endl;
+        //std::cout << "{DEBUG] jValue[CARD].toStyledString()=" << jValue["Card"].toStyledString() << std::endl;
+        if (m_cCard.JsonDeserialization(jValue["Card"].toStyledString(), sErrorMessage))
         {
+            std::cout << "[DEBUG] m_cCard.JsonDeserialization is good" << std::endl;
             return true;
         }
         else
         {
+            std::cout << "[DEBUG] m_cCard.JsonDeserialization is bad" << std::endl;
             return false;
         }
     }

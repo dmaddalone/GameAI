@@ -21,7 +21,6 @@
 
 /**
   * Construct a NetworkPlayer class.
-  *
   */
 
 NetworkPlayer::NetworkPlayer(PlayerType ecPlayerType) : Player(ecPlayerType)
@@ -104,7 +103,7 @@ bool NetworkPlayer::SendLastMove(Game &cGame)
     //
     if (cGame.Sync())
     {
-        m_cLogger.LogInfo("Synchronizing game environment with opponent", 2);
+        std::cout << "Sending synchronization information" << std::endl;
 
         Send(GameVocabulary::SYNC);
         RecvConfirmation();
@@ -181,25 +180,24 @@ bool NetworkPlayer::RecvLastMove(Game &cGame)
     if (!Socket::Recv(sMessage) < 0)
         throw SocketException("Did not receive move or message");
 
-    std::string sLogMessage = "Received move->\n" + sMessage + "<-from opponent";
-    m_cLogger.LogInfo(sLogMessage, 3);
-
     // Evaluate for SYNC
     if (sMessage.compare(GameVocabulary::SYNC) == 0)
     {
+        m_cLogger.LogInfo("Received Sync from network opponent.", 2);
         RecvSyncInfo(cGame);
         return RecvLastMove(cGame);
     }
     // Evaluate for DECLARE_WIN
     else if (sMessage.compare(GameVocabulary::DECLARE_WIN)== 0)
     {
+        m_cLogger.LogInfo("Received Declared Win from network opponent.", 2);
         return true;
     }
 
     // Evaluate for FATAL_EXIT
     else if (sMessage.compare(GameVocabulary::FATAL_EXIT) == 0)
     {
-        sErrorMessage = "Opponent experienced a fatal error.";
+        sErrorMessage = "Received Fatal Exit from network opponent.";
         std::cerr << sErrorMessage << std::endl;
         std::cout << "Exiting." << std::endl;
         exit(EXIT_FAILURE);
@@ -213,33 +211,11 @@ bool NetworkPlayer::RecvLastMove(Game &cGame)
         std::cout << "Exiting." << std::endl;
         exit(EXIT_FAILURE);
     }
-
-/*
-    // Parse Json Game Move into GameMove
-    if (!cGameMove.JsonDeserialization(sMessage, sErrorMessage))
+    else
     {
-        // If parse was not successful, check for DECLARE_WIN
-        if (sMessage.compare(GameVocabulary::DECLARE_WIN) == 0)
-        {
-            return true;
-        }
-        // else check for FATAL_EXIT
-        else if (sMessage.compare(GameVocabulary::FATAL_EXIT) == 0)
-        {
-            sErrorMessage = "Opponent experienced a fatal error.";
-            std::cerr << sErrorMessage << std::endl;
-            std::cout << "Exiting." << std::endl;
-            exit(EXIT_FAILURE);
-        }
-        // else report Json parse error
-        else
-        {
-            std::cerr << sErrorMessage << std::endl;
-            std::cout << "Exiting." << std::endl;
-            exit(EXIT_FAILURE);
-        }
+        std::string sLogMessage = "Received move->\n" + sMessage + "<-from opponent";
+        m_cLogger.LogInfo(sLogMessage, 3);
     }
-*/
 
     // Announce move
     std::cout << cGame.AnnounceMove(m_nPlayerNumber, cGameMove) << std::endl;
@@ -247,7 +223,7 @@ bool NetworkPlayer::RecvLastMove(Game &cGame)
     // Test GameMove for validity.
     if (cGame.ApplyMove(m_nPlayerNumber, cGameMove))
     {
-        // Send confirmation of received move
+        // Send confirmation of received JSON game move
         sCommand = GameVocabulary::CONFIRM;
         if (!Socket::Send(sCommand))
         {
@@ -306,7 +282,7 @@ void NetworkPlayer::RecvSyncInfo(Game &cGame)
     std::string sMessage {};
     std::string sErrorMessage {};
 
-    m_cLogger.LogInfo("Synchronizing game environment with opponent", 2);
+    std::cout << "Receiving synchronization information" << std::endl;
 
     // Alert game to synchronization
     cGame.SetSync(true);
@@ -319,10 +295,12 @@ void NetworkPlayer::RecvSyncInfo(Game &cGame)
     {
         // Receive the synchronization information
         if (!Socket::Recv(sMessage) < 0)
-            throw SocketException("Did not receive move");
+            throw SocketException("Did not receive sync information");
 
         if (sMessage.compare(GameVocabulary::END_SYNC) == 0)
         {
+            m_cLogger.LogInfo("Received End Sync from network opponent.", 2);
+
             // Alert game to synchronization end
             cGame.SetSync(false);
 

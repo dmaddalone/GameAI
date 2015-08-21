@@ -24,31 +24,29 @@ int Card::m_nCardCount {0};
 
 Json::Value Card::JsonSerialization() const
 {
-    //Json::Value jValue(Json::arrayValue);
     Json::Value jValue;
 
-    jValue["Rank"]      = m_sRank;
-    jValue["Suit"]      = m_sSuit;
-    jValue["Value"]     = m_nValue;
-    jValue["nID"]       = m_nID;
-    jValue["bTurnedUp"] = m_bTurnedUp;
+    jValue["Rank"]     = m_sRank;
+    jValue["Suit"]     = m_sSuit;
+    jValue["Value"]    = m_nValue;
+    jValue["ID"]       = m_nID;
+    jValue["TurnedUp"] = m_bTurnedUp;
 
     return jValue;
 }
 
 bool Card::JsonDeserialization(const std::string &sJsonCard, std::string &sErrorMessage)
 {
-    //Json::Value jValue(Json::arrayValue);
     Json::Value jValue;
     Json::Reader jReader;
 
      if (jReader.parse(sJsonCard, jValue, false))
     {
-        m_sRank     = jValue["sRank"].asString();
-        m_sSuit     = jValue["sSuit"].asString();
-        m_nValue    = jValue["nValue"].asInt();
-        m_nID       = jValue["nID"].asInt();
-        m_bTurnedUp = jValue["bTurnedUp"].asBool();
+        m_sRank     = jValue["Rank"].asString();
+        m_sSuit     = jValue["Suit"].asString();
+        m_nValue    = jValue["Value"].asInt();
+        m_nID       = jValue["ID"].asInt();
+        m_bTurnedUp = jValue["TurnedUp"].asBool();
 
         return true;
     }

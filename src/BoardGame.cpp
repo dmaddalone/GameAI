@@ -59,6 +59,8 @@ bool BoardGame::GetSyncInfo(std::string &sGameInformation)
 
 bool BoardGame::ApplySyncInfo(const std::string &sGameInformation, std::string &sErrorMessage)
 {
+    (void) sGameInformation;
+    (void) sErrorMessage;
     return true;
 }
 

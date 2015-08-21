@@ -176,11 +176,23 @@ std::vector<Card> PlayingCards::RemoveCardsOfSuit(std::string sSuit)
 Json::Value PlayingCards::JsonSerialization() const
 {
     Json::Value jCards;
-    Json::Value jCard;
+    int nCounter {0};
+    char chLetter = 'a';
+    std::string sIndex {};
 
-    for (Card const &cCard : m_vCards)
+    for (const Card &cCard : m_vCards)
     {
-        jCards[std::to_string(cCard.ID())] = cCard.JsonSerialization();
+        if (nCounter >= 10)
+        {
+            nCounter = 0;
+            ++chLetter;
+        }
+
+        sIndex.assign(1, chLetter);
+        sIndex.append(std::to_string(nCounter));
+        ++nCounter;
+
+        jCards[sIndex] = cCard.JsonSerialization();
     }
 
     return jCards;
@@ -188,9 +200,9 @@ Json::Value PlayingCards::JsonSerialization() const
 
 bool PlayingCards::JsonDeserialization(const std::string &sJsonPlayingCards, std::string &sErrorMessage)
 {
-    Json::Value jCards;
-    Json::Value jCard;
     Json::Reader jReader;
+    Json::Value  jCards;
+    Json::Value  jCard;
     Card cCard;
 
     if (jReader.parse(sJsonPlayingCards, jCards, false))
@@ -219,5 +231,17 @@ bool PlayingCards::JsonDeserialization(const std::string &sJsonPlayingCards, std
     }
 }
 
+std::string PlayingCards::Ranks()
+{
+    std::string sRanks {};
 
+    for (const Card &cCard : m_vCards)
+    {
+        sRanks += cCard.Rank() + " ";
+    }
 
+    if (sRanks.empty())
+        sRanks = "empty";
+
+    return sRanks;
+}

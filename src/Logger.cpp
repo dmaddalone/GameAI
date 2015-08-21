@@ -74,7 +74,7 @@ void Logger::Log(const std::string sTag, const std::string sMessage, int nLevel)
     // Generate indentations
     if (m_bUseLevelIndent)
     {
-        sLog.insert(0,2 * (nLevel -1), ' ');
+        sLog.insert(0,2 * nLevel, ' ');
     }
 
     std::cout << sLog << sMessage << std::endl;
@@ -89,7 +89,7 @@ void Logger::Log(const std::string sTag, const std::string sMessage, int nLevel)
   * \param nLevel The logging level, defaulted to zero
   */
 
-void Logger::LogInfo(const std::string sMessage, int nLevel=0) const
+void Logger::LogInfo(const std::string sMessage, int nLevel) const
 {
     if (m_nLevel >= nLevel)
         Log("INFO:", sMessage, nLevel);
@@ -106,7 +106,7 @@ void Logger::LogInfo(const std::string sMessage, int nLevel=0) const
 
 void Logger::LogWarn(const std::string sMessage)
 {
-    Log("WARN:", sMessage, 0);
+    Log("WARN:", sMessage, 1);
 }
 
 /**
@@ -119,7 +119,7 @@ void Logger::LogWarn(const std::string sMessage)
 
 void Logger::LogError(const std::string sMessage)
 {
-    Log("ERROR:", sMessage, 0);
+    Log("ERROR:", sMessage, 1);
 }
 
 /**
@@ -132,7 +132,7 @@ void Logger::LogError(const std::string sMessage)
 
 void Logger::LogFatal(const std::string sMessage)
 {
-    Log("FATAL:", sMessage, 0);
+    Log("FATAL:", sMessage, 1);
 }
 
 /**
@@ -145,5 +145,5 @@ void Logger::LogFatal(const std::string sMessage)
 
 void Logger::LogDebug(const std::string sMessage)
 {
-    Log("DEBUG:", sMessage, 0);
+    Log("DEBUG:", sMessage, 1);
 }

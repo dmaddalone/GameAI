@@ -26,6 +26,8 @@
 #ifndef GAMEMOVE_H
 #define GAMEMOVE_H
 
+#include <iostream> // testing
+
 #include <string>
 
 #include "Card.h"

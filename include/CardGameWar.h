@@ -40,6 +40,9 @@ class CardGameWar : public CardGame
         CardGameWar(GameType ecGameType) :
             CardGame(ecGameType, 2)
         {
+            // Set sync to true to sync game information between networked players
+            SetSync(true);
+
             // Shuffle and Deal cards
             m_cDeck.Shuffle();
             m_cDeck.Deal(0, m_vHands);
@@ -52,6 +55,10 @@ class CardGameWar : public CardGame
 
         // Display the game
         virtual void Display() const override;
+
+        // Synchronize the game environment across networked players
+        virtual bool GetSyncInfo(std::string &sGameInformation) override;
+        virtual bool ApplySyncInfo(const std::string &sGameInformation, std::string &sErrorMessage) override;
 
         // Generate a vector of valid moves
         virtual std::vector<GameMove> GenerateMoves(int nPlayer) const override;
@@ -77,11 +84,24 @@ class CardGameWar : public CardGame
         // Return the description of the game
         virtual std::string Description() override { return "Aces are High.  Valid moves are " + GameVocabulary::DRAW + ", " + GameVocabulary::RESIGN + "."; }
 
+        // Override Game::SetSync()
+        void SetSync(bool b)  { CardGame::SetSync(b); m_bSyncBattle = m_bSyncWarCards = m_bSyncWar = b; }
+
     protected:
     private:
+        Json::Value BattleJsonSerialization() const;
+        bool BattleJsonDeserialization(const std::string &sJsonPlayingCards, std::string &sErrorMessage);
+        Json::Value WarCardsJsonSerialization() const;
+        bool WarCardsJsonDeserialization(const std::string &sJsonPlayingCards, std::string &sErrorMessage);
+
         std::unordered_map<int, Card> m_uomBattle;
         std::vector<Card>             m_vWarCards;
         bool                          m_bWar {false};
+
+        // Sync flags
+        bool m_bSyncBattle   { false };
+        bool m_bSyncWarCards { false };
+        bool m_bSyncWar      { false };
 };
 
 #endif // CARDGAMEWAR_H

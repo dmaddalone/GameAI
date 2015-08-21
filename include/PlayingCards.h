@@ -56,6 +56,8 @@ class PlayingCards
         std::vector<Card> RemoveCardsOfRank(std::string sRank);
         std::vector<Card> RemoveCardsOfSuit(std::string sSuit);
 
+        std::string Ranks();
+
         // Json object serialization
         Json::Value JsonSerialization() const;
         bool        JsonDeserialization(const std::string &sJsonPlayingCards, std::string &sErrorMessage);
