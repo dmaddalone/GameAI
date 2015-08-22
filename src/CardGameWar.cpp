@@ -48,6 +48,8 @@ bool CardGameWar::GetSyncInfo(std::string &sGameInformation)
     if (m_bSyncBattle)
     {
         m_cLogger.LogInfo("Gathering synchronization on battle deck", 2);
+        m_cLogger.LogInfo("Battle Ranks:", 3);
+        m_cLogger.LogInfo(BattleRanks(), 3);
         sGameInformation = BattleJsonSerialization().toStyledString();
         m_bSyncBattle = false;
         return true;
@@ -55,6 +57,8 @@ bool CardGameWar::GetSyncInfo(std::string &sGameInformation)
     else if (m_bSyncWarCards)
     {
         m_cLogger.LogInfo("Gathering synchronization on war cards", 2);
+        m_cLogger.LogInfo("War Card Ranks:", 3);
+        m_cLogger.LogInfo(WarCardsRanks(), 3);
         sGameInformation = WarCardsJsonSerialization().toStyledString();
         m_bSyncWarCards = false;
         return true;
@@ -62,6 +66,8 @@ bool CardGameWar::GetSyncInfo(std::string &sGameInformation)
     else if (m_bSyncWar)
     {
         m_cLogger.LogInfo("Gathering synchronization on war flag", 2);
+        std::string sLogInfo = "War Flag:" + std::string(m_bWar ? "true" : "false");
+        m_cLogger.LogInfo(sLogInfo, 3);
         Json::Value jValue;
         jValue["War"] = m_bWar;
         sGameInformation = jValue.toStyledString();
@@ -86,17 +92,31 @@ bool CardGameWar::ApplySyncInfo(const std::string &sGameInformation, std::string
     {
         m_cLogger.LogInfo("Applying synchronization on battle deck", 2);
         if (BattleJsonDeserialization(sGameInformation, sErrorMessage))
+        {
             m_bSyncBattle = false;
+            m_cLogger.LogInfo("Battle Ranks:", 3);
+            m_cLogger.LogInfo(BattleRanks(), 3);
+        }
         else
+        {
             return false;
+        }
+
     }
     else if (m_bSyncWarCards)
     {
         m_cLogger.LogInfo("Applying synchronization on war cards", 2);
         if (WarCardsJsonDeserialization(sGameInformation, sErrorMessage))
+        {
             m_bSyncWarCards = false;
+            m_cLogger.LogInfo("War Card Ranks:", 3);
+            m_cLogger.LogInfo(WarCardsRanks(), 3);
+        }
         else
+        {
             return false;
+        }
+
     }
     else if (m_bSyncWar)
     {
@@ -107,10 +127,11 @@ bool CardGameWar::ApplySyncInfo(const std::string &sGameInformation, std::string
         {
             m_bWar = jValue["War"].asBool();
             m_bSyncWar = false;
+            std::string sLogInfo = "War Flag:" + std::string(m_bWar ? "true" : "false");
+            m_cLogger.LogInfo(sLogInfo, 3);
         }
         else
         {
-            //sErrorMessage = jReader.getFormatedErrorMessages();
             sErrorMessage = jReader.getFormattedErrorMessages();
             return false;
         }
@@ -284,7 +305,7 @@ bool CardGameWar::ApplyMove(int nPlayer, GameMove &cGameMove)
         else
         {
             // Winning player gets all cards in the war cards vector
-            sMessage = "Player " + std::to_string(nBestPlayer) + " Wins";
+            sMessage = "Player " + std::to_string(nBestPlayer) + " Wins " + std::to_string(m_vWarCards.size()) + " cards.";
             m_cLogger.LogInfo(sMessage,1);
 
             for (Card &cCard : m_vWarCards)
@@ -382,6 +403,23 @@ bool CardGameWar::GameEnded(int nPlayer)
     return false;
 }
 
+std::string CardGameWar::BattleRanks() const
+{
+    std::string sRanks {};
+    Card cCard;
+
+    for (const auto &PlayerCard : m_uomBattle)
+    {
+        cCard = PlayerCard.second;
+        sRanks += cCard.Rank() + " ";
+    }
+
+    if (sRanks.empty())
+        sRanks = "empty";
+
+    return sRanks;
+}
+
 Json::Value CardGameWar::BattleJsonSerialization() const
 {
     Json::Value jValue;
@@ -439,6 +477,21 @@ bool CardGameWar::BattleJsonDeserialization(const std::string &sJsonBattle, std:
         sErrorMessage = jReader.getFormattedErrorMessages();
         return false;
     }
+}
+
+std::string CardGameWar::WarCardsRanks() const
+{
+    std::string sRanks {};
+
+    for (const Card &cCard : m_vWarCards)
+    {
+        sRanks += cCard.Rank() + " ";
+    }
+
+    if (sRanks.empty())
+        sRanks = "empty";
+
+    return sRanks;
 }
 
 Json::Value CardGameWar::WarCardsJsonSerialization() const

@@ -52,6 +52,8 @@ bool CardGame::GetSyncInfo(std::string &sGameInformation)
     if (m_bSyncDeck)
     {
         m_cLogger.LogInfo("Gathering synchronization on deck", 2);
+        m_cLogger.LogInfo("Deck Ranks: ", 3);
+        m_cLogger.LogInfo(m_cDeck.Ranks(), 3);
         sGameInformation = m_cDeck.JsonSerialization().toStyledString();
         m_bSyncDeck = false;
         return true;
@@ -59,6 +61,8 @@ bool CardGame::GetSyncInfo(std::string &sGameInformation)
     else if (m_bSyncFirstHand)
     {
         m_cLogger.LogInfo("Gathering synchronization on first hand", 2);
+        m_cLogger.LogInfo("First Hand Ranks: ", 3);
+        m_cLogger.LogInfo(m_vHands[0].Ranks(), 3);
         sGameInformation = m_vHands[0].JsonSerialization().toStyledString();
         m_bSyncFirstHand = false;
         return true;
@@ -66,6 +70,8 @@ bool CardGame::GetSyncInfo(std::string &sGameInformation)
     else if (m_bSyncSecondHand)
     {
         m_cLogger.LogInfo("Gathering synchronization on second hand", 2);
+        m_cLogger.LogInfo("Second Hand Ranks: ", 3);
+        m_cLogger.LogInfo(m_vHands[1].Ranks(), 3);
         sGameInformation = m_vHands[1].JsonSerialization().toStyledString();
         m_bSyncSecondHand = false;
         return true;
@@ -90,6 +96,8 @@ bool CardGame::ApplySyncInfo(const std::string &sGameInformation, std::string &s
         if (m_cDeck.JsonDeserialization(sGameInformation, sErrorMessage))
         {
             m_bSyncDeck = false;
+            m_cLogger.LogInfo("Deck Ranks: ", 3);
+            m_cLogger.LogInfo(m_cDeck.Ranks(), 3);
         }
         else
         {
@@ -103,6 +111,8 @@ bool CardGame::ApplySyncInfo(const std::string &sGameInformation, std::string &s
         if (m_vHands[0].JsonDeserialization(sGameInformation, sErrorMessage))
         {
             m_bSyncFirstHand = false;
+            m_cLogger.LogInfo("First Hand Ranks: ", 3);
+            m_cLogger.LogInfo(m_vHands[0].Ranks(), 3);
         }
         else
         {
@@ -115,7 +125,9 @@ bool CardGame::ApplySyncInfo(const std::string &sGameInformation, std::string &s
         m_cLogger.LogInfo("Applying synchronization on second hand", 2);
         if (m_vHands[1].JsonDeserialization(sGameInformation, sErrorMessage))
         {
-            m_bSyncFirstHand = false;
+            m_bSyncSecondHand = false;
+            m_cLogger.LogInfo("Second Hand Ranks: ", 3);
+            m_cLogger.LogInfo(m_vHands[1].Ranks(), 3);
         }
         else
         {

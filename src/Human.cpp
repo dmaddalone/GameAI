@@ -33,6 +33,12 @@ bool Human::Move(Game &cGame)
 {
     GameMove cGameMove;
 
+    // If game requires synchronization, pass turn to next player to synchronize information
+    if (cGame.Sync())
+    {
+        return true;
+    }
+
     // Show valid moves at proper logging level.
     if (m_cLogger.Level() >= 1)
     {

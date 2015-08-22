@@ -65,6 +65,9 @@ class NetworkPlayer: public Socket, public Player
         // Player receives confirmation from networked opponent of last send
         void RecvConfirmation();
 
+        // Send game information to be synchronized
+        void Synchronize(Game &cGame);
+
         // Receives game information to be synchronized
         void RecvSyncInfo(Game &cGame);
 

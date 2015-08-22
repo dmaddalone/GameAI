@@ -47,6 +47,12 @@ bool NetworkPlayer::Move(Game &cGame)
 {
     if (m_nPlayerNumber == 2)  // Network Player #2
     {
+        if (cGame.Sync())
+        {
+            Synchronize(cGame);
+            return true;
+        }
+
         // Show game board at proper logging level.
         if (m_cLogger.Level() >= 1)
         {
@@ -84,17 +90,7 @@ bool NetworkPlayer::Move(Game &cGame)
     }
 }
 
-/**
-  * Send last move made to the networked player.
-  *
-  * Send the last move made to the networked player.
-  *
-  * \param cGame The game.
-  *
-  * \return True, if a move has been sent successfully.
-  */
-
-bool NetworkPlayer::SendLastMove(Game &cGame)
+void NetworkPlayer::Synchronize(Game &cGame)
 {
     std::string sMessage {};
 
@@ -121,6 +117,46 @@ bool NetworkPlayer::SendLastMove(Game &cGame)
         // Set sync to false
         cGame.SetSync(false);
     }
+}
+/**
+  * Send last move made to the networked player.
+  *
+  * Send the last move made to the networked player.
+  *
+  * \param cGame The game.
+  *
+  * \return True, if a move has been sent successfully.
+  */
+
+bool NetworkPlayer::SendLastMove(Game &cGame)
+{
+    std::string sMessage {};
+
+    //
+    // Sync game environment, if required
+    //
+    /*
+    if (cGame.Sync())
+    {
+        std::cout << "Sending synchronization information" << std::endl;
+
+        Send(GameVocabulary::SYNC);
+        RecvConfirmation();
+
+        // Receive commands or JSON to send to opponent
+        while (cGame.GetSyncInfo(sMessage))
+        {
+            Send(sMessage);
+            RecvConfirmation();
+        }
+
+        Send(GameVocabulary::END_SYNC);
+        RecvConfirmation();
+
+        // Set sync to false
+        cGame.SetSync(false);
+    }
+    */
 
     m_cLogger.LogInfo("Sending move to opponent", 2);
 
@@ -273,7 +309,7 @@ void NetworkPlayer::RecvConfirmation()
         std::cerr << sErrorMessage << std::endl;
         std::cout << "Exiting" << std::endl;
         Socket::Send(GameVocabulary::FATAL_EXIT);
-        throw GameAIException(sErrorMessage);
+        exit(EXIT_FAILURE);
     }
 }
 

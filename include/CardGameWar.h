@@ -89,10 +89,12 @@ class CardGameWar : public CardGame
 
     protected:
     private:
+        std::string BattleRanks() const;
         Json::Value BattleJsonSerialization() const;
-        bool BattleJsonDeserialization(const std::string &sJsonPlayingCards, std::string &sErrorMessage);
+        bool        BattleJsonDeserialization(const std::string &sJsonPlayingCards, std::string &sErrorMessage);
+        std::string WarCardsRanks() const;
         Json::Value WarCardsJsonSerialization() const;
-        bool WarCardsJsonDeserialization(const std::string &sJsonPlayingCards, std::string &sErrorMessage);
+        bool        WarCardsJsonDeserialization(const std::string &sJsonPlayingCards, std::string &sErrorMessage);
 
         std::unordered_map<int, Card> m_uomBattle;
         std::vector<Card>             m_vWarCards;

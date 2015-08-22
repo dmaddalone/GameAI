@@ -110,7 +110,7 @@ void Client::Initialize(std::string sHost, int nPort, bool &bSwap)
         std::cerr << sErrorMessage << std::endl;
         std::cout << "Exiting" << std::endl;
         Socket::Send(GameVocabulary::FATAL_EXIT);
-        throw GameAIException(sErrorMessage);
+        exit(EXIT_FAILURE);
     }
 
     // Server will establish client's player number as the opposite of what the client

@@ -119,7 +119,7 @@ void Server::Initialize(std::string sHost, int nPort, bool &bSwap)
         std::cerr << sErrorMessage << std::endl;
         std::cout << "Exiting" << std::endl;
         Socket::Send(GameVocabulary::UNCONFIRM);
-        throw GameAIException(sErrorMessage);
+        exit(EXIT_FAILURE);
     }
 
     // 3. Send Confirm Game
@@ -138,7 +138,7 @@ void Server::Initialize(std::string sHost, int nPort, bool &bSwap)
         sErrorMessage  = "Expected command " + GameVocabulary::REQUEST_CLIENT_PLAYER_NUMBER + ", but received " + sCommand;
         std::cerr << sErrorMessage << std::endl;
         std::cout << "Exiting" << std::endl;
-        throw GameAIException(sErrorMessage);
+        exit(EXIT_FAILURE);
     }
 
     // 7. Send Client Player Number

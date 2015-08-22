@@ -31,6 +31,12 @@
 
 bool Minimax::Move(Game &cGame)
 {
+    // If game requires synchronization, pass turn to next player to synchronize information
+    if (cGame.Sync())
+    {
+        return true;
+    }
+
     // Used to display valid moves
     std::string sMessage;
 

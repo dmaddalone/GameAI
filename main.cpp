@@ -418,6 +418,18 @@ int main(int argc, char* argv[])
     pcGame->SetPlayer1Name(vPlayers[0]->PlayerName());
     pcGame->SetPlayer2Name(vPlayers[1]->PlayerName());
 
+    // If game sync flag was set, but no players are NetworkPlayers,
+    // turn the sync flag off (if no networked players, syncing the
+    // game is not required.)
+    if (pcGame->Sync())
+    {
+        if (vPlayers[0]->Type() != PlayerType::TYPE_CLIENT)
+            if (vPlayers[0]->Type() != PlayerType::TYPE_SERVER)
+                if (vPlayers[1]->Type() != PlayerType::TYPE_CLIENT)
+                    if (vPlayers[1]->Type() != PlayerType::TYPE_SERVER)
+                        pcGame->SetSync(false);
+    }
+
     // Announce game
     std::cout << "Playing " << pcGame->Title() << std::endl;
     std::string sDesc = pcGame->Description();
@@ -492,7 +504,7 @@ int main(int argc, char* argv[])
         // Otherwise, let Player 1 move.
         else
         {
-            // Player 1 move
+             // Player 1 move
             if (!vPlayers[0]->Move(*pcGame))
             {
                 std::cerr << "Invalid move.  Exiting." << std::endl;

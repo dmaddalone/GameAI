@@ -202,12 +202,12 @@ bool GameMove::JsonDeserialization(const std::string &sJsonGameMove, std::string
         //std::cout << "{DEBUG] jValue[CARD].toStyledString()=" << jValue["Card"].toStyledString() << std::endl;
         if (m_cCard.JsonDeserialization(jValue["Card"].toStyledString(), sErrorMessage))
         {
-            std::cout << "[DEBUG] m_cCard.JsonDeserialization is good" << std::endl;
+            //std::cout << "[DEBUG] m_cCard.JsonDeserialization is good" << std::endl;
             return true;
         }
         else
         {
-            std::cout << "[DEBUG] m_cCard.JsonDeserialization is bad" << std::endl;
+            //std::cout << "[DEBUG] m_cCard.JsonDeserialization is bad" << std::endl;
             return false;
         }
     }
