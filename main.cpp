@@ -504,7 +504,9 @@ int main(int argc, char* argv[])
         // Otherwise, let Player 1 move.
         else
         {
+             //
              // Player 1 move
+             //
             if (!vPlayers[0]->Move(*pcGame))
             {
                 std::cerr << "Invalid move.  Exiting." << std::endl;
@@ -525,7 +527,9 @@ int main(int argc, char* argv[])
             break;
         }
 
+        //
         // Player 2 move
+        //
         if (!vPlayers[1]->Move(*pcGame))
         {
             std::cerr << "Invalid move.  Exiting." << std::endl;

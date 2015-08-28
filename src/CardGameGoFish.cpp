@@ -31,6 +31,70 @@ void CardGameGoFish::Display() const
 }
 
 /**
+  * Return information to be synchronized between networked players.
+  *
+  * This function is a NOP and should be overridden in derived classes.
+  *
+  * \param sGameInformation String representing game information to be synchronized
+  * between players.
+  *
+  * \return True if information received to synchronize, false otherwise.
+  */
+
+bool CardGameGoFish::GetSyncInfo(std::string &sGameInformation)
+{
+    std::string sLogInfo {};
+    sGameInformation.clear();
+
+    if (m_bSyncBooks)
+    {
+        m_cLogger.LogInfo("Gathering synchronization on books", 2);
+        sLogInfo = "Books Ranks: " + BooksRanks();
+        //m_cLogger.LogInfo("Battle Ranks:", 3);
+        //m_cLogger.LogInfo(BattleRanks(), 3);
+        m_cLogger.LogInfo(sLogInfo, 3);
+        sGameInformation = BooksJsonSerialization().toStyledString();
+        m_bSyncBooks = false;
+        return true;
+    }
+
+    return CardGame::GetSyncInfo(sGameInformation);
+}
+
+/**
+  * Receive information to be synchronized from a networked opponent
+  *
+  * This function is a NOP and should be overridden in derived classes.
+  *
+  * \return True if information is available to be sent, false otherwise.
+  */
+
+bool CardGameGoFish::ApplySyncInfo(const std::string &sGameInformation, std::string &sErrorMessage)
+{
+    std::string sLogInfo {};
+
+    if (m_bSyncBooks)
+    {
+        m_cLogger.LogInfo("Applying synchronization on books", 2);
+        if (BooksJsonDeserialization(sGameInformation, sErrorMessage))
+        {
+            m_bSyncBooks = false;
+            sLogInfo = "Books Ranks: " + BooksRanks();
+            //m_cLogger.LogInfo("Battle Ranks:", 3);
+            //m_cLogger.LogInfo(BattleRanks(), 3);
+            m_cLogger.LogInfo(sLogInfo, 3);
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    return CardGame::ApplySyncInfo(sGameInformation, sErrorMessage);
+}
+
+/**
   * Return a string of valid moves.
   *
   * \param nPlayer The player whose turn it is.
@@ -170,14 +234,14 @@ bool CardGameGoFish::ApplyMove(int nPlayer, GameMove &cGameMove)
     // Apply move to the game
     //
 
-    // Announce move
-    m_cLogger.LogInfo(AnnounceMove(nPlayer, cGameMove),1);
+    //// Announce move
+    //m_cLogger.LogInfo(AnnounceMove(nPlayer, cGameMove),1);
 
     // Find rank in opposing player's hand
     if (m_vHands[2 - nPlayer + 1 - 1].HasRank(cGameMove.GetCard().Rank()))
     {
         // Pass cards from asked player to asking player
-        std::vector<Card> vCards = m_vHands[2 - nPlayer + 1 - 1].RemoveCardsOfRank(cGameMove.GetCard().Rank());
+        std::vector<Card> vCards = m_vHands[2 - nPlayer/* + 1 - 1*/].RemoveCardsOfRank(cGameMove.GetCard().Rank());
 
         sMessage = "Player " + std::to_string(2 - nPlayer + 1) + " hands over " + m_asNumbers[vCards.size()] + " " +  cGameMove.AnnounceCardRank();
         m_cLogger.LogInfo(sMessage,1);
@@ -185,6 +249,7 @@ bool CardGameGoFish::ApplyMove(int nPlayer, GameMove &cGameMove)
         m_vHands[nPlayer - 1].AddCards(vCards);
 
         cGameMove.SetAnotherTurn(true);
+        cGameMove.SetPlayerNumber(nPlayer);
     }
     else // Go Fish
     {
@@ -200,6 +265,7 @@ bool CardGameGoFish::ApplyMove(int nPlayer, GameMove &cGameMove)
                 m_cLogger.LogInfo("Card drawn has the same rank as originally asked for" ,1);
 
                 cGameMove.SetAnotherTurn(true);
+                cGameMove.SetPlayerNumber(nPlayer);
             }
         }
     }
@@ -222,7 +288,6 @@ bool CardGameGoFish::ApplyMove(int nPlayer, GameMove &cGameMove)
     // If players has cards, sort them
     if (m_vHands[nPlayer - 1].HasCards())
     {
-        // Sort cards
         m_vHands[nPlayer - 1].SortByRank();
     }
     // If no cards in hand and player has another turn, draw from stock
@@ -328,5 +393,90 @@ bool CardGameGoFish::GameEnded(int nPlayer)
     return false;
 }
 
+std::string CardGameGoFish::BooksRanks() const
+{
+    std::string sRanks {};
+    Hand cHand;
+
+    for (const auto &PlayerHand : m_uommBooks)
+    {
+        cHand = PlayerHand.second;
+        sRanks += cHand.Ranks();
+    }
+
+    if (sRanks.empty())
+        sRanks = "empty";
+
+    return sRanks;
+}
+
+Json::Value CardGameGoFish::BooksJsonSerialization() const
+{
+    Json::Value jValue;
+    Json::Value jBooks;
+    Hand cHand;
+
+    // The following are used to create a index that will retain uniqueness when
+    // multimap items serialized to JSON.  May be used for up to 260 unique
+    // values: a0 to z9.
+    int nCounter {0};
+    char chLetter = 'a';
+    std::string sIndex {};
+
+    for (const auto &PlayerHand : m_uommBooks)
+    {
+        // Manage index
+        if (nCounter >= 10)
+        {
+            nCounter = 0;
+            ++chLetter;
+        }
+        sIndex.assign(1, chLetter);
+        sIndex.append(std::to_string(nCounter));
+        ++nCounter;
+
+        jValue["Player"] = PlayerHand.first;
+        cHand            = PlayerHand.second;
+        jValue["Hand"]   = cHand.JsonSerialization();
+        jBooks[sIndex]   = jValue;
+    }
+
+    return jBooks;
+}
+
+bool CardGameGoFish::BooksJsonDeserialization(const std::string &sJsonBooks, std::string &sErrorMessage)
+{
+    Json::Reader jReader;
+    Json::Value  jBooks;
+    int nPlayer;
+    Hand cHand;
+
+    if (jReader.parse(sJsonBooks, jBooks, false))
+    {
+        m_uommBooks.clear();
+
+        for (const Json::Value &jValue : jBooks)
+        {
+            nPlayer = jValue["Player"].asInt();
+
+            if (cHand.JsonDeserialization(jValue["Hand"].toStyledString(), sErrorMessage))
+            {
+                // Insert players's book into Books
+                m_uommBooks.insert(std::make_pair(nPlayer, cHand));
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+    else
+    {
+        sErrorMessage = jReader.getFormattedErrorMessages();
+        return false;
+    }
+}
 
 

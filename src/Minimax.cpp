@@ -37,6 +37,13 @@ bool Minimax::Move(Game &cGame)
         return true;
     }
 
+    // If Another Turn is set for opponent, skip this player's turn
+    GameMove cGameMove = cGame.LastMove();
+    if (cGameMove.AnotherTurn() && (cGameMove.PlayerNumber() != m_nPlayerNumber))
+    {
+        return true;
+    }
+
     // Used to display valid moves
     std::string sMessage;
 
@@ -58,7 +65,7 @@ bool Minimax::Move(Game &cGame)
     // TODO: Update for games that provide Another Turn
 
     // Get best game move
-    GameMove cGameMove = MinimaxMove(m_nPlayerNumber, cGame, m_nDepth);
+    cGameMove = MinimaxMove(m_nPlayerNumber, cGame, m_nDepth);
 
     // Announce game move
     m_cLogger.LogInfo(cGame.AnnounceMove(m_nPlayerNumber, cGameMove),1);

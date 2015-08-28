@@ -43,13 +43,16 @@ void CardGameWar::Display() const
 
 bool CardGameWar::GetSyncInfo(std::string &sGameInformation)
 {
+    std::string sLogInfo {};
     sGameInformation.clear();
 
     if (m_bSyncBattle)
     {
         m_cLogger.LogInfo("Gathering synchronization on battle deck", 2);
-        m_cLogger.LogInfo("Battle Ranks:", 3);
-        m_cLogger.LogInfo(BattleRanks(), 3);
+        sLogInfo = "Battle Ranks: " + BattleRanks();
+        //m_cLogger.LogInfo("Battle Ranks:", 3);
+        //m_cLogger.LogInfo(BattleRanks(), 3);
+        m_cLogger.LogInfo(sLogInfo, 3);
         sGameInformation = BattleJsonSerialization().toStyledString();
         m_bSyncBattle = false;
         return true;
@@ -57,8 +60,10 @@ bool CardGameWar::GetSyncInfo(std::string &sGameInformation)
     else if (m_bSyncWarCards)
     {
         m_cLogger.LogInfo("Gathering synchronization on war cards", 2);
-        m_cLogger.LogInfo("War Card Ranks:", 3);
-        m_cLogger.LogInfo(WarCardsRanks(), 3);
+        sLogInfo = "War Card Ranks: " + WarCardsRanks();
+        //m_cLogger.LogInfo("War Card Ranks:", 3);
+        //m_cLogger.LogInfo(WarCardsRanks(), 3);
+        m_cLogger.LogInfo(sLogInfo, 3);
         sGameInformation = WarCardsJsonSerialization().toStyledString();
         m_bSyncWarCards = false;
         return true;
@@ -66,7 +71,8 @@ bool CardGameWar::GetSyncInfo(std::string &sGameInformation)
     else if (m_bSyncWar)
     {
         m_cLogger.LogInfo("Gathering synchronization on war flag", 2);
-        std::string sLogInfo = "War Flag:" + std::string(m_bWar ? "true" : "false");
+        //std::string sLogInfo = "War Flag:" + std::string(m_bWar ? "true" : "false");
+        sLogInfo = "War Flag:" + std::string(m_bWar ? "true" : "false");
         m_cLogger.LogInfo(sLogInfo, 3);
         Json::Value jValue;
         jValue["War"] = m_bWar;
@@ -88,14 +94,19 @@ bool CardGameWar::GetSyncInfo(std::string &sGameInformation)
 
 bool CardGameWar::ApplySyncInfo(const std::string &sGameInformation, std::string &sErrorMessage)
 {
+    std::string sLogInfo {};
+
     if (m_bSyncBattle)
     {
         m_cLogger.LogInfo("Applying synchronization on battle deck", 2);
         if (BattleJsonDeserialization(sGameInformation, sErrorMessage))
         {
             m_bSyncBattle = false;
-            m_cLogger.LogInfo("Battle Ranks:", 3);
-            m_cLogger.LogInfo(BattleRanks(), 3);
+            sLogInfo = "Battle Ranks: " + BattleRanks();
+            //m_cLogger.LogInfo("Battle Ranks:", 3);
+            //m_cLogger.LogInfo(BattleRanks(), 3);
+            m_cLogger.LogInfo(sLogInfo, 3);
+            return true;
         }
         else
         {
@@ -109,8 +120,11 @@ bool CardGameWar::ApplySyncInfo(const std::string &sGameInformation, std::string
         if (WarCardsJsonDeserialization(sGameInformation, sErrorMessage))
         {
             m_bSyncWarCards = false;
-            m_cLogger.LogInfo("War Card Ranks:", 3);
-            m_cLogger.LogInfo(WarCardsRanks(), 3);
+            sLogInfo = "War Card Ranks: " + WarCardsRanks();
+            //m_cLogger.LogInfo("War Card Ranks:", 3);
+            //m_cLogger.LogInfo(WarCardsRanks(), 3);
+            m_cLogger.LogInfo(sLogInfo, 3);
+            return true;
         }
         else
         {
@@ -127,8 +141,10 @@ bool CardGameWar::ApplySyncInfo(const std::string &sGameInformation, std::string
         {
             m_bWar = jValue["War"].asBool();
             m_bSyncWar = false;
-            std::string sLogInfo = "War Flag:" + std::string(m_bWar ? "true" : "false");
+            //std::string sLogInfo = "War Flag:" + std::string(m_bWar ? "true" : "false");
+            sLogInfo = "War Flag:" + std::string(m_bWar ? "true" : "false");
             m_cLogger.LogInfo(sLogInfo, 3);
+            return true;
         }
         else
         {
@@ -136,12 +152,8 @@ bool CardGameWar::ApplySyncInfo(const std::string &sGameInformation, std::string
             return false;
         }
     }
-    else
-    {
-        return CardGame::ApplySyncInfo(sGameInformation, sErrorMessage);
-    }
 
-    return true;
+    return CardGame::ApplySyncInfo(sGameInformation, sErrorMessage);
 }
 
 /**

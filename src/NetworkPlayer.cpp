@@ -45,8 +45,10 @@ NetworkPlayer::NetworkPlayer(PlayerType ecPlayerType) : Player(ecPlayerType)
 
 bool NetworkPlayer::Move(Game &cGame)
 {
+    GameMove cGameMove;
     if (m_nPlayerNumber == 2)  // Network Player #2
     {
+        // If game needs to be synchronized, do it.
         if (cGame.Sync())
         {
             Synchronize(cGame);
@@ -59,11 +61,22 @@ bool NetworkPlayer::Move(Game &cGame)
             cGame.Display();
         }
 
+        // Send last game move (Player #1's move) to opponent (Player #2)
         if (!SendLastMove(cGame)) // Send Player #1 last move
             return false;
 
-        // Wait for opponent's (Player #2) move
-        return RecvLastMove(cGame); // Receive opponent's (Player #2) last move
+        // If the last game move's Another Turn is set for opponent (Player #1),
+        // do not wait to receive next game move from opponent
+        cGameMove = cGame.LastMove();
+        if (cGameMove.AnotherTurn() && (cGameMove.PlayerNumber() != m_nPlayerNumber))
+        {
+            return true;
+        }
+        else
+        {
+            // Wait for opponent's (Player #2) move
+            return RecvLastMove(cGame); // Receive opponent's (Player #2) last move
+        }
     }
     else // Network Player #1
     {
@@ -75,17 +88,31 @@ bool NetworkPlayer::Move(Game &cGame)
                 cGame.Display();
             }
 
-            if (!SendLastMove(cGame)) // Send Player #2 last move
+            // Send last game move (Player #2's move) to opponent (Player #1)
+            if (!SendLastMove(cGame))
                 return false;
-
-            // Wait for opponent's (Player #2) move
-            return RecvLastMove(cGame); // Receive opponent's (Player #2) last move
         }
         else // Receiving
         {
             SetToSending(); // For next turn
+        }
 
-            return RecvLastMove(cGame); // Receive opponent's (Player #2) last move
+        // Wait for opponent's (Player #2) move
+        if (RecvLastMove(cGame))
+        {
+            // If the last game move's Another Turn is set for opponent (Player #2),
+            // do not wait to receive next game move from opponent
+            cGameMove = cGame.LastMove();
+            if (cGameMove.AnotherTurn() && (cGameMove.PlayerNumber() != m_nPlayerNumber))
+            {
+                SetToReceiving(); // For next turn
+            }
+
+            return true;
+        }
+        else
+        {
+            return false;
         }
     }
 }
@@ -131,32 +158,6 @@ void NetworkPlayer::Synchronize(Game &cGame)
 bool NetworkPlayer::SendLastMove(Game &cGame)
 {
     std::string sMessage {};
-
-    //
-    // Sync game environment, if required
-    //
-    /*
-    if (cGame.Sync())
-    {
-        std::cout << "Sending synchronization information" << std::endl;
-
-        Send(GameVocabulary::SYNC);
-        RecvConfirmation();
-
-        // Receive commands or JSON to send to opponent
-        while (cGame.GetSyncInfo(sMessage))
-        {
-            Send(sMessage);
-            RecvConfirmation();
-        }
-
-        Send(GameVocabulary::END_SYNC);
-        RecvConfirmation();
-
-        // Set sync to false
-        cGame.SetSync(false);
-    }
-    */
 
     m_cLogger.LogInfo("Sending move to opponent", 2);
 
@@ -253,8 +254,8 @@ bool NetworkPlayer::RecvLastMove(Game &cGame)
         m_cLogger.LogInfo(sLogMessage, 3);
     }
 
-    // Announce move
-    std::cout << cGame.AnnounceMove(m_nPlayerNumber, cGameMove) << std::endl;
+    // Announce game move
+    m_cLogger.LogInfo(cGame.AnnounceMove(m_nPlayerNumber, cGameMove),1);
 
     // Test GameMove for validity.
     if (cGame.ApplyMove(m_nPlayerNumber, cGameMove))

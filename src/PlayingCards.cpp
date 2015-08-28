@@ -176,18 +176,21 @@ std::vector<Card> PlayingCards::RemoveCardsOfSuit(std::string sSuit)
 Json::Value PlayingCards::JsonSerialization() const
 {
     Json::Value jCards;
+
+    // The following are used to create a unique index that will retain order
+    // when serialized to JSON.  May be used for up to 260 unique values: a0 to z9.
     int nCounter {0};
     char chLetter = 'a';
     std::string sIndex {};
 
     for (const Card &cCard : m_vCards)
     {
+        // Manage index
         if (nCounter >= 10)
         {
             nCounter = 0;
             ++chLetter;
         }
-
         sIndex.assign(1, chLetter);
         sIndex.append(std::to_string(nCounter));
         ++nCounter;

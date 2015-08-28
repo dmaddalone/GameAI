@@ -39,6 +39,13 @@ bool Human::Move(Game &cGame)
         return true;
     }
 
+    // If Another Turn is set for opponent, skip this player's turn
+    cGameMove = cGame.LastMove();
+    if (cGameMove.AnotherTurn() && (cGameMove.PlayerNumber() != m_nPlayerNumber))
+    {
+        return true;
+    }
+
     // Show valid moves at proper logging level.
     if (m_cLogger.Level() >= 1)
     {
@@ -47,6 +54,7 @@ bool Human::Move(Game &cGame)
         if (sMoves.size() > 0)
         {
             std::cout << "Valid moves: " << cGame.ValidMoves(m_nPlayerNumber) << std::endl;
+            //TODO: change ValidMoves to use vector of moves as parameter (from Generate Moves)
         }
     }
 
@@ -71,10 +79,10 @@ bool Human::Move(Game &cGame)
         {
             std::cout << "Invalid move" << std::endl;
         }
-        else if (cGameMove.AnotherTurn())
-        {
-            continue;
-        }
+        //else if (cGameMove.AnotherTurn())
+        //{
+        //    continue;
+        //}
         else
         {
             break;

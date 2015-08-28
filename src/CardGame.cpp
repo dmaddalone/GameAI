@@ -47,13 +47,16 @@ void CardGame::Display() const
 
 bool CardGame::GetSyncInfo(std::string &sGameInformation)
 {
+    std::string sLogInfo {};
     sGameInformation.clear();
 
     if (m_bSyncDeck)
     {
         m_cLogger.LogInfo("Gathering synchronization on deck", 2);
-        m_cLogger.LogInfo("Deck Ranks: ", 3);
-        m_cLogger.LogInfo(m_cDeck.Ranks(), 3);
+        sLogInfo = "Deck Ranks: " + m_cDeck.Ranks();
+        //m_cLogger.LogInfo("Deck Ranks: ", 3);
+        //m_cLogger.LogInfo(m_cDeck.Ranks(), 3);
+        m_cLogger.LogInfo(sLogInfo, 3);
         sGameInformation = m_cDeck.JsonSerialization().toStyledString();
         m_bSyncDeck = false;
         return true;
@@ -61,8 +64,10 @@ bool CardGame::GetSyncInfo(std::string &sGameInformation)
     else if (m_bSyncFirstHand)
     {
         m_cLogger.LogInfo("Gathering synchronization on first hand", 2);
-        m_cLogger.LogInfo("First Hand Ranks: ", 3);
-        m_cLogger.LogInfo(m_vHands[0].Ranks(), 3);
+        sLogInfo = "First Hand Ranks: " + m_vHands[0].Ranks();
+        //m_cLogger.LogInfo("First Hand Ranks: ", 3);
+        //m_cLogger.LogInfo(m_vHands[0].Ranks(), 3);
+        m_cLogger.LogInfo(sLogInfo, 3);
         sGameInformation = m_vHands[0].JsonSerialization().toStyledString();
         m_bSyncFirstHand = false;
         return true;
@@ -70,8 +75,10 @@ bool CardGame::GetSyncInfo(std::string &sGameInformation)
     else if (m_bSyncSecondHand)
     {
         m_cLogger.LogInfo("Gathering synchronization on second hand", 2);
-        m_cLogger.LogInfo("Second Hand Ranks: ", 3);
-        m_cLogger.LogInfo(m_vHands[1].Ranks(), 3);
+        sLogInfo = "Second Hand Ranks: " + m_vHands[1].Ranks();
+        //m_cLogger.LogInfo("Second Hand Ranks: ", 3);
+        //m_cLogger.LogInfo(m_vHands[1].Ranks(), 3);
+        m_cLogger.LogInfo(sLogInfo, 3);
         sGameInformation = m_vHands[1].JsonSerialization().toStyledString();
         m_bSyncSecondHand = false;
         return true;
@@ -187,6 +194,7 @@ GameMove CardGame::GetMove(int nPlayer) const
         std::getline(std::cin, sMove); // (F)OLD, (D)RAW, (H)IT, (ST)AND, (DO)UBLE-DOWN, (SP)LIT, ...
     }
 
+    //GameMove cGameMove = GenerateMove(sMove);
     return GenerateMove(sMove);
 }
 
@@ -204,6 +212,7 @@ GameMove CardGame::GenerateMove(std::string sMove) const
 {
     // Generic GamevMove
     GameMove cGameMove;
+
     // Turn off 'Move' for card games
     cGameMove.SetMove(false);
 

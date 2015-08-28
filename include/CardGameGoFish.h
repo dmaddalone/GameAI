@@ -39,6 +39,9 @@ class CardGameGoFish : public CardGame
         CardGameGoFish(GameType ecGameType) :
             CardGame(ecGameType, 2)
         {
+            // Set sync to true to sync game information between networked players
+            SetSync(true);
+
             // Shuffle and Deal cards
             m_cDeck.Shuffle();
             m_cDeck.Deal(7, m_vHands);
@@ -61,6 +64,10 @@ class CardGameGoFish : public CardGame
 
         // Display the game
         virtual void Display() const override;
+
+        // Synchronize the game environment across networked players
+        virtual bool GetSyncInfo(std::string &sGameInformation) override;
+        virtual bool ApplySyncInfo(const std::string &sGameInformation, std::string &sErrorMessage) override;
 
         // Return a list of valid moves in string format
         virtual std::string ValidMoves(int nPlayer) const override;
@@ -93,12 +100,25 @@ class CardGameGoFish : public CardGame
             GameVocabulary::SCORE + ", " +
             GameVocabulary::RESIGN + "."; }
 
+        // Override Game::SetSync()
+        void SetSync(bool b)  { CardGame::SetSync(b); m_bSyncBooks = b; }
+
         // Draw a card from the stock
         bool GoFish(int nPlayer);
 
     protected:
     private:
+        // Return all ranks in the Books
+        std::string BooksRanks() const;
+        // Serialize and deserialize Books
+        Json::Value BooksJsonSerialization() const;
+        bool        BooksJsonDeserialization(const std::string &sJsonPlayingCards, std::string &sErrorMessage);
+
+        // Books used to hold books for each player
         std::unordered_multimap<int, Hand> m_uommBooks;
+
+        // Sync flags
+        bool m_bSyncBooks { false };
 };
 
 #endif // CARDGAMEGOFISH_H
