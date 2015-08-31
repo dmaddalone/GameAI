@@ -556,7 +556,7 @@ int main(int argc, char* argv[])
     // Summarize game
     if (pcGame->Winner() == 0)
     {
-        std::cout << "Game drawn" << std::endl;
+        std::cout << "Game drawn " << pcGame->WinBy() << std::endl;
     }
     else
     {

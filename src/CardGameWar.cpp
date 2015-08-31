@@ -406,8 +406,9 @@ bool CardGameWar::GameEnded(int nPlayer)
         std::unordered_map<int, Card>::const_iterator kit = m_uomBattle.find(nPlayer);
         if (kit == m_uomBattle.end())
         {
-            m_nWinner = 1 - nPlayer + 2;
+            m_nWinner = 3 - nPlayer;
             m_sWinBy.assign("attrition");
+            m_bGameOver = true;
             return true;
         }
     }

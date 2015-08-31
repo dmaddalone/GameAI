@@ -39,9 +39,6 @@ class Server: public NetworkPlayer
 
         // Initializer
         virtual void Initialize(std::string sHost, int nPort, bool &bSwap) override;
-
-        // Announce the type pf player
-        std::string TypeName() { return "Server-talking-to-Client"; }
 };
 
 #endif // SERVER_H

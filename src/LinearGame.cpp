@@ -149,12 +149,12 @@ std::string LinearGame::AnnounceMove(int nPlayer, const GameMove &cGameMove) con
 
 int LinearGame::EvaluateGameState(int nPlayer)
 {
-    // If won, return largest positive integer // TODO: make these constants
+    // If won, return largest positive integer
     if (m_nWinner == nPlayer)
         return INT_MAX;
 
-    // If lost, return largest negative integer // TODO: make these constants
-    if (m_nWinner == (1 - nPlayer + 2))
+    // If lost, return largest negative integer
+    if (m_nWinner == (3 - nPlayer))
         return INT_MIN;
 
     // Clear structs for game state; one for player and one for opponent
@@ -170,13 +170,13 @@ int LinearGame::EvaluateGameState(int nPlayer)
             for (int xxx = 0; xxx < m_knX; ++xxx)
             {
                 CountSequence(CheckHorizontal(nPlayer, yyy, xxx), m_stMyCounts);
-                CountSequence(CheckHorizontal(1 - nPlayer + 2, yyy, xxx), m_stOpponentCounts);
+                CountSequence(CheckHorizontal(3 - nPlayer, yyy, xxx), m_stOpponentCounts);
                 CountSequence(CheckVertical(nPlayer, yyy, xxx), m_stMyCounts);
-                CountSequence(CheckVertical(1 - nPlayer + 2, yyy, xxx), m_stOpponentCounts);
+                CountSequence(CheckVertical(3 - nPlayer, yyy, xxx), m_stOpponentCounts);
                 CountSequence(CheckDiagonalUpperLeftLowerRight(nPlayer, yyy, xxx), m_stMyCounts);
-                CountSequence(CheckDiagonalUpperLeftLowerRight(1 - nPlayer + 2, yyy, xxx), m_stOpponentCounts);
+                CountSequence(CheckDiagonalUpperLeftLowerRight(3 - nPlayer, yyy, xxx), m_stOpponentCounts);
                 CountSequence(CheckDiagonalUpperRightLowerLeft(nPlayer, yyy, xxx), m_stMyCounts);
-                CountSequence(CheckDiagonalUpperRightLowerLeft(1 - nPlayer + 2, yyy, xxx), m_stOpponentCounts);
+                CountSequence(CheckDiagonalUpperRightLowerLeft(3 - nPlayer, yyy, xxx), m_stOpponentCounts);
             }
         }
 
@@ -493,6 +493,7 @@ bool LinearGame::GameEnded(int nPlayer)
     if (CheckOrthogonal(m_knPlayer1, m_knTokensInARowWin))
     {
         m_nWinner = m_knPlayer1;
+        m_bGameOver = true;
         return true;
     }
 
@@ -500,6 +501,7 @@ bool LinearGame::GameEnded(int nPlayer)
     if (CheckOrthogonal(m_knPlayer2, m_knTokensInARowWin))
     {
         m_nWinner = m_knPlayer2;
+        m_bGameOver = true;
         return true;
     }
 
@@ -507,6 +509,7 @@ bool LinearGame::GameEnded(int nPlayer)
     if (CheckDiagonal(m_knPlayer1, m_knTokensInARowWin))
     {
         m_nWinner = m_knPlayer1;
+        m_bGameOver = true;
         return true;
     }
 
@@ -514,6 +517,7 @@ bool LinearGame::GameEnded(int nPlayer)
     if (CheckDiagonal(m_knPlayer2, m_knTokensInARowWin))
     {
         m_nWinner = m_knPlayer2;
+        m_bGameOver = true;
         return true;
     }
 
@@ -521,6 +525,7 @@ bool LinearGame::GameEnded(int nPlayer)
     std::vector<GameMove> vGameMoves = GenerateMoves(nPlayer);
     if (vGameMoves.empty())
     {
+        m_bGameOver = true;
         return true;
     }
 

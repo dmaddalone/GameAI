@@ -77,6 +77,9 @@ class NetworkPlayer: public Socket, public Player
         void SetToSending()   { m_bSetToSend = true; }
         void SetToReceiving() { m_bSetToSend = false; }
 
+        // Announce the type pf player
+        std::string TypeName() { return std::string("Network Proxy for Player #") + std::to_string(m_nPlayerNumber); }
+
     private:
         // State of sending or reciving messages
         bool m_bSetToSend = false;

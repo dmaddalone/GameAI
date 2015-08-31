@@ -198,6 +198,7 @@ bool BoardGame::GameEnded(int nPlayer)
         {
             m_nWinner = nPlayer;
             m_sWinBy.assign("resignation");
+            m_bGameOver = true;
             return true;
         }
     }

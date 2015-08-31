@@ -182,7 +182,7 @@ int Game::ReadAndApplyMoves(const std::string &sFileName, std::fstream &fsFile)
         if (!ApplyMove(nPlayer, cGameMove))
             return 0;
 
-        nPlayer = 1 - nPlayer + 2;
+        nPlayer = 3 - nPlayer;
     }
 
     return nPlayer;

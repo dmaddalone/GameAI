@@ -62,8 +62,6 @@ bool Minimax::Move(Game &cGame)
         }
     }
 
-    // TODO: Update for games that provide Another Turn
-
     // Get best game move
     cGameMove = MinimaxMove(m_nPlayerNumber, cGame, m_nDepth);
 
@@ -153,7 +151,7 @@ GameMove Minimax::MinimaxMove(int nPlayer, Game &cGame, int nDepth)
         pcGameClone->ApplyMove(nPlayer, cGameMove);
 
         // Return the score of this applied move by calling the minimizing player's move evaluation
-        int nScore = MinMove(1 - nPlayer + 2, *pcGameClone, nDepth - 1, nAlpha, nBeta);
+        int nScore = MinMove(3 - nPlayer, *pcGameClone, nDepth - 1, nAlpha, nBeta);
 
         // Log the evaluated moves score
         sMessage = "MinimaxMove Move=" + cGameMove.AnnounceFromMove()+ cGameMove.AnnounceToMove() + " Score=" + std::to_string(nScore);
@@ -205,8 +203,8 @@ int Minimax::MinMove(int nPlayer, Game &cGame, int nDepth, int nAlpha, int nBeta
     // return the score of the game state evaluation from the Min Player perspective
     if (cGame.GameEnded(nPlayer) || nDepth == 0)
         //// TODO: consider modifying the score from the game state evaluation by the depth of the search
-        ////return cGame.EvaluateGameState(1 - nPlayer + 2) * (nDepth + 1);
-        return cGame.EvaluateGameState(1 - nPlayer + 2);
+        ////return cGame.EvaluateGameState(3 - nPlayer) * (nDepth + 1);
+        return cGame.EvaluateGameState(3 - nPlayer);
 
     // Generate all possible valid moves for the minimizig player
     std::vector<GameMove> vGameMoves = cGame.GenerateMoves(nPlayer);
@@ -228,7 +226,7 @@ int Minimax::MinMove(int nPlayer, Game &cGame, int nDepth, int nAlpha, int nBeta
         pcGameClone->ApplyMove(nPlayer, cGameMove);
 
         // Return the score of this applied move by calling the maximizing player's move evaluation
-        nScore = MaxMove(1 - nPlayer + 2, *pcGameClone, nDepth - 1, nAlpha, nBeta);
+        nScore = MaxMove(3 - nPlayer, *pcGameClone, nDepth - 1, nAlpha, nBeta);
 
         // Log the evaluated moves score
         sMessage = "MinMove Depth=" + std::to_string(nDepth) + " Player=" + std::to_string(nPlayer) +
@@ -292,7 +290,7 @@ int Minimax::MaxMove(int nPlayer, Game &cGame, int nDepth, int nAlpha, int nBeta
         pcGameClone->ApplyMove(nPlayer, cGameMove);
 
         // Return the score of this applied move by calling the maximizing player's move evaluation
-        nScore = MinMove(1 - nPlayer + 2, *pcGameClone, nDepth -1, nAlpha, nBeta);
+        nScore = MinMove(3 - nPlayer, *pcGameClone, nDepth -1, nAlpha, nBeta);
 
         // Log the evaluated moves score
         sMessage = "MaxMove Depth=" + std::to_string(nDepth) + " Player=" + std::to_string(nPlayer) +

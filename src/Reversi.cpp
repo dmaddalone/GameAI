@@ -101,7 +101,7 @@ bool Reversi::ApplyMove(int nPlayer, GameMove &cGameMove)
         return false;
 
     // Evaluate whether the game ended with the LinearGame::ApplyMove
-    if (GameEnded(1 - nPlayer + 2))
+    if (GameEnded(3 - nPlayer))
         return true;
 
     // Compare passed GameMove to generated game moves.  If one is found to be
@@ -776,15 +776,15 @@ int Reversi::EvaluateGameState(int nPlayer)
         return INT_MAX;
 
     // If lost, return largest negative integer
-    if (m_nWinner == (1 - nPlayer + 2))
+    if (m_nWinner == (3 - nPlayer))
         return INT_MIN;
 
     // Evaluate the number of tokens for each player. "Greedy evaluation."
-    int nCountEval  = CountEvaluation(nPlayer)  - CountEvaluation(2 - nPlayer + 1);
+    int nCountEval  = CountEvaluation(nPlayer)  - CountEvaluation(3 - nPlayer);
     // Evaluate the value of the occupied positions.
-    int nSquareEval = SquareEvaluation(nPlayer) - SquareEvaluation(2 - nPlayer + 1);
+    int nSquareEval = SquareEvaluation(nPlayer) - SquareEvaluation(3 - nPlayer);
     // Evaluate the number of moves available.
-    int nMobilityEval = MobilityEvaluation(nPlayer) - MobilityEvaluation(2 - nPlayer + 1);
+    int nMobilityEval = MobilityEvaluation(nPlayer) - MobilityEvaluation(3 - nPlayer);
 
     return (nCountEval * 10) + (nSquareEval * 15) + (nMobilityEval * 5);
 
@@ -881,9 +881,6 @@ std::string Reversi::GameScore() const
 
 bool Reversi::GameEnded(int nPlayer)
 {
-    //// nPlayer not used in this override
-    //(void)nPlayer;
-
     if (BoardGame::GameEnded(nPlayer))
         return true;
 
@@ -898,9 +895,13 @@ bool Reversi::GameEnded(int nPlayer)
     {
         m_nWinner = m_knPlayer1;
     }
-    else
+    else if (nCountPlayer1 < nCountPlayer2)
     {
         m_nWinner = m_knPlayer2;
+    }
+    else
+    {
+        m_nWinner = 0;
     }
 
     // If nor more moves are available for either player, the game is over; return true
@@ -909,7 +910,10 @@ bool Reversi::GameEnded(int nPlayer)
     {
         std::vector<GameMove> vGameMovesPlayer2 = GenerateMoves(m_knPlayer2);
         if (vGameMovesPlayer2.empty())
+        {
             return true;
+            m_bGameOver = true;
+        }
     }
 
     // Return false - the game has not ended

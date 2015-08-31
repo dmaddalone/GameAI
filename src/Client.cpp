@@ -121,7 +121,7 @@ void Client::Initialize(std::string sHost, int nPort, bool &bSwap)
     //   Client: GameAI -1 server -2 human  -g ttt // Meaning on the client, server plays first and human plays second
     //                                             // and client has 1 as the server player number.  This is aligned.
     sToken = GameVocabulary::ParseArgument(sCommand);
-    if (sToken.compare(std::to_string(2 - m_nPlayerNumber + 1)) != 0) // Player numbers are aligned
+    if (sToken.compare(std::to_string(3 - m_nPlayerNumber)) != 0) // Player numbers are aligned
     {
         // Change player numbers on the client
         m_cLogger.LogInfo("Swapping player numbers.", 3);

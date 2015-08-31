@@ -147,6 +147,7 @@ class Game
         int  Winner() const        { return m_nWinner; };
         int  NumberOfMoves() const { return m_nNumberOfMoves; }
         std::string WinBy() const  { return m_sWinBy; }
+        bool GameOver() const      { return m_bGameOver; }
 
     protected:
         // Write and read moves from a file
@@ -181,6 +182,8 @@ class Game
         int m_nNumberOfMoves {0};
         // How the winner won
         std::string m_sWinBy  {};
+        // Game Over flag
+        bool m_bGameOver {false};
 
         // Flag to sync game information between networked players
         bool m_bSync      { false };

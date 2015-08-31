@@ -349,7 +349,7 @@ int CardGame::EvaluateGameState(int nPlayer)
         return INT_MAX;
 
     // If lost, return largest negative integer // TODO: make these constants
-    if (m_nWinner == (1 - nPlayer + 2))
+    if (m_nWinner == (3 - nPlayer))
         return INT_MIN;
 
     return 0;
@@ -387,6 +387,7 @@ bool CardGame::GameEnded(int nPlayer)
         {
             m_nWinner = nPlayer;
             m_sWinBy.assign("resignation");
+            m_bGameOver = true;
             return true;
         }
     }

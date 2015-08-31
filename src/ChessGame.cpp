@@ -260,14 +260,14 @@ void ChessGame::GeneratePawnMoves(GameMove cGameMove, int nPlayer, std::vector<G
     //
     // Capture
     //
-    if (cBoard.PositionOccupiedByPlayer(knX - 1, nNewY, 1 - nPlayer + 2))
+    if (cBoard.PositionOccupiedByPlayer(knX - 1, nNewY, 3 - nPlayer))
     {
         cGameMove.SetToX(knX - 1);
         cGameMove.SetToY(nNewY);
         TestForCheck(nPlayer, cGameMove, vGameMoves);
     }
 
-    if (cBoard.PositionOccupiedByPlayer(knX + 1, nNewY, 1 - nPlayer + 2))
+    if (cBoard.PositionOccupiedByPlayer(knX + 1, nNewY, 3 - nPlayer))
     {
         cGameMove.SetToX(knX + 1);
         cGameMove.SetToY(nNewY);
@@ -722,7 +722,7 @@ bool ChessGame::GenerateLinearMove(GameMove cGameMove, int nPlayer, std::vector<
     //
     // Capture
     //
-    else //if (cBoard.PositionOccupiedByPlayer(nToX, nToY, 1 - nPlayer + 2))
+    else //if (cBoard.PositionOccupiedByPlayer(nToX, nToY, 3 - nPlayer))
     {
         // If this move results in adjacent Kings, return true, but do not add it to the vector of moves
         if (TestForAdjacentKings(cGameMove, nPlayer))
@@ -809,7 +809,7 @@ void ChessGame::GenerateKnightMove(GameMove cGameMove, int nPlayer, std::vector<
 
     if (cBoard.ValidLocation(knToX, knToY))
     {
-        if ((!cBoard.PositionOccupied(knToX, knToY)) || (cBoard.PositionOccupiedByPlayer(knToX, knToY, 1 - nPlayer + 2)))
+        if ((!cBoard.PositionOccupied(knToX, knToY)) || (cBoard.PositionOccupiedByPlayer(knToX, knToY, 3 - nPlayer)))
         {
             TestForCheck(nPlayer, cGameMove, vGameMoves);
         }
@@ -1065,6 +1065,9 @@ bool ChessGame::ApplyMove(int nPlayer, GameMove &cGameMove)
         }
     }
 
+    // If move is valid, insert current Zobrist hash into the container
+    if (bValidMove) m_uomsZobrist.insert(cBoard.ZKey());
+
     return bValidMove;
 }
 
@@ -1164,7 +1167,7 @@ bool ChessGame::TestForAdjacentKings(const GameMove &cGameMove, int nPlayer) con
     int nKX  {0};
     int nKY  {0};
 
-    if (!FindPiece(nKX, nKY, 1 - nPlayer + 2, m_kcKingToken))
+    if (!FindPiece(nKX, nKY, 3 - nPlayer, m_kcKingToken))
     {
         std::string sErrorMessage  = "Could not find King for Player " + std::to_string(nPlayer);
         std::cerr << sErrorMessage << std::endl;
@@ -1238,7 +1241,7 @@ bool ChessGame::KingInCheck(int nPlayer) const
     {
         for (int xxx = 0; xxx < m_knX; ++xxx)
         {
-            if (cBoard.PositionOccupiedByPlayer(xxx, yyy, 1 - nPlayer + 2))
+            if (cBoard.PositionOccupiedByPlayer(xxx, yyy, 3 - nPlayer))
             {
                 if (AttackingTheKing(nKX, nKY, nPlayer, xxx, yyy))
                     return true;
@@ -1268,7 +1271,7 @@ bool ChessGame::AttackingTheKing(int nKX, int nKY, int nPlayer, int nX, int nY) 
     cGameMove.SetFromY(nY);
     cGameMove.SetTestMove(true);
 
-    std::vector<GameMove> vGameMoves = GenerateMovesForPiece(1 - nPlayer + 2, cGameMove);
+    std::vector<GameMove> vGameMoves = GenerateMovesForPiece(3 - nPlayer, cGameMove);
     for (GameMove cGameMove: vGameMoves)
     {
         if ((cGameMove.ToX() == nKX) && (cGameMove.ToY() == nKY))
@@ -1324,7 +1327,7 @@ int ChessGame::EvaluateGameState(int nPlayer)
         return INT_MIN;
 
     // Evaluate the number of peices for each player. "Greedy evaluation."
-    int nCountEval = CountEvaluation(nPlayer)  - CountEvaluation(1 - nPlayer + 2);
+    int nCountEval = CountEvaluation(nPlayer)  - CountEvaluation(3 - nPlayer);
 
     int nDoubledPawnsEval  {0};
     int nIsolatedPawnsEval {0};
@@ -1332,13 +1335,12 @@ int ChessGame::EvaluateGameState(int nPlayer)
     CountPawns(nPlayer, nDoubledPawnsEval, nIsolatedPawnsEval, nPassedPawnsEval);
 
     // Evaluate the number of moves available.
-    int nMobilityEval = MobilityEvaluation(nPlayer) - MobilityEvaluation(1 - nPlayer + 2);
+    int nMobilityEval = MobilityEvaluation(nPlayer) - MobilityEvaluation(3 - nPlayer);
 
     int nKingSafety {0};
     if (KingCastled(nPlayer))
         nKingSafety = 10000;
 
-    //int nMinorPiecesDeveloped = MinorPiecesDevelopedEvaluation(nPlayer) - MinorPiecesDevelopedEvaluation(1 - nPlayer + 2);
     int nMinorPiecesDeveloped = MinorPiecesDevelopedEvaluation(nPlayer);
 
     int nRooksConnected {0};
@@ -1492,7 +1494,7 @@ void ChessGame::CountPawns(int nPlayer, int &nDoubled, int &nIsolated, int &nPas
                     {
                         nX = xxx - 1;
                         nY = 0;
-                        if (FindPiece(nX, nY, 1 - nPlayer + 2, m_kcPawnToken))
+                        if (FindPiece(nX, nY, 3 - nPlayer, m_kcPawnToken))
                         {
                             if (nX == xxx - 1)
                             {
@@ -1706,13 +1708,14 @@ bool ChessGame::GameEnded(int nPlayer)
     // Check for threefold repetition
     //
 
-    // Insert current Zobrist hash into the container
-    m_uomsZobrist.insert(cBoard.ZKey());
+    //// Insert current Zobrist hash into the container
+    //m_uomsZobrist.insert(cBoard.ZKey());
 
     // If this Zobrist hash has been seen three times, this is a threefold repetition of a move and therefore a draw
     if (m_uomsZobrist.count(cBoard.ZKey()) >= m_knMaxRepetition)
     {
-        m_sWinBy.assign("draw by threefold repetition");
+        m_sWinBy.assign("drawn by threefold repetition");
+        m_bGameOver = true;
         return true;
     }
 
@@ -1723,7 +1726,7 @@ bool ChessGame::GameEnded(int nPlayer)
         // If King is in checkmate
         if (KingInCheck(nPlayer))
         {
-            m_nWinner = 1 - nPlayer + 2;
+            m_nWinner = 3 - nPlayer;
             m_sWinBy.assign("checkmate");
         }
         else // If King is not in checkmate
@@ -1731,6 +1734,7 @@ bool ChessGame::GameEnded(int nPlayer)
             m_sWinBy.assign("stalemate");
         }
 
+        m_bGameOver = true;
         return true;
     }
 
