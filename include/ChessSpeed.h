@@ -49,7 +49,7 @@ class ChessSpeed : public ChessGame
         virtual std::unique_ptr<Game> Clone() const override { return std::unique_ptr<Game>(new ChessSpeed(*this)); }
 
         // Return the title of the game
-        virtual std::string Title() override { return "Speed Minichess"; }
+        virtual std::string Title() const override { return "Speed Minichess"; }
 
         void SetBoard();
 };

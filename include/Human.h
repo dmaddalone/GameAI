@@ -48,7 +48,7 @@ class Human: public Player
         virtual bool Finish(Game &cGame) override { (void)cGame; return true; }
 
         // Announce the type pf player
-        std::string TypeName() { return "Human"; }
+        std::string TypeName() const override { return "Human"; }
 };
 
 #endif // HUMAN_H

@@ -234,7 +234,7 @@ bool PlayingCards::JsonDeserialization(const std::string &sJsonPlayingCards, std
     }
 }
 
-std::string PlayingCards::Ranks()
+std::string PlayingCards::Ranks() const
 {
     std::string sRanks {};
 

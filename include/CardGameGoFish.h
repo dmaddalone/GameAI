@@ -91,10 +91,10 @@ class CardGameGoFish : public CardGame
         virtual std::unique_ptr<Game> Clone() const override { return std::unique_ptr<Game>(new CardGameGoFish(*this)); }
 
         // Return the title of the game
-        virtual std::string Title() override { return "Go Fish"; }
+        virtual std::string Title() const override { return "Go Fish"; }
 
         // Return the description of the game
-        virtual std::string Description() override { return "Valid moves are " +
+        virtual std::string Description() const override { return "Valid moves are " +
             GameVocabulary::ASK + ", " +
             GameVocabulary::SHOW + ", " +
             GameVocabulary::SCORE + ", " +

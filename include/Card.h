@@ -72,7 +72,6 @@ class Card
         bool operator<(const Card &cCard) const { return Value() < cCard.Value(); }
         bool operator>(const Card &cCard) const { return Value() > cCard.Value(); }
 
-        //bool        SetID(int nID)    { if (m_nID == 0) { m_nID = nID; return true; } else return false; }
         int         ID() const        { return m_nID; }
 
         // Json object serialization and deserialization

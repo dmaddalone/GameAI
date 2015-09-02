@@ -89,7 +89,7 @@ class ChessGame : public BoardGame
         //virtual std::string Title() override;
 
         // Return the description of the game
-        virtual std::string Description() override;
+        virtual std::string Description() const override;
 
         // Set up the board
         void SetBoard();

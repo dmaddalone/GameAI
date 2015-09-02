@@ -43,10 +43,10 @@ class TTT : public LinearGame
         virtual std::unique_ptr<Game> Clone() const override { return std::unique_ptr<Game>(new TTT(*this)); }
 
         // Return the title of the game
-        virtual std::string Title() override { return "Tic-Tac-Toe"; }
+        virtual std::string Title() const override { return "Tic-Tac-Toe"; }
 
         // Return the description of the game
-        virtual std::string Description() override { return ""; }
+        virtual std::string Description() const override { return ""; }
 };
 
 #endif // TTT_H

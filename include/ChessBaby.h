@@ -44,7 +44,7 @@ class ChessBaby : public ChessGame
         // Clone the current game
         virtual std::unique_ptr<Game> Clone() const override { return std::unique_ptr<Game>(new ChessBaby(*this)); }
         // Return the title of the game
-        virtual std::string Title() override { return "Baby Minichess"; }
+        virtual std::string Title() const override { return "Baby Minichess"; }
 
         void SetBoard();
 };

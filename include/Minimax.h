@@ -52,7 +52,7 @@ class Minimax: public Player
         virtual bool Finish(Game &cGame) override { (void)cGame; return true; }
 
         // Announce the type pf player
-        std::string TypeName() { return "Minimax"; }
+        std::string TypeName() const override { return "Minimax"; }
 
     private:
         // Generate the best move using the minimax algorithm

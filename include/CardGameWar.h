@@ -79,10 +79,10 @@ class CardGameWar : public CardGame
         virtual std::unique_ptr<Game> Clone() const override { return std::unique_ptr<Game>(new CardGameWar(*this)); }
 
         // Return the title of the game
-        virtual std::string Title() override { return "War"; }
+        virtual std::string Title() const override { return "War"; }
 
         // Return the description of the game
-        virtual std::string Description() override { return "Aces are High.  Valid moves are " + GameVocabulary::DRAW + ", " + GameVocabulary::RESIGN + "."; }
+        virtual std::string Description() const override { return "Aces are High.  Valid moves are " + GameVocabulary::DRAW + ", " + GameVocabulary::RESIGN + "."; }
 
         // Override Game::SetSync()
         void SetSync(bool b)  { CardGame::SetSync(b); m_bSyncBattle = m_bSyncWarCards = m_bSyncWar = b; }

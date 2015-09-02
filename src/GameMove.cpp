@@ -19,6 +19,23 @@
 
 #include "GameMove.h"
 
+std::string GameMove::AnnounceMove() const
+{
+    std::string sMove {};
+
+    if (Move())
+    {
+        sMove = AnnounceFromMove() + " " + AnnounceToMove();
+        return sMove;
+    }
+    else
+    {
+        sMove = m_sCommand + " " + Argument();
+    }
+
+    return sMove;
+}
+
 /**
   * Announce the from-move.
   *
@@ -115,7 +132,7 @@ std::string GameMove::AnnounceCardRank() const
   * Otherwise return the m_sArgument.
   */
 
-std::string GameMove::Argument()
+std::string GameMove::Argument() const
 {
     if (Move())
     {
@@ -159,7 +176,6 @@ Json::Value GameMove::JsonSerialization() const
     jValue["bAnotherTurn"]  = m_bAnotherTurn;
     jValue["bTestMove"]     = m_bTestMove;
 
-    //Json::Value jCardValue(Json::objectValue);
     Json::Value jCardValue;
     jCardValue = m_cCard.JsonSerialization();
 
@@ -202,16 +218,12 @@ bool GameMove::JsonDeserialization(const std::string &sJsonGameMove, std::string
         m_bAnotherTurn  = jValue["bAnotherTurn"].asBool();
         m_bTestMove     = jValue["bTestMove"].asBool();
 
-        //std::cout << "{DEBUG] jValue[CARD]=" << jValue["Card"] << std::endl;
-        //std::cout << "{DEBUG] jValue[CARD].toStyledString()=" << jValue["Card"].toStyledString() << std::endl;
         if (m_cCard.JsonDeserialization(jValue["Card"].toStyledString(), sErrorMessage))
         {
-            //std::cout << "[DEBUG] m_cCard.JsonDeserialization is good" << std::endl;
             return true;
         }
         else
         {
-            //std::cout << "[DEBUG] m_cCard.JsonDeserialization is bad" << std::endl;
             return false;
         }
     }

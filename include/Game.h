@@ -112,10 +112,10 @@ class Game
         virtual std::unique_ptr<Game> Clone() const = 0;
 
         // Return the title of the game
-        virtual std::string Title() = 0;
+        virtual std::string Title() const = 0;
 
         // Return the description of the game
-        virtual std::string Description() = 0;
+        virtual std::string Description() const = 0;
 
         // Make a game of ecGameType
         static std::unique_ptr<Game> Make(GameType ecGameType);

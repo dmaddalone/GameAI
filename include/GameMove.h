@@ -26,8 +26,6 @@
 #ifndef GAMEMOVE_H
 #define GAMEMOVE_H
 
-#include <iostream> // testing
-
 #include <string>
 
 #include "Card.h"
@@ -72,14 +70,14 @@ class GameMove
         //void IncrementMoveNumber(int nPreviousMoveNumber) { m_nMoveNumber = nPreviousMoveNumber  + 1; }
         //int  MoveNumber()                                 { return m_nMoveNumber; }
         void SetPlayerNumber(int n)       { m_nPlayerNumber = n; }
-        int PlayerNumber()                { return m_nPlayerNumber; }
+        int PlayerNumber() const          { return m_nPlayerNumber; }
 
         // Return move command and argument
-        std::string Command() { return m_sCommand; }
+        std::string Command() const { return m_sCommand; }
 
         // Set and return move command and argument
         void SetArgument(std::string sArg) { m_sArgument.assign(sArg); }
-        std::string Argument();
+        std::string Argument() const;
 
         // Modify the coordinates of a move
         void SetFromX(char cX)           { m_cFromX = tolower(cX); m_nFromX = m_cFromX - m_kcXOffset; }
@@ -123,54 +121,55 @@ class GameMove
 
         //  Set and return whether a Move has been made - the default is set to true
         void SetMove(bool b) { m_bMove = b; if (b) m_sCommand = GameVocabulary::MOVE; else m_sCommand.clear(); }
-        bool Move()          { return m_bMove; }
+        bool Move() const    { return m_bMove; }
 
         // Set and return whether a No-move has been made
         void SetNoMove(bool b) { m_bNoMove = b; if (b) m_sCommand = GameVocabulary::NO_MOVE; else m_sCommand.clear(); }
-        bool NoMove()          { return m_bNoMove; }
+        bool NoMove() const    { return m_bNoMove; }
 
         // Set and return whether a resignation has been made
         void SetResignation(bool b) { m_bResignation = b; if (b) m_sCommand = GameVocabulary::RESIGN; else m_sCommand.clear(); }
-        bool Resignation()          { return m_bResignation; }
+        bool Resignation() const    { return m_bResignation; }
 
         // Set and return whether a fold has been made
         void SetFold(bool b) { m_bFold = b; if (b) m_sCommand = GameVocabulary::FOLD; else m_sCommand.clear(); }
-        bool Fold()          { return m_bFold; }
+        bool Fold() const    { return m_bFold; }
 
         // Set and return whether a draw has been made
         void SetDraw(bool b)      { m_bDraw = b; m_nDraw = 1; if (b) m_sCommand = GameVocabulary::DRAW; else m_sCommand.clear(); }
         void SetDrawNumber(int n) { m_nDraw = n; }
-        bool Draw()               { return m_bDraw; }
-        int  DrawNumber()         { return m_nDraw; }
+        bool Draw() const         { return m_bDraw; }
+        int  DrawNumber() const   { return m_nDraw; }
 
         // Set and return whether an ask has been made
         void SetAsk(bool b)       { m_bAsk = b; if (b) m_sCommand = GameVocabulary::ASK; else m_sCommand.clear(); }
-        bool Ask()                { return m_bAsk; }
+        bool Ask() const          { return m_bAsk; }
 
         // Set and return whether a show has been made
         void SetShow(bool b)       { m_bShow = b; if (b) m_sCommand = GameVocabulary::SHOW; else m_sCommand.clear(); }
-        bool Show()                { return m_bShow; }
+        bool Show() const          { return m_bShow; }
 
         // Set and return whether a score request has been made
         void SetScore(bool b)      { m_bScore = b; if (b) m_sCommand = GameVocabulary::SCORE; else m_sCommand.clear(); }
-        bool Score()               { return m_bScore; }
+        bool Score() const         { return m_bScore; }
 
         // Whether another turn may be had
         void SetAnotherTurn(bool b) { m_bAnotherTurn = b; }
-        bool AnotherTurn()          { return m_bAnotherTurn; }
+        bool AnotherTurn() const    { return m_bAnotherTurn; }
 
         // Set and return whether this is a test move
         void SetTestMove(bool b) { m_bTestMove = b; }
-        bool TestMove()          { return m_bTestMove; }
+        bool TestMove() const    { return m_bTestMove; }
 
         // Compare two moves and whether their to-moves are the same
         bool SameTo(const GameMove &cGameMove) { if ((cGameMove.ToX() == m_nToX) && (cGameMove.ToY() == m_nToY)) return true; else return false;}
 
         // Add card to move
         void UpdateCard(Card &cCard) { m_cCard = cCard; }
-        Card GetCard()               { return m_cCard; }
+        Card GetCard() const         { return m_cCard; }
 
         // Announce the moves
+        std::string AnnounceMove() const;
         std::string AnnounceFromMove() const;
         std::string AnnounceToMove() const;
         std::string AnnounceCard() const;

@@ -72,13 +72,13 @@ class NetworkPlayer: public Socket, public Player
         void RecvSyncInfo(Game &cGame);
 
         // Manage state of sending and receiving messages
-        bool Sending()        { return m_bSetToSend; }
-        bool Receiving()      { return !m_bSetToSend; }
-        void SetToSending()   { m_bSetToSend = true; }
-        void SetToReceiving() { m_bSetToSend = false; }
+        bool Sending() const   { return m_bSetToSend; }
+        bool Receiving() const { return !m_bSetToSend; }
+        void SetToSending()    { m_bSetToSend = true; }
+        void SetToReceiving()  { m_bSetToSend = false; }
 
         // Announce the type pf player
-        std::string TypeName() { return std::string("Network Proxy for Player #") + std::to_string(m_nPlayerNumber); }
+        std::string TypeName() const override { return std::string("Network Proxy for Player #") + std::to_string(m_nPlayerNumber); }
 
     private:
         // State of sending or reciving messages

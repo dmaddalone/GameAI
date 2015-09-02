@@ -28,7 +28,7 @@
   * \return A string containing the game title.
   */
 
-std::string ChessGame::Description()
+std::string ChessGame::Description() const
 {
     std::string sMessage {};
 

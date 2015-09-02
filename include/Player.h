@@ -62,21 +62,21 @@ class Player
         virtual bool Finish(Game &cGame) = 0;
 
         // Return the type of player as a string
-        virtual std::string TypeName()  = 0;
+        virtual std::string TypeName() const = 0;
 
         // Set and return the name of the player as a string
         void SetPlayerName(std::string sName) { m_sPlayerName.assign(sName); }
-        std::string PlayerName() { return m_sPlayerName; }
+        std::string PlayerName() const        { return m_sPlayerName; }
 
         // Make a player
         static std::unique_ptr<Player> MakePlayer(PlayerType ecPlayerType);
 
         // Set player number
         void SetPlayerNumber(int nNumber) { m_nPlayerNumber = nNumber; }
-        int PlayerNumber()                { return m_nPlayerNumber; }
+        int PlayerNumber() const          { return m_nPlayerNumber; }
 
         // Return the type of player
-        PlayerType Type() { return m_ecPlayerType; }
+        PlayerType Type() const { return m_ecPlayerType; }
 
         // Set the level of logging
         void SetVerbosity(int n)  { m_cLogger.SetLevel(n); m_cLogger.UseTimeStamp(false); m_cLogger.UseTag(false); m_cLogger.UseLevelIndent(true); }
@@ -85,11 +85,11 @@ class Player
         void SetPlies(int nPlies) { m_nDepth = nPlies; }
 
         // Return the number of plies
-        int  Plies()              { return m_nDepth; }
+        int  Plies() const        { return m_nDepth; }
 
         // Set and get game title
         void SetGameTitle(std::string sTitle) { m_sGameTitle = sTitle; }
-        std::string GameTitle()               { return m_sGameTitle; }
+        std::string GameTitle() const         { return m_sGameTitle; }
 
     protected:
         // Set the default player type to none
