@@ -457,10 +457,11 @@ int main(int argc, char* argv[])
     //
 
     // nPlayer used to capture next player's turn after reading and applying moves
-    // Also used in the player turn loop below.  Initially set to a number other than 0, 1, or 2.
-    int nPlayer = -1;
+    // Also used in the player turn loop below.  Initially set to a 1.
+    int nPlayer = 1;
     bool bGameNotEnded = true;
-    // If input file specified, read and apply moves.  Returns number of next player.
+    // If input file specified, read and apply moves.
+    // Returns number of Player-To-Play-Next, 1 or 2; or 0 if error.
     if (!sInputFile.empty())
         nPlayer = pcGame->ReadMovesFromFile(sInputFile);
 
@@ -471,6 +472,17 @@ int main(int argc, char* argv[])
         std::cerr << "Invalid move.  Exiting." << std::endl;
         exit(EXIT_FAILURE);
     }
+    // Evaluate game state from Player-To-Play-Next's perspective.
+    // If game ended, allow opponent to finish.
+    else
+    {
+        if (pcGame->GameEnded(nPlayer))
+        {
+            vPlayers[nPlayer - 1]->Finish(*pcGame);
+            bGameNotEnded = false;
+        }
+    }
+    /*
     // If Player == 1, evaluate game state from Player 1's perspective.  If game ended, allow Player 1 to finish.
     else if (nPlayer == 1)
     {
@@ -489,6 +501,7 @@ int main(int argc, char* argv[])
             bGameNotEnded = false;
         }
     }
+    */
 
     // Used for reporting the score
     std::string sGameScore {};
@@ -496,6 +509,29 @@ int main(int argc, char* argv[])
     // Have each player play in turn
     while (bGameNotEnded)
     {
+        if (!vPlayers[nPlayer - 1]->Move(*pcGame))
+        {
+            std::cerr << "Invalid move. Exiting." << std::endl;
+            exit(EXIT_FAILURE);
+        }
+
+        // Announce game score
+        sGameScore = pcGame->GameScore();
+        if (!sGameScore.empty())
+            std::cout << sGameScore << std::endl;
+
+        // Evaluate game state from opoponent's perspective.  If game ended, allow opoonent to finish.
+        // Then break from loop.
+        if (pcGame->GameEnded(3 - nPlayer))
+        {
+            vPlayers[2 - nPlayer]->Finish(*pcGame);
+            break;
+        }
+
+        // Move to next player
+        nPlayer = 3 - nPlayer;
+
+    /*
         // if nPlayer == 2, set from ReadMoves, set nPlayer to another number and for this round skip Player 1.
         if (nPlayer == 2)
         {
@@ -548,6 +584,7 @@ int main(int argc, char* argv[])
             vPlayers[0]->Finish(*pcGame);
             break;
         }
+        */
     }
 
     // Display game

@@ -36,18 +36,17 @@ class CardGameWar : public CardGame
 {
     public:
         // Construct a War card game
-        //CardGameWar(GameType ecGameType, int nNumberOfHands) :
         CardGameWar(GameType ecGameType) :
             CardGame(ecGameType, 2)
         {
-            // Set sync to true to sync game information between networked players
-            SetSync(true);
-
             // Shuffle and Deal cards
             m_cDeck.Shuffle();
             m_cDeck.Deal(0, m_vHands);
             SetDrawingAllowed(true);
             SetDefaultMove(GameVocabulary::DRAW);
+
+            m_cLogger.UseTag(false);
+            m_cLogger.UseLevelIndent(false);
         }
 
         // Destructor

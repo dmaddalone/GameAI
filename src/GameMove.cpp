@@ -23,7 +23,7 @@ std::string GameMove::AnnounceMove() const
 {
     std::string sMove {};
 
-    if (Move())
+    if (IsMove())
     {
         sMove = AnnounceFromMove() + " " + AnnounceToMove();
         return sMove;
@@ -134,7 +134,7 @@ std::string GameMove::AnnounceCardRank() const
 
 std::string GameMove::Argument() const
 {
-    if (Move())
+    if (IsMove())
     {
         return AnnounceFromMove() + AnnounceToMove();
     }

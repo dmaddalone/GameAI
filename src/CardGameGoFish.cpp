@@ -50,8 +50,6 @@ bool CardGameGoFish::GetSyncInfo(std::string &sGameInformation)
     {
         m_cLogger.LogInfo("Gathering synchronization on books", 2);
         sLogInfo = "Books Ranks: " + BooksRanks();
-        //m_cLogger.LogInfo("Battle Ranks:", 3);
-        //m_cLogger.LogInfo(BattleRanks(), 3);
         m_cLogger.LogInfo(sLogInfo, 3);
         sGameInformation = BooksJsonSerialization().toStyledString();
         m_bSyncBooks = false;
@@ -80,8 +78,6 @@ bool CardGameGoFish::ApplySyncInfo(const std::string &sGameInformation, std::str
         {
             m_bSyncBooks = false;
             sLogInfo = "Books Ranks: " + BooksRanks();
-            //m_cLogger.LogInfo("Battle Ranks:", 3);
-            //m_cLogger.LogInfo(BattleRanks(), 3);
             m_cLogger.LogInfo(sLogInfo, 3);
             return true;
         }
@@ -104,7 +100,7 @@ bool CardGameGoFish::ApplySyncInfo(const std::string &sGameInformation, std::str
 
 std::string CardGameGoFish::ValidMoves(int nPlayer) const
 {
-    std::string sValidMoves = "Hand: " + m_vHands[nPlayer - 1].Ranks();
+    std::string sValidMoves = GameVocabulary::ASK + " " + m_vHands[nPlayer - 1].Ranks();
 
     return sValidMoves;
 }
@@ -184,7 +180,7 @@ bool CardGameGoFish::ApplyMove(int nPlayer, GameMove &cGameMove)
     // Check for resignation
     if (cGameMove.Resignation())
     {
-        // Capture move for later playback or analysis
+        // Capture move for network play
         m_vGameMoves.push_back(cGameMove);
         return true;
     }
@@ -193,8 +189,11 @@ bool CardGameGoFish::ApplyMove(int nPlayer, GameMove &cGameMove)
     if (cGameMove.Show())
     {
         std::cout << ValidMoves(nPlayer) << std::endl;
-        cGameMove.SetAnotherTurn(true);
         cGameMove.SetShow(false);
+        cGameMove.SetAnotherTurn(true);
+        cGameMove.SetPlayerNumber(nPlayer);
+        // Capture move for network play
+        m_vGameMoves.push_back(cGameMove);
         return true;
     }
 
@@ -202,8 +201,11 @@ bool CardGameGoFish::ApplyMove(int nPlayer, GameMove &cGameMove)
     if (cGameMove.Score())
     {
         std::cout << GameScore() << std::endl;
-        cGameMove.SetAnotherTurn(true);
         cGameMove.SetScore(false);
+        cGameMove.SetAnotherTurn(true);
+        cGameMove.SetPlayerNumber(nPlayer);
+        // Capture move for network play
+        m_vGameMoves.push_back(cGameMove);
         return true;
     }
 
@@ -233,9 +235,6 @@ bool CardGameGoFish::ApplyMove(int nPlayer, GameMove &cGameMove)
     //
     // Apply move to the game
     //
-
-    //// Announce move
-    //m_cLogger.LogInfo(AnnounceMove(nPlayer, cGameMove),1);
 
     // Find rank in opposing player's hand
     if (m_vHands[3 - nPlayer - 1].HasRank(cGameMove.GetCard().Rank()))
@@ -338,6 +337,11 @@ std::string CardGameGoFish::GameScore() const
 {
     // Do not display game score if logging turned off
     if (m_cLogger.Level() < 1)
+        return "";
+
+    // Do not display game score if last move is another turn
+    GameMove cGameMove = LastMove();
+    if (cGameMove.AnotherTurn())
         return "";
 
     // Display book counts for the game score

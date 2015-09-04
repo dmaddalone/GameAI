@@ -121,7 +121,7 @@ class Game
         static std::unique_ptr<Game> Make(GameType ecGameType);
 
         // Set the level of logging
-        void SetVerbosity(int n)  { m_cLogger.SetLevel(n); m_cLogger.UseTimeStamp(false); m_cLogger.UseTag(false); m_cLogger.UseLevelIndent(true); }
+        void SetVerbosity(int n)  { m_cLogger.SetLevel(n); }
 
         // Read moves from a text file and apply them
         virtual int  ReadMovesFromFile(const std::string &sFileName);

@@ -32,14 +32,11 @@ std::string Logger::TimeStamp() const
     std::string sTimeStamp {};
     static const int nBufLen {50};
 
-    if (m_bUseTimeStamp)
-    {
-        std::time_t t = std::time(nullptr);
-        char* pcBuffer = new char[nBufLen];
-        size_t nLen = strftime(pcBuffer, nBufLen, "%F %T", localtime(&t));
-        sTimeStamp = std::string(pcBuffer, nLen);
-        delete[] pcBuffer;
-    }
+    std::time_t t = std::time(nullptr);
+    char* pcBuffer = new char[nBufLen];
+    size_t nLen = strftime(pcBuffer, nBufLen, "%F %T", localtime(&t));
+    sTimeStamp = std::string(pcBuffer, nLen);
+    delete[] pcBuffer;
 
     return sTimeStamp;
 }
@@ -58,10 +55,18 @@ void Logger::Log(const std::string sTag, const std::string sMessage, int nLevel)
 {
     // If message is empty, return
     if (sMessage.empty())
+    {
         return;
+    }
+
+    // Constructed log message
+    std::string sLog {};
 
     // Generate a time stamp
-    std::string sLog(TimeStamp());
+    if (m_bUseTimeStamp)
+    {
+        sLog.assign(TimeStamp());
+    }
 
     // Construct the tag
     if (m_bUseTag)

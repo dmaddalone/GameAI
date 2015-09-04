@@ -119,9 +119,9 @@ class GameMove
         void SetUseFrom(bool b)   { m_bUseFrom = b; }
         bool UseFrom() const      { return m_bUseFrom; }
 
-        //  Set and return whether a Move has been made - the default is set to true
+        //  Set and return whether this is a Move - the default is set to true
         void SetMove(bool b) { m_bMove = b; if (b) m_sCommand = GameVocabulary::MOVE; else m_sCommand.clear(); }
-        bool Move() const    { return m_bMove; }
+        bool IsMove() const    { return m_bMove; }
 
         // Set and return whether a No-move has been made
         void SetNoMove(bool b) { m_bNoMove = b; if (b) m_sCommand = GameVocabulary::NO_MOVE; else m_sCommand.clear(); }

@@ -194,8 +194,7 @@ GameMove CardGame::GetMove(int nPlayer) const
         std::getline(std::cin, sMove); // (F)OLD, (D)RAW, (H)IT, (ST)AND, (DO)UBLE-DOWN, (SP)LIT, ...
     }
 
-    //GameMove cGameMove = GenerateMove(sMove);
-    return GenerateMove(sMove);
+    return GenerateMove(sMove);;
 }
 
 /**
