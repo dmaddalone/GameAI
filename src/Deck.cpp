@@ -91,3 +91,57 @@ void Deck::Deal(int nNumberOfCardsPerHand, std::vector<Hand> &vHands, bool bDeal
         }
     }
 }
+
+void ProbableDeck::UpdateRankProbabilities(Hand &cProbableOpponentHand)
+{
+    int nCardsInDeck = HasCards();
+    int nCardsInHand = cProbableOpponentHand.HasCards();
+    int nTotalCards  = nCardsInDeck + nCardsInHand;
+    int nCardsOfRankInDeck {};
+    int nCardsOfRankInHand {};
+
+    std::sort(m_vCards.begin(), m_vCards.end());
+
+    Card cLastProbableCard;
+
+    // Loop through all cards in probable deck
+    for (Card &cProbableCard : m_vCards)
+    {
+        // If a new rank is found, evaluate
+        if (cProbableCard.Rank() != cLastProbableCard.Rank())
+        {
+            cLastProbableCard = cProbableCard;
+
+            // If probability is less than 100% (certainty), update probabilities
+            if (cProbableCard.Probability() < 1.0)
+            {
+                // Collect number of cards of rank in probable deck and probable opponent's hand
+                nCardsOfRankInDeck = HasCardsOfRank(cProbableCard.Rank());
+                nCardsOfRankInHand = cProbableOpponentHand.HasCardsOfRank(cProbableCard.Rank());
+
+                // If cards are found in probable opponent's hands, check current probabilities
+                if (nCardsOfRankInHand > 0)
+                {
+                    // Get vector of cards
+                    std::vector<Card> vProbableCards = cProbableOpponentHand.RemoveCardsOfRank(cProbableCard.Rank());
+
+                    // Check first card's probability in vector.  If less than certainty, update.
+                    if (vProbableCards[0].Probability() < 1.0)
+                    {
+                        // Update probabilities in probable oppoent's hand
+                        // Update probabilities in probable deck
+                    }
+
+                    // Put cards back
+                    cProbableOpponentHand.AddCards(vProbableCards);
+                }
+                else
+                {
+
+                }
+            }
+        }
+    }
+
+    return;
+}

@@ -43,13 +43,22 @@ class Deck : public PlayingCards
         Deck();
 
         // Destructor
-        ~Deck() {}
+        virtual ~Deck() {}
 
         // Shuffle the deck
         void Shuffle();
 
         // Deal the deck
         void Deal(int nNumberOfCardsPerHand, std::vector<Hand> &vHands, bool bDealCardsEqually=true);
+};
+
+class ProbableDeck : Deck
+{
+    ProbableDeck() :
+        Deck()
+    {}
+
+    void UpdateRankProbabilities(Hand &cProbableOpponentHand);
 };
 
 #endif // DECK_H

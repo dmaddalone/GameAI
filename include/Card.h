@@ -56,6 +56,8 @@ class Card
             m_nID = 0;
         }
 
+        //virtual ~Card() {}
+
         std::string Suit() const             { return m_sSuit; }
         std::string Rank() const             { return m_sRank; }
         std::string DisplaySuit() const      { if (m_bTurnedUp) return m_sSuit; else return m_sNotTurnedUp; }
@@ -73,6 +75,10 @@ class Card
         bool operator>(const Card &cCard) const { return Value() > cCard.Value(); }
 
         int         ID() const        { return m_nID; }
+
+        // Used for Bayesian probabilities
+        void  SetProbability(float fProb) { m_fProbability = fProb; }
+        float Probability()               { return m_fProbability; }
 
         // Json object serialization and deserialization
         Json::Value JsonSerialization() const;
@@ -94,6 +100,9 @@ class Card
 
         // If not turned up
         std::string m_sNotTurnedUp {"X"};
+
+        // Used for Bayesian probabilities
+        float m_fProbability {0.0};
 };
 
 #endif // CARD_H

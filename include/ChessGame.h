@@ -85,9 +85,6 @@ class ChessGame : public BoardGame
         // Clone the current game
         virtual std::unique_ptr<Game> Clone() const = 0;
 
-        //// Return the title of the game
-        //virtual std::string Title() override;
-
         // Return the description of the game
         virtual std::string Description() const override;
 

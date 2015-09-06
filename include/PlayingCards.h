@@ -38,7 +38,7 @@ class PlayingCards
         // Constructor
         PlayingCards() {};
 
-        ~PlayingCards() {};
+        virtual ~PlayingCards() {};
 
         int  HasCards() const;
         bool HasRank(const std::string &sRank) const;
@@ -53,8 +53,8 @@ class PlayingCards
         Card              DrawTopCard();
         Card              PeekAtBottomCard() const;
         Card              RemoveCard(std::string sRank, std::string sSuit);
-        std::vector<Card> RemoveCardsOfRank(std::string sRank);
-        std::vector<Card> RemoveCardsOfSuit(std::string sSuit);
+        std::vector<Card> RemoveCardsOfRank(std::string sRank, int nNumberToRemove=0);
+        std::vector<Card> RemoveCardsOfSuit(std::string sSuit, int nNumberToRemove=0);
 
         std::string Ranks() const;
 

@@ -1708,10 +1708,7 @@ bool ChessGame::GameEnded(int nPlayer)
     // Check for threefold repetition
     //
 
-    //// Insert current Zobrist hash into the container
-    //m_uomsZobrist.insert(cBoard.ZKey());
-
-    // If this Zobrist hash has been seen three times, this is a threefold repetition of a move and therefore a draw
+    // If the last Zobrist hash has been seen three times, this is a threefold repetition of a move and therefore a draw
     if (m_uomsZobrist.count(cBoard.ZKey()) >= m_knMaxRepetition)
     {
         m_sWinBy.assign("drawn by threefold repetition");

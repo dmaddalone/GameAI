@@ -8,13 +8,136 @@
 		<Option show_notes="0">
 			<notes>
 				<![CDATA[TODO: NO MOVE is messing up network play
-
 TODO: Make hostname work
-
 TODO: Remove magic numbers
 TODO: Minimax can't see checkmate easily??
-
 TODO: Check other TODOs
+
+Go Fish AI:
+Knowns: 1) ranks in hand 2) asks from opponent 3) books
+Ranks in deck = deck - 1 - 2 - 3
+Valuing Moves:
+a) Rank in my hand = 1; additive up to 3
+b) Asks by my opponent = 4
+c) Calculate probability of rank in opponent hand
+
+Blackboard - for Player N
+	Deck cProbableDeck // List of ranks that the deck probably has
+		RemoveCardFromDeck()
+		UpdateRankProbability(sRank, fProbability)
+		SortByProbability()
+
+	Hand cProbableOpponentHand // List of ranks that opponent probably has
+		AddCardToOpponent()
+		RemoveCardFromOpponent()
+		UpdateRankProbability()
+		SortByProbability()
+		Cards()
+
+	std::map<std::string, int> m_mAsks;
+
+	BlackBoardUpdate(Game &cGame)
+	{
+	}
+
+	BlackboardMove(Hand &cMyHand)
+	{
+		//
+		// Ask for cards that opponent probably has and I need
+		//
+		cProbableOpponentHand.SortByProbability();
+		for (auto &cProbableCard : cProbableOpponentHand.Cards())
+		{
+			if (cProbableCard.Probability() >= 50%)
+			{
+				for (auto &cCard : cMyHand)
+				{
+					if (cProbableCard.Rank() == cCard.Rank())
+					{
+						return cCard;
+					}
+				}
+			}
+		}
+
+		//
+		// Ask for cards that the deck has, and I have a good chance of pulling
+		//
+		cProbableDeck.SortByProbability();
+
+		//float fProbabilityOfPullingCard = Number of Traget Cards in the Deck / cProbableDeck.HasCards();
+
+		for (auto &cProbableCard : cProbableDeck.Cards())
+		{
+			// Ask if probability of successfully pulling the card is 15%
+			fProbabilityOfPullingCard = cProbableDeck.HasRank(cProbableCard.Rank()) / cProbableDeck.HasCards() * cProbableCard.Probability();
+			if (fProbabilityOfPullingCard > 15%)
+			{
+				for (auto &cCard : cMyHand)
+				{
+					if (cProbableCard.Rank() == cCard.Rank())
+					{
+						return cCard;
+					}
+				}
+			}
+		}
+
+		//
+		// Ask for cards that I have many of and I have not asked for recently
+		//
+		Card cLastCard;
+		Card cBestCard;
+		std::map<std::string, int>::iterator it;
+		int nLowestNumberOfAsks {1};
+
+		MyHand.SortByNumberOfRanks();
+
+		// Loop through my hands in order of number of Ranks in hand
+		for (auto &cCard MyHand.Cards())
+		{			
+			// If last card rank is not the same as this card rank, evaluate
+			if (cLastCard.Rank() != cCard.Rank())
+			{
+				// Update last card
+				cLastCard = cCard;
+				
+				// Find number of asks for this rank
+				it = m_mAsks.find(cCard.Rank());
+
+				// If found, evaluate
+				if (it != std::map.end())
+				{
+					// If number of asks is lower than previous, update best card to ask for
+					if (it->second < nLowestNumberOfAsks)
+					{
+						nLowestNumberOfAsks = it->second;
+						cBestCard = cCard;
+					}
+				} 
+				// A previous ask is not found, update best card
+				else 
+				{
+					// if best card has not yet been assigned, update best card to ask for, and break
+					if (!cBestCard.Rank().empty())
+					{
+						nLowestNumberOfAsks = 0;
+						cBestCard = cCard;
+						break;
+					}
+				}
+			}
+		}
+
+		return cBestCard;
+	}
+		
+
+		
+		
+
+
+
 
 ]]>
 			</notes>

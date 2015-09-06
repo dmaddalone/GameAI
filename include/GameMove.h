@@ -66,9 +66,7 @@ class GameMove
         // Destructor
         virtual ~GameMove() {};
 
-        //// Increment the move number
-        //void IncrementMoveNumber(int nPreviousMoveNumber) { m_nMoveNumber = nPreviousMoveNumber  + 1; }
-        //int  MoveNumber()                                 { return m_nMoveNumber; }
+        // Set and return player number
         void SetPlayerNumber(int n)       { m_nPlayerNumber = n; }
         int PlayerNumber() const          { return m_nPlayerNumber; }
 
@@ -183,9 +181,6 @@ class GameMove
         // Used to convert int coordinates to char values for internal representation using ASCII representation
         static const char m_kcXOffset {'a'};
         static const char m_kcYOffset {'1'};
-
-        //// Number of consecutive moves by a player in one turn
-        //int m_nMoveNumber {1};
 
         // Player's number
         int m_nPlayerNumber {-1};

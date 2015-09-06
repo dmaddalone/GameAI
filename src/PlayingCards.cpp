@@ -131,9 +131,10 @@ Card PlayingCards::RemoveCard(std::string sRank, std::string sSuit)
     return cCard;
 }
 
-std::vector<Card> PlayingCards::RemoveCardsOfRank(std::string sRank)
+std::vector<Card> PlayingCards::RemoveCardsOfRank(std::string sRank, int nNumberToRemove)
 {
     std::vector<Card> vCards {};
+    int nRemoved {0};
 
     std::vector<Card>::iterator it = m_vCards.begin();
     while(it != m_vCards.end())
@@ -142,6 +143,8 @@ std::vector<Card> PlayingCards::RemoveCardsOfRank(std::string sRank)
         {
             vCards.push_back(*it);
             it = m_vCards.erase(it);
+            if ((nNumberToRemove > 0) && (++nRemoved == nNumberToRemove))
+                break;
         }
         else
         {
@@ -152,9 +155,10 @@ std::vector<Card> PlayingCards::RemoveCardsOfRank(std::string sRank)
     return vCards;
 }
 
-std::vector<Card> PlayingCards::RemoveCardsOfSuit(std::string sSuit)
+std::vector<Card> PlayingCards::RemoveCardsOfSuit(std::string sSuit, int nNumberToRemove)
 {
     std::vector<Card> vCards {};
+    int nRemoved {0};
 
     std::vector<Card>::iterator it = m_vCards.begin();
     while(it != m_vCards.end())
@@ -163,6 +167,8 @@ std::vector<Card> PlayingCards::RemoveCardsOfSuit(std::string sSuit)
         {
             vCards.push_back(*it);
             it = m_vCards.erase(it);
+            if ((nNumberToRemove > 0) && (++nRemoved == nNumberToRemove))
+                break;
         }
         else
         {

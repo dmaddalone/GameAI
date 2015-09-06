@@ -120,11 +120,30 @@ std::vector<GameMove> CardGameGoFish::GenerateMoves(int nPlayer) const
 {
     std::vector<GameMove> vGameMoves {};
     GameMove cGameMove;
+    Card cCard;
 
+    // If player has cards in their hand, create ASK game moves for each rank
     if (m_vHands[nPlayer - 1].HasCards() > 0)
     {
         cGameMove.SetAsk(true);
-        vGameMoves.push_back(cGameMove);
+
+        std::string sRank {};
+        for (char &chToken : m_vHands[nPlayer - 1].Ranks())
+        {
+            if (chToken != ' ')
+            {
+                sRank.append(1, chToken);
+            }
+            else
+            {
+                cCard.SetRank(sRank);
+                cGameMove.UpdateCard(cCard);
+                cGameMove.SetArgument(sRank);
+                vGameMoves.push_back(cGameMove);
+
+                sRank.clear();
+            }
+        }
     }
     else if (m_cDeck.HasCards())
     {

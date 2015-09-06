@@ -144,7 +144,7 @@ GameMove Minimax::MinimaxMove(int nPlayer, Game &cGame, int nDepth)
         sMessage = "MinimaxMove Player=" + std::to_string(nPlayer) + " Evaluate Move=" + cGameMove.AnnounceFromMove() + cGameMove.AnnounceToMove();
         m_cLogger.LogInfo(sMessage,3);
 
-        // Clone the game board
+        // Clone the game
         pcGameClone = cGame.Clone();
 
         // Apply the move to the game clone
