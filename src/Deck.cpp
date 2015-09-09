@@ -128,7 +128,7 @@ void ProbableDeck::UpdateRankProbabilities(Hand &cProbableOpponentHand)
                     // Check first card's probability in vector.  If less than certainty, update.
                     if (vProbableCards[0].Probability() < 1.0)
                     {
-                        // Update probabilities in probable oppoent's hand
+                        // Update probabilities in probable opponent's hand
                         // Update probabilities in probable deck
                     }
 

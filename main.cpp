@@ -460,6 +460,7 @@ int main(int argc, char* argv[])
     // Also used in the player turn loop below.  Initially set to a 1.
     int nPlayer = 1;
     bool bGameNotEnded = true;
+
     // If input file specified, read and apply moves.
     // Returns number of Player-To-Play-Next, 1 or 2; or 0 if error.
     if (!sInputFile.empty())
@@ -482,26 +483,6 @@ int main(int argc, char* argv[])
             bGameNotEnded = false;
         }
     }
-    /*
-    // If Player == 1, evaluate game state from Player 1's perspective.  If game ended, allow Player 1 to finish.
-    else if (nPlayer == 1)
-    {
-        if (pcGame->GameEnded(pcGame->Player1()))
-        {
-            vPlayers[0]->Finish(*pcGame);
-            bGameNotEnded = false;
-        }
-    }
-    // If Player == 2, evaluate game state from Player 2's perspective.  If game ended, allow Player 2 to finish.
-    else if (nPlayer == 2)
-    {
-        if (pcGame->GameEnded(pcGame->Player2()))
-        {
-            vPlayers[1]->Finish(*pcGame);
-            bGameNotEnded = false;
-        }
-    }
-    */
 
     // Used for reporting the score
     std::string sGameScore {};
@@ -530,61 +511,6 @@ int main(int argc, char* argv[])
 
         // Move to next player
         nPlayer = 3 - nPlayer;
-
-    /*
-        // if nPlayer == 2, set from ReadMoves, set nPlayer to another number and for this round skip Player 1.
-        if (nPlayer == 2)
-        {
-            nPlayer = -1;
-        }
-        // Otherwise, let Player 1 move.
-        else
-        {
-             //
-             // Player 1 move
-             //
-            if (!vPlayers[0]->Move(*pcGame))
-            {
-                std::cerr << "Invalid move.  Exiting." << std::endl;
-                exit(EXIT_FAILURE);
-            }
-        }
-
-        // Announce game score
-        sGameScore = pcGame->GameScore();
-        if (!sGameScore.empty())
-            std::cout << sGameScore << std::endl;
-
-        // Evaluate game state from player 2 perspective.  If game ended, allow player 2 to finish.
-        // Then break from loop.
-        if (pcGame->GameEnded(pcGame->Player2()))
-        {
-            vPlayers[1]->Finish(*pcGame);
-            break;
-        }
-
-        //
-        // Player 2 move
-        //
-        if (!vPlayers[1]->Move(*pcGame))
-        {
-            std::cerr << "Invalid move.  Exiting." << std::endl;
-            exit(EXIT_FAILURE);
-        }
-
-        // Announce game score
-        sGameScore = pcGame->GameScore();
-        if (!sGameScore.empty())
-            std::cout << sGameScore << std::endl;
-
-        // Evaluate game state from player 1 perspective.  If game ended, allow player 1 to finish.
-        // Then break from loop.
-        if (pcGame->GameEnded(pcGame->Player1()))
-        {
-            vPlayers[0]->Finish(*pcGame);
-            break;
-        }
-        */
     }
 
     // Display game
