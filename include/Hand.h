@@ -62,4 +62,14 @@ class Hand : public PlayingCards
         int m_nID {0};
 };
 
+class ProbableHand : public Hand
+{
+    public:
+        ProbableHand() :
+            Hand()
+        {}
+
+        //void UpdateRankProbabilities(Hand &cProbableOpponentHand);
+};
+
 #endif // HAND_H

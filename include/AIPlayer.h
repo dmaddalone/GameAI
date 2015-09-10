@@ -30,8 +30,10 @@
 #include <climits>
 #include <iomanip>
 #include <iostream>
-#include "Player.h"
+
+#include "Blackboard.h"
 #include "Game.h"
+#include "Player.h"
 
 class AIPlayer : public Player
 {
@@ -61,6 +63,12 @@ class AIPlayer : public Player
         int MinMove(int nPlayer, Game &cGame, int nDepth, int nAlpha, int nBeta);
         // Generate a move for the player
         int MaxMove(int nPlayer, Game &cGame, int nDepth, int nAlpha, int nBeta);
+
+        // Generate the best move by assessing probabilities
+        GameMove ProbabilityMove(int nPlayer, Game &cGame);
+
+        // Blackboard
+        Blackboard m_cBlackBoard;
 };
 
 #endif // AIPLAYER_H

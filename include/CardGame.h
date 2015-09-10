@@ -81,6 +81,12 @@ class CardGame : public Game
         // Evaluate the game state from the perspective of the nPlayer
         virtual int  EvaluateGameState(int nPlayer) override;
 
+        // Initialize Blackboard
+        virtual void BlackboardInitialize(Blackboard &cBlackboard) const override { (void)cBlackboard; return; }
+
+        // Update Blackboard
+        virtual void BlackboardUpdate(Blackboard &cBlackboard) const override { (void)cBlackboard; return; }
+
         // Return the score of the game
         virtual std::string GameScore() const override;
 

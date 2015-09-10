@@ -417,6 +417,26 @@ bool CardGameGoFish::GameEnded(int nPlayer)
     return false;
 }
 
+// Initialize Blackboard
+void CardGameGoFish::BlackboardInitialize(Blackboard &cBlackboard) const
+{
+    (void)cBlackboard;
+
+    // Copy Deck
+    // Create Opponent Hand
+
+    return;
+}
+
+// Update Blackboard
+void CardGameGoFish::BlackboardUpdate(Blackboard &cBlackboard) const
+{
+    if (!cBlackboard.Initialized())
+        BlackboardInitialize(cBlackboard);
+
+    return;
+}
+
 std::string CardGameGoFish::BooksRanks() const
 {
     std::string sRanks {};

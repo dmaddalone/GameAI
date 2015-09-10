@@ -320,3 +320,20 @@ int AIPlayer::MaxMove(int nPlayer, Game &cGame, int nDepth, int nAlpha, int nBet
 
     return nAlpha;
 }
+
+GameMove AIPlayer::ProbabilityMove(int nPlayer, Game &cGame)
+{
+    if (!m_cBlackBoard.Initialized())
+    {
+        // Remove cards from ProbableDeck that match all my hand's cards
+        // Set initialize flag
+    }
+
+    // Check last move; if Ask by opponent, add this card to ProbableOpponentHand, with high probability
+    // Based on game, update rank probabilities -> void cGame.BlackboardUpdate(cBlackBoard);
+    // Based on game, generate move with best probability -> GameMove cBestMove = cGame.BlackboardMove(cBlackBoard);
+
+    GameMove cBestMove;
+
+    return cBestMove;
+}

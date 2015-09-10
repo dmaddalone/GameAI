@@ -19,47 +19,31 @@
 
 /** \file
  *
- * \brief The Deck class represents a deck of playing cards.
+ * \brief The Blackboard class represents a knowledge base of game information
+ * for a AIPlayer.
  *
  */
 
-#ifndef DECK_H
-#define DECK_H
+#ifndef BLACKBOARD_H
+#define BLACKBOARD_H
 
-#include <algorithm>
-#include <chrono>
-#include <random>
-#include <vector>
-
-#include "Card.h"
-#include "GameAIException.h"
+#include "Deck.h"
 #include "Hand.h"
-#include "PlayingCards.h"
 
-class Deck : public PlayingCards
+class Blackboard
 {
     public:
-        // Constructor
-        Deck();
+        Blackboard() {};
+        virtual ~Blackboard() {};
 
-        // Destructor
-        virtual ~Deck() {}
+        bool Initialized() { return m_bInitialized; }
+        void Initialize()  { m_bInitialized = true; }
 
-        // Shuffle the deck
-        void Shuffle();
+    private:
+        ProbableDeck m_cProbableDeck;
+        ProbableHand m_cProbableOpponentHand;
 
-        // Deal the deck
-        void Deal(int nNumberOfCardsPerHand, std::vector<Hand> &vHands, bool bDealCardsEqually=true);
+        bool m_bInitialized {false};
 };
 
-class ProbableDeck : public Deck
-{
-    public:
-        ProbableDeck() :
-            Deck()
-        {}
-
-        void UpdateRankProbabilities(ProbableHand &cProbableOpponentHand);
-};
-
-#endif // DECK_H
+#endif // BLACKBOARD_H

@@ -37,6 +37,7 @@
 *.depend
 *.layout
 *_build_log.html
+*.cscope_file_list
 
 # Directories
 /obj

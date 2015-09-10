@@ -39,6 +39,9 @@ class CardGameGoFish : public CardGame
         CardGameGoFish(GameType ecGameType) :
             CardGame(ecGameType, 2)
         {
+            // Stochastic game
+            SetEnvironmentDeterministic(false);
+
             // Shuffle and Deal cards
             m_cDeck.Shuffle();
             m_cDeck.Deal(7, m_vHands);
@@ -86,6 +89,12 @@ class CardGameGoFish : public CardGame
 
         // Check to see if the game has ended
         virtual bool GameEnded(int nPlayer) override;
+
+        // Initialize Blackboard
+        virtual void BlackboardInitialize(Blackboard &cBlackboard) const override;
+
+        // Update Blackboard
+        virtual void BlackboardUpdate(Blackboard &cBlackboard) const override;
 
         // Clone the current game
         virtual std::unique_ptr<Game> Clone() const override { return std::unique_ptr<Game>(new CardGameGoFish(*this)); }

@@ -92,7 +92,7 @@ void Deck::Deal(int nNumberOfCardsPerHand, std::vector<Hand> &vHands, bool bDeal
     }
 }
 
-void ProbableDeck::UpdateRankProbabilities(Hand &cProbableOpponentHand)
+void ProbableDeck::UpdateRankProbabilities(ProbableHand &cProbableOpponentHand)
 {
     int nCardsInDeck = HasCards();
     int nCardsInHand = cProbableOpponentHand.HasCards();

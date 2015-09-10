@@ -32,6 +32,7 @@
 #include <memory>
 #include <vector>
 
+#include "Blackboard.h"
 #include "GameMove.h"
 #include "GameVocabulary.h"
 #include "Logger.h"
@@ -108,6 +109,12 @@ class Game
         // Evaluate the game state from the perspective of the nPlayer
         virtual int  EvaluateGameState(int nPlayer) = 0;
 
+        // Initialize Blackboard
+        virtual void BlackboardInitialize(Blackboard &cBlackboard) const = 0;
+
+        // Update Blackboard
+        virtual void BlackboardUpdate(Blackboard &cBlackboard) const = 0;
+
         // Clone the current game
         virtual std::unique_ptr<Game> Clone() const = 0;
 
@@ -134,6 +141,10 @@ class Game
         void SetPlayer2Name(std::string sName) { m_sPlayer2Name.assign(sName); }
         void SetPlayer1Type(std::string sType) { m_sPlayer1Type.assign(sType); }
         void SetPlayer2Type(std::string sType) { m_sPlayer2Type.assign(sType); }
+
+        // Set game environment
+        void SetEnvironmentDeterministic(bool b) { m_bEnvironmentDeterministic = b; }
+        bool EnvironmentDeterministic()          { return m_bEnvironmentDeterministic; }
 
         // Set sync game information
         bool Sync() const     { return m_bSync; }
@@ -170,9 +181,6 @@ class Game
         std::string m_sPlayer2Name {"??"};
         std::string m_sPlayer2Type {"??"};
 
-        // Default game type
-        GameType m_ecGameType {GameType::TYPE_NONE};
-
         // List of all game moves
         std::vector<GameMove> m_vGameMoves;
 
@@ -185,14 +193,21 @@ class Game
         // Game Over flag
         bool m_bGameOver {false};
 
-        // Flag to sync game information between networked players
-        bool m_bSync      { false };
-
         // Create a Logger object
         Logger m_cLogger;
 
         // Number words
         const std::string m_asNumbers[5] {"zero", "one", "two", "three", "four"};
+
+    private:
+        // Default game type
+        GameType m_ecGameType {GameType::TYPE_NONE};
+
+        // Game environment - deterministic vs stochastic
+        bool m_bEnvironmentDeterministic {true};
+
+        // Flag to sync game information between networked players
+        bool m_bSync      { false };
 };
 
 #endif // GAME_H

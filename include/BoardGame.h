@@ -69,6 +69,12 @@ class BoardGame : public Game
         // Return the score of the game
         virtual std::string GameScore() const override;
 
+        // Initialize Blackboard
+        virtual void BlackboardInitialize(Blackboard &cBlackboard) const override { (void)cBlackboard; return; }
+
+        // Update Blackboard
+        virtual void BlackboardUpdate(Blackboard &cBlackboard) const override { (void)cBlackboard; return; }
+
         // Check to see if the game has ended
         virtual bool GameEnded(int nPlayer) override;
 

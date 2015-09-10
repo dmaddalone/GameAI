@@ -215,6 +215,8 @@ Blackboard - for Player N
 		</Compiler>
 		<Unit filename="../jsoncpp/dist/json/json.h" />
 		<Unit filename="../jsoncpp/dist/jsoncpp.cpp" />
+		<Unit filename="include/AIPlayer.h" />
+		<Unit filename="include/Blackboard.h" />
 		<Unit filename="include/BoardGame.h" />
 		<Unit filename="include/Card.h" />
 		<Unit filename="include/CardGame.h" />
@@ -245,7 +247,6 @@ Blackboard - for Player N
 		<Unit filename="include/Human.h" />
 		<Unit filename="include/LinearGame.h" />
 		<Unit filename="include/Logger.h" />
-		<Unit filename="include/AIPlayer.h" />
 		<Unit filename="include/NetworkPlayer.h" />
 		<Unit filename="include/Player.h" />
 		<Unit filename="include/PlayingCards.h" />
@@ -255,6 +256,8 @@ Blackboard - for Player N
 		<Unit filename="include/SocketException.h" />
 		<Unit filename="include/TTT.h" />
 		<Unit filename="main.cpp" />
+		<Unit filename="src/AIPlayer.cpp" />
+		<Unit filename="src/Blackboard.cpp" />
 		<Unit filename="src/BoardGame.cpp" />
 		<Unit filename="src/Card.cpp" />
 		<Unit filename="src/CardGame.cpp" />
@@ -282,7 +285,6 @@ Blackboard - for Player N
 		<Unit filename="src/Human.cpp" />
 		<Unit filename="src/LinearGame.cpp" />
 		<Unit filename="src/Logger.cpp" />
-		<Unit filename="src/AIPlayer.cpp" />
 		<Unit filename="src/NetworkPlayer.cpp" />
 		<Unit filename="src/Player.cpp" />
 		<Unit filename="src/PlayingCards.cpp" />
