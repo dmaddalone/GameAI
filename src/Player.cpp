@@ -19,7 +19,7 @@
 
 #include "Player.h"
 #include "Human.h"
-#include "Minimax.h"
+#include "AIPlayer.h"
 #include "Server.h"
 #include "Client.h"
 
@@ -44,8 +44,8 @@ std::unique_ptr<Player> Player::MakePlayer(PlayerType ecPlayerType)
     {
         case PlayerType::TYPE_HUMAN:
             return std::unique_ptr<Player>(new Human(ecPlayerType));
-        case PlayerType::TYPE_MINIMAX:
-            return std::unique_ptr<Player>(new Minimax(ecPlayerType));
+        case PlayerType::TYPE_AI:
+            return std::unique_ptr<Player>(new AIPlayer(ecPlayerType));
         case PlayerType::TYPE_SERVER:
             return std::unique_ptr<Player>(new Server(ecPlayerType));
         case PlayerType::TYPE_CLIENT:

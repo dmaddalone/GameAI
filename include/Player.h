@@ -34,7 +34,7 @@ enum class PlayerType
 {
     TYPE_NONE,
     TYPE_HUMAN,
-    TYPE_MINIMAX,
+    TYPE_AI,
     TYPE_SERVER,
     TYPE_CLIENT
 };

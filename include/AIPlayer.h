@@ -19,13 +19,13 @@
 
 /** \file
  *
- * \brief The Minimax class represents a computer game player, based
+ * \brief The AIPlayer class represents a computer game player, based
  * on the Minimax algorithm, using alpha-beta pruning.
  *
  */
 
-#ifndef MINIMAX_H
-#define MINIMAX_H
+#ifndef AIPLAYER_H
+#define AIPLAYER_H
 
 #include <climits>
 #include <iomanip>
@@ -33,14 +33,14 @@
 #include "Player.h"
 #include "Game.h"
 
-class Minimax: public Player
+class AIPlayer : public Player
 {
     public:
-        // Construct a Minimax object
-        Minimax(PlayerType ecPlayerType) : Player(ecPlayerType) {};
+        // Construct a AIPlayer object
+        AIPlayer(PlayerType ecPlayerType) : Player(ecPlayerType) {};
 
         // Destructor
-        ~Minimax() {};
+        ~AIPlayer() {};
 
         // Initializer
         virtual void Initialize(std::string sHost, int nPort, bool &bSwap) override { (void)sHost; (void)nPort; (void)bSwap; };
@@ -52,7 +52,7 @@ class Minimax: public Player
         virtual bool Finish(Game &cGame) override { (void)cGame; return true; }
 
         // Announce the type pf player
-        std::string TypeName() const override { return "Minimax"; }
+        std::string TypeName() const override { return "AIPlayer"; }
 
     private:
         // Generate the best move using the minimax algorithm
@@ -63,4 +63,4 @@ class Minimax: public Player
         int MaxMove(int nPlayer, Game &cGame, int nDepth, int nAlpha, int nBeta);
 };
 
-#endif // MINIMAX_H
+#endif // AIPLAYER_H

@@ -49,16 +49,16 @@ static void ShowUsage(std::string sName)
               << "    -o FILE,  --output=FILE   write game moves to FILE\n"
               << "              --name1=NAME    assign a name to player 1\n"
               << "              --name2=NAME    assign a name to player 2\n"
-              << "    -p PLIES, --plies=PLIES   assign the number of PLIES that minimax players will use\n"
-              << "              --plies1=PLIES  assign the number of PLIES to Player 1, if minimax\n"
-              << "              --plies2=PLIES  assign the number of PLIES to Player 2, if minimax\n"
+              << "    -p PLIES, --plies=PLIES   assign the number of PLIES that ai players will use\n"
+              << "              --plies1=PLIES  assign the number of PLIES to Player 1, if ai\n"
+              << "              --plies2=PLIES  assign the number of PLIES to Player 2, if ai\n"
               << "    -v LEVEL, --verbose=LEVEL display game information\n"
               << "    -V,       --version       display version and exit\n"
               << "    -H,       --help          display this help message and exit\n"
               << "\n"
               << "PORT is a port specification for a server and client to communicate over.  The default is 60000.\n"
               << "HOST is a host name or address for a server.  The default is 127.0.0.1.\n"
-              << "TYPE is either human, minimax, client, or server.  Start a server before staring a client.\n"
+              << "TYPE is either human, ai, client, or server.  Start a server before staring a client.\n"
               << "PLIES are from 1 to 9.  The default is 4.\n"
               << "GAME is one of the following:\n"
               << "    connectfour chess         chess-jm         war\n"
@@ -74,7 +74,7 @@ static void ShowUsage(std::string sName)
               << "\n"
               << "Examples:\n"
               << "Start a game on a single computer:\n"
-              << "GameAI -1 human -2 minimax -g ttt\n\n"
+              << "GameAI -1 human -2 ai -g ttt\n\n"
               << "Start a game across two computers:\n"
               << "GameAI -1 human  -2 client -g connetcfour --port=60001\n"
               << "GameAI -1 server -2 human  -g connectfour --port=60001 --host=192.168.0.1\n"
@@ -110,8 +110,8 @@ static bool SetPlayerType(char* pcType, std::vector<std::unique_ptr<Player>> &vP
     std::string sType(pcType);
     if (sType == "human")
         vPlayers.emplace_back(Player::MakePlayer(PlayerType::TYPE_HUMAN));
-    else if (sType == "minimax")
-        vPlayers.emplace_back(Player::MakePlayer(PlayerType::TYPE_MINIMAX));
+    else if (sType == "ai")
+        vPlayers.emplace_back(Player::MakePlayer(PlayerType::TYPE_AI));
     else if (sType == "server")
         vPlayers.emplace_back(Player::MakePlayer(PlayerType::TYPE_CLIENT));
     else if (sType == "client")
@@ -200,7 +200,7 @@ static void SetPlayers(std::string sName, int nPlies1, int nPlies2,
         exit(EXIT_FAILURE);
     }
 
-    // Set number of plies for minimax players
+    // Set number of plies for AI players
     if (nPlies1 > 0 && nPlies1 <= 9)
     {
         vPlayers[0]->SetPlies(nPlies1);
@@ -444,7 +444,7 @@ int main(int argc, char* argv[])
             std::cout << " Name " << vPlayers[iii]->PlayerName();
 
         std::cout << " Type " << vPlayers[iii]->TypeName();
-        if (vPlayers[iii]->Type() == PlayerType::TYPE_MINIMAX)
+        if (vPlayers[iii]->Type() == PlayerType::TYPE_AI)
         {
             std::cout << " Plies: " << vPlayers[iii]->Plies();
         }

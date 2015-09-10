@@ -17,7 +17,7 @@
     along with GameAI.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "Minimax.h"
+#include "AIPlayer.h"
 
 /**
   * Make a move.
@@ -29,7 +29,7 @@
   * \return True, if applied move is valid.  False otherwise.
   */
 
-bool Minimax::Move(Game &cGame)
+bool AIPlayer::Move(Game &cGame)
 {
     // If game requires synchronization, pass turn to next player to synchronize information
     if (cGame.Sync())
@@ -92,7 +92,7 @@ bool Minimax::Move(Game &cGame)
   * \return The best game move.
   */
 
-GameMove Minimax::MinimaxMove(int nPlayer, Game &cGame, int nDepth)
+GameMove AIPlayer::MinimaxMove(int nPlayer, Game &cGame, int nDepth)
 {
     // Initialize the best score for a move to the minimum integer
     int nBestScore {INT_MIN};
@@ -194,7 +194,7 @@ GameMove Minimax::MinimaxMove(int nPlayer, Game &cGame, int nDepth)
   * \return The beta score.
   */
 
-int Minimax::MinMove(int nPlayer, Game &cGame, int nDepth, int nAlpha, int nBeta)
+int AIPlayer::MinMove(int nPlayer, Game &cGame, int nDepth, int nAlpha, int nBeta)
 {
     // Used for logging messages
     std::string sMessage;
@@ -257,7 +257,7 @@ int Minimax::MinMove(int nPlayer, Game &cGame, int nDepth, int nAlpha, int nBeta
     return nBeta;
 }
 
-int Minimax::MaxMove(int nPlayer, Game &cGame, int nDepth, int nAlpha, int nBeta)
+int AIPlayer::MaxMove(int nPlayer, Game &cGame, int nDepth, int nAlpha, int nBeta)
 {
     // Used for logging messages
     std::string sMessage;

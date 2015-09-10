@@ -938,7 +938,7 @@ bool ChessGame::ApplyMove(int nPlayer, GameMove &cGameMove)
             {
                 cPromotion = m_kcQueenToken;
             }
-            // Else ask for input from player.  //TODO: Make this work with Minimax.
+            // Else ask for input from player.  //TODO: Make this work with AI.
             else
             {
                 std::cout << "\nPAWN PROMOTION ("
