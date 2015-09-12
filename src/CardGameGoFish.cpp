@@ -500,8 +500,116 @@ void CardGameGoFish::BlackboardInitialize(int nPlayer, Blackboard &cBlackboard) 
 // Generate a move from the Blackboard
 GameMove CardGameGoFish::BlackboardMove(int nPlayer, Blackboard &cBlackboard) const
 {
+    // Generic GamevMove
     GameMove cGameMove;
 
+    // Turn off 'Move' for card games
+    cGameMove.SetMove(false);
+
+    // Set as ASK
+    cGameMove.SetAsk(true);
+
+    //
+    // Ask for cards that opponent probably has and I need
+    //
+    //TODO: cProbableOpponentHand.SortByProbability();
+    for (auto &cProbableCard : cBlackboard.m_cProbableOpponentHand.Cards())
+    {
+        // Ask if probability of successfully pulling the card is 50%
+        float fProbabilityOfPullingCard =
+            cBlackboard.m_cProbableOpponentHand.HasRank(cProbableCard.Rank()) /
+            cBlackboard.m_cProbableOpponentHand.HasCards() * cProbableCard.Probability();
+
+        if (fProbabilityOfPullingCard >= .5)
+        {
+            for (Card &cCard : m_vHands[1 - nPlayer].Cards())
+            {
+                if (cProbableCard.Rank() == cCard.Rank())
+                {
+                    cGameMove.UpdateCard(cProbableCard);
+                    return cGameMove;
+                }
+            }
+        }
+    }
+
+    //
+    // Ask for cards that the deck has, and I have a good chance of pulling
+    //
+    //TODO: cProbableDeck.SortByProbability();
+    for (auto &cProbableCard : cBlackboard.m_cProbableDeck.Cards())
+    {
+        // Ask if probability of successfully pulling the card is 15%
+        float fProbabilityOfPullingCard =
+            cBlackboard.m_cProbableDeck.HasRank(cProbableCard.Rank()) /
+            cBlackboard.m_cProbableDeck.HasCards() * cProbableCard.Probability();
+
+        if (fProbabilityOfPullingCard >= .15)
+        {
+            for (Card &cCard : m_vHands[1 - nPlayer].Cards())
+            {
+                if (cProbableCard.Rank() == cCard.Rank())
+                {
+                    cGameMove.UpdateCard(cProbableCard);
+                    return cGameMove;
+                }
+            }
+        }
+    }
+
+    //
+    // Ask for cards that I have many of and I have not asked for recently
+    //
+    Card cLastCard;
+    Card cBestCard;
+    std::map<std::string, int>::iterator it;
+    int nLowestNumberOfAsks {1};
+
+    // Loop through my hands in order of number of Ranks in hand (sorted by ApplyMove)
+    for (Card &cCard : m_vHands[1 - nPlayer].Cards())
+    {
+        // If last card rank is not the same as this card rank, evaluate
+        if (cLastCard.Rank() != cCard.Rank())
+        {
+            // Update last card
+            cLastCard = cCard;
+
+            // Find number of asks for this rank
+            it = cBlackboard.m_mAsks.find(cCard.Rank());
+
+            // If found, evaluate
+            //if (it != std::map.end())
+            if (it != cBlackboard.m_mAsks.end())
+            {
+                // If number of asks is lower than previous, update best card to ask for
+                if (it->second < nLowestNumberOfAsks)
+                {
+                    nLowestNumberOfAsks = it->second;
+                    cBestCard = cCard;
+                }
+            }
+            // A previous ask is not found, update best card
+            else
+            {
+                // if best card has not yet been assigned, update best card to ask for, and break
+                if (cBestCard.Rank().empty())
+                {
+                    nLowestNumberOfAsks = 0;
+                    cBestCard = cCard;
+                    break;
+                }
+            }
+        }
+    }
+
+    // Update m_mAsks
+    if (nLowestNumberOfAsks != 0)
+    {
+        cBlackboard.m_mAsks.erase(cBestCard.Rank());
+    }
+    cBlackboard.m_mAsks.insert(std::pair<std::string, int>(cBestCard.Rank(), ++nLowestNumberOfAsks));
+
+    cGameMove.UpdateCard(cBestCard);
     return cGameMove;
 }
 
@@ -545,19 +653,17 @@ void CardGameGoFish::BlackboardUpdate(int nPlayer, Blackboard &cBlackboard) cons
             // Update ProbableDeck
             //
             int nNumberOfCardsOfRankInMyHand = m_vHands[nPlayer - 1].HasCardsOfRank(sRank);
-            if (nNumberOfCardsOfRankInMyHand > 0)
-            {
-                // Remove any cards of rank from ProbableDeck
-                cBlackboard.m_cProbableDeck.RemoveCardsOfRank(sRank);
 
-                // Add cards of rank back to ProbableDeck with certainty
-                Card cCard;
-                cCard.SetRank(sRank);
-                cCard.SetProbability(1.0);
-                for (int iii = 0; iii < m_knBookNumber - nNumberOfCardsOfRankInMyHand; ++iii)
-                {
-                    cBlackboard.m_cProbableDeck.AddCard(cCard);
-                }
+            // Remove any cards of rank from ProbableDeck
+            cBlackboard.m_cProbableDeck.RemoveCardsOfRank(sRank);
+
+            // Add cards of rank back to ProbableDeck with certainty
+            Card cCard;
+            cCard.SetRank(sRank);
+            cCard.SetProbability(1.0);
+            for (int iii = 0; iii < m_knBookNumber - nNumberOfCardsOfRankInMyHand; ++iii)
+            {
+                cBlackboard.m_cProbableDeck.AddCard(cCard);
             }
         }
         // Else if ASK not Successful, but Go-Fish was
@@ -573,19 +679,19 @@ void CardGameGoFish::BlackboardUpdate(int nPlayer, Blackboard &cBlackboard) cons
             // Update ProbableDeck
             //
             int nNumberOfCardsOfRankInMyHand = m_vHands[nPlayer - 1].HasCardsOfRank(sRank);
-            if (nNumberOfCardsOfRankInMyHand > 0)
+
+            // Remove any cards of rank from ProbableDeck
+            cBlackboard.m_cProbableDeck.RemoveCardsOfRank(sRank);
+
+            // Add cards of rank back to ProbableDeck with certainty
+            Card cCard;
+            cCard.SetRank(sRank);
+            cCard.SetProbability(1.0);
+            for (int iii = 0; iii < m_knBookNumber - nNumberOfCardsOfRankInMyHand; ++iii)
             {
-                // Remove any cards of rank from ProbableDeck
-                cBlackboard.m_cProbableDeck.RemoveCardsOfRank(sRank);
-                // Add cards of rank back to ProbableDeck with certainty
-                Card cCard;
-                cCard.SetRank(sRank);
-                cCard.SetProbability(1.0);
-                for (int iii = 0; iii < m_knBookNumber - nNumberOfCardsOfRankInMyHand; ++iii)
-                {
-                    cBlackboard.m_cProbableDeck.AddCard(cCard);
-                }
+                cBlackboard.m_cProbableDeck.AddCard(cCard);
             }
+
             // Reduce number of cards in ProbableDeck
             cBlackboard.m_cProbableDeck.ReduceNumberOfCards(nCards);
         }
@@ -614,40 +720,39 @@ void CardGameGoFish::BlackboardUpdate(int nPlayer, Blackboard &cBlackboard) cons
             // Update ProbableOpponentHand
             //
             // Remove cards of rank from ProbableOpponentHand
-            //std::vector<Card> vCardsOfRank = cBlackboard.m_cProbableOpponentHand.RemoveCardsOfRank(sRank);
             cBlackboard.m_cProbableOpponentHand.RemoveCardsOfRank(sRank);
+
             // Add cards of rank back to ProbableOpponentHand with certainty
             Card cCard;
             cCard.SetRank(sRank);
             cCard.SetProbability(1.0);
-            //for (int iii = 0; iii < nCards + vCardsOfRank.size() - 1; ++iii)
             for (int iii = 0; iii < nCards + 1; ++iii)
             {
                 cBlackboard.m_cProbableOpponentHand.AddCard(cCard);
             }
             // Add cards of rank back to ProbableOpponentHand with less than certainty
-            //if ()
+            cCard.SetProbability(0.0);
+            for (int iii = nCards + 1; iii < m_knBookNumber; ++iii)
+            {
+                cBlackboard.m_cProbableOpponentHand.AddCard(cCard);
+            }
 
-            // Reduce number of cards in ProbableOpponentHand
-            cBlackboard.m_cProbableOpponentHand.ReduceNumberOfCards(nCards);
+            // Add number of cards in ProbableOpponentHand
+            cBlackboard.m_cProbableOpponentHand.AddNumberOfCards(nCards);
 
             //
             // Update ProbableDeck
             //
-            int nNumberOfCardsOfRankInMyHand = m_vHands[nPlayer - 1].HasCardsOfRank(sRank);
-            if (nNumberOfCardsOfRankInMyHand > 0)
-            {
-                // Remove any cards of rank from ProbableDeck
-                cBlackboard.m_cProbableDeck.RemoveCardsOfRank(sRank);
+            // Remove any cards of rank from ProbableDeck
+            cBlackboard.m_cProbableDeck.RemoveCardsOfRank(sRank);
 
-                // Add cards of rank back to ProbableDeck
-                Card cCard;
-                cCard.SetRank(sRank);
-                cCard.SetProbability(1.0);
-                for (int iii = 0; iii < m_knBookNumber - nNumberOfCardsOfRankInMyHand; ++iii)
-                {
-                    cBlackboard.m_cProbableDeck.AddCard(cCard);
-                }
+            // Add cards of rank back to ProbableDeck
+            //Card cCard;
+            cCard.SetRank(sRank);
+            cCard.SetProbability(0.0);
+            for (int iii = nCards + 1; iii < m_knBookNumber; ++iii)
+            {
+                cBlackboard.m_cProbableDeck.AddCard(cCard);
             }
         }
         // Else if ASK not Successful, but Go-Fish was
@@ -659,23 +764,40 @@ void CardGameGoFish::BlackboardUpdate(int nPlayer, Blackboard &cBlackboard) cons
             // Remove cards of rank from ProbableOpponentHand
             cBlackboard.m_cProbableOpponentHand.RemoveCardsOfRank(sRank);
 
+            // Add cards of rank back to ProbableOpponentHand with certainty
+            Card cCard;
+            cCard.SetRank(sRank);
+            cCard.SetProbability(1.0);
+            for (int iii = 0; iii < nCards + 1; ++iii)
+            {
+                cBlackboard.m_cProbableOpponentHand.AddCard(cCard);
+            }
+
+            // Add cards of rank back to ProbableOpponentHand with less than certainty
+            cCard.SetProbability(0.0);
+            for (int iii = nCards + 1; iii < m_knBookNumber; ++iii)
+            {
+                cBlackboard.m_cProbableOpponentHand.AddCard(cCard);
+            }
+
+            // Add number of cards in ProbableOpponentHand
+            cBlackboard.m_cProbableOpponentHand.AddNumberOfCards(nCards);
+
             //
             // Update ProbableDeck
             //
-            int nNumberOfCardsOfRankInMyHand = m_vHands[nPlayer - 1].HasCardsOfRank(sRank);
-            if (nNumberOfCardsOfRankInMyHand > 0)
+            // Remove any cards of rank from ProbableDeck
+            cBlackboard.m_cProbableDeck.RemoveCardsOfRank(sRank);
+
+            // Add cards of rank back to ProbableDeck
+            //Card cCard;
+            cCard.SetRank(sRank);
+            cCard.SetProbability(0.0);
+            for (int iii = nCards + 1; iii < m_knBookNumber; ++iii)
             {
-                // Remove any cards of rank from ProbableDeck
-                cBlackboard.m_cProbableDeck.RemoveCardsOfRank(sRank);
-                // Add cards of rank back to ProbableDeck
-                Card cCard;
-                cCard.SetRank(sRank);
-                cCard.SetProbability(1.0);
-                for (int iii = 0; iii < m_knBookNumber - nNumberOfCardsOfRankInMyHand; ++iii)
-                {
-                    cBlackboard.m_cProbableDeck.AddCard(cCard);
-                }
+                cBlackboard.m_cProbableDeck.AddCard(cCard);
             }
+
             // Reduce number of cards in ProbableDeck
             cBlackboard.m_cProbableDeck.ReduceNumberOfCards(nCards);
         }
@@ -688,6 +810,9 @@ void CardGameGoFish::BlackboardUpdate(int nPlayer, Blackboard &cBlackboard) cons
             // Remove cards of rank from ProbableOpponentHand
             cBlackboard.m_cProbableOpponentHand.RemoveCardsOfRank(sRank);
 
+            // Add number of cards in ProbableOpponentHand
+            cBlackboard.m_cProbableOpponentHand.AddNumberOfCards(nCards);
+
             //
             // Update ProbableDeck
             //
@@ -696,23 +821,12 @@ void CardGameGoFish::BlackboardUpdate(int nPlayer, Blackboard &cBlackboard) cons
         }
     }
 
-
-
-
-    if (cLastMove.Success())
-    {
-
-    }
-
-
-    // If successful Draw by opponent, add this card to ProbableOpponentHand, with certainty
-
+    //
+    // TODO: Update based on books
+    //
 
     // Update rank probabilities
     cBlackboard.m_cProbableDeck.UpdateRankProbabilities(cBlackboard.m_cProbableOpponentHand);
-
-
-    // Based on game, generate move with best probability -> GameMove cBestMove = cGame.BlackboardMove(cBlackBoard);
 
     return;
 }

@@ -94,7 +94,7 @@ void Deck::Deal(int nNumberOfCardsPerHand, std::vector<Hand> &vHands, bool bDeal
 
 void ProbableDeck::UpdateRankProbabilities(ProbableHand &cProbableOpponentHand)
 {
-    int nCardsOfRankInDeck {};
+    //int nCardsOfRankInDeck {};
     int nCardsOfRankInHand {};
     std::vector<Card> vProbableCards {};
 
@@ -116,7 +116,7 @@ void ProbableDeck::UpdateRankProbabilities(ProbableHand &cProbableOpponentHand)
             if (cProbableCard.Probability() < 1.0)
             {
                 // Collect number of cards of rank in probable deck and probable opponent's hand
-                nCardsOfRankInDeck = this->HasCardsOfRank(cProbableCard.Rank());
+                //nCardsOfRankInDeck = this->HasCardsOfRank(cProbableCard.Rank());
                 nCardsOfRankInHand = cProbableOpponentHand.HasCardsOfRank(cProbableCard.Rank());
 
                 //

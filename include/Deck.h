@@ -61,6 +61,7 @@ class ProbableDeck : public Deck
 
         void SetNumberOfCards(int n)    { m_nNumberOfCards = n; }
         void ReduceNumberOfCards(int n) { m_nNumberOfCards -= n; }
+        void AddNumberOfCards(int n)     { m_nNumberOfCards += n; }
         int  NumberOfCards()            { return m_nNumberOfCards; }
 
         void UpdateRankProbabilities(ProbableHand &cProbableOpponentHand);

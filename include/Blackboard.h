@@ -36,6 +36,7 @@ class Blackboard
         Blackboard() {};
         virtual ~Blackboard() {};
 
+        // Manage Initialization
         bool Initialized()     { return m_bInitialized; }
         void SetInitialized()  { m_bInitialized = true; }
 
@@ -44,6 +45,7 @@ class Blackboard
         //
         ProbableDeck m_cProbableDeck;
         ProbableHand m_cProbableOpponentHand;
+        std::map<std::string, int> m_mAsks {};
 
     private:
         bool m_bInitialized {false};

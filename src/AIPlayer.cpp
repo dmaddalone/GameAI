@@ -70,7 +70,7 @@ bool AIPlayer::Move(Game &cGame)
     if (cGame.EnvironmentDeterministic())
         cGameMove = MinimaxMove(m_nPlayerNumber, cGame, m_nDepth);
     else
-        cGameMove = ProbabilityMove(cGame);
+        cGameMove = ProbabilityMove(m_nPlayerNumber, cGame);
 
     // Announce game move
     m_cLogger.LogInfo(cGame.AnnounceMove(m_nPlayerNumber, cGameMove),1);
@@ -328,11 +328,9 @@ int AIPlayer::MaxMove(int nPlayer, Game &cGame, int nDepth, int nAlpha, int nBet
     return nAlpha;
 }
 
-GameMove AIPlayer::ProbabilityMove(Game &cGame)
+GameMove AIPlayer::ProbabilityMove(int nPlayer, Game &cGame)
 {
     cGame.BlackboardUpdate(m_nPlayerNumber, m_cBlackBoard);
 
-    GameMove cBestMove;
-
-    return cBestMove;
+    return cGame.BlackboardMove(nPlayer, m_cBlackBoard);
 }

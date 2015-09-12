@@ -71,6 +71,7 @@ class ProbableHand : public Hand
 
         void SetNumberOfCards(int n)    { m_nNumberOfCards = n; }
         void ReduceNumberOfCards(int n) { m_nNumberOfCards -= n; }
+        void AddNumberOfCards(int n)     { m_nNumberOfCards += n; }
         int  NumberOfCards()            { return m_nNumberOfCards; }
 
     private:

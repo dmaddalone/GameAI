@@ -47,7 +47,7 @@ namespace GameAIVersion
 	//   tightly scoped bug fixes are the only code you're allowed to write
 	//   in this phase,
 	// Release
-	static const std::string STATUS {"Beta"};
+	static const std::string STATUS {"Pre-alpha"};
 
 	//Semantic Versioning
 	// MAJOR version when you make incompatible changes,

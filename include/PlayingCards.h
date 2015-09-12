@@ -40,6 +40,8 @@ class PlayingCards
 
         virtual ~PlayingCards() {};
 
+        std::vector<Card> Cards() const { return m_vCards; }
+
         int  HasCards() const;
         bool HasRank(const std::string &sRank) const;
         bool HasSuit(const std::string &sSuit) const;
