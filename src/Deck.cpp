@@ -94,14 +94,14 @@ void Deck::Deal(int nNumberOfCardsPerHand, std::vector<Hand> &vHands, bool bDeal
 
 void ProbableDeck::UpdateRankProbabilities(ProbableHand &cProbableOpponentHand)
 {
-    int nCardsInDeck = HasCards();
-    int nCardsInHand = cProbableOpponentHand.HasCards();
-    int nTotalCards  = nCardsInDeck + nCardsInHand;
     int nCardsOfRankInDeck {};
     int nCardsOfRankInHand {};
+    std::vector<Card> vProbableCards {};
 
+    // Sort cards by rank
     std::sort(m_vCards.begin(), m_vCards.end());
 
+    // Keep track of last rank to be evaluated
     Card cLastProbableCard;
 
     // Loop through all cards in probable deck
@@ -116,32 +116,53 @@ void ProbableDeck::UpdateRankProbabilities(ProbableHand &cProbableOpponentHand)
             if (cProbableCard.Probability() < 1.0)
             {
                 // Collect number of cards of rank in probable deck and probable opponent's hand
-                nCardsOfRankInDeck = HasCardsOfRank(cProbableCard.Rank());
+                nCardsOfRankInDeck = this->HasCardsOfRank(cProbableCard.Rank());
                 nCardsOfRankInHand = cProbableOpponentHand.HasCardsOfRank(cProbableCard.Rank());
 
-                // If cards are found in probable opponent's hands, check current probabilities
+                //
+                // Update probabilities in ProbableDeck
+                //
+
+                // Remove cards from ProbableDeck
+                vProbableCards = this->RemoveCardsOfRank(cProbableCard.Rank());
+
+                // Loop through all cards
+                for (Card &cCard : vProbableCards)
+                {
+                    // Update probability = num of cards in deck divided by sum of num cards in deck and num cards in opponent's hand
+                    cCard.SetProbability(static_cast<float>(this->NumberOfCards() / (this->NumberOfCards() + cProbableOpponentHand.NumberOfCards())));
+                }
+
+                // Add cards back to ProbableDeck
+                this->AddCards(vProbableCards);
+
+                //
+                // Update probabilities in ProbableOpponentHand
+                //
+
+                // If cards are found in probable opponent's hands, evaluate
                 if (nCardsOfRankInHand > 0)
                 {
-                    // Get vector of cards
+                    // Get vector of cards from ProbableOpponentHand
                     std::vector<Card> vProbableCards = cProbableOpponentHand.RemoveCardsOfRank(cProbableCard.Rank());
 
-                    // Check first card's probability in vector.  If less than certainty, update.
+                    // If probability is not certainty, update
                     if (vProbableCards[0].Probability() < 1.0)
                     {
-                        // Update probabilities in probable opponent's hand
-                        // Update probabilities in probable deck
+                        // Loop through all cards
+                        for (Card &cCard : vProbableCards)
+                        {
+                            // Update probability = num cards in opponent's hand divided by sum of num cards in deck and num cards in opponent's hand
+                            cCard.SetProbability(static_cast<float>(cProbableOpponentHand.NumberOfCards() / (this->NumberOfCards() + cProbableOpponentHand.NumberOfCards())));
+                        }
                     }
 
-                    // Put cards back
+                    // Add cards back to ProbableOpponentHand
                     cProbableOpponentHand.AddCards(vProbableCards);
                 }
-                else
-                {
-
-                }
-            }
-        }
-    }
+            } // if (cProbableCard.Probability() < 1.0)
+        } // if (cProbableCard.Rank() != cLastProbableCard.Rank())
+    } // for (Card &cProbableCard : m_vCards)
 
     return;
 }

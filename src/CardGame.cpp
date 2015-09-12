@@ -54,8 +54,6 @@ bool CardGame::GetSyncInfo(std::string &sGameInformation)
     {
         m_cLogger.LogInfo("Gathering synchronization on deck", 2);
         sLogInfo = "Deck Ranks: " + m_cDeck.Ranks();
-        //m_cLogger.LogInfo("Deck Ranks: ", 3);
-        //m_cLogger.LogInfo(m_cDeck.Ranks(), 3);
         m_cLogger.LogInfo(sLogInfo, 3);
         sGameInformation = m_cDeck.JsonSerialization().toStyledString();
         m_bSyncDeck = false;
@@ -65,8 +63,6 @@ bool CardGame::GetSyncInfo(std::string &sGameInformation)
     {
         m_cLogger.LogInfo("Gathering synchronization on first hand", 2);
         sLogInfo = "First Hand Ranks: " + m_vHands[0].Ranks();
-        //m_cLogger.LogInfo("First Hand Ranks: ", 3);
-        //m_cLogger.LogInfo(m_vHands[0].Ranks(), 3);
         m_cLogger.LogInfo(sLogInfo, 3);
         sGameInformation = m_vHands[0].JsonSerialization().toStyledString();
         m_bSyncFirstHand = false;
@@ -76,8 +72,6 @@ bool CardGame::GetSyncInfo(std::string &sGameInformation)
     {
         m_cLogger.LogInfo("Gathering synchronization on second hand", 2);
         sLogInfo = "Second Hand Ranks: " + m_vHands[1].Ranks();
-        //m_cLogger.LogInfo("Second Hand Ranks: ", 3);
-        //m_cLogger.LogInfo(m_vHands[1].Ranks(), 3);
         m_cLogger.LogInfo(sLogInfo, 3);
         sGameInformation = m_vHands[1].JsonSerialization().toStyledString();
         m_bSyncSecondHand = false;

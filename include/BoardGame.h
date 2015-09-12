@@ -69,11 +69,11 @@ class BoardGame : public Game
         // Return the score of the game
         virtual std::string GameScore() const override;
 
-        // Initialize Blackboard
-        virtual void BlackboardInitialize(Blackboard &cBlackboard) const override { (void)cBlackboard; return; }
-
         // Update Blackboard
-        virtual void BlackboardUpdate(Blackboard &cBlackboard) const override { (void)cBlackboard; return; }
+        virtual void BlackboardUpdate(int nPlayer, Blackboard &cBlackboard) const override { (void)nPlayer; (void)cBlackboard; return; }
+
+        // Generate a move from the Blackboard
+        virtual GameMove BlackboardMove(int nPlayer, Blackboard &cBlackboard) const override { (void)nPlayer; (void)cBlackboard; GameMove cGameMove; return cGameMove; }
 
         // Check to see if the game has ended
         virtual bool GameEnded(int nPlayer) override;
@@ -85,6 +85,9 @@ class BoardGame : public Game
         void SetBoard() { cBoard.Clear(); };
 
     protected:
+        // Initialize Blackboard
+        virtual void BlackboardInitialize(int nPlayer, Blackboard &cBlackboard) const override { (void)nPlayer; (void)cBlackboard; return; }
+
         // Max X-coordinate for this game
         const int  m_knX;
         // Max Y-coordinate this game

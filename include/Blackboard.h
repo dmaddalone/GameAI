@@ -36,13 +36,16 @@ class Blackboard
         Blackboard() {};
         virtual ~Blackboard() {};
 
-        bool Initialized() { return m_bInitialized; }
-        void Initialize()  { m_bInitialized = true; }
+        bool Initialized()     { return m_bInitialized; }
+        void SetInitialized()  { m_bInitialized = true; }
 
-    private:
+        //
+        // Public members
+        //
         ProbableDeck m_cProbableDeck;
         ProbableHand m_cProbableOpponentHand;
 
+    private:
         bool m_bInitialized {false};
 };
 

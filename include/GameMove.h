@@ -159,12 +159,18 @@ class GameMove
         void SetTestMove(bool b) { m_bTestMove = b; }
         bool TestMove() const    { return m_bTestMove; }
 
+        // Set and return whether this is a success
+        void SetSuccess(bool b)  { m_bSuccess = b; }
+        bool Success()           { return m_bSuccess; }
+
         // Compare two moves and whether their to-moves are the same
         bool SameTo(const GameMove &cGameMove) { if ((cGameMove.ToX() == m_nToX) && (cGameMove.ToY() == m_nToY)) return true; else return false;}
 
         // Add card to move
         void UpdateCard(Card &cCard) { m_cCard = cCard; }
         Card GetCard() const         { return m_cCard; }
+        void SetCards(int n)         { m_nCards = n; }
+        int  Cards()                 { return m_nCards; }
 
         // Announce the moves
         std::string AnnounceMove() const;
@@ -190,17 +196,17 @@ class GameMove
         std::string m_sArgument {};
 
         // Game move coordinates - initialize to garbage
-        int  m_nFromX {-1};   // Start = 0
-        char m_cFromX {'?'};  // Start = 'a'
+        int  m_nFromX {-1};
+        char m_cFromX {'?'};
 
-        int  m_nFromY {-1};   // Start = 0
-        char m_cFromY {'?'};  // Start = '1'
+        int  m_nFromY {-1};
+        char m_cFromY {'?'};
 
-        int  m_nToX {-1};     // Start = 0
-        char m_cToX {'?'};    // Start = 'a'
+        int  m_nToX {-1};
+        char m_cToX {'?'};
 
-        int  m_nToY {-1};     // Start = 0
-        char m_cToY {'?'};    // Start  ='1'
+        int  m_nToY {-1};
+        char m_cToY {'?'};
 
         // Whether the Y-coordinates are used
         bool m_bUseY {true};
@@ -208,10 +214,10 @@ class GameMove
         // Whether the From coordinates are used
         bool m_bUseFrom {false};
 
-        // Whether this is a Move
+        // Whether this is a Move, as in moving a game board piece
         bool m_bMove {true};
 
-        // Whether this is a move or not; used if no move is possible
+        // Whether this is a move or not; used if no game move/turn is possible
         bool m_bNoMove {false};
 
         // Whether this is a resignation
@@ -219,6 +225,9 @@ class GameMove
 
         // Card
         Card m_cCard;
+
+        // Number of cards involved
+        int m_nCards {0};
 
         // Whether this is a fold
         bool m_bFold {false};
@@ -241,6 +250,9 @@ class GameMove
 
         // Whether this is a test move
         bool m_bTestMove {false};
+
+        // Whether this move is considered a success
+        bool m_bSuccess {false};
 };
 
 #endif // GAMEMOVE_H

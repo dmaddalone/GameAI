@@ -109,11 +109,11 @@ class Game
         // Evaluate the game state from the perspective of the nPlayer
         virtual int  EvaluateGameState(int nPlayer) = 0;
 
-        // Initialize Blackboard
-        virtual void BlackboardInitialize(Blackboard &cBlackboard) const = 0;
-
         // Update Blackboard
-        virtual void BlackboardUpdate(Blackboard &cBlackboard) const = 0;
+        virtual void BlackboardUpdate(int nPlayer, Blackboard &cBlackboard) const = 0;
+
+        // Generate a move from the Blackboard
+        virtual GameMove BlackboardMove(int nPlayer, Blackboard &cBlackboard) const = 0;
 
         // Clone the current game
         virtual std::unique_ptr<Game> Clone() const = 0;
@@ -161,6 +161,9 @@ class Game
         bool GameOver() const      { return m_bGameOver; }
 
     protected:
+        // Initialize Blackboard
+        virtual void BlackboardInitialize(int nPlayer, Blackboard &cBlackboard) const = 0;
+
         // Write and read moves from a file
         bool OpenFileForWrite(const std::string &sFileName, std::fstream &fsFile);
         bool WriteMoves(const std::string &sFileName, std::fstream &fsFile);

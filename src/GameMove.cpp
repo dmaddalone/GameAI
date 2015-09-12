@@ -175,6 +175,9 @@ Json::Value GameMove::JsonSerialization() const
     jValue["bScore"]        = m_bScore;
     jValue["bAnotherTurn"]  = m_bAnotherTurn;
     jValue["bTestMove"]     = m_bTestMove;
+    jValue["bSuccess"]      = m_bSuccess;
+
+    jValue["nCards"]        = m_nCards;
 
     Json::Value jCardValue;
     jCardValue = m_cCard.JsonSerialization();
@@ -217,6 +220,9 @@ bool GameMove::JsonDeserialization(const std::string &sJsonGameMove, std::string
         m_bScore        = jValue["bScore"].asBool();
         m_bAnotherTurn  = jValue["bAnotherTurn"].asBool();
         m_bTestMove     = jValue["bTestMove"].asBool();
+        m_bSuccess      = jValue["bSuccess"].asBool();
+
+        m_nCards        = jValue["nCards"].asInt();
 
         if (m_cCard.JsonDeserialization(jValue["Card"].toStyledString(), sErrorMessage))
         {

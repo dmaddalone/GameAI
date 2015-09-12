@@ -69,6 +69,13 @@ class ProbableHand : public Hand
             Hand()
         {}
 
+        void SetNumberOfCards(int n)    { m_nNumberOfCards = n; }
+        void ReduceNumberOfCards(int n) { m_nNumberOfCards -= n; }
+        int  NumberOfCards()            { return m_nNumberOfCards; }
+
+    private:
+        int m_nNumberOfCards {0};
+
         //void UpdateRankProbabilities(Hand &cProbableOpponentHand);
 };
 

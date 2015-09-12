@@ -90,11 +90,11 @@ class CardGameGoFish : public CardGame
         // Check to see if the game has ended
         virtual bool GameEnded(int nPlayer) override;
 
-        // Initialize Blackboard
-        virtual void BlackboardInitialize(Blackboard &cBlackboard) const override;
-
         // Update Blackboard
-        virtual void BlackboardUpdate(Blackboard &cBlackboard) const override;
+        virtual void BlackboardUpdate(int nPlayer, Blackboard &cBlackboard) const override;
+
+        // Generate a move from the Blackboard
+        virtual GameMove BlackboardMove(int nPlayer, Blackboard &cBlackboard) const override;
 
         // Clone the current game
         virtual std::unique_ptr<Game> Clone() const override { return std::unique_ptr<Game>(new CardGameGoFish(*this)); }
@@ -116,7 +116,13 @@ class CardGameGoFish : public CardGame
         bool GoFish(int nPlayer);
 
     protected:
+        // Initialize Blackboard
+        virtual void BlackboardInitialize(int nPlayer, Blackboard &cBlackboard) const override;
+
     private:
+        // Number of cards to make a book
+        const int m_knBookNumber {4};
+
         // Return all ranks in the Books
         std::string BooksRanks() const;
         // Serialize and deserialize Books

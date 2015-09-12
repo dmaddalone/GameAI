@@ -37,6 +37,10 @@ bool AIPlayer::Move(Game &cGame)
         return true;
     }
 
+    // If this is not a deterministic game, update the blackboard, before skipping turn
+    if (!cGame.EnvironmentDeterministic())
+        cGame.BlackboardUpdate(m_nPlayerNumber, m_cBlackBoard);
+
     // If Another Turn is set for opponent, skip this player's turn
     GameMove cGameMove = cGame.LastMove();
     if (cGameMove.AnotherTurn() && (cGameMove.PlayerNumber() != m_nPlayerNumber))
@@ -63,7 +67,10 @@ bool AIPlayer::Move(Game &cGame)
     }
 
     // Get best game move
-    cGameMove = MinimaxMove(m_nPlayerNumber, cGame, m_nDepth);
+    if (cGame.EnvironmentDeterministic())
+        cGameMove = MinimaxMove(m_nPlayerNumber, cGame, m_nDepth);
+    else
+        cGameMove = ProbabilityMove(cGame);
 
     // Announce game move
     m_cLogger.LogInfo(cGame.AnnounceMove(m_nPlayerNumber, cGameMove),1);
@@ -321,17 +328,9 @@ int AIPlayer::MaxMove(int nPlayer, Game &cGame, int nDepth, int nAlpha, int nBet
     return nAlpha;
 }
 
-GameMove AIPlayer::ProbabilityMove(int nPlayer, Game &cGame)
+GameMove AIPlayer::ProbabilityMove(Game &cGame)
 {
-    if (!m_cBlackBoard.Initialized())
-    {
-        // Remove cards from ProbableDeck that match all my hand's cards
-        // Set initialize flag
-    }
-
-    // Check last move; if Ask by opponent, add this card to ProbableOpponentHand, with high probability
-    // Based on game, update rank probabilities -> void cGame.BlackboardUpdate(cBlackBoard);
-    // Based on game, generate move with best probability -> GameMove cBestMove = cGame.BlackboardMove(cBlackBoard);
+    cGame.BlackboardUpdate(m_nPlayerNumber, m_cBlackBoard);
 
     GameMove cBestMove;
 

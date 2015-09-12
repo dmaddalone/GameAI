@@ -464,7 +464,9 @@ int main(int argc, char* argv[])
     // If input file specified, read and apply moves.
     // Returns number of Player-To-Play-Next, 1 or 2; or 0 if error.
     if (!sInputFile.empty())
+    {
         nPlayer = pcGame->ReadMovesFromFile(sInputFile);
+    }
 
     // Evaluate game ended before moving into player turns loop
     // If nPlayer == 0, an error occured.
@@ -499,7 +501,9 @@ int main(int argc, char* argv[])
         // Announce game score
         sGameScore = pcGame->GameScore();
         if (!sGameScore.empty())
+        {
             std::cout << sGameScore << std::endl;
+        }
 
         // Evaluate game state from opoponent's perspective.  If game ended, allow opoonent to finish.
         // Then break from loop.

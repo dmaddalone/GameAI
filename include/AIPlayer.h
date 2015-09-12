@@ -65,7 +65,7 @@ class AIPlayer : public Player
         int MaxMove(int nPlayer, Game &cGame, int nDepth, int nAlpha, int nBeta);
 
         // Generate the best move by assessing probabilities
-        GameMove ProbabilityMove(int nPlayer, Game &cGame);
+        GameMove ProbabilityMove(Game &cGame);
 
         // Blackboard
         Blackboard m_cBlackBoard;
