@@ -125,6 +125,7 @@ class CardGameGoFish : public CardGame
 
         // Return all ranks in the Books
         std::string BooksRanks() const;
+        std::string BooksUniqueRanks() const;
         // Serialize and deserialize Books
         Json::Value BooksJsonSerialization() const;
         bool        BooksJsonDeserialization(const std::string &sJsonPlayingCards, std::string &sErrorMessage);

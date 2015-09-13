@@ -94,7 +94,6 @@ void Deck::Deal(int nNumberOfCardsPerHand, std::vector<Hand> &vHands, bool bDeal
 
 void ProbableDeck::UpdateRankProbabilities(ProbableHand &cProbableOpponentHand)
 {
-    //int nCardsOfRankInDeck {};
     int nCardsOfRankInHand {};
     std::vector<Card> vProbableCards {};
 
@@ -115,8 +114,7 @@ void ProbableDeck::UpdateRankProbabilities(ProbableHand &cProbableOpponentHand)
             // If probability is less than 100% (certainty), update probabilities
             if (cProbableCard.Probability() < 1.0)
             {
-                // Collect number of cards of rank in probable deck and probable opponent's hand
-                //nCardsOfRankInDeck = this->HasCardsOfRank(cProbableCard.Rank());
+                // Collect number of cards of rank in probable opponent's hand
                 nCardsOfRankInHand = cProbableOpponentHand.HasCardsOfRank(cProbableCard.Rank());
 
                 //
@@ -130,7 +128,8 @@ void ProbableDeck::UpdateRankProbabilities(ProbableHand &cProbableOpponentHand)
                 for (Card &cCard : vProbableCards)
                 {
                     // Update probability = num of cards in deck divided by sum of num cards in deck and num cards in opponent's hand
-                    cCard.SetProbability(static_cast<float>(this->NumberOfCards() / (this->NumberOfCards() + cProbableOpponentHand.NumberOfCards())));
+                    cCard.SetProbability(static_cast<float>(this->NumberOfCards()) /
+                        static_cast<float>((this->NumberOfCards() + cProbableOpponentHand.NumberOfCards())));
                 }
 
                 // Add cards back to ProbableDeck
@@ -153,7 +152,9 @@ void ProbableDeck::UpdateRankProbabilities(ProbableHand &cProbableOpponentHand)
                         for (Card &cCard : vProbableCards)
                         {
                             // Update probability = num cards in opponent's hand divided by sum of num cards in deck and num cards in opponent's hand
-                            cCard.SetProbability(static_cast<float>(cProbableOpponentHand.NumberOfCards() / (this->NumberOfCards() + cProbableOpponentHand.NumberOfCards())));
+                            cCard.SetProbability(static_cast<float>(cProbableOpponentHand.NumberOfCards()) /
+                                static_cast<float>((this->NumberOfCards() + cProbableOpponentHand.NumberOfCards())));
+
                         }
                     }
 

@@ -148,7 +148,7 @@ Blackboard - for Player N
 				<Option object_output="obj/Debug/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
-				<Option parameters="-1 human  -2 human -g go-fish" />
+				<Option parameters="-1 ai  -2 human -g go-fish" />
 				<Compiler>
 					<Add option="-std=c++11" />
 					<Add option="-Wextra" />

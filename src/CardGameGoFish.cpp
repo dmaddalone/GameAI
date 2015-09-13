@@ -222,7 +222,7 @@ bool CardGameGoFish::ApplyMove(int nPlayer, GameMove &cGameMove)
         }
         std::cout << "The deck has " << m_cDeck.HasCards() << " cards." << std::endl;
 
-        std::cout << "Books made: ";
+        std::cout << "Books made: " << BooksUniqueRanks() << std::endl;
 
         return true;
     }
@@ -453,6 +453,8 @@ bool CardGameGoFish::GameEnded(int nPlayer)
 // Initialize Blackboard
 void CardGameGoFish::BlackboardInitialize(int nPlayer, Blackboard &cBlackboard) const
 {
+    m_cLogger.LogInfo("Blackboard initialization", 3);
+
     // Remove cards matching my hand from ProbableDeck
     std::string       sRank {};
     std::vector<Card> vCards {};
@@ -502,6 +504,9 @@ void CardGameGoFish::BlackboardInitialize(int nPlayer, Blackboard &cBlackboard) 
 // Generate a move from the Blackboard
 GameMove CardGameGoFish::BlackboardMove(int nPlayer, Blackboard &cBlackboard) const
 {
+    // Logging messages
+    std::string sLogMessage {};
+
     // Generic GamevMove
     GameMove cGameMove;
 
@@ -521,6 +526,10 @@ GameMove CardGameGoFish::BlackboardMove(int nPlayer, Blackboard &cBlackboard) co
         float fProbabilityOfPullingCard =
             cBlackboard.m_cProbableOpponentHand.HasRank(cProbableCard.Rank()) /
             cBlackboard.m_cProbableOpponentHand.HasCards() * cProbableCard.Probability();
+
+        sLogMessage = "Prob Oppo: P(pull " + cProbableCard.Rank() + ") from Player" +
+            std::to_string(3 - nPlayer) + " = " + std::to_string(fProbabilityOfPullingCard);
+        m_cLogger.LogInfo(sLogMessage, 3);
 
         if (fProbabilityOfPullingCard >= .5)
         {
@@ -546,6 +555,10 @@ GameMove CardGameGoFish::BlackboardMove(int nPlayer, Blackboard &cBlackboard) co
         float fProbabilityOfPullingCard =
             cBlackboard.m_cProbableDeck.HasRank(cProbableCard.Rank()) /
             cBlackboard.m_cProbableDeck.HasCards() * cProbableCard.Probability();
+
+        sLogMessage = "Prob Deck: P(pull " + cProbableCard.Rank() + ") from Player" +
+            std::to_string(3 - nPlayer) + " = " + std::to_string(fProbabilityOfPullingCard);
+        m_cLogger.LogInfo(sLogMessage, 3);
 
         if (fProbabilityOfPullingCard >= .15)
         {
@@ -600,6 +613,8 @@ GameMove CardGameGoFish::BlackboardMove(int nPlayer, Blackboard &cBlackboard) co
 // Update Blackboard
 void CardGameGoFish::BlackboardUpdate(int nPlayer, Blackboard &cBlackboard) const
 {
+    std::string sLogMessage {};
+
     // If not initialized, initialize
     if (!cBlackboard.Initialized())
         BlackboardInitialize(nPlayer, cBlackboard);
@@ -615,7 +630,7 @@ void CardGameGoFish::BlackboardUpdate(int nPlayer, Blackboard &cBlackboard) cons
         return;
     }
 
-    std::string sRank = cLastMove.Argument();
+    std::string sRank = cLastMove.GetCard().Rank();
     bool        bSuccess = cLastMove.Success();
     int         nCards = cLastMove.Cards();
 
@@ -647,6 +662,9 @@ void CardGameGoFish::BlackboardUpdate(int nPlayer, Blackboard &cBlackboard) cons
             cCard.SetProbability(1.0);
             for (int iii = 0; iii < m_knBookNumber - nNumberOfCardsOfRankInMyHand; ++iii)
             {
+                //sLogMessage = "Prob Update: Card " + sRank + " with P(" + std::to_string(cCard.Probability()) +
+                //    ") for Deck";
+                //m_cLogger.LogInfo(sLogMessage,3);
                 cBlackboard.m_cProbableDeck.AddCard(cCard);
             }
         }
@@ -718,6 +736,10 @@ void CardGameGoFish::BlackboardUpdate(int nPlayer, Blackboard &cBlackboard) cons
             cCard.SetProbability(0.0);
             for (int iii = nCards + 1; iii < m_knBookNumber; ++iii)
             {
+                sLogMessage = "Prob Update: Card " + sRank + " with P(" + std::to_string(cCard.Probability()) +
+                    ") for Deck";
+                m_cLogger.LogInfo(sLogMessage,3);
+
                 cBlackboard.m_cProbableOpponentHand.AddCard(cCard);
             }
 
@@ -806,8 +828,23 @@ void CardGameGoFish::BlackboardUpdate(int nPlayer, Blackboard &cBlackboard) cons
     }
 
     //
-    // TODO: Update based on books
+    // Update based on books
     //
+    sRank.clear();
+    for (const char &cToken : BooksUniqueRanks())
+    {
+        if (cToken != ' ')
+        {
+            sRank += cToken;
+        }
+        else
+        {
+            cBlackboard.m_cProbableDeck.RemoveCardsOfRank(sRank);
+            cBlackboard.m_cProbableOpponentHand.RemoveCardsOfRank(sRank);
+            sRank.clear();
+        }
+    }
+
 
     // Update rank probabilities
     cBlackboard.m_cProbableDeck.UpdateRankProbabilities(cBlackboard.m_cProbableOpponentHand);
@@ -818,18 +855,33 @@ void CardGameGoFish::BlackboardUpdate(int nPlayer, Blackboard &cBlackboard) cons
 std::string CardGameGoFish::BooksRanks() const
 {
     std::string sRanks {};
-    Hand cHand;
 
     for (const auto &PlayerHand : m_uommBooks)
     {
-        cHand = PlayerHand.second;
-        sRanks += cHand.Ranks();
+        sRanks += PlayerHand.second.Ranks();
     }
 
     if (sRanks.empty())
-        sRanks = "empty";
+        sRanks = "none";
 
     return sRanks;
+}
+
+std::string CardGameGoFish::BooksUniqueRanks() const
+{
+    std::string sUniqueRanks {};
+    std::string sRanks {};
+
+    for (const auto &PlayerHand : m_uommBooks)
+    {
+        sRanks = PlayerHand.second.Ranks();
+        sUniqueRanks = sUniqueRanks + sRanks[0] + " ";
+    }
+
+    if (sUniqueRanks.empty())
+        sUniqueRanks = "none";
+
+    return sUniqueRanks;
 }
 
 Json::Value CardGameGoFish::BooksJsonSerialization() const
