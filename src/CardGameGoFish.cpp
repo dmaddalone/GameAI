@@ -218,9 +218,11 @@ bool CardGameGoFish::ApplyMove(int nPlayer, GameMove &cGameMove)
         // Display game stats
         for (Hand &cHand : m_vHands)
         {
-            std::cout << "Player 1 has " << cHand.HasCards() << " cards." << std::endl;
+            std::cout << "Player " << cHand.ID() << " has " << cHand.HasCards() << " cards." << std::endl;
         }
         std::cout << "The deck has " << m_cDeck.HasCards() << " cards." << std::endl;
+
+        std::cout << "Books made: ";
 
         return true;
     }
@@ -527,6 +529,7 @@ GameMove CardGameGoFish::BlackboardMove(int nPlayer, Blackboard &cBlackboard) co
                 if (cProbableCard.Rank() == cCard.Rank())
                 {
                     cGameMove.UpdateCard(cProbableCard);
+                    cBlackboard.UpdateAsks(cCard.Rank());
                     return cGameMove;
                 }
             }
@@ -551,6 +554,7 @@ GameMove CardGameGoFish::BlackboardMove(int nPlayer, Blackboard &cBlackboard) co
                 if (cProbableCard.Rank() == cCard.Rank())
                 {
                     cGameMove.UpdateCard(cProbableCard);
+                    cBlackboard.UpdateAsks(cCard.Rank());
                     return cGameMove;
                 }
             }
@@ -562,8 +566,7 @@ GameMove CardGameGoFish::BlackboardMove(int nPlayer, Blackboard &cBlackboard) co
     //
     Card cLastCard;
     Card cBestCard;
-    std::map<std::string, int>::iterator it;
-    int nLowestNumberOfAsks {1};
+    int nLeastNumberOfAsks {INT_MAX};
 
     // Loop through my hands in order of number of Ranks in hand (sorted by ApplyMove)
     for (Card &cCard : m_vHands[1 - nPlayer].Cards())
@@ -574,42 +577,23 @@ GameMove CardGameGoFish::BlackboardMove(int nPlayer, Blackboard &cBlackboard) co
             // Update last card
             cLastCard = cCard;
 
-            // Find number of asks for this rank
-            it = cBlackboard.m_mAsks.find(cCard.Rank());
-
-            // If found, evaluate
-            //if (it != std::map.end())
-            if (it != cBlackboard.m_mAsks.end())
+            // Evaluate best card on basis of least asks
+            if (cBlackboard.Asks(cCard.Rank()) < nLeastNumberOfAsks)
             {
-                // If number of asks is lower than previous, update best card to ask for
-                if (it->second < nLowestNumberOfAsks)
-                {
-                    nLowestNumberOfAsks = it->second;
-                    cBestCard = cCard;
-                }
+                nLeastNumberOfAsks = cBlackboard.Asks(cCard.Rank());
+                cBestCard = cCard;
             }
-            // A previous ask is not found, update best card
-            else
+
+            // If least asks at zero, break
+            if (nLeastNumberOfAsks == 0)
             {
-                // if best card has not yet been assigned, update best card to ask for, and break
-                if (cBestCard.Rank().empty())
-                {
-                    nLowestNumberOfAsks = 0;
-                    cBestCard = cCard;
-                    break;
-                }
+                break;
             }
         }
     }
 
-    // Update m_mAsks
-    if (nLowestNumberOfAsks != 0)
-    {
-        cBlackboard.m_mAsks.erase(cBestCard.Rank());
-    }
-    cBlackboard.m_mAsks.insert(std::pair<std::string, int>(cBestCard.Rank(), ++nLowestNumberOfAsks));
-
     cGameMove.UpdateCard(cBestCard);
+    cBlackboard.UpdateAsks(cBestCard.Rank());
     return cGameMove;
 }
 

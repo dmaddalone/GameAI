@@ -39,7 +39,9 @@ bool AIPlayer::Move(Game &cGame)
 
     // If this is not a deterministic game, update the blackboard, before skipping turn
     if (!cGame.EnvironmentDeterministic())
+    {
         cGame.BlackboardUpdate(m_nPlayerNumber, m_cBlackBoard);
+    }
 
     // If Another Turn is set for opponent, skip this player's turn
     GameMove cGameMove = cGame.LastMove();

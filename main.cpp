@@ -105,16 +105,16 @@ static void ShowVersion()
   * \return True if player type known.  False otherwise.
   */
 
-static bool SetPlayerType(char* pcType, std::vector<std::unique_ptr<Player>> &vPlayers)
+static bool GeneratePlayer(std::string sPlayer, std::vector<std::unique_ptr<Player>> &vPlayers)
 {
-    std::string sType(pcType);
-    if (sType == "human")
+    //std::string sType(pcType);
+    if (sPlayer == "human")
         vPlayers.emplace_back(Player::MakePlayer(PlayerType::TYPE_HUMAN));
-    else if (sType == "ai")
+    else if (sPlayer == "ai")
         vPlayers.emplace_back(Player::MakePlayer(PlayerType::TYPE_AI));
-    else if (sType == "server")
+    else if (sPlayer == "server")
         vPlayers.emplace_back(Player::MakePlayer(PlayerType::TYPE_CLIENT));
-    else if (sType == "client")
+    else if (sPlayer == "client")
         vPlayers.emplace_back(Player::MakePlayer(PlayerType::TYPE_SERVER));
     else
         return false;
@@ -132,9 +132,8 @@ static bool SetPlayerType(char* pcType, std::vector<std::unique_ptr<Player>> &vP
   * \return unique_ptr to the game, if game type known.  nullptr otherwise.
   */
 
-static std::unique_ptr<Game> SetGame(char* pcGame)
+static std::unique_ptr<Game> GenerateGame(std::string sGame)
 {
-    std::string sGame(pcGame);
     if (sGame == "connectfour")
         return Game::Make(GameType::TYPE_CONNECT_FOUR);
     else if (sGame == "ttt")
@@ -256,17 +255,30 @@ static void SetPlayers(std::string sName, int nPlies1, int nPlies2,
 
 int main(int argc, char* argv[])
 {
-    std::vector<std::unique_ptr<Player>> vPlayers;
+    // Handles for generated game and players
     std::unique_ptr<Game> pcGame {};
-    int  nPlies1             {4};
-    int  nPlies2             {4};
-    int  nPort               {60000};
-    std::string sHost        {"127.0.0.1"};
-    std::string sPlayer1Name {};
-    std::string sPlayer2Name {};
-    std::string sInputFile   {};
-    std::string sOutputFile  {};
-    int  nVerbosity          {1};
+    std::vector<std::unique_ptr<Player>> vPlayers;
+
+    // Strings to hold game and players from getopt
+    std::string sGame            {"unknown"};
+    std::string sPlayer1         {"unknown"};
+    std::string sPlayer2         {"unknown"};
+
+    std::string sPlayer1Name     {};
+    std::string sPlayer2Name     {};
+    std::string sInputFile       {};
+    std::string sOutputFile      {};
+
+    // Depth level for minimax
+    int  nPlies1                 {4};
+    int  nPlies2                 {4};
+
+    // Default network options
+    int  nPort                   {60000};
+    std::string sHost            {"127.0.0.1"};
+
+    // Default verbosity
+    int  nVerbosity              {1};
 
     // Check for command line arguments
     if (argc < 2)
@@ -307,19 +319,11 @@ int main(int argc, char* argv[])
         {
             // Player 1
             case '1':
-                if (!SetPlayerType(optarg, vPlayers))
-                {
-                    std::cerr << "unknown player type " << optarg << std::endl;
-                    exit(EXIT_FAILURE);
-                }
+                sPlayer1.assign(optarg);
                 break;
             // Player 2
             case '2':
-                if (!SetPlayerType(optarg, vPlayers))
-                {
-                    std::cerr << "unknown player type " << optarg << std::endl;
-                    exit(EXIT_FAILURE);
-                }
+                sPlayer2.assign(optarg);
                 break;
             // Plies for player 1 and player 2
             case 'p':
@@ -343,7 +347,7 @@ int main(int argc, char* argv[])
                 break;
             // Game
             case 'g':
-                pcGame = SetGame(optarg);
+                sGame.assign(optarg);
                 break;
             // Port
             case 't':
@@ -393,9 +397,25 @@ int main(int argc, char* argv[])
                 break;
             // Unkown option
             default:
-                throw GameAIException("main getopt returned character code ", std::to_string(nC));
+                throw GameAIException("getopt returned character code ", std::to_string(nC));
                 break;
         }
+    }
+
+    // Generate game
+    pcGame = GenerateGame(sGame);
+
+    // Generate players
+    if (!GeneratePlayer(sPlayer1, vPlayers))
+    {
+        std::cerr << "unknown player type " << optarg << std::endl;
+        exit(EXIT_FAILURE);
+    }
+
+    if (!GeneratePlayer(sPlayer2, vPlayers))
+    {
+        std::cerr << "unknown player type " << optarg << std::endl;
+        exit(EXIT_FAILURE);
     }
 
     // Ensure two players and a game are generated
@@ -451,6 +471,8 @@ int main(int argc, char* argv[])
 
         std::cout << std::endl;
     }
+
+    std::cout << "Start game\n" << std::endl;
 
     //
     // If input file specified, read and apply game moves

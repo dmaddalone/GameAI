@@ -45,10 +45,14 @@ class Blackboard
         //
         ProbableDeck m_cProbableDeck;
         ProbableHand m_cProbableOpponentHand;
-        std::map<std::string, int> m_mAsks {};
+
+        void UpdateAsks(const std::string &sRank);
+        int  Asks(const std::string &sRank) const;
 
     private:
         bool m_bInitialized {false};
+
+        std::map<std::string, int> m_mAsks {};
 };
 
 #endif // BLACKBOARD_H
