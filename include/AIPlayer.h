@@ -20,7 +20,8 @@
 /** \file
  *
  * \brief The AIPlayer class represents a computer game player, based
- * on the Minimax algorithm, using alpha-beta pruning.
+ * on the Minimax algorithm, using alpha-beta pruning, or a blackboard
+ * approach.
  *
  */
 

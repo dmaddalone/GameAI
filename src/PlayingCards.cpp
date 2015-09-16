@@ -19,10 +19,26 @@
 
 #include "PlayingCards.h"
 
+/**
+  * Return the number of cards in possession.
+  *
+  * \return The number of cards in possession.
+  */
+
 int PlayingCards::HasCards() const
 {
     return m_vCards.size();
 }
+
+/**
+  * Evaluate whether a rank is in possession.
+  *
+  * Evaluate all cards in possession for the rank.
+  *
+  * \param sRank The rank in question.
+  *
+  * \return True if the rank is in possession, false otherwise.
+  */
 
 bool PlayingCards::HasRank(const std::string &sRank) const
 {
@@ -37,6 +53,16 @@ bool PlayingCards::HasRank(const std::string &sRank) const
     return false;
 }
 
+/**
+  * Evaluate whether a suit is in possession.
+  *
+  * Evaluate all cards in possession for the suit.
+  *
+  * \param sSuit The suit in question.
+  *
+  * \return True if the suit is in possession, false otherwise.
+  */
+
 bool PlayingCards::HasSuit(const std::string &sSuit) const
 {
     for (const Card &cCard : m_vCards)
@@ -49,6 +75,16 @@ bool PlayingCards::HasSuit(const std::string &sSuit) const
 
     return false;
 }
+
+/**
+  * Evaluate how many cards of a rank are in possession.
+  *
+  * Evaluate all cards in possession for the rank.
+  *
+  * \param sRank The rank in question.
+  *
+  * \return The number of cards of rank in possession.
+  */
 
 int PlayingCards::HasCardsOfRank(const std::string &sRank) const
 {
@@ -65,6 +101,16 @@ int PlayingCards::HasCardsOfRank(const std::string &sRank) const
     return nCount;
 }
 
+/**
+  * Evaluate how many cards of a suit are in possession.
+  *
+  * Evaluate all cards in possession for the suit.
+  *
+  * \param sSuit The suit in question.
+  *
+  * \return The number of cards of suit in possession.
+  */
+
 int PlayingCards::HasCardsOfSuit(const std::string &sSuit) const
 {
     int nCount {0};
@@ -80,16 +126,59 @@ int PlayingCards::HasCardsOfSuit(const std::string &sSuit) const
     return nCount;
 }
 
+/**
+  * Return string representing ranks in possession.
+  *
+  * \return String of ranks.
+  */
+
+std::string PlayingCards::Ranks() const
+{
+    std::string sRanks {};
+
+    for (const Card &cCard : m_vCards)
+    {
+        sRanks += cCard.Rank() + " ";
+    }
+
+    if (sRanks.empty())
+        sRanks = "empty";
+
+    return sRanks;
+}
+
+/**
+  * Add a card to possession.
+  *
+  * The card is added to the bottom (last) of the possession.
+  *
+  * \param cCard The card to add.
+  */
+
 void PlayingCards::AddCard(Card &cCard)
 {
     m_vCards.push_back(cCard);
 }
+
+/**
+  * Add a card to possessions as the top or first card.
+  *
+  * \param cCard The card to add.
+  */
 
 void PlayingCards::AddCardToTop(Card &cCard)
 {
     std::vector<Card>::iterator it = m_vCards.begin();
     m_vCards.insert(it, cCard);
 }
+
+/**
+  * Add a cards to possession.
+  *
+  * The cards are added to the bottom (last) of the possession.
+  *
+  * \param vCards Vector of cards to add.
+  */
 
 void PlayingCards::AddCards(std::vector<Card> &vCards)
 {
@@ -98,6 +187,15 @@ void PlayingCards::AddCards(std::vector<Card> &vCards)
         m_vCards.push_back(cCard);
     }
 }
+
+/**
+  * Draw the top card from the possession.
+  *
+  * The top card is removed from the possession and returned
+  * to the caller.
+  *
+  * \return The top card.
+  */
 
 Card PlayingCards::DrawTopCard()
 {
@@ -108,12 +206,32 @@ Card PlayingCards::DrawTopCard()
     return cCard;
 }
 
+/**
+  * Peek at the bottom card from the possession.
+  *
+  * A copy of the bottom card is returned to the caller.
+  *
+  * \return A copy of the bottom card.
+  */
+
 Card PlayingCards::PeekAtBottomCard() const
 {
     Card cCard = m_vCards.back();
 
     return cCard;
 }
+
+/**
+  * Remove a specific card from the possession.
+  *
+  * The card matching the rank and suit are removed from the
+  * possession and returned to the caller.
+  *
+  * \param sRank The rank in question
+  * \param sSuit The suit in question
+  *
+  * \return The matching card.
+  */
 
 Card PlayingCards::RemoveCard(std::string sRank, std::string sSuit)
 {
@@ -130,6 +248,17 @@ Card PlayingCards::RemoveCard(std::string sRank, std::string sSuit)
 
     return cCard;
 }
+
+/**
+  * Remove a cards of rank from the possession.
+  *
+  * Cards matching the rank are removed from the possession and returned to the caller.
+  *
+  * \param sRank           The rank in question
+  * \param nNumberToRemove The maximum number of cards to remove
+  *
+  * \return A vector of cards.
+  */
 
 std::vector<Card> PlayingCards::RemoveCardsOfRank(std::string sRank, int nNumberToRemove)
 {
@@ -155,6 +284,17 @@ std::vector<Card> PlayingCards::RemoveCardsOfRank(std::string sRank, int nNumber
     return vCards;
 }
 
+/**
+  * Remove a cards of suit from the possession.
+  *
+  * Cards matching the suit are removed from the possession and returned to the caller.
+  *
+  * \param sSuit           The suit in question
+  * \param nNumberToRemove The maximum number of cards to remove
+  *
+  * \return A vector of cards.
+  */
+
 std::vector<Card> PlayingCards::RemoveCardsOfSuit(std::string sSuit, int nNumberToRemove)
 {
     std::vector<Card> vCards {};
@@ -178,6 +318,12 @@ std::vector<Card> PlayingCards::RemoveCardsOfSuit(std::string sSuit, int nNumber
 
     return vCards;
 }
+
+/**
+  * Serialize the class into a Json object.
+  *
+  * \return The Json Value object representing the class.
+  */
 
 Json::Value PlayingCards::JsonSerialization() const
 {
@@ -206,6 +352,15 @@ Json::Value PlayingCards::JsonSerialization() const
 
     return jCards;
 }
+
+/**
+  * Deserialize the class from a Json object.
+  *
+  * \param sJsonPlayingCards A JSON string representing a PlayingCards.
+  * \param sErrorMessage     A string to return an error message if needed
+  *
+  * \return True if deserialization is successful, false otherwise
+  */
 
 bool PlayingCards::JsonDeserialization(const std::string &sJsonPlayingCards, std::string &sErrorMessage)
 {
@@ -240,30 +395,23 @@ bool PlayingCards::JsonDeserialization(const std::string &sJsonPlayingCards, std
     }
 }
 
-std::string PlayingCards::Ranks() const
-{
-    std::string sRanks {};
-
-    for (const Card &cCard : m_vCards)
-    {
-        sRanks += cCard.Rank() + " ";
-    }
-
-    if (sRanks.empty())
-        sRanks = "empty";
-
-    return sRanks;
-}
+/**
+  * Update probabilities of holding certain ranks in possession.
+  *
+  * \param nOtherCards  The number of other cards to consider besides
+  * what is in possession.
+  *
+  */
 
 void PlayingCards::UpdateRankProbabilities(int nOtherCards)
 {
-    // Loop through all cards in probable deck
+    // Loop through all cards in probable possession
     for (Card &cProbableCard : m_vCards)
     {
         // If probability is less than 100% (certainty), update probabilities
         if (cProbableCard.Probability() < 1.0)
         {
-            // Update probability = num of cards in deck divided by sum of num cards in deck and num cards in opponent's hand
+            // Update probability = num of cards in possession divided by sum of num cards in possessions and num of other cards to consider
             cProbableCard.SetProbability(static_cast<float>(this->NumberOfCards()) /
                 static_cast<float>((this->NumberOfCards() + nOtherCards)));
         }

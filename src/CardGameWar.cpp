@@ -416,6 +416,14 @@ bool CardGameWar::GameEnded(int nPlayer)
     return false;
 }
 
+/**
+  * Return the ranks in the Battle.
+  *
+  * Construct a string of ranks in the Battle.
+  *
+  * \return String of ranks.
+  */
+
 std::string CardGameWar::BattleRanks() const
 {
     std::string sRanks {};
@@ -433,6 +441,12 @@ std::string CardGameWar::BattleRanks() const
     return sRanks;
 }
 
+/**
+  * Serialize the Battle into a Json object.
+  *
+  * \return The Json Value object representing the class.
+  */
+
 Json::Value CardGameWar::BattleJsonSerialization() const
 {
     Json::Value jValue;
@@ -441,14 +455,26 @@ Json::Value CardGameWar::BattleJsonSerialization() const
 
     for (const auto &PlayerCard : m_uomBattle)
     {
+        // Add Player and serialized Card to jValue
         jValue["Player"] = PlayerCard.first;
         cCard            = PlayerCard.second;
         jValue["Card"]   = cCard.JsonSerialization();
+
+        // Add jValue to jBattle, indexed by Card ID
         jBattle[std::to_string(cCard.ID())] = jValue;
     }
 
     return jBattle;
 }
+
+/**
+  * Deserialize the Battle from a Json object.
+  *
+  * \param sJsonBattle   A JSON string representing a Battle.
+  * \param sErrorMessage A string to return an error message if needed
+  *
+  * \return True if deserialization is successful, false otherwise
+  */
 
 bool CardGameWar::BattleJsonDeserialization(const std::string &sJsonBattle, std::string &sErrorMessage)
 {
@@ -492,6 +518,15 @@ bool CardGameWar::BattleJsonDeserialization(const std::string &sJsonBattle, std:
     }
 }
 
+/**
+  * Return the ranks in the War Cards.
+  *
+  * Construct a string of ranks in the War Cards.
+  *
+  * \return String of ranks.
+  *
+  */
+
 std::string CardGameWar::WarCardsRanks() const
 {
     std::string sRanks {};
@@ -507,6 +542,12 @@ std::string CardGameWar::WarCardsRanks() const
     return sRanks;
 }
 
+/**
+  * Serialize the War Cards into a Json object.
+  *
+  * \return The Json Value object representing the class.
+  */
+
 Json::Value CardGameWar::WarCardsJsonSerialization() const
 {
     Json::Value jValue;
@@ -521,6 +562,15 @@ Json::Value CardGameWar::WarCardsJsonSerialization() const
 
     return jWarCards;
 }
+
+/**
+  * Deserialize the War Cards from a Json object.
+  *
+  * \param sJsonWarCards A JSON string representing War Cards.
+  * \param sErrorMessage A string to return an error message if needed
+  *
+  * \return True if deserialization is successful, false otherwise
+  */
 
 bool CardGameWar::WarCardsJsonDeserialization(const std::string &sJsonWarCards, std::string &sErrorMessage)
 {

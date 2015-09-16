@@ -19,11 +19,19 @@
 
 #include "Blackboard.h"
 
+/**
+  * Update asks.
+  *
+  * Update the number of times this card rank has been asked for.
+  *
+  * \param sRank The card rank being asked for.
+  */
+
 void Blackboard::UpdateAsks(const std::string &sRank)
 {
     int nAsks {1};
 
-    // Find number of asks for this rank
+    // Find the rank
     std::map<std::string, int>::iterator it = m_mAsks.find(sRank);
 
     // If found, update
@@ -39,6 +47,14 @@ void Blackboard::UpdateAsks(const std::string &sRank)
         m_mAsks.insert(std::pair<std::string, int>(sRank, nAsks));
     }
 }
+
+/**
+  * Find the number of asks for a rank.
+  *
+  * \param sRank The card rank being asked for.
+  *
+  * \return The number of times this rank has been asked for
+  */
 
 int Blackboard::Asks(const std::string &sRank) const
 {

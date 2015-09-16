@@ -22,18 +22,34 @@
 // Initial static int to zero; used to generate unique identifier numbers for cards
 int Card::m_nCardCount {0};
 
+/**
+  * Serialize the class into a Json object.
+  *
+  * \return The Json Value object representing the class.
+  */
+
 Json::Value Card::JsonSerialization() const
 {
     Json::Value jValue;
 
-    jValue["Rank"]     = m_sRank;
-    jValue["Suit"]     = m_sSuit;
-    jValue["Value"]    = m_nValue;
-    jValue["ID"]       = m_nID;
-    jValue["TurnedUp"] = m_bTurnedUp;
+    jValue["Rank"]        = m_sRank;
+    jValue["Suit"]        = m_sSuit;
+    jValue["Value"]       = m_nValue;
+    jValue["ID"]          = m_nID;
+    jValue["TurnedUp"]    = m_bTurnedUp;
+    jValue["Probability"] = m_fProbability;
 
     return jValue;
 }
+
+/**
+  * Deserialize the class from a Json object.
+  *
+  * \param sJsonCard     A JSON string representing a Card.
+  * \param sErrorMessage A string to return an error message if needed
+  *
+  * \return True if deserialization is successful, false otherwise
+  */
 
 bool Card::JsonDeserialization(const std::string &sJsonCard, std::string &sErrorMessage)
 {
@@ -42,11 +58,12 @@ bool Card::JsonDeserialization(const std::string &sJsonCard, std::string &sError
 
      if (jReader.parse(sJsonCard, jValue, false))
     {
-        m_sRank     = jValue["Rank"].asString();
-        m_sSuit     = jValue["Suit"].asString();
-        m_nValue    = jValue["Value"].asInt();
-        m_nID       = jValue["ID"].asInt();
-        m_bTurnedUp = jValue["TurnedUp"].asBool();
+        m_sRank        = jValue["Rank"].asString();
+        m_sSuit        = jValue["Suit"].asString();
+        m_nValue       = jValue["Value"].asInt();
+        m_nID          = jValue["ID"].asInt();
+        m_bTurnedUp    = jValue["TurnedUp"].asBool();
+        m_fProbability = jValue["Probability"].asFloat();
 
         return true;
     }
@@ -56,4 +73,3 @@ bool Card::JsonDeserialization(const std::string &sJsonCard, std::string &sError
         return false;
     }
 }
-

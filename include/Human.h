@@ -35,9 +35,6 @@ class Human: public Player
         // Construct a human player
         Human(PlayerType ecPlayerType) : Player(ecPlayerType) {}
 
-        // Destructor
-        ~Human() {}
-
         // Initializer
         virtual void Initialize(std::string sHost, int nPort, bool &bSwap) override { (void)sHost; (void)nPort; (void)bSwap; }
 

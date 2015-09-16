@@ -19,6 +19,12 @@
 
 #include "Deck.h"
 
+/**
+  * Constructor
+  *
+  * Create a standard deck of 52 playing cards.
+  */
+
 Deck::Deck() : PlayingCards()
 {
     // Create standard 52 card deck
@@ -35,6 +41,13 @@ Deck::Deck() : PlayingCards()
     }
 }
 
+/**
+  * Shuffle the deck.
+  *
+  * Use std::shuffle and a random number to mix the cards.
+  *
+  */
+
 void Deck::Shuffle()
 {
     // Random number generator
@@ -49,6 +62,17 @@ void Deck::Shuffle()
 
     std::shuffle(m_vCards.begin(), m_vCards.end(), RandomNumberGenerator);
 }
+
+/**
+  * Deal cards from the deck.
+  *
+  * Deal cards into a vector of hands.
+  *
+  * \param nNumberOfCardsPerHand Number of cards per hand to deal
+  * \param vHands                Vector of hands to be dealt to
+  * \param bDealCardsEqually     Flag to deal cards equally
+  *
+  */
 
 void Deck::Deal(int nNumberOfCardsPerHand, std::vector<Hand> &vHands, bool bDealCardsEqually)
 {

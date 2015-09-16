@@ -31,7 +31,7 @@
 namespace GameAIVersion
 {
 	//Date Version Types
-	static const std::string DATE {"15"};
+	static const std::string DATE {"16"};
 	static const std::string MONTH {"09"};
 	static const std::string YEAR {"2015"};
 	std::string DateVersion() {return (YEAR+MONTH+DATE); }

@@ -56,8 +56,7 @@ class Card
             m_nID = 0;
         }
 
-        //virtual ~Card() {}
-
+        // Get miscellaneous data about the card
         std::string Suit() const             { return m_sSuit; }
         std::string Rank() const             { return m_sRank; }
         std::string DisplaySuit() const      { if (m_bTurnedUp) return m_sSuit; else return m_sNotTurnedUp; }
@@ -65,15 +64,19 @@ class Card
         std::string DisplayShortName() const { return DisplayRank() + DisplaySuit(); }
         int         Value() const            { return m_nValue; }
 
+        // Set Rank
         bool        SetRank(std::string sRank) { m_sRank = sRank; return RankValid(); }
         bool        RankValid()       { for (const std::string &sRank : asRank) { if (sRank == m_sRank) { return true; } }  return false; }
 
+        // Set and get whether card is turned up
         void        TurnUp(bool b)    { m_bTurnedUp = b; }
         bool        TurnedUp() const  { return m_bTurnedUp; }
 
+        // Overloaded operators for sorting by card value
         bool operator<(const Card &cCard) const { return Value() < cCard.Value(); }
         bool operator>(const Card &cCard) const { return Value() > cCard.Value(); }
 
+        // Get the card ID
         int         ID() const        { return m_nID; }
 
         // Used for Bayesian probabilities
@@ -90,16 +93,16 @@ class Card
         std::string m_sSuit;
         int         m_nValue {0};
 
+        // Whether the card is turned up
         mutable bool m_bTurnedUp { false };
+        // If not turned up
+        std::string m_sNotTurnedUp {"X"};
 
         // Used to create unique card identifier numbers
         static int m_nCardCount;
 
         // Set the card ID to zero
         int m_nID {0};
-
-        // If not turned up
-        std::string m_sNotTurnedUp {"X"};
 
         // Used for Bayesian probabilities
         float m_fProbability {0.0};

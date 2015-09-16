@@ -22,6 +22,15 @@
 // Initial static int to zero; used to generate unique identifier numbers
 int Hand::m_nCount {0};
 
+/**
+  * Display cards in the hand.
+  *
+  * Return a string represent the cards in the hand.  If cards are not turned
+  * up, their suit and rank will be blocked from display.
+  *
+  * \return String of cards.
+  */
+
 std::string Hand::DisplayCards() const
 {
     std::string sCards {};
@@ -34,6 +43,15 @@ std::string Hand::DisplayCards() const
 
     return sCards;
 }
+
+/**
+  * Display ranks of cards in the hand.
+  *
+  * Return a string represent the ranks of cards in the hand. If cards are not turned
+  * up, their rank will be blocked from display.
+  *
+  * \return String of ranks of cards.
+  */
 
 std::string Hand::DisplayRanks() const
 {
@@ -48,6 +66,14 @@ std::string Hand::DisplayRanks() const
     return sCards;
 }
 
+/**
+  * Display cards in the hand.
+  *
+  * Return a string represent the cards in the hand.
+  *
+  * \return String of cards.
+  */
+
 std::string Hand::Ranks() const
 {
     std::string sCards {};
@@ -60,6 +86,16 @@ std::string Hand::Ranks() const
 
     return sCards;
 }
+
+/**
+  * Remove books of ranks from the hand.
+  *
+  * Remove books from hand and return as a hand.
+  *
+  * \param nSizeOfBook Number representing how many cards make a book.
+  *
+  * \return Hand representing the book.
+  */
 
 Hand Hand::RemoveBookByRank(int nSizeOfBook)
 {
@@ -78,6 +114,11 @@ Hand Hand::RemoveBookByRank(int nSizeOfBook)
 
     return cHand;
 }
+
+/**
+  * Sort hand by rank.
+  *
+  */
 
 void Hand::SortByRank()
 {

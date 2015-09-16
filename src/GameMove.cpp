@@ -144,6 +144,12 @@ std::string GameMove::Argument() const
     }
 }
 
+/**
+  * Serialize the class into a Json object.
+  *
+  * \return The Json Value object representing the class.
+  */
+
 Json::Value GameMove::JsonSerialization() const
 {
     Json::Value jValue(Json::objectValue);
@@ -186,6 +192,15 @@ Json::Value GameMove::JsonSerialization() const
 
     return jValue;
 }
+
+/**
+  * Deserialize the class from a Json object.
+  *
+  * \param sJsonGameMove A JSON string representing a game move
+  * \param sErrorMessage A string to return an error message if needed
+  *
+  * \return True if deserialization is successful, false otherwise
+  */
 
 bool GameMove::JsonDeserialization(const std::string &sJsonGameMove, std::string &sErrorMessage)
 {

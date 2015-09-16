@@ -24,7 +24,6 @@
  *
  */
 
-
 #ifndef CARDGAMEWAR_H
 #define CARDGAMEWAR_H
 
@@ -65,9 +64,6 @@ class CardGameWar : public CardGame
         // Apply the move to the game
         virtual bool ApplyMove(int nPlayer, GameMove &cGameMove) override;
 
-        //// Announce the move made
-        //virtual std::string AnnounceMove(int nPlayer, const GameMove &cGameMove) const override;
-
         // Return the score of the game
         virtual std::string GameScore() const override;
 
@@ -90,19 +86,24 @@ class CardGameWar : public CardGame
     private:
         // Return all ranks in the Battle
         std::string BattleRanks() const;
+
         // Serialize and deserialize Battle
         Json::Value BattleJsonSerialization() const;
         bool        BattleJsonDeserialization(const std::string &sJsonPlayingCards, std::string &sErrorMessage);
+
         // Return all ranks in the WarCards
         std::string WarCardsRanks() const;
-        // Serialize and deserialize Battle
+
+        // Serialize and deserialize WarCards
         Json::Value WarCardsJsonSerialization() const;
         bool        WarCardsJsonDeserialization(const std::string &sJsonPlayingCards, std::string &sErrorMessage);
 
         // Battle used to hold cards ready to go to battle
         std::unordered_map<int, Card> m_uomBattle;
+
         // WarCards used to hold cards after battle but before distribution to winning player
         std::vector<Card>             m_vWarCards;
+
         // Flag whether a war has started
         bool                          m_bWar {false};
 

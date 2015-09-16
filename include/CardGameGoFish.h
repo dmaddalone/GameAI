@@ -58,6 +58,7 @@ class CardGameGoFish : public CardGame
             SetShowingAllowed(true);
             SetScoringAllowed(true);
 
+            // Configure logger
             m_cLogger.UseTag(false);
             m_cLogger.UseLevelIndent(false);
         }

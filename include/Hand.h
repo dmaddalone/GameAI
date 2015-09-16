@@ -19,7 +19,8 @@
 
 /** \file
  *
- * \brief The Hand class represents a hand of playing cards.
+ * \brief The Hand class represents a hand of playing cards.  The
+ * ProbableHand class represents a probable hand of playing cards.
  *
  */
 
@@ -41,17 +42,18 @@ class Hand : public PlayingCards
             m_nID = ++m_nCount;
         };
 
-        // Deconstructor
-        ~Hand() {};
-
+        // Get information about the hand
         std::string Ranks() const;
         std::string DisplayCards() const;
         std::string DisplayRanks() const;
 
+        // Remove books by rank from the hand
         Hand RemoveBookByRank(int nCount);
 
+        // Sort the hand by rank
         void SortByRank();
 
+        // Return the ID of the hand
         int ID() const { return m_nID; }
 
     private:
@@ -65,6 +67,7 @@ class Hand : public PlayingCards
 class ProbableHand : public Hand
 {
     public:
+        // Constructor
         ProbableHand() :
             Hand()
         {}

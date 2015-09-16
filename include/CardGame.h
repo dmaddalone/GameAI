@@ -19,7 +19,7 @@
 
 /** \file
  *
- * \brief The CardGame class represents a virtual card game with two or more
+ * \brief The CardGame class represents a virtual card game with two
  * players.
  *
  */
@@ -109,6 +109,7 @@ class CardGame : public Game
         // Override Game::SetSync()
         void SetSync(bool b)  { Game::SetSync(b); m_bSyncDeck = m_bSyncFirstHand = m_bSyncSecondHand = b; }
 
+        // Get the default move for the game
         std::string DefaultMove() const { return m_sDefaultMove; }
 
     protected:
@@ -122,8 +123,10 @@ class CardGame : public Game
         void SetShowingAllowed(bool b) { m_bShowingAllowed = b; }
         void SetScoringAllowed(bool b) { m_bScoringAllowed = b; }
 
+        // Set the default move for the game
         void SetDefaultMove(std::string sMove) { m_sDefaultMove = sMove; }
 
+        // Card game deck, hands, and books
         Deck m_cDeck;
         std::vector<Hand> m_vHands {};
         std::unordered_map<int, Hand> m_uomBooks {};
@@ -143,6 +146,7 @@ class CardGame : public Game
         bool m_bSyncFirstHand { false };
         bool m_bSyncSecondHand { false };
 
+        // Default move for the game
         std::string m_sDefaultMove {};
 };
 

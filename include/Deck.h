@@ -19,7 +19,8 @@
 
 /** \file
  *
- * \brief The Deck class represents a deck of playing cards.
+ * \brief The Deck class represents a deck of playing cards.  The
+ * ProbableDeck represents a probable deck of playing cards.
  *
  */
 
@@ -55,6 +56,7 @@ class Deck : public PlayingCards
 class ProbableDeck : public Deck
 {
     public:
+        // Constructor
         ProbableDeck() :
             Deck()
         {}

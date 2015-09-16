@@ -28,8 +28,6 @@
 
 #include <vector>
 
-#include <iostream> // remove after testing
-
 #include "Card.h"
 
 class PlayingCards
@@ -38,44 +36,50 @@ class PlayingCards
         // Constructor
         PlayingCards() {};
 
+        // Destructor
         virtual ~PlayingCards() {};
 
+        // Return cards
         std::vector<Card> Cards() const { return m_vCards; }
 
+        // Return miscellaneous information on the playing cards
         int  HasCards() const;
         bool HasRank(const std::string &sRank) const;
         bool HasSuit(const std::string &sSuit) const;
         int  HasCardsOfRank(const std::string &sRank) const;
         int  HasCardsOfSuit(const std::string &sSuit) const;
 
+        // Return a string of Ranks
+        std::string Ranks() const;
+
+        // Add cards to playing cards
         void AddCard(Card &cCard);
         void AddCardToTop(Card &cCard);
         void AddCards(std::vector<Card> &vCards);
 
+        // Return a card or a vector of cards
         Card              DrawTopCard();
         Card              PeekAtBottomCard() const;
         Card              RemoveCard(std::string sRank, std::string sSuit);
         std::vector<Card> RemoveCardsOfRank(std::string sRank, int nNumberToRemove=0);
         std::vector<Card> RemoveCardsOfSuit(std::string sSuit, int nNumberToRemove=0);
 
-        std::string Ranks() const;
-
         // Json object serialization
         Json::Value JsonSerialization() const;
         bool        JsonDeserialization(const std::string &sJsonPlayingCards, std::string &sErrorMessage);
 
-        // Used for probabilities
+        // Setting and getting the nominal number of cards; used for probabilities
         void SetNumberOfCards(int n)    { m_nNumberOfCards = n; }
-        void ReduceNumberOfCards(int n) { m_nNumberOfCards -= n; }
-        void AddNumberOfCards(int n)    { m_nNumberOfCards += n; }
         int  NumberOfCards()            { return m_nNumberOfCards; }
 
+        // Update probabilities that the ranks exist
         void UpdateRankProbabilities(int nOtherCards);
 
     protected:
+        // The playing cards
         std::vector<Card> m_vCards {};
 
-        // Used for probabilities
+        // The nominal number of cards held in playing cards
         int m_nNumberOfCards {0};
 };
 

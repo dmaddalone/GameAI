@@ -22,9 +22,10 @@
 /**
   * Make a move.
   *
-  * Call MinimaxMove to generate the best game move and apply it to the game.
+  * Call MinimaxMove or BlackboardMove to generate the best game move and
+  * apply it to the game.
   *
-  * \param cGame The game board.
+  * \param cGame The game.
   *
   * \return True, if applied move is valid.  False otherwise.
   */
@@ -39,6 +40,7 @@ bool AIPlayer::Move(Game &cGame)
         return true;
     }
 
+    // Evaluate last move
     cGameMove = cGame.LastMove();
 
     // If last move was opponent's, update the blackboard, if game is not deterministic
@@ -56,9 +58,6 @@ bool AIPlayer::Move(Game &cGame)
         return true;
     }
 
-    // Used to display valid moves
-    std::string sMessage;
-
     // Display game board
     if (m_cLogger.Level() >= 1)
         cGame.Display();
@@ -69,7 +68,7 @@ bool AIPlayer::Move(Game &cGame)
         std::string sMoves = cGame.ValidMoves(m_nPlayerNumber);
         if (sMoves.size() > 0)
         {
-            sMessage = "Valid moves: " + cGame.ValidMoves(m_nPlayerNumber);
+            std::string sMessage = "Valid moves: " + cGame.ValidMoves(m_nPlayerNumber);
             m_cLogger.LogInfo(sMessage, 3);
         }
     }
@@ -81,14 +80,6 @@ bool AIPlayer::Move(Game &cGame)
     }
     else
     {
-        //// If Another Turn is NOT set for last move, update for opponent's last move
-        //GameMove cGameMove = cGame.LastMove();
-        //if (!cGameMove.AnotherTurn())
-        //{
-        //    cGame.BlackboardUpdate(m_nPlayerNumber, m_cBlackBoard);
-        //}
-        //
-        //// Move
         cGameMove = cGame.BlackboardMove(m_nPlayerNumber, m_cBlackBoard);
     }
 
@@ -105,7 +96,7 @@ bool AIPlayer::Move(Game &cGame)
 
     if (!cGame.EnvironmentDeterministic())
     {
-        // Update for this player's last move
+        // Update the blackboard with this player's last move
         cGame.BlackboardUpdate(m_nPlayerNumber, m_cBlackBoard);
     }
 

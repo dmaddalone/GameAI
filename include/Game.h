@@ -213,7 +213,7 @@ class Game
         bool m_bEnvironmentDeterministic {true};
 
         // Flag to sync game information between networked players
-        bool m_bSync      { false };
+        bool m_bSync {false};
 };
 
 #endif // GAME_H

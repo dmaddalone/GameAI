@@ -20,7 +20,7 @@
 /** \file
  *
  * \brief The Blackboard class represents a knowledge base of game information
- * for a AIPlayer.
+ * for an AIPlayer.
  *
  */
 
@@ -40,18 +40,21 @@ class Blackboard
         bool Initialized()     { return m_bInitialized; }
         void SetInitialized()  { m_bInitialized = true; }
 
+        // Manage the number of asks
+        void UpdateAsks(const std::string &sRank);
+        int  Asks(const std::string &sRank) const;
+
         //
         // Public members
         //
         ProbableDeck m_cProbableDeck;
         ProbableHand m_cProbableOpponentHand;
 
-        void UpdateAsks(const std::string &sRank);
-        int  Asks(const std::string &sRank) const;
-
     private:
+        // Initialization flag
         bool m_bInitialized {false};
 
+        // Manage asks
         std::map<std::string, int> m_mAsks {};
 };
 
