@@ -58,16 +58,6 @@ class ProbableDeck : public Deck
         ProbableDeck() :
             Deck()
         {}
-
-        void SetNumberOfCards(int n)    { m_nNumberOfCards = n; }
-        void ReduceNumberOfCards(int n) { m_nNumberOfCards -= n; }
-        void AddNumberOfCards(int n)     { m_nNumberOfCards += n; }
-        int  NumberOfCards()            { return m_nNumberOfCards; }
-
-        void UpdateRankProbabilities(ProbableHand &cProbableOpponentHand);
-
-    private:
-        int m_nNumberOfCards {0};
 };
 
 #endif // DECK_H

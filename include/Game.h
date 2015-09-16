@@ -100,6 +100,9 @@ class Game
         // Return the score of the game
         virtual std::string GameScore() const = 0;
 
+        // Return the stats of the game
+        virtual std::string GameStatistics() const = 0;
+
         // Check to see if the game has ended
         virtual bool GameEnded(int nPlayer) = 0;
 
@@ -110,7 +113,7 @@ class Game
         virtual int  EvaluateGameState(int nPlayer) = 0;
 
         // Update Blackboard
-        virtual void BlackboardUpdate(int nPlayer, Blackboard &cBlackboard) const = 0;
+        virtual void BlackboardUpdate(int nPlayer, Blackboard &cBlackboard) = 0;
 
         // Generate a move from the Blackboard
         virtual GameMove BlackboardMove(int nPlayer, Blackboard &cBlackboard) const = 0;

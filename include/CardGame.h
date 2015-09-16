@@ -82,13 +82,16 @@ class CardGame : public Game
         virtual int  EvaluateGameState(int nPlayer) override;
 
         // Update Blackboard
-        virtual void BlackboardUpdate(int nPlayer, Blackboard &cBlackboard) const override { (void)nPlayer; (void)cBlackboard; return; }
+        virtual void BlackboardUpdate(int nPlayer, Blackboard &cBlackboard) override { (void)nPlayer; (void)cBlackboard; return; }
 
         // Generate a move from the Blackboard
         virtual GameMove BlackboardMove(int nPlayer, Blackboard &cBlackboard) const override { (void)nPlayer; (void)cBlackboard; GameMove cGameMove; return cGameMove; }
 
         // Return the score of the game
         virtual std::string GameScore() const override;
+
+        // Return the stats of the game
+        virtual std::string GameStatistics() const override { return ""; };
 
         // Check to see if the game has ended
         virtual bool GameEnded(int nPlayer) override;

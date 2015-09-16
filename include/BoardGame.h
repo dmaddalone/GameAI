@@ -69,8 +69,11 @@ class BoardGame : public Game
         // Return the score of the game
         virtual std::string GameScore() const override;
 
+        // Return the stats of the game
+        virtual std::string GameStatistics() const override { return ""; };
+
         // Update Blackboard
-        virtual void BlackboardUpdate(int nPlayer, Blackboard &cBlackboard) const override { (void)nPlayer; (void)cBlackboard; return; }
+        virtual void BlackboardUpdate(int nPlayer, Blackboard &cBlackboard) override { (void)nPlayer; (void)cBlackboard; return; }
 
         // Generate a move from the Blackboard
         virtual GameMove BlackboardMove(int nPlayer, Blackboard &cBlackboard) const override { (void)nPlayer; (void)cBlackboard; GameMove cGameMove; return cGameMove; }

@@ -87,11 +87,14 @@ class CardGameGoFish : public CardGame
         // Return the score of the game
         virtual std::string GameScore() const override;
 
+        // Return the stats of the game
+        virtual std::string GameStatistics() const override;
+
         // Check to see if the game has ended
         virtual bool GameEnded(int nPlayer) override;
 
         // Update Blackboard
-        virtual void BlackboardUpdate(int nPlayer, Blackboard &cBlackboard) const override;
+        virtual void BlackboardUpdate(int nPlayer, Blackboard &cBlackboard) override;
 
         // Generate a move from the Blackboard
         virtual GameMove BlackboardMove(int nPlayer, Blackboard &cBlackboard) const override;
@@ -126,6 +129,7 @@ class CardGameGoFish : public CardGame
         // Return all ranks in the Books
         std::string BooksRanks() const;
         std::string BooksUniqueRanks() const;
+
         // Serialize and deserialize Books
         Json::Value BooksJsonSerialization() const;
         bool        BooksJsonDeserialization(const std::string &sJsonPlayingCards, std::string &sErrorMessage);
@@ -135,6 +139,9 @@ class CardGameGoFish : public CardGame
 
         // Sync flags
         bool m_bSyncBooks { false };
+
+        // Stats: successful asks for cards
+        int m_aiSuccessfulAsks[2] {0};
 };
 
 #endif // CARDGAMEGOFISH_H

@@ -64,8 +64,19 @@ class PlayingCards
         Json::Value JsonSerialization() const;
         bool        JsonDeserialization(const std::string &sJsonPlayingCards, std::string &sErrorMessage);
 
+        // Used for probabilities
+        void SetNumberOfCards(int n)    { m_nNumberOfCards = n; }
+        void ReduceNumberOfCards(int n) { m_nNumberOfCards -= n; }
+        void AddNumberOfCards(int n)    { m_nNumberOfCards += n; }
+        int  NumberOfCards()            { return m_nNumberOfCards; }
+
+        void UpdateRankProbabilities(int nOtherCards);
+
     protected:
         std::vector<Card> m_vCards {};
+
+        // Used for probabilities
+        int m_nNumberOfCards {0};
 };
 
 #endif // PLAYINGCARDS_H

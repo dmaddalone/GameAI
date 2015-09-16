@@ -555,6 +555,10 @@ int main(int argc, char* argv[])
 
     std::cout << "Total number of moves: " << pcGame->NumberOfMoves() << std::endl;
 
+    std::string sGameStats = pcGame->GameStatistics();
+    if (!sGameStats.empty())
+        std::cout << "Game Statistics:\n" << sGameStats << std::endl;
+
     // If output file specified, write game moves
     if (!sOutputFile.empty())
         pcGame->WriteMovesToFile(sOutputFile);

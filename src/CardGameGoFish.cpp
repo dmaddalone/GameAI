@@ -27,8 +27,7 @@
   */
 
 void CardGameGoFish::Display() const
-{
-}
+{}
 
 /**
   * Return information to be synchronized between networked players.
@@ -274,32 +273,34 @@ bool CardGameGoFish::ApplyMove(int nPlayer, GameMove &cGameMove)
         // Pass cards from asked player to asking player
         std::vector<Card> vCards = m_vHands[2 - nPlayer].RemoveCardsOfRank(cGameMove.GetCard().Rank());
 
+        cGameMove.SetAnotherTurn(true);
+        cGameMove.SetPlayerNumber(nPlayer);
+        cGameMove.SetSuccess(true);
+        cGameMove.SetCards(vCards.size());
+
         sMessage = "Player " + std::to_string(3 - nPlayer) + " hands over " + m_asNumbers[vCards.size()] + " " +  cGameMove.AnnounceCardRank();
         m_cLogger.LogInfo(sMessage,1);
 
         m_vHands[nPlayer - 1].AddCards(vCards);
 
-        cGameMove.SetAnotherTurn(true);
-        cGameMove.SetPlayerNumber(nPlayer);
-        cGameMove.SetSuccess(true);
-        cGameMove.SetCards(vCards.size());
     }
     else // Go Fish
     {
         sMessage = "Player " + std::to_string(3 - nPlayer) + " says Go Fish";
         m_cLogger.LogInfo(sMessage,1);
 
+        cGameMove.SetSuccess(false);
+        cGameMove.SetPlayerNumber(nPlayer);
+
         if (GoFish(nPlayer))
         {
-            Card cCard = m_vHands[nPlayer - 1].PeekAtBottomCard();
+            cGameMove.SetCards(1);
 
+            Card cCard = m_vHands[nPlayer - 1].PeekAtBottomCard();
             if (cGameMove.GetCard().Rank() == cCard.Rank())
             {
                 m_cLogger.LogInfo("Card drawn has the same rank as originally asked for" ,1);
-
                 cGameMove.SetAnotherTurn(true);
-                cGameMove.SetPlayerNumber(nPlayer);
-                cGameMove.SetCards(1);
             }
         }
     }
@@ -409,6 +410,16 @@ std::string CardGameGoFish::GameScore() const
     return sScore;
 }
 
+// Return the stats of the game
+std::string CardGameGoFish::GameStatistics() const
+{
+    std::string sGameStats = "Successful Asks\n";
+    sGameStats += "Player 1 = " + std::to_string(m_aiSuccessfulAsks[0]) + "\n";
+    sGameStats += "Player 2 = " + std::to_string(m_aiSuccessfulAsks[1]) + "\n";
+
+    return sGameStats;
+}
+
 /**
   * Check to see if a player has won the game.
   *
@@ -453,9 +464,29 @@ bool CardGameGoFish::GameEnded(int nPlayer)
 // Initialize Blackboard
 void CardGameGoFish::BlackboardInitialize(int nPlayer, Blackboard &cBlackboard) const
 {
-    m_cLogger.LogInfo("Blackboard initialization", 3);
+    //
+    // Set the number of cards the ProbableDeck and the ProbableOpponentHand should have
+    //
+
+    // ProbableDeck: Subtract size of player's hand multiplied by two from ProbableDeck
+    cBlackboard.m_cProbableDeck.SetNumberOfCards(cBlackboard.m_cProbableDeck.HasCards() - (m_vHands[1 - nPlayer].HasCards() * 2));
+
+    // ProbableOpponentHand: Set to number of cards in player's hand
+    cBlackboard.m_cProbableOpponentHand.SetNumberOfCards(m_vHands[1 - nPlayer].HasCards());
 
     // Remove cards matching my hand from ProbableDeck
+    std::vector<Card> vCards {};
+    for (const Card &cCard : m_vHands[nPlayer -1].Cards())
+    {
+        // Remove one card of sRank from ProbableDeck
+        vCards = cBlackboard.m_cProbableDeck.RemoveCardsOfRank(cCard.Rank(), 1);
+        if (vCards.size() != 1)
+        {
+            std::string sError = "Expected to remove one card from probable deck, but removed " + std::to_string(vCards.size());
+            throw GameAIException(sError);
+        }
+    }
+/*
     std::string       sRank {};
     std::vector<Card> vCards {};
     for (const char &chToken : m_vHands[nPlayer - 1].Ranks())
@@ -476,6 +507,7 @@ void CardGameGoFish::BlackboardInitialize(int nPlayer, Blackboard &cBlackboard) 
             sRank.clear();
         }
     }
+*/
 
     // "Copy" cards from ProbableDeck to ProbableOpponentHand
     std::string sErrorMessage {};
@@ -486,15 +518,6 @@ void CardGameGoFish::BlackboardInitialize(int nPlayer, Blackboard &cBlackboard) 
         throw GameAIException(sError);
     }
 
-    //
-    // Set the number of cards the ProbableDeck and the ProbableOpponentHand should have
-    //
-
-    // ProbableDeck: Subtract size of player's hand multiplied by two from ProbableDeck
-    cBlackboard.m_cProbableDeck.SetNumberOfCards(cBlackboard.m_cProbableDeck.HasCards() - (m_vHands[1 - nPlayer].HasCards() * 2));
-    // ProbableOpponentHand: Set to number of cards in player's hand
-    cBlackboard.m_cProbableOpponentHand.SetNumberOfCards(m_vHands[1 - nPlayer].HasCards());
-
     // Set initialized flag
     cBlackboard.SetInitialized();
 
@@ -504,6 +527,9 @@ void CardGameGoFish::BlackboardInitialize(int nPlayer, Blackboard &cBlackboard) 
 // Generate a move from the Blackboard
 GameMove CardGameGoFish::BlackboardMove(int nPlayer, Blackboard &cBlackboard) const
 {
+    // Probability of pulling card
+    float fProbabilityOfPullingCard {};
+
     // Logging messages
     std::string sLogMessage {};
 
@@ -523,13 +549,26 @@ GameMove CardGameGoFish::BlackboardMove(int nPlayer, Blackboard &cBlackboard) co
     for (auto &cProbableCard : cBlackboard.m_cProbableOpponentHand.Cards())
     {
         // Ask if probability of successfully pulling the card is 50%
-        float fProbabilityOfPullingCard =
-            cBlackboard.m_cProbableOpponentHand.HasRank(cProbableCard.Rank()) /
-            cBlackboard.m_cProbableOpponentHand.HasCards() * cProbableCard.Probability();
+        if (cProbableCard.Probability() < 1.0)
+        {
+            fProbabilityOfPullingCard =
+                static_cast<float>(cBlackboard.m_cProbableOpponentHand.HasCardsOfRank(cProbableCard.Rank())) /
+                static_cast<float>(cBlackboard.m_cProbableOpponentHand.NumberOfCards()) * cProbableCard.Probability();
+        }
+        else
+        {
+            fProbabilityOfPullingCard = cProbableCard.Probability();
+        }
 
-        sLogMessage = "Prob Oppo: P(pull " + cProbableCard.Rank() + ") from Player" +
-            std::to_string(3 - nPlayer) + " = " + std::to_string(fProbabilityOfPullingCard);
-        m_cLogger.LogInfo(sLogMessage, 3);
+/*
+        sLogMessage = "Prob P(pull " + cProbableCard.Rank() + ") from Player" +
+            std::to_string(3 - nPlayer) + " = " +
+            std::to_string(fProbabilityOfPullingCard) + "[" +
+            std::to_string(cBlackboard.m_cProbableOpponentHand.HasCardsOfRank(cProbableCard.Rank())) +
+            " / " + std::to_string(cBlackboard.m_cProbableOpponentHand.NumberOfCards()) +
+            " * " + std::to_string(cProbableCard.Probability()) + "]";
+        m_cLogger.LogInfo(sLogMessage, 1);
+*/
 
         if (fProbabilityOfPullingCard >= .5)
         {
@@ -539,6 +578,7 @@ GameMove CardGameGoFish::BlackboardMove(int nPlayer, Blackboard &cBlackboard) co
                 {
                     cGameMove.UpdateCard(cProbableCard);
                     cBlackboard.UpdateAsks(cCard.Rank());
+                    m_cLogger.LogInfo("Asking for a card that opponent probably has and I need", 2);
                     return cGameMove;
                 }
             }
@@ -553,12 +593,16 @@ GameMove CardGameGoFish::BlackboardMove(int nPlayer, Blackboard &cBlackboard) co
     {
         // Ask if probability of successfully pulling the card is 15%
         float fProbabilityOfPullingCard =
-            cBlackboard.m_cProbableDeck.HasRank(cProbableCard.Rank()) /
-            cBlackboard.m_cProbableDeck.HasCards() * cProbableCard.Probability();
-
-        sLogMessage = "Prob Deck: P(pull " + cProbableCard.Rank() + ") from Player" +
-            std::to_string(3 - nPlayer) + " = " + std::to_string(fProbabilityOfPullingCard);
-        m_cLogger.LogInfo(sLogMessage, 3);
+            static_cast<float>(cBlackboard.m_cProbableDeck.HasCardsOfRank(cProbableCard.Rank())) /
+            static_cast<float>(cBlackboard.m_cProbableDeck.NumberOfCards())  * cProbableCard.Probability();
+/*
+        sLogMessage = "Prob P(pull " + cProbableCard.Rank() + ") from Deck = " +
+            std::to_string(fProbabilityOfPullingCard) + "[" +
+            std::to_string(cBlackboard.m_cProbableDeck.HasCardsOfRank(cProbableCard.Rank())) +
+            " / " + std::to_string(cBlackboard.m_cProbableDeck.NumberOfCards()) +
+            " * " + std::to_string(cProbableCard.Probability()) + "]";
+        m_cLogger.LogInfo(sLogMessage, 1);
+*/
 
         if (fProbabilityOfPullingCard >= .15)
         {
@@ -568,6 +612,7 @@ GameMove CardGameGoFish::BlackboardMove(int nPlayer, Blackboard &cBlackboard) co
                 {
                     cGameMove.UpdateCard(cProbableCard);
                     cBlackboard.UpdateAsks(cCard.Rank());
+                    m_cLogger.LogInfo("Asking for a card that the deck probably has and I need", 2);
                     return cGameMove;
                 }
             }
@@ -607,17 +652,20 @@ GameMove CardGameGoFish::BlackboardMove(int nPlayer, Blackboard &cBlackboard) co
 
     cGameMove.UpdateCard(cBestCard);
     cBlackboard.UpdateAsks(cBestCard.Rank());
+    m_cLogger.LogInfo("Asking for a card that I have and haven't asked for recently", 2);
     return cGameMove;
 }
 
 // Update Blackboard
-void CardGameGoFish::BlackboardUpdate(int nPlayer, Blackboard &cBlackboard) const
+void CardGameGoFish::BlackboardUpdate(int nPlayer, Blackboard &cBlackboard)
 {
     std::string sLogMessage {};
 
     // If not initialized, initialize
     if (!cBlackboard.Initialized())
+    {
         BlackboardInitialize(nPlayer, cBlackboard);
+    }
 
     //
     // Check last move
@@ -627,6 +675,9 @@ void CardGameGoFish::BlackboardUpdate(int nPlayer, Blackboard &cBlackboard) cons
     // If not an ASK, return
     if (!cLastMove.Ask())
     {
+        //// Update rank probabilities
+        cBlackboard.m_cProbableDeck.UpdateRankProbabilities(cBlackboard.m_cProbableOpponentHand.NumberOfCards());
+        cBlackboard.m_cProbableOpponentHand.UpdateRankProbabilities(cBlackboard.m_cProbableDeck.NumberOfCards());
         return;
     }
 
@@ -645,8 +696,6 @@ void CardGameGoFish::BlackboardUpdate(int nPlayer, Blackboard &cBlackboard) cons
             //
             // Remove cards of rank from ProbableOpponentHand
             cBlackboard.m_cProbableOpponentHand.RemoveCardsOfRank(sRank);
-            // Reduce number of cards in ProbableOpponentHand
-            cBlackboard.m_cProbableOpponentHand.ReduceNumberOfCards(nCards);
 
             //
             // Update ProbableDeck
@@ -662,11 +711,17 @@ void CardGameGoFish::BlackboardUpdate(int nPlayer, Blackboard &cBlackboard) cons
             cCard.SetProbability(1.0);
             for (int iii = 0; iii < m_knBookNumber - nNumberOfCardsOfRankInMyHand; ++iii)
             {
-                //sLogMessage = "Prob Update: Card " + sRank + " with P(" + std::to_string(cCard.Probability()) +
-                //    ") for Deck";
-                //m_cLogger.LogInfo(sLogMessage,3);
+/*
+                sLogMessage = "Prob Update: Card " + sRank + " with P(" + std::to_string(cCard.Probability()) +
+                    ") for Probable Deck";
+                m_cLogger.LogInfo(sLogMessage,1);
+*/
+
                 cBlackboard.m_cProbableDeck.AddCard(cCard);
             }
+
+            // Update success stats
+            ++m_aiSuccessfulAsks[cLastMove.PlayerNumber() - 1];
         }
         // Else if ASK not Successful, but Go-Fish was
         else if (nCards > 0) //
@@ -691,11 +746,14 @@ void CardGameGoFish::BlackboardUpdate(int nPlayer, Blackboard &cBlackboard) cons
             cCard.SetProbability(1.0);
             for (int iii = 0; iii < m_knBookNumber - nNumberOfCardsOfRankInMyHand; ++iii)
             {
+/*
+                sLogMessage = "Prob Update: Card " + sRank + " with P(" + std::to_string(cCard.Probability()) +
+                    ") for Probable Deck";
+                m_cLogger.LogInfo(sLogMessage,1);\
+*/
+
                 cBlackboard.m_cProbableDeck.AddCard(cCard);
             }
-
-            // Reduce number of cards in ProbableDeck
-            cBlackboard.m_cProbableDeck.ReduceNumberOfCards(nCards);
         }
         // Else Ask and Go-Fish not Successful
         else
@@ -705,12 +763,6 @@ void CardGameGoFish::BlackboardUpdate(int nPlayer, Blackboard &cBlackboard) cons
             //
             // Remove cards of rank from ProbableOpponentHand
             cBlackboard.m_cProbableOpponentHand.RemoveCardsOfRank(sRank);
-
-            //
-            // Update ProbableDeck
-            //
-            // Reduce number of cards in ProbableDeck
-            cBlackboard.m_cProbableDeck.ReduceNumberOfCards(nCards);
         }
     }
     // Opponent turn
@@ -730,21 +782,26 @@ void CardGameGoFish::BlackboardUpdate(int nPlayer, Blackboard &cBlackboard) cons
             cCard.SetProbability(1.0);
             for (int iii = 0; iii < nCards + 1; ++iii)
             {
+/*
+                sLogMessage = "Prob Update: Card " + sRank + " with P(" + std::to_string(cCard.Probability()) +
+                    ") for Probable Oppo Hand";
+                m_cLogger.LogInfo(sLogMessage,1);
+*/
+
                 cBlackboard.m_cProbableOpponentHand.AddCard(cCard);
             }
             // Add cards of rank back to ProbableOpponentHand with less than certainty
             cCard.SetProbability(0.0);
             for (int iii = nCards + 1; iii < m_knBookNumber; ++iii)
             {
+/*
                 sLogMessage = "Prob Update: Card " + sRank + " with P(" + std::to_string(cCard.Probability()) +
-                    ") for Deck";
+                    ") for Probable Oppo Hand";
                 m_cLogger.LogInfo(sLogMessage,3);
+*/
 
                 cBlackboard.m_cProbableOpponentHand.AddCard(cCard);
             }
-
-            // Add number of cards in ProbableOpponentHand
-            cBlackboard.m_cProbableOpponentHand.AddNumberOfCards(nCards);
 
             //
             // Update ProbableDeck
@@ -758,8 +815,17 @@ void CardGameGoFish::BlackboardUpdate(int nPlayer, Blackboard &cBlackboard) cons
             cCard.SetProbability(0.0);
             for (int iii = nCards + 1; iii < m_knBookNumber; ++iii)
             {
+/*
+                sLogMessage = "Prob Update: Card " + sRank + " with P(" + std::to_string(cCard.Probability()) +
+                    ") for Probable Deck";
+                m_cLogger.LogInfo(sLogMessage,1);
+*/
+
                 cBlackboard.m_cProbableDeck.AddCard(cCard);
             }
+
+            // Update success stats
+            ++m_aiSuccessfulAsks[cLastMove.PlayerNumber() - 1];
         }
         // Else if ASK not Successful, but Go-Fish was
         else if (nCards > 0) //
@@ -776,6 +842,12 @@ void CardGameGoFish::BlackboardUpdate(int nPlayer, Blackboard &cBlackboard) cons
             cCard.SetProbability(1.0);
             for (int iii = 0; iii < nCards + 1; ++iii)
             {
+/*
+                sLogMessage = "Prob Update: Card " + sRank + " with P(" + std::to_string(cCard.Probability()) +
+                    ") for Probable Oppo Hand";
+                m_cLogger.LogInfo(sLogMessage,1);
+*/
+
                 cBlackboard.m_cProbableOpponentHand.AddCard(cCard);
             }
 
@@ -783,11 +855,14 @@ void CardGameGoFish::BlackboardUpdate(int nPlayer, Blackboard &cBlackboard) cons
             cCard.SetProbability(0.0);
             for (int iii = nCards + 1; iii < m_knBookNumber; ++iii)
             {
+/*
+                sLogMessage = "Prob Update: Card " + sRank + " with P(" + std::to_string(cCard.Probability()) +
+                    ") for Probable Oppo Hand";
+                m_cLogger.LogInfo(sLogMessage,1);
+*/
+
                 cBlackboard.m_cProbableOpponentHand.AddCard(cCard);
             }
-
-            // Add number of cards in ProbableOpponentHand
-            cBlackboard.m_cProbableOpponentHand.AddNumberOfCards(nCards);
 
             //
             // Update ProbableDeck
@@ -801,11 +876,14 @@ void CardGameGoFish::BlackboardUpdate(int nPlayer, Blackboard &cBlackboard) cons
             cCard.SetProbability(0.0);
             for (int iii = nCards + 1; iii < m_knBookNumber; ++iii)
             {
+/*
+                sLogMessage = "Prob Update: Card " + sRank + " with P(" + std::to_string(cCard.Probability()) +
+                    ") for Probable Deck";
+                m_cLogger.LogInfo(sLogMessage,1);
+*/
+
                 cBlackboard.m_cProbableDeck.AddCard(cCard);
             }
-
-            // Reduce number of cards in ProbableDeck
-            cBlackboard.m_cProbableDeck.ReduceNumberOfCards(nCards);
         }
         // Else Ask and Go-Fish not Successful
         else
@@ -813,17 +891,9 @@ void CardGameGoFish::BlackboardUpdate(int nPlayer, Blackboard &cBlackboard) cons
             //
             // Update ProbableOpponentHand
             //
+
             // Remove cards of rank from ProbableOpponentHand
             cBlackboard.m_cProbableOpponentHand.RemoveCardsOfRank(sRank);
-
-            // Add number of cards in ProbableOpponentHand
-            cBlackboard.m_cProbableOpponentHand.AddNumberOfCards(nCards);
-
-            //
-            // Update ProbableDeck
-            //
-            // Reduce number of cards in ProbableDeck
-            cBlackboard.m_cProbableDeck.ReduceNumberOfCards(nCards);
         }
     }
 
@@ -845,9 +915,17 @@ void CardGameGoFish::BlackboardUpdate(int nPlayer, Blackboard &cBlackboard) cons
         }
     }
 
+    //
+    // Set the number of cards the ProbableDeck and the ProbableOpponentHand should have
+    //
+
+    // Update number of cards in Probable Deck and Probable Opponent's Hand
+    cBlackboard.m_cProbableDeck.SetNumberOfCards(m_cDeck.HasCards());
+    cBlackboard.m_cProbableOpponentHand.SetNumberOfCards(m_vHands[2 - nPlayer].HasCards());
 
     // Update rank probabilities
-    cBlackboard.m_cProbableDeck.UpdateRankProbabilities(cBlackboard.m_cProbableOpponentHand);
+    cBlackboard.m_cProbableDeck.UpdateRankProbabilities(cBlackboard.m_cProbableOpponentHand.NumberOfCards());
+    cBlackboard.m_cProbableOpponentHand.UpdateRankProbabilities(cBlackboard.m_cProbableDeck.NumberOfCards());
 
     return;
 }

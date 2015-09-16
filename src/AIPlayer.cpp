@@ -31,20 +31,26 @@
 
 bool AIPlayer::Move(Game &cGame)
 {
+    GameMove cGameMove;
+
     // If game requires synchronization, pass turn to next player to synchronize information
     if (cGame.Sync())
     {
         return true;
     }
 
-    // If this is not a deterministic game, update the blackboard, before skipping turn
-    if (!cGame.EnvironmentDeterministic())
+    cGameMove = cGame.LastMove();
+
+    // If last move was opponent's, update the blackboard, if game is not deterministic
+    if (cGameMove.PlayerNumber() != m_nPlayerNumber)
     {
-        cGame.BlackboardUpdate(m_nPlayerNumber, m_cBlackBoard);
+        if (!cGame.EnvironmentDeterministic())
+        {
+            cGame.BlackboardUpdate(m_nPlayerNumber, m_cBlackBoard);
+        }
     }
 
     // If Another Turn is set for opponent, skip this player's turn
-    GameMove cGameMove = cGame.LastMove();
     if (cGameMove.AnotherTurn() && (cGameMove.PlayerNumber() != m_nPlayerNumber))
     {
         return true;
@@ -70,9 +76,21 @@ bool AIPlayer::Move(Game &cGame)
 
     // Get best game move
     if (cGame.EnvironmentDeterministic())
+    {
         cGameMove = MinimaxMove(m_nPlayerNumber, cGame, m_nDepth);
+    }
     else
-        cGameMove = ProbabilityMove(m_nPlayerNumber, cGame);
+    {
+        //// If Another Turn is NOT set for last move, update for opponent's last move
+        //GameMove cGameMove = cGame.LastMove();
+        //if (!cGameMove.AnotherTurn())
+        //{
+        //    cGame.BlackboardUpdate(m_nPlayerNumber, m_cBlackBoard);
+        //}
+        //
+        //// Move
+        cGameMove = cGame.BlackboardMove(m_nPlayerNumber, m_cBlackBoard);
+    }
 
     // Announce game move
     m_cLogger.LogInfo(cGame.AnnounceMove(m_nPlayerNumber, cGameMove),1);
@@ -84,6 +102,12 @@ bool AIPlayer::Move(Game &cGame)
     // If game move is not valid, return false
     if (!cGame.ApplyMove(m_nPlayerNumber, cGameMove))
         return false;
+
+    if (!cGame.EnvironmentDeterministic())
+    {
+        // Update for this player's last move
+        cGame.BlackboardUpdate(m_nPlayerNumber, m_cBlackBoard);
+    }
 
     return true;
 }
@@ -328,11 +352,4 @@ int AIPlayer::MaxMove(int nPlayer, Game &cGame, int nDepth, int nAlpha, int nBet
     }
 
     return nAlpha;
-}
-
-GameMove AIPlayer::ProbabilityMove(int nPlayer, Game &cGame)
-{
-    cGame.BlackboardUpdate(m_nPlayerNumber, m_cBlackBoard);
-
-    return cGame.BlackboardMove(nPlayer, m_cBlackBoard);
 }

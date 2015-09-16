@@ -254,3 +254,20 @@ std::string PlayingCards::Ranks() const
 
     return sRanks;
 }
+
+void PlayingCards::UpdateRankProbabilities(int nOtherCards)
+{
+    // Loop through all cards in probable deck
+    for (Card &cProbableCard : m_vCards)
+    {
+        // If probability is less than 100% (certainty), update probabilities
+        if (cProbableCard.Probability() < 1.0)
+        {
+            // Update probability = num of cards in deck divided by sum of num cards in deck and num cards in opponent's hand
+            cProbableCard.SetProbability(static_cast<float>(this->NumberOfCards()) /
+                static_cast<float>((this->NumberOfCards() + nOtherCards)));
+        }
+    }
+
+    return;
+}
