@@ -424,8 +424,8 @@ std::string CardGameGoFish::GameScore() const
 std::string CardGameGoFish::GameStatistics() const
 {
     std::string sGameStats = "Successful Asks\n";
-    sGameStats += "Player 1 = " + std::to_string(m_aiSuccessfulAsks[0]) + "\n";
-    sGameStats += "Player 2 = " + std::to_string(m_aiSuccessfulAsks[1]) + "\n";
+    sGameStats += "Player 1 = " + std::to_string(m_aiSuccessfulAsks[0]) + " (" + std::to_string(static_cast<float>(m_aiSuccessfulAsks[0]) / static_cast<float>(m_nNumberOfMoves) * 100.0) + "%)\n";
+    sGameStats += "Player 2 = " + std::to_string(m_aiSuccessfulAsks[1]) + " (" + std::to_string(static_cast<float>(m_aiSuccessfulAsks[1]) / static_cast<float>(m_nNumberOfMoves) * 100.0) + "%)\n";
 
     return sGameStats;
 }
@@ -575,7 +575,7 @@ GameMove CardGameGoFish::BlackboardMove(int nPlayer, Blackboard &cBlackboard) co
 
         if (fProbabilityOfPullingCard >= .5)
         {
-            for (Card &cCard : m_vHands[1 - nPlayer].Cards())
+            for (Card &cCard : m_vHands[nPlayer - 1].Cards())
             {
                 if (cProbableCard.Rank() == cCard.Rank())
                 {
@@ -608,7 +608,7 @@ GameMove CardGameGoFish::BlackboardMove(int nPlayer, Blackboard &cBlackboard) co
 
         if (fProbabilityOfPullingCard >= .15)
         {
-            for (Card &cCard : m_vHands[1 - nPlayer].Cards())
+            for (Card &cCard : m_vHands[nPlayer - 1].Cards())
             {
                 if (cProbableCard.Rank() == cCard.Rank())
                 {
@@ -626,29 +626,26 @@ GameMove CardGameGoFish::BlackboardMove(int nPlayer, Blackboard &cBlackboard) co
     //
     Card cLastCard;
     Card cBestCard;
-    int nLeastNumberOfAsks {INT_MAX};
+    int nBestCardNumber {INT_MIN};
+    int nThisCardNumber {100};
 
     // Loop through my hands in order of number of Ranks in hand (sorted by ApplyMove)
-    for (Card &cCard : m_vHands[1 - nPlayer].Cards())
+    for (Card &cCard : m_vHands[nPlayer - 1].Cards())
     {
-        // If last card rank is not the same as this card rank, evaluate
         if (cLastCard.Rank() != cCard.Rank())
         {
-            // Update last card
             cLastCard = cCard;
+            nThisCardNumber = 100 - cBlackboard.Asks(cCard.Rank());
+        }
+        else
+        {
+            ++nThisCardNumber;
+        }
 
-            // Evaluate best card on basis of least asks
-            if (cBlackboard.Asks(cCard.Rank()) < nLeastNumberOfAsks)
-            {
-                nLeastNumberOfAsks = cBlackboard.Asks(cCard.Rank());
-                cBestCard = cCard;
-            }
-
-            // If least asks at zero, break
-            if (nLeastNumberOfAsks == 0)
-            {
-                break;
-            }
+        if (nThisCardNumber > nBestCardNumber)
+        {
+            nBestCardNumber = nThisCardNumber;
+            cBestCard = cCard;
         }
     }
 
