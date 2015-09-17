@@ -187,7 +187,7 @@ int Socket::Recv(std::string &sMessage, int nLength) const
 
     sMessage = ""; // TODO: Why not use cBuf and get rid of sMessage?
 
-    // Reeive message
+    // Receive message
     int nStatus = recv(m_nSendRecvSocketID, cBuf, nMessageLength, 0);
 
     // Evaluate status

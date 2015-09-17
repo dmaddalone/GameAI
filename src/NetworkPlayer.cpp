@@ -186,7 +186,7 @@ bool NetworkPlayer::RecvLastMove(Game &cGame)
     }
 
     // Receive the last move made from the networked player
-    if (!Socket::Recv(sMessage) < 0)
+    if (Socket::Recv(sMessage) < 0)
         throw SocketException("Did not receive move or message");
 
     // Evaluate for SYNC
@@ -260,7 +260,7 @@ void NetworkPlayer::RecvConfirmation()
     std::string sCommand;
 
     // Receive networked player's confirmation
-    if (!Socket::Recv(sCommand) < 0)
+    if (Socket::Recv(sCommand) < 0)
         throw SocketException("Did not receive move confirmation");
 
     // Evaluate CONFIRM command
@@ -292,7 +292,7 @@ void NetworkPlayer::RecvSyncInfo(Game &cGame)
     while (true)
     {
         // Receive the synchronization information
-        if (!Socket::Recv(sMessage) < 0)
+        if (Socket::Recv(sMessage) < 0)
             throw SocketException("Did not receive sync information");
 
         if (sMessage.compare(GameVocabulary::END_SYNC) == 0)

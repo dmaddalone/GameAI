@@ -100,7 +100,7 @@ void Client::Initialize(std::string sHost, int nPort, bool &bSwap)
     Send(sCommand);
 
     // 8. Receive Client Player Number
-    if (!Socket::Recv(sCommand) < 0)
+    if (Socket::Recv(sCommand) < 0)
         throw SocketException("Did not receive player number");
 
     sToken = GameVocabulary::ParseCommand(sCommand);

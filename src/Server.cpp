@@ -100,7 +100,7 @@ void Server::Initialize(std::string sHost, int nPort, bool &bSwap)
     // 8.    Receive Client Player Number
 
     // 2. Receive Establish Game
-    if (!Socket::Recv(sCommand) < 0)
+    if (Socket::Recv(sCommand) < 0)
         throw SocketException("Did not receive establish game command");
 
     sToken = GameVocabulary::ParseCommand(sCommand);
@@ -129,7 +129,7 @@ void Server::Initialize(std::string sHost, int nPort, bool &bSwap)
     Send(GameVocabulary::CONFIRM);
 
     // 6. Receive Request Player Number
-    if (!Socket::Recv(sCommand) < 0)
+    if (Socket::Recv(sCommand) < 0)
         throw SocketException("Did not receive request for client player number");
 
     sToken = GameVocabulary::ParseCommand(sCommand);
