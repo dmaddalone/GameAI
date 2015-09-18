@@ -419,3 +419,17 @@ void PlayingCards::UpdateRankProbabilities(int nOtherCards)
 
     return;
 }
+
+/**
+  * Sort possession by card probability.
+  *
+  */
+
+void PlayingCards::SortByProbability()
+{
+    std::sort(m_vCards.begin(), m_vCards.end(),
+        [](const Card &cFirstCard, const Card &cSecondCard) -> bool
+        {
+            return cFirstCard.Probability() > cSecondCard.Probability();
+        });
+}

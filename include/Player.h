@@ -87,6 +87,12 @@ class Player
         // Return the number of plies
         int  Plies() const        { return m_nDepth; }
 
+        // Set the probability threshold a machine player will use to make a move
+        void SetProbability(int nProb) { m_nProbabilityThreshold = nProb; }
+
+        // Return the probability threshold
+        int  Probability() const        { return m_nProbabilityThreshold; }
+
         // Set and get game title
         void SetGameTitle(std::string sTitle) { m_sGameTitle = sTitle; }
         std::string GameTitle() const         { return m_sGameTitle; }
@@ -103,6 +109,9 @@ class Player
 
         // Set the depth of plies to four
         int  m_nDepth             {4}; // For AI
+
+        // Set the probability threshold to 5 (a.k.a., 0.5, 50%)
+        int m_nProbabilityThreshold {5};
 
         // Game title - used for network play to coordinate game
         std::string m_sGameTitle  {""};

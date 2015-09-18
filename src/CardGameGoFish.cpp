@@ -530,8 +530,11 @@ void CardGameGoFish::BlackboardInitialize(int nPlayer, Blackboard &cBlackboard) 
   * \return A game move.
   */
 
-GameMove CardGameGoFish::BlackboardMove(int nPlayer, Blackboard &cBlackboard) const
+GameMove CardGameGoFish::BlackboardMove(int nPlayer, Blackboard &cBlackboard, int nProbability) const
 {
+    // Probability threshold
+    float fProbabilityThreshold = static_cast<float>(nProbability) / 10;
+
     // Probability of pulling card
     float fProbabilityOfPullingCard {};
 
@@ -553,7 +556,7 @@ GameMove CardGameGoFish::BlackboardMove(int nPlayer, Blackboard &cBlackboard) co
     //TODO: cProbableOpponentHand.SortByProbability();
     for (auto &cProbableCard : cBlackboard.m_cProbableOpponentHand.Cards())
     {
-        // Ask if probability of successfully pulling the card is 50%
+        // Calculate probability of successfully pulling the card
         if (cProbableCard.Probability() < 1.0)
         {
             fProbabilityOfPullingCard =
@@ -573,7 +576,7 @@ GameMove CardGameGoFish::BlackboardMove(int nPlayer, Blackboard &cBlackboard) co
             " * " + std::to_string(cProbableCard.Probability()) + "]";
         m_cLogger.LogInfo(sLogMessage, 3);
 
-        if (fProbabilityOfPullingCard >= .5)
+        if (fProbabilityOfPullingCard >= fProbabilityThreshold)
         {
             for (Card &cCard : m_vHands[nPlayer - 1].Cards())
             {
@@ -594,7 +597,7 @@ GameMove CardGameGoFish::BlackboardMove(int nPlayer, Blackboard &cBlackboard) co
     //TODO: cProbableDeck.SortByProbability();
     for (auto &cProbableCard : cBlackboard.m_cProbableDeck.Cards())
     {
-        // Ask if probability of successfully pulling the card is 15%
+        // Calculate probability of successfully pulling the card
         float fProbabilityOfPullingCard =
             static_cast<float>(cBlackboard.m_cProbableDeck.HasCardsOfRank(cProbableCard.Rank())) /
             static_cast<float>(cBlackboard.m_cProbableDeck.NumberOfCards())  * cProbableCard.Probability();
@@ -606,7 +609,7 @@ GameMove CardGameGoFish::BlackboardMove(int nPlayer, Blackboard &cBlackboard) co
             " * " + std::to_string(cProbableCard.Probability()) + "]";
         m_cLogger.LogInfo(sLogMessage, 3);
 
-        if (fProbabilityOfPullingCard >= .15)
+        if (fProbabilityOfPullingCard >= fProbabilityThreshold)
         {
             for (Card &cCard : m_vHands[nPlayer - 1].Cards())
             {

@@ -98,7 +98,7 @@ class CardGameGoFish : public CardGame
         virtual void BlackboardUpdate(int nPlayer, Blackboard &cBlackboard) override;
 
         // Generate a move from the Blackboard
-        virtual GameMove BlackboardMove(int nPlayer, Blackboard &cBlackboard) const override;
+        virtual GameMove BlackboardMove(int nPlayer, Blackboard &cBlackboard, int nProbability) const override;
 
         // Clone the current game
         virtual std::unique_ptr<Game> Clone() const override { return std::unique_ptr<Game>(new CardGameGoFish(*this)); }

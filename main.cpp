@@ -182,6 +182,7 @@ static std::unique_ptr<Game> GenerateGame(std::string sGame)
   */
 
 static void SetPlayers(std::string sName, int nPlies1, int nPlies2,
+                       int nProbability1, int Probability2,
                        std::string sPlayer1Name, std::string sPlayer2Name,
                        int nVerbosity, std::string sGameTitle,
                        std::string sHost, int nPort,
@@ -213,6 +214,27 @@ static void SetPlayers(std::string sName, int nPlies1, int nPlies2,
     if (nPlies2 > 0 && nPlies2 <= 9)
     {
         vPlayers[1]->SetPlies(nPlies2);
+    }
+    else
+    {
+        ShowUsage(sName);
+        exit(EXIT_FAILURE);
+    }
+
+    // Set level of probability for AI players
+    if (nProbability1 > 0 && nProbability1 <= 9)
+    {
+        vPlayers[0]->SetProbability(nProbability1);
+    }
+    else
+    {
+        ShowUsage(sName);
+        exit(EXIT_FAILURE);
+    }
+
+    if (Probability2 > 0 && Probability2 <= 9)
+    {
+        vPlayers[1]->SetProbability(Probability2);
     }
     else
     {
@@ -273,6 +295,10 @@ int main(int argc, char* argv[])
     int  nPlies1                 {4};
     int  nPlies2                 {4};
 
+    // Probability thresholds for Bayesian
+    int nProbability1            {5};
+    int nProbability2            {5};
+
     // Default network options
     int  nPort                   {60000};
     std::string sHost            {"127.0.0.1"};
@@ -292,28 +318,30 @@ int main(int argc, char* argv[])
     // Set up getopt_long
     static struct option stLongOptions[] =
     {
-        {"player1", required_argument, nullptr, '1'},
-        {"player2", required_argument, nullptr, '2'},
-        {"plies",   required_argument, nullptr, 'p'},
-        {"plies1",  required_argument, nullptr, 'x'},
-        {"plies2",  required_argument, nullptr, 'y'},
-        {"name1",   required_argument, nullptr, 'n'},
-        {"name2",   required_argument, nullptr, 'm'},
-        {"game",    required_argument, nullptr, 'g'},
-        {"port",    required_argument, nullptr, 't'},
-        {"host",    required_argument, nullptr, 'h'},
-        {"input",   required_argument, nullptr, 'i'},
-        {"output",  required_argument, nullptr, 'o'},
-        {"verbose", required_argument, nullptr, 'v'},
-        {"help",    no_argument,       nullptr, 'H'},
-        {"version", no_argument,       nullptr, 'V'},
-        {NULL,      0,                 nullptr,  0}
+        {"player1",      required_argument, nullptr, '1'},
+        {"player2",      required_argument, nullptr, '2'},
+        {"plies",        required_argument, nullptr, 'p'},
+        {"plies1",       required_argument, nullptr, 'x'},
+        {"plies2",       required_argument, nullptr, 'y'},
+        {"probability1", required_argument, nullptr, 'b'},
+        {"probability2", required_argument, nullptr, 'c'},
+        {"name1",        required_argument, nullptr, 'n'},
+        {"name2",        required_argument, nullptr, 'm'},
+        {"game",         required_argument, nullptr, 'g'},
+        {"port",         required_argument, nullptr, 't'},
+        {"host",         required_argument, nullptr, 'h'},
+        {"input",        required_argument, nullptr, 'i'},
+        {"output",       required_argument, nullptr, 'o'},
+        {"verbose",      required_argument, nullptr, 'v'},
+        {"help",         no_argument,       nullptr, 'H'},
+        {"version",      no_argument,       nullptr, 'V'},
+        {NULL,           0,                 nullptr,  0}
     };
 
     // Execute getopt_long
     int nC = 0;
     int nOptionIndex = 0;
-    while ((nC = getopt_long(argc, argv, "1:2:p:x:y:n:m:g:t:h:i:o:v:HV", stLongOptions, &nOptionIndex)) != -1)
+    while ((nC = getopt_long(argc, argv, "1:2:p:x:y:b:c:n:m:g:t:h:i:o:v:HV", stLongOptions, &nOptionIndex)) != -1)
     {
         switch (nC)
         {
@@ -336,6 +364,14 @@ int main(int argc, char* argv[])
             // Plies for player 2
             case 'y':
                 nPlies2 = atoi(optarg);
+                break;
+            // Probability for player 1
+            case 'b':
+                nProbability1 = atoi(optarg);
+                break;
+            // Probability for player 2
+            case 'c':
+                nProbability2 = atoi(optarg);
                 break;
             // Name for player 1
             case 'n':
@@ -426,8 +462,9 @@ int main(int argc, char* argv[])
     }
 
     // Set player parameters
-    SetPlayers(argv[0], nPlies1, nPlies2, sPlayer1Name, sPlayer2Name,
-        nVerbosity, pcGame->Title(), sHost, nPort, vPlayers);
+    SetPlayers(argv[0], nPlies1, nPlies2, nProbability1, nProbability2,
+        sPlayer1Name, sPlayer2Name, nVerbosity, pcGame->Title(),
+        sHost, nPort, vPlayers);
 
     // Set verbosity of game
     pcGame->SetVerbosity(nVerbosity);
@@ -466,7 +503,15 @@ int main(int argc, char* argv[])
         std::cout << " Type " << vPlayers[iii]->TypeName();
         if (vPlayers[iii]->Type() == PlayerType::TYPE_AI)
         {
-            std::cout << " Plies: " << vPlayers[iii]->Plies();
+            if (pcGame->EnvironmentDeterministic())
+            {
+                std::cout << " Plies: " << vPlayers[iii]->Plies();
+            }
+            else
+            {
+                std::cout << " Probability Threshold: " << vPlayers[iii]->Probability();
+            }
+
         }
 
         std::cout << std::endl;

@@ -26,6 +26,7 @@
 #ifndef PLAYINGCARDS_H
 #define PLAYINGCARDS_H
 
+#include <algorithm>
 #include <vector>
 
 #include "Card.h"
@@ -74,6 +75,7 @@ class PlayingCards
 
         // Update probabilities that the ranks exist
         void UpdateRankProbabilities(int nOtherCards);
+        void SortByProbability();
 
     protected:
         // The playing cards

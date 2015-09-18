@@ -80,7 +80,7 @@ bool AIPlayer::Move(Game &cGame)
     }
     else
     {
-        cGameMove = cGame.BlackboardMove(m_nPlayerNumber, m_cBlackBoard);
+        cGameMove = cGame.BlackboardMove(m_nPlayerNumber, m_cBlackBoard, Probability());
     }
 
     // Announce game move

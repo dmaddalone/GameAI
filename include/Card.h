@@ -81,7 +81,7 @@ class Card
 
         // Used for Bayesian probabilities
         void  SetProbability(float fProb) { m_fProbability = fProb; }
-        float Probability()               { return m_fProbability; }
+        float Probability() const         { return m_fProbability; }
 
         // Json object serialization and deserialization
         Json::Value JsonSerialization() const;

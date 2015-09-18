@@ -76,7 +76,7 @@ class BoardGame : public Game
         virtual void BlackboardUpdate(int nPlayer, Blackboard &cBlackboard) override { (void)nPlayer; (void)cBlackboard; return; }
 
         // Generate a move from the Blackboard
-        virtual GameMove BlackboardMove(int nPlayer, Blackboard &cBlackboard) const override { (void)nPlayer; (void)cBlackboard; GameMove cGameMove; return cGameMove; }
+        virtual GameMove BlackboardMove(int nPlayer, Blackboard &cBlackboard, int nProbability) const override { (void)nPlayer; (void)cBlackboard; (void)nProbability; GameMove cGameMove; return cGameMove; }
 
         // Check to see if the game has ended
         virtual bool GameEnded(int nPlayer) override;
