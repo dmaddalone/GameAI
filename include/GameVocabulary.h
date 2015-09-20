@@ -32,18 +32,21 @@ namespace GameVocabulary
 {
     static const std::string DELIMETER                      {" "};
 
+    // Game Setup Commands
     static const std::string ESTABLISH_GAME                 {"ESTABLISH_GAME"};
     static const std::string REQUEST_CLIENT_PLAYER_NUMBER   {"REQUEST_CLIENT_PLAYER_NUMBER"};
     static const std::string ESTABLISH_CLIENT_PLAYER_NUMBER {"ESTABLISH_CLIENT_PLAYER_NUMBER"};
-
-    static const std::string DECLARE_WIN                    {"DECLARE_WIN"};
-    static const std::string RESIGN                         {"RESIGN"};
-    static const std::string MOVE                           {"MOVE"};
-    static const std::string NO_MOVE                        {"NO_MOVE"};
     static const std::string CONFIRM                        {"CONFIRM"};
     static const std::string UNCONFIRM                      {"UNCONFIRM"};
     static const std::string SYNC                           {"SYNC"};
     static const std::string END_SYNC                       {"END_SYNC"};
+    static const std::string FATAL_EXIT                     {"FATAL_EXIT"};
+
+    // Game Commands
+    static const std::string DECLARE_WIN                    {"DECLARE_WIN"};
+    static const std::string RESIGN                         {"RESIGN"};
+    static const std::string MOVE                           {"MOVE"};
+    static const std::string NO_MOVE                        {"NO_MOVE"};
 
     static const std::string ASK                            {"ASK"};
     static const std::string ASK_SHORT                      {"A"};
@@ -51,13 +54,21 @@ namespace GameVocabulary
     static const std::string FOLD_SHORT                     {"F"};
     static const std::string DRAW                           {"DRAW"};
     static const std::string DRAW_SHORT                     {"DR"};
+    static const std::string MELD                           {"MELD"};
+    static const std::string MELD_SHORT                     {"M"};
+    static const std::string DISCARD                        {"DISCARD"};
+    static const std::string DISCARD_SHORT                  {"DI"};
 
     static const std::string SHOW                           {"SHOW"};
     static const std::string SHOW_SHORT                     {"SH"};
     static const std::string SCORE                          {"SCORE"};
     static const std::string SCORE_SHORT                    {"SC"};
 
-    static const std::string FATAL_EXIT                     {"FATAL_EXIT"};
+    // Game Arguments
+    static const std::string ARG_STOCK                      {"STOCK"};
+    static const std::string ARG_STOCK_SHORT                {"ST"};
+    static const std::string ARG_DISCARD                    {"DISCARD"};
+    static const std::string ARG_DISCARD_SHORT              {"DI"};
 
     // Return command from networked messages
     std::string ParseCommand(const std::string sText);

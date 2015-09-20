@@ -100,11 +100,15 @@ class CardGame : public Game
         virtual std::unique_ptr<Game> Clone() const = 0;
 
         // Get flags
-        bool FoldingAllowed() const   { return m_bFoldingAllowed; }
-        bool DrawingAllowed() const   { return m_bDrawingAllowed; }
-        bool AskingAllowed() const    { return m_bAskingAllowed; }
-        bool ShowingAllowed() const   { return m_bShowingAllowed; }
-        bool ScoringAllowed() const   { return m_bScoringAllowed; }
+        bool FoldingAllowed() const                { return m_bFoldingAllowed; }
+        bool DrawingAllowed() const                { return m_bDrawingAllowed; }
+        bool DrawingFromStockAllowed() const       { return m_bDrawFromStockAllowed; }
+        bool DrawingFromDiscardPileAllowed() const { return m_bDrawFromDiscardPileAllowed; }
+        bool AskingAllowed() const                 { return m_bAskingAllowed; }
+        bool MeldingAllowed() const                { return m_bMeldingAllowed; }
+        bool DiscardingAllowed() const             { return m_bDiscardingAllowed; }
+        bool ShowingAllowed() const                { return m_bShowingAllowed; }
+        bool ScoringAllowed() const                { return m_bScoringAllowed; }
 
         // Override Game::SetSync()
         void SetSync(bool b)  { Game::SetSync(b); m_bSyncDeck = m_bSyncFirstHand = m_bSyncSecondHand = b; }
@@ -117,33 +121,42 @@ class CardGame : public Game
         virtual void BlackboardInitialize(int nPlayer, Blackboard &cBlackboard) const override { (void)nPlayer; (void)cBlackboard; return; }
 
         // Set flags
-        void SetFoldingAllowed(bool b) { m_bFoldingAllowed = b; }
-        void SetDrawingAllowed(bool b) { m_bDrawingAllowed = b; }
-        void SetAskingAllowed(bool b)  { m_bAskingAllowed = b; }
-        void SetShowingAllowed(bool b) { m_bShowingAllowed = b; }
-        void SetScoringAllowed(bool b) { m_bScoringAllowed = b; }
+        void SetFoldingAllowed(bool b)                { m_bFoldingAllowed = b; }
+        void SetDrawingAllowed(bool b)                { m_bDrawingAllowed = b; }
+        void SetDrawingFromStockAllowed(bool b)       { m_bDrawFromStockAllowed = b; }
+        void SetDrawingFromDiscardPileAllowed(bool b) { m_bDrawFromDiscardPileAllowed = b; }
+        void SetAskingAllowed(bool b)                 { m_bAskingAllowed = b; }
+        void SetMeldingAllowed(bool b)                { m_bMeldingAllowed = b; }
+        void SetDiscardingAllowed(bool b)             { m_bDiscardingAllowed = b; }
+        void SetShowingAllowed(bool b)                { m_bShowingAllowed = b; }
+        void SetScoringAllowed(bool b)                { m_bScoringAllowed = b; }
 
         // Set the default move for the game
         void SetDefaultMove(std::string sMove) { m_sDefaultMove = sMove; }
 
         // Card game deck, hands, and books
         Deck m_cDeck;
-        std::vector<Hand> m_vHands {};
+        std::vector<Hand>             m_vHands {};
         std::unordered_map<int, Hand> m_uomBooks {};
 
+        // Used to initialize comparison variables
         const int m_knUnknownValue {-1};
 
     private:
         // Play option flags
-        bool m_bFoldingAllowed { true };
-        bool m_bDrawingAllowed { false };
-        bool m_bAskingAllowed  { false };
-        bool m_bShowingAllowed { false };
-        bool m_bScoringAllowed { false };
+        bool m_bFoldingAllowed             { false };
+        bool m_bDrawingAllowed             { false };
+        bool m_bDrawFromStockAllowed       { false };
+        bool m_bDrawFromDiscardPileAllowed { false };
+        bool m_bAskingAllowed              { false };
+        bool m_bMeldingAllowed             { false };
+        bool m_bDiscardingAllowed          { false };
+        bool m_bShowingAllowed             { false };
+        bool m_bScoringAllowed             { false };
 
         // Sync flags
-        bool m_bSyncDeck { false };
-        bool m_bSyncFirstHand { false };
+        bool m_bSyncDeck       { false };
+        bool m_bSyncFirstHand  { false };
         bool m_bSyncSecondHand { false };
 
         // Default move for the game

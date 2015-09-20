@@ -51,6 +51,9 @@ class Deck : public PlayingCards
 
         // Deal the deck
         void Deal(int nNumberOfCardsPerHand, std::vector<Hand> &vHands, bool bDealCardsEqually=true);
+
+        // Set Aces as low card
+        void SetAcesLow();
 };
 
 class ProbableDeck : public Deck

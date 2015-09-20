@@ -43,7 +43,7 @@ Json::Value Card::JsonSerialization() const
 }
 
 /**
-  * Deserialize the class from a Json object.
+  * Deserialize the class from a JSON string.
   *
   * \param sJsonCard     A JSON string representing a Card.
   * \param sErrorMessage A string to return an error message if needed
@@ -53,17 +53,17 @@ Json::Value Card::JsonSerialization() const
 
 bool Card::JsonDeserialization(const std::string &sJsonCard, std::string &sErrorMessage)
 {
-    Json::Value jValue;
+    Json::Value  jCard;
     Json::Reader jReader;
 
-     if (jReader.parse(sJsonCard, jValue, false))
+     if (jReader.parse(sJsonCard, jCard, false))
     {
-        m_sRank        = jValue["Rank"].asString();
-        m_sSuit        = jValue["Suit"].asString();
-        m_nValue       = jValue["Value"].asInt();
-        m_nID          = jValue["ID"].asInt();
-        m_bTurnedUp    = jValue["TurnedUp"].asBool();
-        m_fProbability = jValue["Probability"].asFloat();
+        m_sRank        = jCard["Rank"].asString();
+        m_sSuit        = jCard["Suit"].asString();
+        m_nValue       = jCard["Value"].asInt();
+        m_nID          = jCard["ID"].asInt();
+        m_bTurnedUp    = jCard["TurnedUp"].asBool();
+        m_fProbability = jCard["Probability"].asFloat();
 
         return true;
     }
@@ -72,4 +72,24 @@ bool Card::JsonDeserialization(const std::string &sJsonCard, std::string &sError
         sErrorMessage = jReader.getFormattedErrorMessages();
         return false;
     }
+}
+
+/**
+  * Deserialize the class from a Json::Value object.
+  *
+  * \param jCard A Json::Value representing a Card.
+  *
+  * \return True if deserialization is successful, false otherwise
+  */
+
+bool Card::JsonDeserialization(const Json::Value jCard)//, std::string &sErrorMessage)
+{
+    m_sRank        = jCard["Rank"].asString();
+    m_sSuit        = jCard["Suit"].asString();
+    m_nValue       = jCard["Value"].asInt();
+    m_nID          = jCard["ID"].asInt();
+    m_bTurnedUp    = jCard["TurnedUp"].asBool();
+    m_fProbability = jCard["Probability"].asFloat();
+
+    return true;
 }

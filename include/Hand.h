@@ -19,8 +19,8 @@
 
 /** \file
  *
- * \brief The Hand class represents a hand of playing cards.  The
- * ProbableHand class represents a probable hand of playing cards.
+ * \brief The Hand file declares several classes, including Hand,
+ * ProbableHand, and Book.
  *
  */
 
@@ -33,6 +33,16 @@
 #include "Card.h"
 #include "PlayingCards.h"
 
+// Forward declaration
+class Book;
+
+/** \class Hand
+ *
+ * \brief The Hand class represents a hand of playing cards.  The
+ * ProbableHand class represents a probable hand of playing cards.
+ *
+ */
+
 class Hand : public PlayingCards
 {
     public:
@@ -43,12 +53,11 @@ class Hand : public PlayingCards
         };
 
         // Get information about the hand
-        std::string Ranks() const;
         std::string DisplayCards() const;
         std::string DisplayRanks() const;
 
         // Remove books by rank from the hand
-        Hand RemoveBookByRank(int nCount);
+        Book RemoveBookByRank(int nCount);
 
         // Sort the hand by rank
         void SortByRank();
@@ -64,6 +73,12 @@ class Hand : public PlayingCards
         int m_nID {0};
 };
 
+/** \class ProbableHand
+ *
+ * \brief The ProbableHand class represents a probable hand of playing cards.
+ *
+ */
+
 class ProbableHand : public Hand
 {
     public:
@@ -73,4 +88,56 @@ class ProbableHand : public Hand
         {}
 };
 
+/** \class Book
+ *
+ * \brief The Book class represents a book of playing cards.
+ *
+ */
+
+class Book : public Hand
+{
+    public:
+        // Constructor
+        Book() :
+            Hand()
+        {}
+};
+
+/** \class Match
+ *
+ * \brief The Match class represents a match of playing cards, which
+ * includes a set of the same kind (rank or suit) or a sequence.
+ *
+ */
+
+class Match : public Hand
+{
+    public:
+        // Constructor
+        Match() :
+            Hand()
+        {}
+
+    // Set and get match type
+    void SetTypeSameRank()    { m_stType = m_stResetType; m_stType.TypeSameRank = true; }
+    void SetTypeSameSuit()    { m_stType = m_stResetType; m_stType.TypeSameSuit = true; }
+    void SetTypeSequence()    { m_stType = m_stResetType; m_stType.TypeSequence = true; }
+    bool TypeSameRank() const { return m_stType.TypeSameRank; }
+    bool TypeSameSuit() const { return m_stType.TypeSameSuit; }
+    bool TypeSequence() const { return m_stType.TypeSequence; }
+
+    Json::Value JsonSerialization() const;
+    bool        JsonDeserialization(const std::string &sJsonMatch, std::string &sErrorMessage);
+    bool        JsonDeserialization(const Json::Value &jMatch, std::string &sErrorMessage);
+
+    private:
+        struct
+        {
+            bool TypeSameRank { false };
+            bool TypeSameSuit { false };
+            bool TypeSequence { false };
+        } m_stType, m_stResetType;
+};
+
 #endif // HAND_H
+

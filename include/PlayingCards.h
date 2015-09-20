@@ -29,6 +29,8 @@
 #include <algorithm>
 #include <vector>
 
+#include <iostream> // testing
+
 #include "Card.h"
 
 class PlayingCards
@@ -50,8 +52,9 @@ class PlayingCards
         int  HasCardsOfRank(const std::string &sRank) const;
         int  HasCardsOfSuit(const std::string &sSuit) const;
 
-        // Return a string of Ranks
+        // Return a string of cards
         std::string Ranks() const;
+        std::string RanksAndSuits() const;
 
         // Add cards to playing cards
         void AddCard(Card &cCard);
@@ -68,6 +71,7 @@ class PlayingCards
         // Json object serialization
         Json::Value JsonSerialization() const;
         bool        JsonDeserialization(const std::string &sJsonPlayingCards, std::string &sErrorMessage);
+        bool        JsonDeserialization(const Json::Value jCards, std::string &sErrorMessage);
 
         // Setting and getting the nominal number of cards; used for probabilities
         void SetNumberOfCards(int n)    { m_nNumberOfCards = n; }

@@ -509,7 +509,7 @@ int main(int argc, char* argv[])
             }
             else
             {
-                std::cout << " Probability Threshold: " << vPlayers[iii]->Probability();
+                std::cout << " Probability Threshold: " << vPlayers[iii]->Probability() * 10 << "%";
             }
 
         }

@@ -17,7 +17,7 @@
     along with GameAI.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "CardGameGoFish.h"
+#include "CardGameBasicRummy.h"
 
 /**
   * Display the cards.
@@ -26,7 +26,7 @@
   *
   */
 
-void CardGameGoFish::Display() const
+void CardGameBasicRummy::Display() const
 {}
 
 /**
@@ -38,20 +38,20 @@ void CardGameGoFish::Display() const
   * \return True if information received to synchronize, false otherwise.
   */
 
-bool CardGameGoFish::GetSyncInfo(std::string &sGameInformation)
+bool CardGameBasicRummy::GetSyncInfo(std::string &sGameInformation)
 {
     sGameInformation.clear();
 
-    //Sync books
-    if (m_bSyncBooks)
+    //Sync matches
+    if (m_bSyncMatches)
     {
-        m_cLogger.LogInfo("Gathering synchronization on books", 2);
-        std::string sLogInfo = "Books Ranks: " + BooksRanks();
+        m_cLogger.LogInfo("Gathering synchronization on matches", 2);
+        std::string sLogInfo = "Matches: " + MatchesTypes();
         m_cLogger.LogInfo(sLogInfo, 3);
 
-        // Serialize books
-        sGameInformation = BooksJsonSerialization().toStyledString();
-        m_bSyncBooks = false;
+        // Serialize matches
+        sGameInformation = MatchesJsonSerialization().toStyledString();
+        m_bSyncMatches = false;
         return true;
     }
 
@@ -71,18 +71,18 @@ bool CardGameGoFish::GetSyncInfo(std::string &sGameInformation)
   * \return True if information is available to be sent, false otherwise.
   */
 
-bool CardGameGoFish::ApplySyncInfo(const std::string &sGameInformation, std::string &sErrorMessage)
+bool CardGameBasicRummy::ApplySyncInfo(const std::string &sGameInformation, std::string &sErrorMessage)
 {
-    // Sync books
-    if (m_bSyncBooks)
+    // Sync matches
+    if (m_bSyncMatches)
     {
-        m_cLogger.LogInfo("Applying synchronization on books", 2);
+        m_cLogger.LogInfo("Applying synchronization on matches", 2);
 
-        // Deserialize books from JSON
-        if (BooksJsonDeserialization(sGameInformation, sErrorMessage))
+        // Deserialize matches from JSON
+        if (MatchesJsonDeserialization(sGameInformation, sErrorMessage))
         {
-            m_bSyncBooks = false;
-            std::string sLogInfo = "Books Ranks: " + BooksRanks();
+            m_bSyncMatches = false;
+            std::string sLogInfo = "Matches: " + MatchesTypes();
             m_cLogger.LogInfo(sLogInfo, 3);
             return true;
         }
@@ -104,8 +104,16 @@ bool CardGameGoFish::ApplySyncInfo(const std::string &sGameInformation, std::str
   * \return A string of valid moves.
   */
 
-std::string CardGameGoFish::ValidMoves(int nPlayer) const
+std::string CardGameBasicRummy::ValidMoves(int nPlayer) const
 {
+    // Draw
+    // If cards in stock
+    // If cards in discard pile
+
+    // Meld
+    // If matches in hand
+
+    // Discard
     std::string sValidMoves = GameVocabulary::ASK + " " + m_vHands[nPlayer - 1].Ranks();
 
     return sValidMoves;
@@ -122,7 +130,7 @@ std::string CardGameGoFish::ValidMoves(int nPlayer) const
   * \return A vector of valid moves.
   */
 
-std::vector<GameMove> CardGameGoFish::GenerateMoves(int nPlayer) const
+std::vector<GameMove> CardGameBasicRummy::GenerateMoves(int nPlayer) const
 {
     std::vector<GameMove> vGameMoves {};
     GameMove cGameMove;
@@ -164,8 +172,8 @@ std::vector<GameMove> CardGameGoFish::GenerateMoves(int nPlayer) const
   *
   * \return True if there are cards to pull, false otherwise.
   */
-
-bool CardGameGoFish::GoFish(int nPlayer)
+/*
+bool CardGameBasicRummy::GoFish(int nPlayer)
 {
     if (m_cDeck.HasCards())
     {
@@ -182,6 +190,7 @@ bool CardGameGoFish::GoFish(int nPlayer)
 
     return false;
 }
+*/
 
 /**
   * Apply a move to the game.
@@ -202,7 +211,7 @@ bool CardGameGoFish::GoFish(int nPlayer)
   * \return True, if valid turn.  False otherwise.
   */
 
-bool CardGameGoFish::ApplyMove(int nPlayer, GameMove &cGameMove)
+bool CardGameBasicRummy::ApplyMove(int nPlayer, GameMove &cGameMove)
 {
     // For logging
     std::string sMessage {};
@@ -233,8 +242,9 @@ bool CardGameGoFish::ApplyMove(int nPlayer, GameMove &cGameMove)
             std::cout << "Player " << cHand.ID() << " has " << cHand.HasCards() << " cards." << std::endl;
         }
         std::cout << "The deck has " << m_cDeck.HasCards() << " cards." << std::endl;
-
+/*
         std::cout << "Books made: " << BooksUniqueRanks() << std::endl;
+*/
 
         return true;
     }
@@ -291,7 +301,7 @@ bool CardGameGoFish::ApplyMove(int nPlayer, GameMove &cGameMove)
 
         cGameMove.SetSuccess(false);
         cGameMove.SetPlayerNumber(nPlayer);
-
+/*
         if (GoFish(nPlayer))
         {
             cGameMove.SetCards(1);
@@ -303,18 +313,17 @@ bool CardGameGoFish::ApplyMove(int nPlayer, GameMove &cGameMove)
                 cGameMove.SetAnotherTurn(true);
             }
         }
+*/
     }
 
     // Check for books
+/*
     do
     {
-        //Hand cHand = m_vHands[nPlayer - 1].RemoveBookByRank(m_knBookNumber);
-        Book cBook = m_vHands[nPlayer - 1].RemoveBookByRank(m_knBookNumber);
-        //if (cHand.HasCards())
-        if (cBook.HasCards())
+        Hand cHand = m_vHands[nPlayer - 1].RemoveBookByRank(m_knBookNumber);
+        if (cHand.HasCards())
         {
-            //m_uommBooks.insert(std::make_pair(m_vHands[nPlayer - 1].ID(), cHand));
-            m_uommBooks.insert(std::make_pair(m_vHands[nPlayer - 1].ID(), cBook));
+            m_uommBooks.insert(std::make_pair(m_vHands[nPlayer - 1].ID(), cHand));
             continue;
         }
         else
@@ -322,7 +331,7 @@ bool CardGameGoFish::ApplyMove(int nPlayer, GameMove &cGameMove)
             break;
         }
     } while(true);
-
+*/
     // If players has cards, sort them
     if (m_vHands[nPlayer - 1].HasCards())
     {
@@ -333,10 +342,12 @@ bool CardGameGoFish::ApplyMove(int nPlayer, GameMove &cGameMove)
     {
         // Draw a card from the stock
         // If no more stock (and no cards in hand), the turn is over
+/*
         if (!GoFish(nPlayer))
         {
             cGameMove.SetAnotherTurn(false);
         }
+*/
     }
 
     // Increment move counter
@@ -359,7 +370,7 @@ bool CardGameGoFish::ApplyMove(int nPlayer, GameMove &cGameMove)
   * \return A string containing the move.
   */
 
-std::string CardGameGoFish::AnnounceMove(int nPlayer, const GameMove &cGameMove) const
+std::string CardGameBasicRummy::AnnounceMove(int nPlayer, const GameMove &cGameMove) const
 {
     return "\rPlayer " + std::to_string(nPlayer) + " asks for " + cGameMove.AnnounceCardRank();
 }
@@ -372,7 +383,7 @@ std::string CardGameGoFish::AnnounceMove(int nPlayer, const GameMove &cGameMove)
   * \return A string containing the game score.
   */
 
-std::string CardGameGoFish::GameScore() const
+std::string CardGameBasicRummy::GameScore() const
 {
     // Flag to prohibit showing score multiple times
     static bool bDisplayedScoreLastTime {false};
@@ -401,15 +412,16 @@ std::string CardGameGoFish::GameScore() const
     }
 
     // Display book counts for the game score
-    std::string sScore {"\nBook Count:"};
 
+    std::string sScore {"\nBook Count:"};
+/*
     for (const Hand &cHand : m_vHands)
     {
         sScore += " Player " + std::to_string(cHand.ID()) + "=" + std::to_string(m_uommBooks.count(cHand.ID()));
     }
 
     sScore += "\n";
-
+*/
     return sScore;
 }
 
@@ -421,7 +433,7 @@ std::string CardGameGoFish::GameScore() const
   * \return A string containing the game stats.
   */
 
-std::string CardGameGoFish::GameStatistics() const
+std::string CardGameBasicRummy::GameStatistics() const
 {
     std::string sGameStats = "Successful Asks\n";
     sGameStats += "Player 1 = " + std::to_string(m_aiSuccessfulAsks[0]) + " (" + std::to_string(static_cast<float>(m_aiSuccessfulAsks[0]) / static_cast<float>(m_nNumberOfMoves) * 100.0) + "%)\n";
@@ -440,7 +452,7 @@ std::string CardGameGoFish::GameStatistics() const
   * \return True, if any player has won the game.  False otherwise.
   */
 
-bool CardGameGoFish::GameEnded(int nPlayer)
+bool CardGameBasicRummy::GameEnded(int nPlayer)
 {
     // Clear win variables
     m_nWinner = -1;
@@ -456,11 +468,12 @@ bool CardGameGoFish::GameEnded(int nPlayer)
         int nNumberOfBooks {-1};
         for (const Hand &cHand : m_vHands)
         {
-            if (static_cast<int>(m_uommBooks.count(cHand.ID())) > nNumberOfBooks)
+/*            if (static_cast<int>(m_uommBooks.count(cHand.ID())) > nNumberOfBooks)
             {
                 nNumberOfBooks = m_uommBooks.count(cHand.ID());
                 m_nWinner = cHand.ID();
             }
+*/
         }
 
         m_sWinBy = "having " + std::to_string(nNumberOfBooks) + " books";
@@ -478,7 +491,7 @@ bool CardGameGoFish::GameEnded(int nPlayer)
   *
   */
 
-void CardGameGoFish::BlackboardInitialize(int nPlayer, Blackboard &cBlackboard) const
+void CardGameBasicRummy::BlackboardInitialize(int nPlayer, Blackboard &cBlackboard) const
 {
     //
     // Set the number of cards the ProbableDeck and the ProbableOpponentHand should have
@@ -530,7 +543,7 @@ void CardGameGoFish::BlackboardInitialize(int nPlayer, Blackboard &cBlackboard) 
   * \return A game move.
   */
 
-GameMove CardGameGoFish::BlackboardMove(int nPlayer, Blackboard &cBlackboard, int nProbability) const
+GameMove CardGameBasicRummy::BlackboardMove(int nPlayer, Blackboard &cBlackboard, int nProbability) const
 {
     // Probability threshold
     float fProbabilityThreshold = static_cast<float>(nProbability) / 10;
@@ -669,7 +682,7 @@ GameMove CardGameGoFish::BlackboardMove(int nPlayer, Blackboard &cBlackboard, in
   *
   */
 
-void CardGameGoFish::BlackboardUpdate(int nPlayer, Blackboard &cBlackboard)
+void CardGameBasicRummy::BlackboardUpdate(int nPlayer, Blackboard &cBlackboard)
 {
     std::string sLogMessage {};
 
@@ -721,6 +734,7 @@ void CardGameGoFish::BlackboardUpdate(int nPlayer, Blackboard &cBlackboard)
             Card cCard;
             cCard.SetRank(sRank);
             cCard.SetProbability(1.0);
+/*
             for (int iii = 0; iii < m_knBookNumber - nNumberOfCardsOfRankInMyHand; ++iii)
             {
                 sLogMessage = "Update Prob Deck: P(" + sRank + ")=" + std::to_string(cCard.Probability());
@@ -728,7 +742,7 @@ void CardGameGoFish::BlackboardUpdate(int nPlayer, Blackboard &cBlackboard)
 
                 cBlackboard.m_cProbableDeck.AddCard(cCard);
             }
-
+*/
             // Update success stats
             ++m_aiSuccessfulAsks[cLastMove.PlayerNumber() - 1];
         }
@@ -753,6 +767,7 @@ void CardGameGoFish::BlackboardUpdate(int nPlayer, Blackboard &cBlackboard)
             Card cCard;
             cCard.SetRank(sRank);
             cCard.SetProbability(1.0);
+/*
             for (int iii = 0; iii < m_knBookNumber - nNumberOfCardsOfRankInMyHand; ++iii)
             {
                 sLogMessage = "Update Prob Deck: P(" + sRank + ")=" + std::to_string(cCard.Probability());
@@ -760,6 +775,7 @@ void CardGameGoFish::BlackboardUpdate(int nPlayer, Blackboard &cBlackboard)
 
                 cBlackboard.m_cProbableDeck.AddCard(cCard);
             }
+*/
         }
         // Else Ask and Go-Fish not Successful
         else
@@ -795,6 +811,7 @@ void CardGameGoFish::BlackboardUpdate(int nPlayer, Blackboard &cBlackboard)
             }
             // Add cards of rank back to ProbableOpponentHand with less than certainty
             cCard.SetProbability(0.0);
+/*
             for (int iii = nCards + 1; iii < m_knBookNumber; ++iii)
             {
                 sLogMessage = "Update Prob Hand: P(" + sRank + ")=" + std::to_string(cCard.Probability());
@@ -802,6 +819,7 @@ void CardGameGoFish::BlackboardUpdate(int nPlayer, Blackboard &cBlackboard)
 
                 cBlackboard.m_cProbableOpponentHand.AddCard(cCard);
             }
+*/
 
             //
             // Update ProbableDeck
@@ -810,8 +828,10 @@ void CardGameGoFish::BlackboardUpdate(int nPlayer, Blackboard &cBlackboard)
             cBlackboard.m_cProbableDeck.RemoveCardsOfRank(sRank);
 
             // Add cards of rank back to ProbableDeck
+            //Card cCard;
             cCard.SetRank(sRank);
             cCard.SetProbability(0.0);
+/*
             for (int iii = nCards + 1; iii < m_knBookNumber; ++iii)
             {
                 sLogMessage = "Update Prob Deck: P(" + sRank + ")=" + std::to_string(cCard.Probability());
@@ -819,7 +839,7 @@ void CardGameGoFish::BlackboardUpdate(int nPlayer, Blackboard &cBlackboard)
 
                 cBlackboard.m_cProbableDeck.AddCard(cCard);
             }
-
+*/
             // Update success stats
             ++m_aiSuccessfulAsks[cLastMove.PlayerNumber() - 1];
         }
@@ -846,6 +866,7 @@ void CardGameGoFish::BlackboardUpdate(int nPlayer, Blackboard &cBlackboard)
 
             // Add cards of rank back to ProbableOpponentHand with less than certainty
             cCard.SetProbability(0.0);
+/*
             for (int iii = nCards + 1; iii < m_knBookNumber; ++iii)
             {
                 sLogMessage = "Update Prob Hand: P(" + sRank + ")=" + std::to_string(cCard.Probability());
@@ -853,7 +874,7 @@ void CardGameGoFish::BlackboardUpdate(int nPlayer, Blackboard &cBlackboard)
 
                 cBlackboard.m_cProbableOpponentHand.AddCard(cCard);
             }
-
+*/
             //
             // Update ProbableDeck
             //
@@ -861,8 +882,10 @@ void CardGameGoFish::BlackboardUpdate(int nPlayer, Blackboard &cBlackboard)
             cBlackboard.m_cProbableDeck.RemoveCardsOfRank(sRank);
 
             // Add cards of rank back to ProbableDeck
+            //Card cCard;
             cCard.SetRank(sRank);
             cCard.SetProbability(0.0);
+/*
             for (int iii = nCards + 1; iii < m_knBookNumber; ++iii)
             {
                 sLogMessage = "Update Prob Deck: P(" + sRank + ")=" + std::to_string(cCard.Probability());
@@ -870,6 +893,7 @@ void CardGameGoFish::BlackboardUpdate(int nPlayer, Blackboard &cBlackboard)
 
                 cBlackboard.m_cProbableDeck.AddCard(cCard);
             }
+*/
         }
         // Else Ask and Go-Fish not Successful
         else
@@ -887,6 +911,7 @@ void CardGameGoFish::BlackboardUpdate(int nPlayer, Blackboard &cBlackboard)
     // Update based on books
     //
     sRank.clear();
+/*
     for (const char &cToken : BooksUniqueRanks())
     {
         if (cToken != ' ')
@@ -900,7 +925,7 @@ void CardGameGoFish::BlackboardUpdate(int nPlayer, Blackboard &cBlackboard)
             sRank.clear();
         }
     }
-
+*/
     //
     // Set the number of cards the ProbableDeck and the ProbableOpponentHand should have
     //
@@ -917,27 +942,24 @@ void CardGameGoFish::BlackboardUpdate(int nPlayer, Blackboard &cBlackboard)
 }
 
 /**
-  * Status of current books.
+  * Status of current matches.
   *
-  * Return a string representing the current books made by rank.
+  * Return a string representing the current matches
   *
-  * \return A string containing the books made by rank.
+  * \return A string containing the matches.
   *
   */
 
-std::string CardGameGoFish::BooksRanks() const
+std::string CardGameBasicRummy::MatchesTypes() const
 {
-    std::string sRanks {};
+    std::string sMatches {};
 
-    for (const auto &PlayerBook : m_uommBooks)
+    for (const auto &PlayerMatch : m_uommMatches)
     {
-        sRanks += PlayerBook.second.Ranks();
+        sMatches += PlayerMatch.second.RanksAndSuits() + " : ";
     }
 
-    if (sRanks.empty())
-        sRanks = "none";
-
-    return sRanks;
+    return sMatches;
 }
 
 /**
@@ -948,15 +970,15 @@ std::string CardGameGoFish::BooksRanks() const
   * \return A string containing the books made by unique rank.
   *
   */
-
-std::string CardGameGoFish::BooksUniqueRanks() const
+/*
+std::string CardGameBasicRummy::BooksUniqueRanks() const
 {
     std::string sUniqueRanks {};
     std::string sRanks {};
 
-    for (const auto &PlayerBook : m_uommBooks)
+    for (const auto &PlayerHand : m_uommBooks)
     {
-        sRanks = PlayerBook.second.Ranks();
+        sRanks = PlayerHand.second.Ranks();
         sUniqueRanks = sUniqueRanks + sRanks[0] + " ";
     }
 
@@ -965,18 +987,18 @@ std::string CardGameGoFish::BooksUniqueRanks() const
 
     return sUniqueRanks;
 }
-
+*/
 /**
-  * Serialize the books into a Json object.
+  * Serialize the matches into a Json::Value object.
   *
-  * \return The Json Value object representing the books.
+  * \return The Json::Value object representing the matches.
   */
 
-Json::Value CardGameGoFish::BooksJsonSerialization() const
+Json::Value CardGameBasicRummy::MatchesJsonSerialization() const
 {
     Json::Value jValue;
-    Json::Value jBooks;
-    Book cBook;
+    Json::Value jMatches;
+    Match cMatch;
 
     // The following are used to create a index that will retain uniqueness when
     // multimap items serialized to JSON.  May be used for up to 260 unique
@@ -985,7 +1007,7 @@ Json::Value CardGameGoFish::BooksJsonSerialization() const
     char chLetter = 'a';
     std::string sIndex {};
 
-    for (const auto &PlayerBook : m_uommBooks)
+    for (const auto &PlayerMatch : m_uommMatches)
     {
         // Manage index
         if (nCounter >= 10)
@@ -998,46 +1020,46 @@ Json::Value CardGameGoFish::BooksJsonSerialization() const
         ++nCounter;
 
         // Capture player and serialized book (aka, hand) into jValue
-        jValue["Player"] = PlayerBook.first;
-        cBook            = PlayerBook.second;
-        jValue["Book"]   = cBook.JsonSerialization();
+        jValue["Player"] = PlayerMatch.first;
+        cMatch           = PlayerMatch.second;
+        jValue["Match"]  = cMatch.JsonSerialization();
 
         // Add the jValue to jBooks
-        jBooks[sIndex]   = jValue;
+        jMatches[sIndex] = jValue;
     }
 
-    return jBooks;
+    return jMatches;
 }
 
 /**
-  * Deserialize books from a Json object.
+  * Deserialize matches from a JSON string.
   *
-  * \param sJsonBooks    A JSON string representing a books.
+  * \param sJsonMatches  A JSON string representing matches.
   * \param sErrorMessage A string to return an error message if needed
   *
   * \return True if deserialization is successful, false otherwise
   */
 
-bool CardGameGoFish::BooksJsonDeserialization(const std::string &sJsonBooks, std::string &sErrorMessage)
+bool CardGameBasicRummy::MatchesJsonDeserialization(const std::string &sJsonMatches, std::string &sErrorMessage)
 {
     Json::Reader jReader;
-    Json::Value  jBooks;
+    Json::Value  jMatches;
     int nPlayer;
-    Book cBook;
+    Match cMatch;
 
-    // Parse the JSON string into a Json object
-    if (jReader.parse(sJsonBooks, jBooks, false))
+    // Parse the JSON string into a Json object,
+    if (jReader.parse(sJsonMatches, jMatches, false))
     {
-        m_uommBooks.clear();
+        m_uommMatches.clear();
 
-        for (const Json::Value &jValue : jBooks)
+        for (const Json::Value &jValue : jMatches)
         {
             nPlayer = jValue["Player"].asInt();
 
-            if (cBook.JsonDeserialization(jValue["Book"].toStyledString(), sErrorMessage))
+            if (cMatch.JsonDeserialization(jValue["Match"], sErrorMessage))
             {
                 // Insert players's book into Books
-                m_uommBooks.insert(std::make_pair(nPlayer, cBook));
+                m_uommMatches.insert(std::make_pair(nPlayer, cMatch));
             }
             else
             {

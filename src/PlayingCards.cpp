@@ -141,10 +141,25 @@ std::string PlayingCards::Ranks() const
         sRanks += cCard.Rank() + " ";
     }
 
-    if (sRanks.empty())
-        sRanks = "empty";
-
     return sRanks;
+}
+
+/**
+  * Return string representing ranks and suits in possession.
+  *
+  * \return String of ranks and suits.
+  */
+
+std::string PlayingCards::RanksAndSuits() const
+{
+    std::string sRanksAndSuits {};
+
+    for (const Card &cCard : m_vCards)
+    {
+        sRanksAndSuits += cCard.Rank() + cCard.Suit() + " ";
+    }
+
+    return sRanksAndSuits;
 }
 
 /**
@@ -328,7 +343,6 @@ std::vector<Card> PlayingCards::RemoveCardsOfSuit(std::string sSuit, int nNumber
 Json::Value PlayingCards::JsonSerialization() const
 {
     Json::Value jCards;
-
     // The following are used to create a unique index that will retain order
     // when serialized to JSON.  May be used for up to 260 unique values: a0 to z9.
     int nCounter {0};
@@ -354,9 +368,9 @@ Json::Value PlayingCards::JsonSerialization() const
 }
 
 /**
-  * Deserialize the class from a Json object.
+  * Deserialize the class from a JSON string.
   *
-  * \param sJsonPlayingCards A JSON string representing a PlayingCards.
+  * \param sJsonPlayingCards A JSON string representing PlayingCards
   * \param sErrorMessage     A string to return an error message if needed
   *
   * \return True if deserialization is successful, false otherwise
@@ -393,6 +407,38 @@ bool PlayingCards::JsonDeserialization(const std::string &sJsonPlayingCards, std
         sErrorMessage = jReader.getFormattedErrorMessages();
         return false;
     }
+}
+
+/**
+  * Deserialize the class from a Json::Value.
+  *
+  * \param jcards         A Json::Value representing PlayingCards.
+  * \param sErrorMessage  A string to return an error message if needed
+  *
+  * \return True if deserialization is successful, false otherwise
+  */
+
+bool PlayingCards::JsonDeserialization(const Json::Value jCards, std::string &sErrorMessage)
+{
+    Json::Value  jCard;
+    Card cCard;
+
+    m_vCards.clear();
+
+    for (Json::ValueIterator it = jCards.begin(); it != jCards.end(); ++it)
+    {
+        jCard = (*it);
+        if (cCard.JsonDeserialization(jCard.toStyledString(), sErrorMessage))
+        {
+            m_vCards.push_back(cCard);
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    return true;
 }
 
 /**

@@ -30,10 +30,8 @@ Deck::Deck() : PlayingCards()
     // Create standard 52 card deck
     m_vCards.clear();
 
-    //for (std::size_t iii = 0; iii < sizeof(asRank); ++iii)
     for (std::size_t iii = 0; iii < asRank.size(); ++iii)
     {
-        //for (std::size_t jjj = 0; jjj < sizeof(asSuit); ++jjj)
         for (std::size_t jjj = 0; jjj < asSuit.size(); ++jjj)
         {
             m_vCards.emplace_back(asRank[iii], asSuit[jjj], aiValue[iii]);
@@ -112,6 +110,22 @@ void Deck::Deal(int nNumberOfCardsPerHand, std::vector<Hand> &vHands, bool bDeal
             cHand.AddCard(m_vCards.front());
             m_vCards.erase(m_vCards.begin());
             --nTotalCards;
+        }
+    }
+}
+
+/**
+  * Set Aces to lowest value.
+  *
+  */
+
+void Deck::SetAcesLow()
+{
+    for (Card &cCard : m_vCards)
+    {
+        if (cCard.Rank() == "A")
+        {
+            cCard.SetValueToLowest();
         }
     }
 }

@@ -19,32 +19,33 @@
 
 /** \file
  *
- * \brief The CardGameGoFish class represents the Go Fish card game with
+ * \brief The CardGameBasicRummy class represents the Basic Rummy card game with
  * two players.
  *
  */
 
 
-#ifndef CARDGAMEGOFISH_H
-#define CARDGAMEGOFISH_H
+#ifndef CARDGAMEBASICRUMMY_H
+#define CARDGAMEBASICRUMMY_H
 
 #include <unordered_map>
 
 #include "CardGame.h"
 
-class CardGameGoFish : public CardGame
+class CardGameBasicRummy : public CardGame
 {
     public:
         // Construct a War card game
-        CardGameGoFish(GameType ecGameType) :
+        CardGameBasicRummy(GameType ecGameType) :
             CardGame(ecGameType, 2)
         {
             // Stochastic game
             SetEnvironmentDeterministic(false);
 
             // Shuffle and Deal cards
+            m_cDeck.SetAcesLow();
             m_cDeck.Shuffle();
-            m_cDeck.Deal(7, m_vHands);
+            m_cDeck.Deal(10, m_vHands);
 
             // Sort hands
             for (Hand &cHand : m_vHands)
@@ -53,7 +54,11 @@ class CardGameGoFish : public CardGame
             }
 
             // Set flags
-            SetAskingAllowed(true);
+            SetDrawingAllowed(true);
+            SetDrawingFromStockAllowed(true);
+            SetDrawingFromDiscardPileAllowed(true);
+            SetMeldingAllowed(true);
+            SetDiscardingAllowed(true);
             SetShowingAllowed(true);
             SetScoringAllowed(true);
 
@@ -63,7 +68,7 @@ class CardGameGoFish : public CardGame
         }
 
         // Destructor
-        ~CardGameGoFish() {}
+        ~CardGameBasicRummy() {}
 
         // Display the game
         virtual void Display() const override;
@@ -100,48 +105,53 @@ class CardGameGoFish : public CardGame
         virtual GameMove BlackboardMove(int nPlayer, Blackboard &cBlackboard, int nProbability) const override;
 
         // Clone the current game
-        virtual std::unique_ptr<Game> Clone() const override { return std::unique_ptr<Game>(new CardGameGoFish(*this)); }
+        virtual std::unique_ptr<Game> Clone() const override { return std::unique_ptr<Game>(new CardGameBasicRummy(*this)); }
 
         // Return the title of the game
-        virtual std::string Title() const override { return "Go Fish"; }
+        virtual std::string Title() const override { return "Basic Rummy"; }
 
         // Return the description of the game
         virtual std::string Description() const override { return "Valid moves are " +
-            GameVocabulary::ASK + ", " +
+            GameVocabulary::DRAW + " " + GameVocabulary::ARG_STOCK + ", " +
+            GameVocabulary::DRAW + " " + GameVocabulary::ARG_DISCARD + ", " +
+            GameVocabulary::MELD + ", " +
+            GameVocabulary::DISCARD + ", " +
             GameVocabulary::SHOW + ", " +
             GameVocabulary::SCORE + ", " +
             GameVocabulary::RESIGN + "."; }
 
-        // Override Game::SetSync()
-        void SetSync(bool b)  { CardGame::SetSync(b); m_bSyncBooks = b; }
+        //// Override Game::SetSync()
+        //void SetSync(bool b)  { CardGame::SetSync(b); m_bSyncBooks = b; }
 
-        // Draw a card from the stock
-        bool GoFish(int nPlayer);
+        //// Draw a card from the stock
+        //bool GoFish(int nPlayer);
 
     protected:
         // Initialize Blackboard
         virtual void BlackboardInitialize(int nPlayer, Blackboard &cBlackboard) const override;
 
     private:
-        // Number of cards to make a book
-        const int m_knBookNumber {4};
+        // Number of cards to make a match
+        const int m_knMatchNumber {3};
 
-        // Return all ranks in the Books
-        std::string BooksRanks() const;
-        std::string BooksUniqueRanks() const;
+        //// Return all ranks and suits in the Matches
+        std::string MatchesTypes() const;
 
-        // Serialize and deserialize Books
-        Json::Value BooksJsonSerialization() const;
-        bool        BooksJsonDeserialization(const std::string &sJsonPlayingCards, std::string &sErrorMessage);
+        //// Serialize and deserialize Matches
+        Json::Value MatchesJsonSerialization() const;
+        bool        MatchesJsonDeserialization(const std::string &sJsonPlayingCards, std::string &sErrorMessage);
 
-        // Books used to hold books for each player
-        std::unordered_multimap<int, Book> m_uommBooks;
+        //// Books used to hold books for each player
+        //std::unordered_multimap<int, Hand> m_uommBooks;
+        // Matches are used to hold matches for each player
+        std::unordered_multimap<int, Match> m_uommMatches;
 
         // Sync flags
-        bool m_bSyncBooks { false };
+        //bool m_bSyncBooks { false };
+        bool m_bSyncMatches { false };
 
         // Stats: successful asks for cards
         int m_aiSuccessfulAsks[2] {0};
 };
 
-#endif // CARDGAMEGOFISH_H
+#endif // CARDGAMEBASICRUMMY_H

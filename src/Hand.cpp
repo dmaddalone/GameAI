@@ -67,27 +67,6 @@ std::string Hand::DisplayRanks() const
 }
 
 /**
-  * Display cards in the hand.
-  *
-  * Return a string represent the cards in the hand.
-  *
-  * \return String of cards.
-  */
-
-std::string Hand::Ranks() const
-{
-    std::string sCards {};
-
-    for (const Card &cCard : m_vCards)
-    {
-        sCards.append(cCard.Rank());
-        sCards.append(" ");
-    }
-
-    return sCards;
-}
-
-/**
   * Remove books of ranks from the hand.
   *
   * Remove books from hand and return as a hand.
@@ -97,9 +76,10 @@ std::string Hand::Ranks() const
   * \return Hand representing the book.
   */
 
-Hand Hand::RemoveBookByRank(int nSizeOfBook)
+Book Hand::RemoveBookByRank(int nSizeOfBook)
 {
-    Hand cHand {};
+    //Hand cHand {};
+    Book cBook;
     std::vector<Card> vCards {};
 
     for (const std::string &sRank : asRank)
@@ -107,12 +87,14 @@ Hand Hand::RemoveBookByRank(int nSizeOfBook)
         if (HasCardsOfRank(sRank) == nSizeOfBook)
         {
             vCards = RemoveCardsOfRank(sRank);
-            cHand.AddCards(vCards);
-            return cHand;
+            //cHand.AddCards(vCards);
+            cBook.AddCards(vCards);
+            //return cHand;
+            return cBook;
         }
     }
 
-    return cHand;
+    return cBook;
 }
 
 /**
@@ -124,3 +106,90 @@ void Hand::SortByRank()
 {
     std::sort(m_vCards.begin(), m_vCards.end());
 }
+
+/**
+  * Serialize the class into a Json object.
+  *
+  * \return The Json Value object representing the class.
+  */
+
+Json::Value Match::JsonSerialization() const
+{
+    Json::Value jCards = Hand::JsonSerialization();
+    Json::Value jMatch;
+
+    jMatch["Cards"]        = jCards;
+    jMatch["TypeSameRank"] = m_stType.TypeSameRank;
+    jMatch["TypeSameSuit"] = m_stType.TypeSameSuit;
+    jMatch["TypeSequence"] = m_stType.TypeSequence;
+
+    return jMatch;
+}
+
+/**
+  * Deserialize the class from a JSON string
+  *
+  * \param sJsonMatch     A JSON string representing a PlayingCards.
+  * \param sErrorMessage  A string to return an error message if needed
+  *
+  * \return True if deserialization is successful, false otherwise
+  */
+
+bool Match::JsonDeserialization(const std::string &sJsonMatch, std::string &sErrorMessage)
+{
+    Json::Reader jReader;
+    Json::Value  jMatch;
+    Json::Value  jCards;
+
+    // Deserialize match specifics
+    if (jReader.parse(sJsonMatch, jMatch, false))
+    {
+        // Deserialize cards first
+        jCards = jMatch["Cards"];
+
+        if (!Hand::JsonDeserialization(jCards, sErrorMessage))
+        {
+            return false;
+        }
+
+        m_stType.TypeSameRank = jMatch["TypeSameRank"].asBool();
+        m_stType.TypeSameRank = jMatch["TypeSameSuit"].asBool();
+        m_stType.TypeSameRank = jMatch["TypeSequence"].asBool();
+
+        return true;
+    }
+    else
+    {
+        sErrorMessage = jReader.getFormattedErrorMessages();
+        return false;
+    }
+}
+
+/**
+  * Deserialize the class from a Json object.
+  *
+  * \param sJsonPlayingCards A JSON string representing a PlayingCards.
+  * \param sErrorMessage     A string to return an error message if needed
+  *
+  * \return True if deserialization is successful, false otherwise
+  */
+
+bool Match::JsonDeserialization(const Json::Value &jMatch, std::string &sErrorMessage)
+{
+    Json::Value  jCards;
+
+    // Deserialize cards first
+    jCards = jMatch["Cards"];
+
+    if (!Hand::JsonDeserialization(jCards, sErrorMessage))
+    {
+        return false;
+    }
+
+    m_stType.TypeSameRank = jMatch["TypeSameRank"].asBool();
+    m_stType.TypeSameRank = jMatch["TypeSameSuit"].asBool();
+    m_stType.TypeSameRank = jMatch["TypeSequence"].asBool();
+
+    return true;
+}
+

@@ -66,7 +66,10 @@ class Card
 
         // Set Rank
         bool        SetRank(std::string sRank) { m_sRank = sRank; return RankValid(); }
-        bool        RankValid()       { for (const std::string &sRank : asRank) { if (sRank == m_sRank) { return true; } }  return false; }
+        bool        RankValid() const          { for (const std::string &sRank : asRank) { if (sRank == m_sRank) { return true; } }  return false; }
+
+        // Set Value
+        void       SetValueToLowest() { m_nValue = aiValue[0] - 1; }
 
         // Set and get whether card is turned up
         void        TurnUp(bool b)    { m_bTurnedUp = b; }
@@ -77,7 +80,7 @@ class Card
         bool operator>(const Card &cCard) const { return Value() > cCard.Value(); }
 
         // Get the card ID
-        int         ID() const        { return m_nID; }
+        int   ID() const { return m_nID; }
 
         // Used for Bayesian probabilities
         void  SetProbability(float fProb) { m_fProbability = fProb; }
@@ -86,6 +89,7 @@ class Card
         // Json object serialization and deserialization
         Json::Value JsonSerialization() const;
         bool        JsonDeserialization(const std::string &sJsonCard, std::string &sErrorMessage);
+        bool        JsonDeserialization(const Json::Value jCard);
 
     private:
         // Rank and Suit
