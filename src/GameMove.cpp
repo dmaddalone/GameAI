@@ -252,3 +252,66 @@ bool GameMove::JsonDeserialization(const std::string &sJsonGameMove, std::string
     sErrorMessage = jReader.getFormattedErrorMessages();
     return false;
 }
+
+bool AllowedMoves::AddMovesInSequence(const std::string &sMove, const int &nSeqNum)
+{
+    // May only insert moves with sequence less-than or equal to current index
+    // and sequence number must be greater than zero.
+    if ((nSeqNum >= m_nAddMoveIndex) || (nSeqNum <= m_knLowestSequenceNumber))
+        return false;
+
+    m_mmMoves.insert(std::pair<int, std::string>(nSeqNum, sMove));
+
+    // Index is incremented to one more than sequence number to add
+    // additional moves at a higher sequence number.
+    m_nAddMoveIndex = nSeqNum;
+
+    // Allow callers to know that AllowedMoves is in use
+    m_bInitialized = true;
+
+    return true;
+}
+
+bool AllowedMoves::AddMove(const std::string &sMove)
+{
+    m_mmMoves.insert(std::pair<int, std::string>(m_knLowestSequenceNumber, sMove));
+    return false;
+}
+
+std::string AllowedMoves::NextMoveInSequence(const bool bIncrementIndex)
+{
+    std::string sMoves {};
+
+    // Get iterator range for moves associated with current move index
+    std::pair< std::multimap<int, std::string>::iterator, std::multimap<int, std::string>::iterator > itRange;
+    itRange = m_mmMoves.equal_range(m_nMoveIndex);
+
+    // Add moves to to return variable
+    for (std::multimap<int, std::string>::iterator it = itRange.first; it != itRange.second; ++it)
+    {
+        sMoves += it->second + " ";
+    }
+
+    // Evaluate need to increment move index
+    if (bIncrementIndex)
+    {
+        ++m_nMoveIndex;
+        if (m_nMoveIndex == m_nAddMoveIndex)
+            m_nMoveIndex = m_knLowestSequenceNumber + 1;
+    }
+
+    return sMoves;
+}
+
+bool AllowedMoves::ValidMove(const std::string &sMove) const
+{
+    for (const auto &SequenceMove : m_mmMoves)
+    {
+        if (SequenceMove.second.compare(sMove) == 0)
+        {
+            return true;
+        }
+    }
+
+    return false;
+}

@@ -31,6 +31,7 @@
 #include <unordered_map>
 
 #include "Game.h"
+#include "GameMove.h"
 #include "Deck.h"
 #include "Hand.h"
 
@@ -161,6 +162,10 @@ class CardGame : public Game
 
         // Default move for the game
         std::string m_sDefaultMove {};
+
+        // AllowedMoves used for multiple moves with a single turn, i.e.,
+        // Draw, Meld, Discard
+        AllowedMoves m_cAllowedMoves;
 };
 
 #endif // CARDGAME_H

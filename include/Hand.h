@@ -118,17 +118,18 @@ class Match : public Hand
             Hand()
         {}
 
-    // Set and get match type
-    void SetTypeSameRank()    { m_stType = m_stResetType; m_stType.TypeSameRank = true; }
-    void SetTypeSameSuit()    { m_stType = m_stResetType; m_stType.TypeSameSuit = true; }
-    void SetTypeSequence()    { m_stType = m_stResetType; m_stType.TypeSequence = true; }
-    bool TypeSameRank() const { return m_stType.TypeSameRank; }
-    bool TypeSameSuit() const { return m_stType.TypeSameSuit; }
-    bool TypeSequence() const { return m_stType.TypeSequence; }
+        // Set and get match type
+        void SetTypeSameRank()    { m_stType = m_stResetType; m_stType.TypeSameRank = true; }
+        void SetTypeSameSuit()    { m_stType = m_stResetType; m_stType.TypeSameSuit = true; }
+        void SetTypeSequence()    { m_stType = m_stResetType; m_stType.TypeSequence = true; }
+        bool TypeSameRank() const { return m_stType.TypeSameRank; }
+        bool TypeSameSuit() const { return m_stType.TypeSameSuit; }
+        bool TypeSequence() const { return m_stType.TypeSequence; }
 
-    Json::Value JsonSerialization() const;
-    bool        JsonDeserialization(const std::string &sJsonMatch, std::string &sErrorMessage);
-    bool        JsonDeserialization(const Json::Value &jMatch, std::string &sErrorMessage);
+        // Json object (de)serialization
+        Json::Value JsonSerialization() const;
+        bool        JsonDeserialization(const std::string &sJsonMatch, std::string &sErrorMessage);
+        bool        JsonDeserialization(const Json::Value &jMatch, std::string &sErrorMessage);
 
     private:
         struct
