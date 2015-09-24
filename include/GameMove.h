@@ -27,6 +27,7 @@
 #define GAMEMOVE_H
 
 #include <string>
+#include <vector>
 
 #include "Card.h"
 #include "GameVocabulary.h"
@@ -70,7 +71,8 @@ class GameMove
         void SetPlayerNumber(int n)       { m_nPlayerNumber = n; }
         int PlayerNumber() const          { return m_nPlayerNumber; }
 
-        // Return move command and argument
+        // Set and return move command and argument
+        bool SetCommand(std::string sCommand);
         std::string Command() const { return m_sCommand; }
 
         // Set and return move command and argument
@@ -258,18 +260,21 @@ class GameMove
 class AllowedMoves
 {
     public:
-        bool AddMovesInSequence(const std::string &sMove, const int &nSeqNum);
-        bool AddMove(const std::string &sMove);
-        std::string NextMoveInSequence(const bool bIncrementIndex=true);
-        bool ValidMove(const std::string &sMove) const;
+        bool AddMovesInSequence(const int &nSeqNum, const std::string &sMove, const std::string &sArg="");
+        bool AddMove(const std::string &sMove, const std::string &sArg="");
+        //std::string NextMoveInSequence(const bool bIncrementIndex=true) const;
+        void NextMoveInSequence(std::string &sMoves, const bool bIncrementIndex=true) const;
+        //std::vector<GameMove> NextMoveInSequence(const bool bIncrementIndex=true) const;
+        void NextMoveInSequence(std::vector<GameMove> &vMoves, const bool bIncrementIndex=true) const;
+        bool ValidMove(const std::string &sMove, const std::string &sArg="") const;
         bool InUse() const { return m_bInitialized; }
 
     private:
         std::multimap<int, std::string> m_mmMoves                {};
         const int                       m_knLowestSequenceNumber {0};
         int                             m_nAddMoveIndex          {m_knLowestSequenceNumber  + 1};
-        int                             m_nMoveIndex             {m_nAddMoveIndex};
-        bool                            m_bInitialized            {false};
+        mutable int                     m_nMoveIndex             {m_nAddMoveIndex};
+        bool                            m_bInitialized           {false};
 
 };
 

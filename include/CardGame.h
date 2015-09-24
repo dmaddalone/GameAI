@@ -132,6 +132,10 @@ class CardGame : public Game
         void SetShowingAllowed(bool b)                { m_bShowingAllowed = b; }
         void SetScoringAllowed(bool b)                { m_bScoringAllowed = b; }
 
+        // AllowedMoves used for multiple moves with a single turn, i.e.,
+        // Draw, Meld, Discard
+        AllowedMoves m_cAllowedMoves;
+
         // Set the default move for the game
         void SetDefaultMove(std::string sMove) { m_sDefaultMove = sMove; }
 
@@ -162,10 +166,6 @@ class CardGame : public Game
 
         // Default move for the game
         std::string m_sDefaultMove {};
-
-        // AllowedMoves used for multiple moves with a single turn, i.e.,
-        // Draw, Meld, Discard
-        AllowedMoves m_cAllowedMoves;
 };
 
 #endif // CARDGAME_H

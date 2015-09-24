@@ -106,7 +106,12 @@ bool CardGameBasicRummy::ApplySyncInfo(const std::string &sGameInformation, std:
 
 std::string CardGameBasicRummy::ValidMoves(int nPlayer) const
 {
+    std::string sMoves {};
     // Draw
+    ////return m_cAllowedMoves.NextMoveInSequence(sMoves, false);
+    m_cAllowedMoves.NextMoveInSequence(sMoves, false);
+    return sMoves;
+
     // If cards in stock
     // If cards in discard pile
 
@@ -114,9 +119,10 @@ std::string CardGameBasicRummy::ValidMoves(int nPlayer) const
     // If matches in hand
 
     // Discard
-    std::string sValidMoves = GameVocabulary::ASK + " " + m_vHands[nPlayer - 1].Ranks();
 
-    return sValidMoves;
+    //std::string sValidMoves = GameVocabulary::ASK + " " + m_vHands[nPlayer - 1].Ranks();
+
+    //return sValidMoves;
 }
 
 /**
@@ -133,9 +139,13 @@ std::string CardGameBasicRummy::ValidMoves(int nPlayer) const
 std::vector<GameMove> CardGameBasicRummy::GenerateMoves(int nPlayer) const
 {
     std::vector<GameMove> vGameMoves {};
-    GameMove cGameMove;
-    Card cCard;
 
+    //std::string sMoveArgs = m_cAllowedMoves.NextMoveInSequence();
+    //std::string sMoveArgs {};
+    m_cAllowedMoves.NextMoveInSequence(vGameMoves);
+
+    //Card cCard;
+/*
     // If player has cards in their hand, create ASK game moves for each rank
     if (m_vHands[nPlayer - 1].HasCards() > 0)
     {
@@ -159,7 +169,7 @@ std::vector<GameMove> CardGameBasicRummy::GenerateMoves(int nPlayer) const
             }
         }
     }
-
+*/
     return vGameMoves;
 }
 
@@ -1075,5 +1085,3 @@ bool CardGameBasicRummy::MatchesJsonDeserialization(const std::string &sJsonMatc
         return false;
     }
 }
-
-

@@ -62,6 +62,15 @@ class CardGameBasicRummy : public CardGame
             SetShowingAllowed(true);
             SetScoringAllowed(true);
 
+            // Set Allowed Moves
+            // TODO: Duplicative to the above Set flags
+            m_cAllowedMoves.AddMovesInSequence(1, GameVocabulary::DRAW, GameVocabulary::ARG_STOCK);
+            m_cAllowedMoves.AddMovesInSequence(1, GameVocabulary::DRAW, GameVocabulary::ARG_DISCARD);
+            m_cAllowedMoves.AddMovesInSequence(2, GameVocabulary::MELD);
+            m_cAllowedMoves.AddMovesInSequence(3, GameVocabulary::DISCARD);
+            m_cAllowedMoves.AddMove(GameVocabulary::SHOW);
+            m_cAllowedMoves.AddMove(GameVocabulary::SCORE);
+
             // Configure logger
             m_cLogger.UseTag(false);
             m_cLogger.UseLevelIndent(false);

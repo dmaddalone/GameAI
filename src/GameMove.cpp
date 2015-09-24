@@ -19,6 +19,75 @@
 
 #include "GameMove.h"
 
+bool GameMove::SetCommand(std::string sCommand)
+{
+    std::string sMove {};
+    std::string sArg{};
+
+    std::size_t nPos = sCommand.find(GameVocabulary::DELIMETER);
+    if (nPos != std::string::npos)
+    {
+        sMove = sCommand.substr(0, nPos - 1);
+        sArg  = sCommand.substr(nPos + 1);
+    }
+    else
+    {
+        sMove = sCommand;
+    }
+
+    if (sMove.compare(GameVocabulary::MOVE))
+    {
+        SetMove(true);
+        return true;
+    }
+
+    if (sMove.compare(GameVocabulary::NO_MOVE))
+    {
+        SetNoMove(true);
+        return true;
+    }
+
+    if (sMove.compare(GameVocabulary::RESIGN))
+    {
+        SetResignation(true);
+        return true;
+    }
+
+    if (sMove.compare(GameVocabulary::FOLD))
+    {
+        SetFold(true);
+        return true;
+    }
+
+    if (sMove.compare(GameVocabulary::DRAW))
+    {
+        SetDraw(true);
+        SetArgument(sArg);
+        return true;
+    }
+
+    if (sMove.compare(GameVocabulary::ASK))
+    {
+        SetAsk(true);
+        SetArgument(sArg);
+        return true;
+    }
+
+    if (sMove.compare(GameVocabulary::SHOW))
+    {
+        SetShow(true);
+        return true;
+    }
+
+    if (sMove.compare(GameVocabulary::SCORE))
+    {
+        SetScore(true);
+        return true;
+    }
+
+    return false;
+}
+
 std::string GameMove::AnnounceMove() const
 {
     std::string sMove {};
@@ -253,18 +322,19 @@ bool GameMove::JsonDeserialization(const std::string &sJsonGameMove, std::string
     return false;
 }
 
-bool AllowedMoves::AddMovesInSequence(const std::string &sMove, const int &nSeqNum)
+bool AllowedMoves::AddMovesInSequence( const int &nSeqNum, const std::string &sMove, const std::string &sArg)
 {
     // May only insert moves with sequence less-than or equal to current index
     // and sequence number must be greater than zero.
     if ((nSeqNum >= m_nAddMoveIndex) || (nSeqNum <= m_knLowestSequenceNumber))
         return false;
 
-    m_mmMoves.insert(std::pair<int, std::string>(nSeqNum, sMove));
+    std::string sMoveArg = sMove + GameVocabulary::DELIMETER + sArg;
+    m_mmMoves.insert(std::pair<int, std::string>(nSeqNum, sMoveArg));
 
     // Index is incremented to one more than sequence number to add
     // additional moves at a higher sequence number.
-    m_nAddMoveIndex = nSeqNum;
+    m_nAddMoveIndex = nSeqNum + 1;
 
     // Allow callers to know that AllowedMoves is in use
     m_bInitialized = true;
@@ -272,24 +342,66 @@ bool AllowedMoves::AddMovesInSequence(const std::string &sMove, const int &nSeqN
     return true;
 }
 
-bool AllowedMoves::AddMove(const std::string &sMove)
+bool AllowedMoves::AddMove(const std::string &sMove, const std::string &sArg)
 {
+    std::string sMoveArg = sMove + GameVocabulary::DELIMETER + sArg;
     m_mmMoves.insert(std::pair<int, std::string>(m_knLowestSequenceNumber, sMove));
     return false;
 }
 
-std::string AllowedMoves::NextMoveInSequence(const bool bIncrementIndex)
+//std::string AllowedMoves::NextMoveInSequence(const bool bIncrementIndex) const
+void AllowedMoves::NextMoveInSequence(std::string &sMoves, const bool bIncrementIndex) const
 {
-    std::string sMoves {};
+    //std::string sMoves {};
+    sMoves.clear();
+    //std::vector<GameMoves> vGameMoves = NextMoveInSequence(bIncrementIndex);
+    std::vector<GameMove> vGameMoves {};
+    NextMoveInSequence(vGameMoves, bIncrementIndex);
+
+    for (const auto &cGameMove : vGameMoves)
+    {
+        sMoves += cGameMove.Command() + GameVocabulary::DELIMETER + cGameMove.Argument() + "\n";
+    }
+
+    //// Get iterator range for moves associated with current move index
+    //std::pair< std::multimap<int, std::string>::iterator, std::multimap<int, std::string>::iterator > itRange;
+    //itRange = m_mmMoves.equal_range(m_nMoveIndex);
+    //
+    //// Add moves to to return variable
+    //for (std::multimap<int, std::string>::iterator it = itRange.first; it != itRange.second; ++it)
+    //{
+    //    sMoves += it->second + "\n";
+    //}
+
+    //// Evaluate need to increment move index
+    //if (bIncrementIndex)
+    //{
+    //    ++m_nMoveIndex;
+    //    if (m_nMoveIndex == m_nAddMoveIndex)
+    //        m_nMoveIndex = m_knLowestSequenceNumber + 1;
+    //}
+
+    //return sMoves;
+}
+
+//std::vector<GameMove> AllowedMoves::NextMoveInSequence(const bool bIncrementIndex) const
+void  AllowedMoves::NextMoveInSequence(std::vector<GameMove> &vGameMoves, const bool bIncrementIndex) const
+{
+    GameMove              cGameMove;
+    //std::vector<GameMove> vGameMoves{};
+    vGameMoves.clear();
 
     // Get iterator range for moves associated with current move index
-    std::pair< std::multimap<int, std::string>::iterator, std::multimap<int, std::string>::iterator > itRange;
+    std::pair <std::multimap<int, std::string>::iterator, std::multimap<int, std::string>::iterator> itRange;
+    //std::pair <std::multimap<int, std::string>::iterator, std::multimap<int, std::string>::iterator> itRange =
     itRange = m_mmMoves.equal_range(m_nMoveIndex);
+    //    m_mmMoves.equal_range(m_nMoveIndex);
 
     // Add moves to to return variable
     for (std::multimap<int, std::string>::iterator it = itRange.first; it != itRange.second; ++it)
     {
-        sMoves += it->second + " ";
+        cGameMove.SetCommand(it->second);
+        vGameMoves.push_back(cGameMove);
     }
 
     // Evaluate need to increment move index
@@ -300,14 +412,21 @@ std::string AllowedMoves::NextMoveInSequence(const bool bIncrementIndex)
             m_nMoveIndex = m_knLowestSequenceNumber + 1;
     }
 
-    return sMoves;
+    //return vGameMoves;
 }
 
-bool AllowedMoves::ValidMove(const std::string &sMove) const
+bool AllowedMoves::ValidMove(const std::string &sMove,  const std::string &sArg) const
 {
+    std::string sSeqMove {};
+    std::string sSeqArg  {};
+    std::size_t nPos  {};
+
     for (const auto &SequenceMove : m_mmMoves)
     {
-        if (SequenceMove.second.compare(sMove) == 0)
+        nPos = SequenceMove.second.find(GameVocabulary::DELIMETER);
+        sSeqMove = SequenceMove.second.substr(0,nPos - 1);
+        sSeqArg  = SequenceMove.second.substr(nPos + 1);
+        if ((sSeqMove.compare(sMove) == 0) && (sSeqArg.compare(sArg)))
         {
             return true;
         }
