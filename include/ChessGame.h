@@ -77,7 +77,7 @@ class ChessGame : public BoardGame
         virtual bool GameEnded(int nPlayer) override;
 
         // Generate a vector of valid moves
-        virtual std::vector<GameMove> GenerateMoves(int nPlayer) const override;
+        virtual std::vector<GameMove> GenerateMoves(int nPlayer) override;
 
         // Return the score of the game
         virtual std::string GameScore() const override;
@@ -121,7 +121,7 @@ class ChessGame : public BoardGame
 
         // Count the value of pieces for nPlayer
         int  CountEvaluation(int nPlayer) const;
-        int  MobilityEvaluation(int nPlayer) const;
+        int  MobilityEvaluation(int nPlayer);
         void CountPawns(int nPlayer, int &nDoubled, int &nIsolated, int &nPassed) const;
         int  MinorPiecesDevelopedEvaluation(int nPlayer) const;
 

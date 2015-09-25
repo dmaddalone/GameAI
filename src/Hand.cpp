@@ -94,22 +94,108 @@ Book Hand::RemoveBookByRank(int nSizeOfBook)
     return cBook;
 }
 
-bool Hand::MeldOpportunities(int nCount, bool bEvalSequence, bool bEvalBook)
+bool Hand::MeldOpportunities(const int nCount, const bool bEvalSequence, const bool bEvalBook)
 {
     // Evaluate for books of the same rank
     if (bEvalBook)
     {
-        for (Card cCard : m_vCards)
+        for (const Card &cCard : m_vCards)
         {
-            if (HasCardsOfRank(cCard) >= nCount)
+            if (HasCardsOfRank(cCard.Rank()) >= nCount)
                 return true;
         }
     }
 
-    // Evaluate for sequence
+    // Evaluate for sequence in same suit
     if (bEvalSequence)
     {
+        int  nSeqCount {1};
+        Card cLastCard;
 
+        SortByRank();
+
+        for (const Card &cCard : m_vCards)
+        {
+            // Same suit?
+            if (cCard.Suit() == cLastCard.Suit())
+            {
+                // If Rank / Value is one more than last card
+                if (cCard.Value() == cLastCard.Value() + 1)
+                {
+                    ++nSeqCount;
+                    if (nSeqCount >= nCount)
+                    {
+                        return true;
+                    }
+                }
+                else
+                {
+                    // Start new count
+                    nSeqCount = 1;
+                }
+            }
+            else
+            {
+                // Start new count
+                nSeqCount = 1;
+            }
+
+            cLastCard = cCard;
+        }
+    }
+
+    return false;
+}
+
+bool Hand::LayoffOpportunities(std::unordered_multimap<int, Match> &uommMatches, const bool bEvalSequence, const bool bEvalBook)
+{
+    // Loop through all matches
+    for (auto &PlayerMatch : uommMatches)
+    {
+        // If evaluating for sequences
+        if (bEvalSequence)
+        {
+            // If this match is a sequence
+            if (PlayerMatch.second.TypeSequence())
+            {
+                // Loop through all cards in this hand
+                for (const Card &cCard : m_vCards)
+                {
+                    // If a card suit matches the sequence match suit
+                    if (PlayerMatch.second.HasSuit(cCard.Suit()))
+                    {
+                        // Sort the sequence match
+                        PlayerMatch.second.SortByRank();
+
+                        // If Card value is one less than first card, we have a layoff opportunity
+                        if (cCard.Value() == PlayerMatch.second.PeekAtTopCard().Value() - 1)
+                            return true;
+
+                        // If Card value is one more than last card, we have a layoff opportunity
+                        if (cCard.Value() == PlayerMatch.second.PeekAtBottomCard().Value() + 1)
+                            return true;
+                    }
+                }
+            }
+        }
+
+        // If evaluating for books of rank
+        if (bEvalBook)
+        {
+            // If this match is a sequence
+            if (PlayerMatch.second.TypeSameRank())
+            {
+                // Loop through all cards in this hand
+                for (const Card &cCard : m_vCards)
+                {
+                    // If rank match matches this card rank, we have a layoff opportuity
+                    if (PlayerMatch.second.HasRank(cCard.Rank()))
+                    {
+                        return true;
+                    }
+                }
+            }
+        }
     }
 
     return false;
@@ -124,6 +210,7 @@ void Hand::SortByRank()
 {
     std::sort(m_vCards.begin(), m_vCards.end());
 }
+
 
 /**
   * Serialize the class into a Json object.

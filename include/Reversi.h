@@ -51,7 +51,7 @@ class Reversi : public LinearGame
         virtual bool GameEnded(int nPlayer) override;
 
         // Generate a vector of valid moves
-        virtual std::vector<GameMove> GenerateMoves(int nPlayer) const override;
+        virtual std::vector<GameMove> GenerateMoves(int nPlayer) override;
 
         // Clone the current game
         virtual std::unique_ptr<Game> Clone() const override { return std::unique_ptr<Game>(new Reversi(*this)); }
@@ -95,7 +95,7 @@ class Reversi : public LinearGame
         // Count the positional value of tokens for nPlayer
         int  SquareEvaluation(int nPlayer) const;
         // Count the number of valid moves for nPlayer
-        int  MobilityEvaluation(int nPlayer) const;
+        int  MobilityEvaluation(int nPlayer);
 
         // Board dimension
         static const int m_kiDimension {8};

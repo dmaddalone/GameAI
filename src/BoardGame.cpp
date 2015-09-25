@@ -75,7 +75,7 @@ bool BoardGame::ApplySyncInfo(const std::string &sGameInformation, std::string &
   * \return A string of valid moves.
   */
 
-std::string BoardGame::ValidMoves(int nPlayer) const
+std::string BoardGame::ValidMoves(int nPlayer)
 {
     std::string sValidMoves {};
 

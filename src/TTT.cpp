@@ -31,7 +31,7 @@
   * \return A vector of valid moves.
   */
 
-std::vector<GameMove> TTT::GenerateMoves(int nPlayer) const
+std::vector<GameMove> TTT::GenerateMoves(int nPlayer)
 {
     (void)nPlayer;
 

@@ -55,7 +55,7 @@ class BoardGame : public Game
         virtual bool ApplySyncInfo(const std::string &sGameInformation, std::string &sErrorMessage) override;
 
         // Return a list of valid moves in string format
-        virtual std::string ValidMoves(int nPlayer) const override;
+        virtual std::string ValidMoves(int nPlayer) override;
 
         // Get the move from the designated player
         virtual GameMove GetMove(int nPlayer) const override;

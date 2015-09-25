@@ -44,7 +44,7 @@ class ConnectFour : public LinearGame
         virtual bool ApplyMove(int nPlayer, GameMove &cGameMove) override;
 
         // Generate a vector of valis moves
-        virtual std::vector<GameMove> GenerateMoves(int nPlayer) const override;
+        virtual std::vector<GameMove> GenerateMoves(int nPlayer) override;
 
         // Clone the current game
         virtual std::unique_ptr<Game> Clone() const override { return std::unique_ptr<Game>(new ConnectFour(*this)); }

@@ -177,7 +177,7 @@ void ChessGame::TestForCheck(int nPlayer, GameMove cGameMove, std::vector<GameMo
   * \return A vector of valid moves.
   */
 
-std::vector<GameMove> ChessGame::GenerateMoves(int nPlayer) const
+std::vector<GameMove> ChessGame::GenerateMoves(int nPlayer)
 {
     std::vector<GameMove> vGameMoves {};
     GameMove cGameMove;
@@ -1391,7 +1391,7 @@ int ChessGame::CountEvaluation(int nPlayer) const
   * \return An integer representing the number of valid moves for the player.
   */
 
-int ChessGame::MobilityEvaluation(int nPlayer) const
+int ChessGame::MobilityEvaluation(int nPlayer)
 {
     std::vector<GameMove> vGameMoves = GenerateMoves(nPlayer);
 

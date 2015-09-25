@@ -73,10 +73,10 @@ class CardGameGoFish : public CardGame
         virtual bool ApplySyncInfo(const std::string &sGameInformation, std::string &sErrorMessage) override;
 
         // Return a list of valid moves in string format
-        virtual std::string ValidMoves(int nPlayer) const override;
+        virtual std::string ValidMoves(int nPlayer) override;
 
         // Generate a vector of valid moves
-        virtual std::vector<GameMove> GenerateMoves(int nPlayer) const override;
+        virtual std::vector<GameMove> GenerateMoves(int nPlayer) override;
 
         // Apply the move to the game
         virtual bool ApplyMove(int nPlayer, GameMove &cGameMove) override;

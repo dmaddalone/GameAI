@@ -61,6 +61,7 @@ class PlayingCards
 
         // Return a card or a vector of cards
         Card              DrawTopCard();
+        Card              PeekAtTopCard() const;
         Card              PeekAtBottomCard() const;
         Card              RemoveCard(std::string sRank, std::string sSuit);
         std::vector<Card> RemoveCardsOfRank(std::string sRank, int nNumberToRemove=0);

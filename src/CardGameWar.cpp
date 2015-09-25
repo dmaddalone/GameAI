@@ -166,7 +166,7 @@ bool CardGameWar::ApplySyncInfo(const std::string &sGameInformation, std::string
   * \return A vector of valid moves.
   */
 
-std::vector<GameMove> CardGameWar::GenerateMoves(int nPlayer) const
+std::vector<GameMove> CardGameWar::GenerateMoves(int nPlayer)
 {
     std::vector<GameMove> vGameMoves {};
 

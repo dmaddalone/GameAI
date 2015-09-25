@@ -28,13 +28,15 @@
 #define HAND_H
 
 #include <algorithm>
+#include <unordered_map>
 #include <vector>
 
 #include "Card.h"
 #include "PlayingCards.h"
 
-// Forward declaration
+// Forward declarations
 class Book;
+class Match;
 
 /** \class Hand
  *
@@ -60,7 +62,10 @@ class Hand : public PlayingCards
         Book RemoveBookByRank(int nCount);
 
         // Meld opportunities
-        bool MeldOpportunities(int nCount, bool bEvalSequence=true, bool bEvalBook=true);
+        bool MeldOpportunities(const int nCount, const bool bEvalSequence=true, const bool bEvalBook=true);
+
+        // Layoff opportunities
+        bool LayoffOpportunities(std::unordered_multimap<int, Match> &uommMatches, const bool bEvalSequence=true, const bool bEvalBook=true);
 
         // Sort the hand by rank
         void SortByRank();

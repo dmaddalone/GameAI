@@ -49,26 +49,28 @@ namespace GameVocabulary
     static const std::string NO_MOVE                        {"NO_MOVE"};
 
     static const std::string ASK                            {"ASK"};
-    static const std::string ASK_SHORT                      {"A"};
+    //static const std::string ASK_SHORT                      {"A"};
     static const std::string FOLD                           {"FOLD"};
-    static const std::string FOLD_SHORT                     {"F"};
+    //static const std::string FOLD_SHORT                     {"F"};
     static const std::string DRAW                           {"DRAW"};
-    static const std::string DRAW_SHORT                     {"DR"};
+    //static const std::string DRAW_SHORT                     {"DR"};
     static const std::string MELD                           {"MELD"};
-    static const std::string MELD_SHORT                     {"M"};
+    //static const std::string MELD_SHORT                     {"M"};
+    static const std::string LAYOFF                         {"LAYOFF"};
+    //static const std::string LAYOFF_SHORT                   {"L"};
     static const std::string DISCARD                        {"DISCARD"};
-    static const std::string DISCARD_SHORT                  {"DI"};
+    //static const std::string DISCARD_SHORT                  {"DI"};
 
     static const std::string SHOW                           {"SHOW"};
-    static const std::string SHOW_SHORT                     {"SH"};
+    //static const std::string SHOW_SHORT                     {"SH"};
     static const std::string SCORE                          {"SCORE"};
-    static const std::string SCORE_SHORT                    {"SC"};
+    //static const std::string SCORE_SHORT                    {"SC"};
 
     // Game Arguments
     static const std::string ARG_STOCK                      {"STOCK"};
-    static const std::string ARG_STOCK_SHORT                {"ST"};
+    //static const std::string ARG_STOCK_SHORT                {"ST"};
     static const std::string ARG_DISCARD                    {"DISCARD"};
-    static const std::string ARG_DISCARD_SHORT              {"DI"};
+    //static const std::string ARG_DISCARD_SHORT              {"DI"};
 
     // Return command from networked messages
     std::string ParseCommand(const std::string sText);

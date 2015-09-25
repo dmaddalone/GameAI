@@ -55,7 +55,7 @@ void Reversi::SetBoard()
   * \return A vector of valid moves.
   */
 
-std::vector<GameMove> Reversi::GenerateMoves(int nPlayer) const
+std::vector<GameMove> Reversi::GenerateMoves(int nPlayer)
 {
     std::vector<GameMove> vGameMoves {};
 
@@ -847,7 +847,7 @@ int Reversi::SquareEvaluation(int nPlayer) const
   * \return An integer representing the number of valid moves for the player.
   */
 
-int Reversi::MobilityEvaluation(int nPlayer) const
+int Reversi::MobilityEvaluation(int nPlayer)
 {
 
     // Generate all possible valid moves for this player

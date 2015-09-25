@@ -59,7 +59,7 @@ class CardGameWar : public CardGame
         virtual bool ApplySyncInfo(const std::string &sGameInformation, std::string &sErrorMessage) override;
 
         // Generate a vector of valid moves
-        virtual std::vector<GameMove> GenerateMoves(int nPlayer) const override;
+        virtual std::vector<GameMove> GenerateMoves(int nPlayer) override;
 
         // Apply the move to the game
         virtual bool ApplyMove(int nPlayer, GameMove &cGameMove) override;

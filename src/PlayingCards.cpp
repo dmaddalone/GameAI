@@ -222,6 +222,21 @@ Card PlayingCards::DrawTopCard()
 }
 
 /**
+  * Peek at the top card from the possession.
+  *
+  * A copy of the top card is returned to the caller.
+  *
+  * \return A copy of the top card.
+  */
+
+Card PlayingCards::PeekAtTopCard() const
+{
+    Card cCard = m_vCards[0];
+
+    return cCard;
+}
+
+/**
   * Peek at the bottom card from the possession.
   *
   * A copy of the bottom card is returned to the caller.

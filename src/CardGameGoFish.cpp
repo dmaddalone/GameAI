@@ -104,7 +104,7 @@ bool CardGameGoFish::ApplySyncInfo(const std::string &sGameInformation, std::str
   * \return A string of valid moves.
   */
 
-std::string CardGameGoFish::ValidMoves(int nPlayer) const
+std::string CardGameGoFish::ValidMoves(int nPlayer)
 {
     std::string sValidMoves = GameVocabulary::ASK + " " + m_vHands[nPlayer - 1].Ranks();
 
@@ -122,7 +122,7 @@ std::string CardGameGoFish::ValidMoves(int nPlayer) const
   * \return A vector of valid moves.
   */
 
-std::vector<GameMove> CardGameGoFish::GenerateMoves(int nPlayer) const
+std::vector<GameMove> CardGameGoFish::GenerateMoves(int nPlayer)
 {
     std::vector<GameMove> vGameMoves {};
     GameMove cGameMove;

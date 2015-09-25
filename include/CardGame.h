@@ -65,7 +65,7 @@ class CardGame : public Game
         virtual bool ApplySyncInfo(const std::string &sGameInformation, std::string &sErrorMessage) override;
 
         // Return a list of valid moves in string format
-        virtual std::string ValidMoves(int nPlayer) const override;
+        virtual std::string ValidMoves(int nPlayer) override;
 
         // Get the move from the designated player
         virtual GameMove GetMove(int nPlayer) const override;
@@ -107,6 +107,7 @@ class CardGame : public Game
         bool DrawingFromDiscardPileAllowed() const { return m_bDrawFromDiscardPileAllowed; }
         bool AskingAllowed() const                 { return m_bAskingAllowed; }
         bool MeldingAllowed() const                { return m_bMeldingAllowed; }
+        bool LayingOffAllowed() const              { return m_bMeldingAllowed; }
         bool DiscardingAllowed() const             { return m_bDiscardingAllowed; }
         bool ShowingAllowed() const                { return m_bShowingAllowed; }
         bool ScoringAllowed() const                { return m_bScoringAllowed; }
@@ -128,6 +129,7 @@ class CardGame : public Game
         void SetDrawingFromDiscardPileAllowed(bool b) { m_bDrawFromDiscardPileAllowed = b; }
         void SetAskingAllowed(bool b)                 { m_bAskingAllowed = b; }
         void SetMeldingAllowed(bool b)                { m_bMeldingAllowed = b; }
+        void SetLayingOffAllowed(bool b)              { m_bLayingOffAllowed = b; }
         void SetDiscardingAllowed(bool b)             { m_bDiscardingAllowed = b; }
         void SetShowingAllowed(bool b)                { m_bShowingAllowed = b; }
         void SetScoringAllowed(bool b)                { m_bScoringAllowed = b; }
@@ -154,6 +156,7 @@ class CardGame : public Game
         bool m_bDrawFromDiscardPileAllowed { false };
         bool m_bAskingAllowed              { false };
         bool m_bMeldingAllowed             { false };
+        bool m_bLayingOffAllowed           { false };
         bool m_bDiscardingAllowed          { false };
         bool m_bShowingAllowed             { false };
         bool m_bScoringAllowed             { false };

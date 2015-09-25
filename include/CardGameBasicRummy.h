@@ -63,6 +63,7 @@ class CardGameBasicRummy : public CardGame
             SetDrawingFromStockAllowed(true);
             SetDrawingFromDiscardPileAllowed(true);
             SetMeldingAllowed(true);
+            SetLayingOffAllowed(true);
             SetDiscardingAllowed(true);
             SetShowingAllowed(true);
             SetScoringAllowed(true);
@@ -72,6 +73,7 @@ class CardGameBasicRummy : public CardGame
             m_cAllowedMoves.AddMovesInSequence(1, GameVocabulary::DRAW, GameVocabulary::ARG_STOCK);
             m_cAllowedMoves.AddMovesInSequence(1, GameVocabulary::DRAW, GameVocabulary::ARG_DISCARD);
             m_cAllowedMoves.AddMovesInSequence(2, GameVocabulary::MELD);
+            m_cAllowedMoves.AddMovesInSequence(2, GameVocabulary::LAYOFF);
             m_cAllowedMoves.AddMovesInSequence(3, GameVocabulary::DISCARD);
             m_cAllowedMoves.AddMove(GameVocabulary::SHOW);
             m_cAllowedMoves.AddMove(GameVocabulary::SCORE);
@@ -92,10 +94,10 @@ class CardGameBasicRummy : public CardGame
         virtual bool ApplySyncInfo(const std::string &sGameInformation, std::string &sErrorMessage) override;
 
         // Return a list of valid moves in string format
-        virtual std::string ValidMoves(int nPlayer) const override;
+        virtual std::string ValidMoves(int nPlayer) override;
 
         // Generate a vector of valid moves
-        virtual std::vector<GameMove> GenerateMoves(int nPlayer) const override;
+        virtual std::vector<GameMove> GenerateMoves(int nPlayer) override;
 
         // Apply the move to the game
         virtual bool ApplyMove(int nPlayer, GameMove &cGameMove) override;
@@ -143,6 +145,8 @@ class CardGameBasicRummy : public CardGame
     protected:
         // Initialize Blackboard
         virtual void BlackboardInitialize(int nPlayer, Blackboard &cBlackboard) const override;
+
+        void EvaluatePossibleMoves(int nPlayer, std::vector<GameMove> &vGameMoves);
 
     private:
         // Matches are used to hold matches for each player

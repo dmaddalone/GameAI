@@ -81,7 +81,7 @@ class Game
         virtual bool ApplySyncInfo(const std::string &sGameInformation, std::string &sErrorMessage) = 0;
 
         // Return a list of valid moves in string format
-        virtual std::string ValidMoves(int nPlayer) const = 0;
+        virtual std::string ValidMoves(int nPlayer) = 0;
 
         // Get the move from the designated player
         virtual GameMove GetMove(int nPlayer) const = 0;
@@ -108,7 +108,7 @@ class Game
         virtual bool GameEnded(int nPlayer) = 0;
 
         // Generate a vector of valid moves
-        virtual std::vector<GameMove> GenerateMoves(int nPlayer) const = 0;
+        virtual std::vector<GameMove> GenerateMoves(int nPlayer) = 0;
 
         // Evaluate the game state from the perspective of the nPlayer
         virtual int  EvaluateGameState(int nPlayer) = 0;

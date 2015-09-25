@@ -96,6 +96,76 @@ bool CardGameBasicRummy::ApplySyncInfo(const std::string &sGameInformation, std:
     return CardGame::ApplySyncInfo(sGameInformation, sErrorMessage);
 }
 
+void CardGameBasicRummy::EvaluatePossibleMoves(int nPlayer, std::vector<GameMove> &vGameMoves)
+{
+    bool bIteratorIncremented {false};
+
+    std::vector<GameMove>::iterator it = vGameMoves.begin();
+    while (it != vGameMoves.end())
+    {
+        if (it->IsCommand(GameVocabulary::DRAW))
+        {
+            if (it->IsArgument(GameVocabulary::ARG_STOCK))
+            {
+                // If stock is out of cards, remove this as a valid move
+                if (m_cDeck.HasCards() == 0)
+                {
+                    it = vGameMoves.erase(it);
+                    bIteratorIncremented = true;
+                }
+            }
+            else if (it->IsArgument(GameVocabulary::ARG_DISCARD))
+            {
+                // If discard pile is out of cards, remove this as a valid move
+                if (m_cDiscardPile.HasCards() == 0)
+                {
+                    it = vGameMoves.erase(it);
+                    bIteratorIncremented = true;
+                }
+            }
+        }
+
+        if (it->IsCommand(GameVocabulary::MELD))
+        {
+            // If no opportunities for meld in hand, remove this as a valid move
+            if (!m_vHands[nPlayer - 1].MeldOpportunities(m_knMatchNumber))
+            {
+                it = vGameMoves.erase(it);
+                bIteratorIncremented = true;
+            }
+        }
+
+        if (it->IsCommand(GameVocabulary::LAYOFF))
+        {
+            // If no opportunities for meld in hand, remove this as a valid move
+            if (!m_vHands[nPlayer - 1].LayoffOpportunities(m_uommMatches))
+            {
+                it = vGameMoves.erase(it);
+                bIteratorIncremented = true;
+            }
+        }
+
+        if (it->IsCommand(GameVocabulary::DISCARD))
+        {
+            // If player has no cards in hand, remove this as a valid move
+            if (m_vHands[nPlayer - 1].HasCards() == 0)
+            {
+                it = vGameMoves.erase(it);
+                bIteratorIncremented = true;
+            }
+        }
+
+        if (bIteratorIncremented)
+        {
+            bIteratorIncremented = false;
+        }
+        else
+        {
+            ++it;
+        }
+    }
+}
+
 /**
   * Return a string of valid moves.
   *
@@ -104,21 +174,20 @@ bool CardGameBasicRummy::ApplySyncInfo(const std::string &sGameInformation, std:
   * \return A string of valid moves.
   */
 
-std::string CardGameBasicRummy::ValidMoves(int nPlayer) const
+std::string CardGameBasicRummy::ValidMoves(int nPlayer)
 {
     std::string sMoves {};
-    // Draw
-    ////return m_cAllowedMoves.NextMoveInSequence(sMoves, false);
+    std::vector<GameMove> vGameMoves {};
+
     m_cAllowedMoves.NextMoveInSequence(sMoves, false);
+    EvaluatePossibleMoves(nPlayer, vGameMoves);
+
+    for (const GameMove &cGameMove : vGameMoves)
+    {
+        sMoves += cGameMove.Command() + GameVocabulary::DELIMETER + cGameMove.Argument() + "\n";
+    }
+
     return sMoves;
-
-    // If cards in stock
-    // If cards in discard pile
-
-    // Meld
-    // If matches in hand
-
-    // Discard
 }
 
 /**
@@ -132,67 +201,13 @@ std::string CardGameBasicRummy::ValidMoves(int nPlayer) const
   * \return A vector of valid moves.
   */
 
-std::vector<GameMove> CardGameBasicRummy::GenerateMoves(int nPlayer) const
+std::vector<GameMove> CardGameBasicRummy::GenerateMoves(int nPlayer)
 {
     std::vector<GameMove> vGameMoves {};
+
     m_cAllowedMoves.NextMoveInSequence(vGameMoves);
+    EvaluatePossibleMoves(nPlayer, vGameMoves);
 
-    std::vector<GameMove>::iterator it = vGameMoves.begin();
-    while (it != vGameMoves.end())
-    {
-        if (it->IsCommand(GameVocabulary::DRAW))
-        {
-            if (it->IsArgument(GameVocabulary::ARG_STOCK))
-            {
-                // If stock is out of cards, remove this as a valid move
-                if (m_cDeck.HasCards() == 0)
-                {
-                    it = vGameMoves.erase(it);
-                }
-            }
-            else if (it->IsArgument(GameVocabulary::ARG_DISCARD))
-            {
-                // If discard pile is out of cards, remove this as a valid move
-                if (m_cDiscardPile.HasCards() == 0)
-                {
-                    it = vGameMoves.erase(it);
-                }
-            }
-        }
-
-        if (it->IsCommand(GameVocabulary::MELD))
-        {
-            // If no opportunities for meld in hand, remove this as a valid move
-            //if (m_vHands[nPlayer - 1].MeldOpportunities())
-        }
-    }
-
-    //Card cCard;
-/*
-    // If player has cards in their hand, create ASK game moves for each rank
-    if (m_vHands[nPlayer - 1].HasCards() > 0)
-    {
-        cGameMove.SetAsk(true);
-
-        std::string sRank {};
-        for (char &chToken : m_vHands[nPlayer - 1].Ranks())
-        {
-            if (chToken != ' ')
-            {
-                sRank.append(1, chToken);
-            }
-            else
-            {
-                cCard.SetRank(sRank);
-                cGameMove.UpdateCard(cCard);
-                cGameMove.SetArgument(sRank);
-                vGameMoves.push_back(cGameMove);
-
-                sRank.clear();
-            }
-        }
-    }
-*/
     return vGameMoves;
 }
 
@@ -275,8 +290,11 @@ bool CardGameBasicRummy::ApplyMove(int nPlayer, GameMove &cGameMove)
             std::cout << "Player " << cHand.ID() << " has " << cHand.HasCards() << " cards." << std::endl;
         }
         std::cout << "The deck has " << m_cDeck.HasCards() << " cards." << std::endl;
+        std::cout << "The discard pile has " << m_cDiscardPile.HasCards() << " cards." << std::endl;
 /*
         std::cout << "Books made: " << BooksUniqueRanks() << std::endl;
+        std::cout << "Rank Matches:     " << MatchUniqueRanks() << std::endl;
+        std::cout << "Sequence Matches: " << MatchSequences() << std::endl;
 */
 
         return true;
@@ -1003,13 +1021,13 @@ std::string CardGameBasicRummy::MatchesTypes() const
   * \return A string containing the books made by unique rank.
   *
   */
-/*
-std::string CardGameBasicRummy::BooksUniqueRanks() const
+
+std::string CardGameBasicRummy::MatchUniqueRanks() const
 {
     std::string sUniqueRanks {};
     std::string sRanks {};
 
-    for (const auto &PlayerHand : m_uommBooks)
+    for (const auto &PlayerMatch : m_uommMatches)
     {
         sRanks = PlayerHand.second.Ranks();
         sUniqueRanks = sUniqueRanks + sRanks[0] + " ";
@@ -1020,7 +1038,7 @@ std::string CardGameBasicRummy::BooksUniqueRanks() const
 
     return sUniqueRanks;
 }
-*/
+
 /**
   * Serialize the matches into a Json::Value object.
   *

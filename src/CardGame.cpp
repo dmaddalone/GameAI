@@ -149,7 +149,7 @@ bool CardGame::ApplySyncInfo(const std::string &sGameInformation, std::string &s
   * \return A string of valid moves.
   */
 
-std::string CardGame::ValidMoves(int nPlayer) const
+std::string CardGame::ValidMoves(int nPlayer)
 {
     (void) nPlayer;
 

@@ -31,7 +31,7 @@
   * \return A vector of valid moves.
   */
 
-std::vector<GameMove> ConnectFour::GenerateMoves(int nPlayer) const
+std::vector<GameMove> ConnectFour::GenerateMoves(int nPlayer)
 {
     (void)nPlayer;
 
