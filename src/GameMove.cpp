@@ -349,12 +349,10 @@ bool AllowedMoves::AddMove(const std::string &sMove, const std::string &sArg)
     return false;
 }
 
-//std::string AllowedMoves::NextMoveInSequence(const bool bIncrementIndex) const
 void AllowedMoves::NextMoveInSequence(std::string &sMoves, const bool bIncrementIndex) const
 {
-    //std::string sMoves {};
     sMoves.clear();
-    //std::vector<GameMoves> vGameMoves = NextMoveInSequence(bIncrementIndex);
+
     std::vector<GameMove> vGameMoves {};
     NextMoveInSequence(vGameMoves, bIncrementIndex);
 
@@ -362,43 +360,19 @@ void AllowedMoves::NextMoveInSequence(std::string &sMoves, const bool bIncrement
     {
         sMoves += cGameMove.Command() + GameVocabulary::DELIMETER + cGameMove.Argument() + "\n";
     }
-
-    //// Get iterator range for moves associated with current move index
-    //std::pair< std::multimap<int, std::string>::iterator, std::multimap<int, std::string>::iterator > itRange;
-    //itRange = m_mmMoves.equal_range(m_nMoveIndex);
-    //
-    //// Add moves to to return variable
-    //for (std::multimap<int, std::string>::iterator it = itRange.first; it != itRange.second; ++it)
-    //{
-    //    sMoves += it->second + "\n";
-    //}
-
-    //// Evaluate need to increment move index
-    //if (bIncrementIndex)
-    //{
-    //    ++m_nMoveIndex;
-    //    if (m_nMoveIndex == m_nAddMoveIndex)
-    //        m_nMoveIndex = m_knLowestSequenceNumber + 1;
-    //}
-
-    //return sMoves;
 }
 
-//std::vector<GameMove> AllowedMoves::NextMoveInSequence(const bool bIncrementIndex) const
 void  AllowedMoves::NextMoveInSequence(std::vector<GameMove> &vGameMoves, const bool bIncrementIndex) const
 {
     GameMove              cGameMove;
-    //std::vector<GameMove> vGameMoves{};
     vGameMoves.clear();
 
     // Get iterator range for moves associated with current move index
-    std::pair <std::multimap<int, std::string>::iterator, std::multimap<int, std::string>::iterator> itRange;
-    //std::pair <std::multimap<int, std::string>::iterator, std::multimap<int, std::string>::iterator> itRange =
-    itRange = m_mmMoves.equal_range(m_nMoveIndex);
-    //    m_mmMoves.equal_range(m_nMoveIndex);
+    std::pair <std::multimap<int, std::string>::const_iterator,
+               std::multimap<int, std::string>::const_iterator> itRange = m_mmMoves.equal_range(m_nMoveIndex);
 
     // Add moves to to return variable
-    for (std::multimap<int, std::string>::iterator it = itRange.first; it != itRange.second; ++it)
+    for (std::multimap<int, std::string>::const_iterator it = itRange.first; it != itRange.second; ++it)
     {
         cGameMove.SetCommand(it->second);
         vGameMoves.push_back(cGameMove);
@@ -411,19 +385,17 @@ void  AllowedMoves::NextMoveInSequence(std::vector<GameMove> &vGameMoves, const 
         if (m_nMoveIndex == m_nAddMoveIndex)
             m_nMoveIndex = m_knLowestSequenceNumber + 1;
     }
-
-    //return vGameMoves;
 }
 
 bool AllowedMoves::ValidMove(const std::string &sMove,  const std::string &sArg) const
 {
     std::string sSeqMove {};
     std::string sSeqArg  {};
-    std::size_t nPos  {};
+    std::size_t nPos     {};
 
     for (const auto &SequenceMove : m_mmMoves)
     {
-        nPos = SequenceMove.second.find(GameVocabulary::DELIMETER);
+        nPos     = SequenceMove.second.find(GameVocabulary::DELIMETER);
         sSeqMove = SequenceMove.second.substr(0,nPos - 1);
         sSeqArg  = SequenceMove.second.substr(nPos + 1);
         if ((sSeqMove.compare(sMove) == 0) && (sSeqArg.compare(sArg)))
