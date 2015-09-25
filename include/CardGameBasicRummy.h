@@ -53,6 +53,11 @@ class CardGameBasicRummy : public CardGame
                 cHand.SortByRank();
             }
 
+            // Deal next card up to start the discard pile
+            Card cCard = m_cDeck.DrawTopCard();
+            cCard.TurnUp(true);
+            m_cDiscardPile.AddCard(cCard);
+
             // Set flags
             SetDrawingAllowed(true);
             SetDrawingFromStockAllowed(true);
@@ -140,6 +145,12 @@ class CardGameBasicRummy : public CardGame
         virtual void BlackboardInitialize(int nPlayer, Blackboard &cBlackboard) const override;
 
     private:
+        // Matches are used to hold matches for each player
+        std::unordered_multimap<int, Match> m_uommMatches;
+
+        // Discard Pile
+        PlayingCards m_cDiscardPile;
+
         // Number of cards to make a match
         const int m_knMatchNumber {3};
 
@@ -150,17 +161,11 @@ class CardGameBasicRummy : public CardGame
         Json::Value MatchesJsonSerialization() const;
         bool        MatchesJsonDeserialization(const std::string &sJsonPlayingCards, std::string &sErrorMessage);
 
-        //// Books used to hold books for each player
-        //std::unordered_multimap<int, Hand> m_uommBooks;
-        // Matches are used to hold matches for each player
-        std::unordered_multimap<int, Match> m_uommMatches;
-
         // Sync flags
-        //bool m_bSyncBooks { false };
         bool m_bSyncMatches { false };
 
-        // Stats: successful asks for cards
-        int m_aiSuccessfulAsks[2] {0};
+        //// Stats: successful asks for cards
+        //int m_aiSuccessfulAsks[2] {0};
 };
 
 #endif // CARDGAMEBASICRUMMY_H

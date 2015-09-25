@@ -78,7 +78,6 @@ std::string Hand::DisplayRanks() const
 
 Book Hand::RemoveBookByRank(int nSizeOfBook)
 {
-    //Hand cHand {};
     Book cBook;
     std::vector<Card> vCards {};
 
@@ -87,14 +86,33 @@ Book Hand::RemoveBookByRank(int nSizeOfBook)
         if (HasCardsOfRank(sRank) == nSizeOfBook)
         {
             vCards = RemoveCardsOfRank(sRank);
-            //cHand.AddCards(vCards);
             cBook.AddCards(vCards);
-            //return cHand;
             return cBook;
         }
     }
 
     return cBook;
+}
+
+bool Hand::MeldOpportunities(int nCount, bool bEvalSequence, bool bEvalBook)
+{
+    // Evaluate for books of the same rank
+    if (bEvalBook)
+    {
+        for (Card cCard : m_vCards)
+        {
+            if (HasCardsOfRank(cCard) >= nCount)
+                return true;
+        }
+    }
+
+    // Evaluate for sequence
+    if (bEvalSequence)
+    {
+
+    }
+
+    return false;
 }
 
 /**

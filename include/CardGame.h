@@ -142,7 +142,6 @@ class CardGame : public Game
         // Card game deck, hands, and books
         Deck m_cDeck;
         std::vector<Hand>             m_vHands {};
-        std::unordered_map<int, Hand> m_uomBooks {};
 
         // Used to initialize comparison variables
         const int m_knUnknownValue {-1};

@@ -119,10 +119,6 @@ std::string CardGameBasicRummy::ValidMoves(int nPlayer) const
     // If matches in hand
 
     // Discard
-
-    //std::string sValidMoves = GameVocabulary::ASK + " " + m_vHands[nPlayer - 1].Ranks();
-
-    //return sValidMoves;
 }
 
 /**
@@ -139,10 +135,37 @@ std::string CardGameBasicRummy::ValidMoves(int nPlayer) const
 std::vector<GameMove> CardGameBasicRummy::GenerateMoves(int nPlayer) const
 {
     std::vector<GameMove> vGameMoves {};
-
-    //std::string sMoveArgs = m_cAllowedMoves.NextMoveInSequence();
-    //std::string sMoveArgs {};
     m_cAllowedMoves.NextMoveInSequence(vGameMoves);
+
+    std::vector<GameMove>::iterator it = vGameMoves.begin();
+    while (it != vGameMoves.end())
+    {
+        if (it->IsCommand(GameVocabulary::DRAW))
+        {
+            if (it->IsArgument(GameVocabulary::ARG_STOCK))
+            {
+                // If stock is out of cards, remove this as a valid move
+                if (m_cDeck.HasCards() == 0)
+                {
+                    it = vGameMoves.erase(it);
+                }
+            }
+            else if (it->IsArgument(GameVocabulary::ARG_DISCARD))
+            {
+                // If discard pile is out of cards, remove this as a valid move
+                if (m_cDiscardPile.HasCards() == 0)
+                {
+                    it = vGameMoves.erase(it);
+                }
+            }
+        }
+
+        if (it->IsCommand(GameVocabulary::MELD))
+        {
+            // If no opportunities for meld in hand, remove this as a valid move
+            //if (m_vHands[nPlayer - 1].MeldOpportunities())
+        }
+    }
 
     //Card cCard;
 /*
@@ -446,8 +469,8 @@ std::string CardGameBasicRummy::GameScore() const
 std::string CardGameBasicRummy::GameStatistics() const
 {
     std::string sGameStats = "Successful Asks\n";
-    sGameStats += "Player 1 = " + std::to_string(m_aiSuccessfulAsks[0]) + " (" + std::to_string(static_cast<float>(m_aiSuccessfulAsks[0]) / static_cast<float>(m_nNumberOfMoves) * 100.0) + "%)\n";
-    sGameStats += "Player 2 = " + std::to_string(m_aiSuccessfulAsks[1]) + " (" + std::to_string(static_cast<float>(m_aiSuccessfulAsks[1]) / static_cast<float>(m_nNumberOfMoves) * 100.0) + "%)\n";
+    ////sGameStats += "Player 1 = " + std::to_string(m_aiSuccessfulAsks[0]) + " (" + std::to_string(static_cast<float>(m_aiSuccessfulAsks[0]) / static_cast<float>(m_nNumberOfMoves) * 100.0) + "%)\n";
+    ////sGameStats += "Player 2 = " + std::to_string(m_aiSuccessfulAsks[1]) + " (" + std::to_string(static_cast<float>(m_aiSuccessfulAsks[1]) / static_cast<float>(m_nNumberOfMoves) * 100.0) + "%)\n";
 
     return sGameStats;
 }
@@ -754,7 +777,7 @@ void CardGameBasicRummy::BlackboardUpdate(int nPlayer, Blackboard &cBlackboard)
             }
 */
             // Update success stats
-            ++m_aiSuccessfulAsks[cLastMove.PlayerNumber() - 1];
+            ////++m_aiSuccessfulAsks[cLastMove.PlayerNumber() - 1];
         }
         // Else if ASK not Successful, but Go-Fish was
         else if (nCards > 0) //
@@ -851,7 +874,7 @@ void CardGameBasicRummy::BlackboardUpdate(int nPlayer, Blackboard &cBlackboard)
             }
 */
             // Update success stats
-            ++m_aiSuccessfulAsks[cLastMove.PlayerNumber() - 1];
+            ////++m_aiSuccessfulAsks[cLastMove.PlayerNumber() - 1];
         }
         // Else if ASK not Successful, but Go-Fish was
         else if (nCards > 0) //

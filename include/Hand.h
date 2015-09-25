@@ -59,6 +59,9 @@ class Hand : public PlayingCards
         // Remove books by rank from the hand
         Book RemoveBookByRank(int nCount);
 
+        // Meld opportunities
+        bool MeldOpportunities(int nCount, bool bEvalSequence=true, bool bEvalBook=true);
+
         // Sort the hand by rank
         void SortByRank();
 

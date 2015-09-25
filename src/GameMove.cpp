@@ -19,7 +19,7 @@
 
 #include "GameMove.h"
 
-bool GameMove::SetCommand(std::string sCommand)
+bool GameMove::SetCommand(const std::string &sCommand)
 {
     std::string sMove {};
     std::string sArg{};

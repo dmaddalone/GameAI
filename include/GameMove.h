@@ -72,12 +72,14 @@ class GameMove
         int PlayerNumber() const          { return m_nPlayerNumber; }
 
         // Set and return move command and argument
-        bool SetCommand(std::string sCommand);
-        std::string Command() const { return m_sCommand; }
+        bool SetCommand(const std::string &sCommand);
+        std::string Command() const                       { return m_sCommand; }
+        bool IsCommand(const std::string &sCommand) const { if (sCommand.compare(m_sCommand) == 0) return true; else return false; }
 
         // Set and return move command and argument
-        void SetArgument(std::string sArg) { m_sArgument.assign(sArg); }
+        void SetArgument(const std::string &sArg) { m_sArgument.assign(sArg); }
         std::string Argument() const;
+        bool IsArgument(const std::string &sArg)  { if (sArg.compare(m_sArgument) == 0) return true; else return false; }
 
         // Modify the coordinates of a move
         void SetFromX(char cX)           { m_cFromX = tolower(cX); m_nFromX = m_cFromX - m_kcXOffset; }

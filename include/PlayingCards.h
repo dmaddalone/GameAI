@@ -29,8 +29,6 @@
 #include <algorithm>
 #include <vector>
 
-#include <iostream> // testing
-
 #include "Card.h"
 
 class PlayingCards

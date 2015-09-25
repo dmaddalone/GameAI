@@ -123,6 +123,9 @@ class CardGameGoFish : public CardGame
         virtual void BlackboardInitialize(int nPlayer, Blackboard &cBlackboard) const override;
 
     private:
+        // Books used to hold books for each player
+        std::unordered_multimap<int, Book> m_uommBooks;
+
         // Number of cards to make a book
         const int m_knBookNumber {4};
 
@@ -133,9 +136,6 @@ class CardGameGoFish : public CardGame
         // Serialize and deserialize Books
         Json::Value BooksJsonSerialization() const;
         bool        BooksJsonDeserialization(const std::string &sJsonPlayingCards, std::string &sErrorMessage);
-
-        // Books used to hold books for each player
-        std::unordered_multimap<int, Book> m_uommBooks;
 
         // Sync flags
         bool m_bSyncBooks { false };

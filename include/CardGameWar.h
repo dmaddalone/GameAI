@@ -84,6 +84,15 @@ class CardGameWar : public CardGame
 
     protected:
     private:
+        // Battle used to hold cards ready to go to battle
+        std::unordered_map<int, Card> m_uomBattle;
+
+        // WarCards used to hold cards after battle but before distribution to winning player
+        std::vector<Card>             m_vWarCards;
+
+        // Flag whether a war has started
+        bool                          m_bWar {false};
+
         // Return all ranks in the Battle
         std::string BattleRanks() const;
 
@@ -97,15 +106,6 @@ class CardGameWar : public CardGame
         // Serialize and deserialize WarCards
         Json::Value WarCardsJsonSerialization() const;
         bool        WarCardsJsonDeserialization(const std::string &sJsonPlayingCards, std::string &sErrorMessage);
-
-        // Battle used to hold cards ready to go to battle
-        std::unordered_map<int, Card> m_uomBattle;
-
-        // WarCards used to hold cards after battle but before distribution to winning player
-        std::vector<Card>             m_vWarCards;
-
-        // Flag whether a war has started
-        bool                          m_bWar {false};
 
         // Sync flags
         bool m_bSyncBattle   { false };
