@@ -29,7 +29,7 @@
   * \return A string containing the command.
   */
 
-std::string GameVocabulary::ParseCommand(const std::string sText)
+std::string GameVocabulary::ParseCommand(const std::string &sText)
 {
     return sText.substr(0, sText.find(GameVocabulary::DELIMETER));
 }
@@ -44,7 +44,43 @@ std::string GameVocabulary::ParseCommand(const std::string sText)
   * \return A string containing the argument.
   */
 
-std::string GameVocabulary::ParseArgument(const std::string sText)
+std::string GameVocabulary::ParseArgument(const std::string &sText)
 {
     return sText.substr(sText.find(GameVocabulary::DELIMETER) + 1);
+}
+
+/**
+  * Parse the string for arguments.
+  *
+  * Find and return the arguments within a string.
+  *
+  * \param sText The string to parse.
+  *
+  * \return A vector of strings.
+  */
+
+std::vector<std::string> GameVocabulary::ParseArguments(const std::string &sText)
+{
+    std::vector<std::string> vArgs {};
+    size_t nStartPos = sText.find(GameVocabulary::DELIMETER);
+    size_t nEndPos {};
+
+    do
+    {
+        if (nStartPos != std::string::npos)
+        {
+            nEndPos = sText.find(GameVocabulary::DELIMETER, nStartPos + 1);
+            if (nEndPos != std::string::npos)
+            {
+                vArgs.push_back(sText.substr(nStartPos + 1, nStartPos + 1 - nEndPos));
+            }
+            else
+            {
+                vArgs.push_back(sText.substr(nStartPos + 1));
+            }
+            nStartPos = nEndPos;
+        }
+    } while (nStartPos != std::string::npos);
+
+    return vArgs;
 }

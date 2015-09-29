@@ -29,8 +29,9 @@
 #include <string>
 #include <vector>
 
-#include "Card.h"
+//#include "Card.h"
 #include "GameVocabulary.h"
+#include "PlayingCards.h"
 
 #include "json/json.h"
 
@@ -79,7 +80,7 @@ class GameMove
         // Set and return move command and argument
         void SetArgument(const std::string &sArg) { m_sArgument.assign(sArg); }
         std::string Argument() const;
-        bool IsArgument(const std::string &sArg)  { if (sArg.compare(m_sArgument) == 0) return true; else return false; }
+        bool IsArgument(const std::string &sArg) const { if (sArg.compare(m_sArgument) == 0) return true; else return false; }
 
         // Modify the coordinates of a move
         void SetFromX(char cX)           { m_cFromX = tolower(cX); m_nFromX = m_cFromX - m_kcXOffset; }
@@ -123,7 +124,7 @@ class GameMove
 
         //  Set and return whether this is a Move - the default is set to true
         void SetMove(bool b) { m_bMove = b; if (b) m_sCommand = GameVocabulary::MOVE; else m_sCommand.clear(); }
-        bool IsMove() const    { return m_bMove; }
+        bool IsMove() const  { return m_bMove; }
 
         // Set and return whether a No-move has been made
         void SetNoMove(bool b) { m_bNoMove = b; if (b) m_sCommand = GameVocabulary::NO_MOVE; else m_sCommand.clear(); }
@@ -146,6 +147,18 @@ class GameMove
         // Set and return whether an ask has been made
         void SetAsk(bool b)       { m_bAsk = b; if (b) m_sCommand = GameVocabulary::ASK; else m_sCommand.clear(); }
         bool Ask() const          { return m_bAsk; }
+
+        // Set and return whether a meld has been made
+        void SetMeld(bool b)       { m_bMeld = b; if (b) m_sCommand = GameVocabulary::MELD; else m_sCommand.clear(); }
+        bool Meld() const          { return m_bMeld; }
+
+        // Set and return whether a layoff has been made
+        void SetLayoff(bool b)       { m_bLayoff = b; if (b) m_sCommand = GameVocabulary::LAYOFF; else m_sCommand.clear(); }
+        bool Layoff() const          { return m_bLayoff; }
+
+        // Set and return whether discard has been made
+        void SetDiscard(bool b)       { m_bDiscard = b; if (b) m_sCommand = GameVocabulary::DISCARD; else m_sCommand.clear(); }
+        bool Discard() const          { return m_bDiscard; }
 
         // Set and return whether a show has been made
         void SetShow(bool b)       { m_bShow = b; if (b) m_sCommand = GameVocabulary::SHOW; else m_sCommand.clear(); }
@@ -170,11 +183,19 @@ class GameMove
         // Compare two moves and whether their to-moves are the same
         bool SameTo(const GameMove &cGameMove) { if ((cGameMove.ToX() == m_nToX) && (cGameMove.ToY() == m_nToY)) return true; else return false;}
 
+        // Compare two moves and whether their their commands are the same
+        bool SameCommand(const GameMove &cGameMove) { if (cGameMove.Command().compare(m_sCommand)) return true; else return false; }
+
         // Add card to move
         void UpdateCard(Card &cCard) { m_cCard = cCard; }
         Card GetCard() const         { return m_cCard; }
         void SetCards(int n)         { m_nCards = n; }
         int  Cards()                 { return m_nCards; }
+
+        void RemoveCards()           { m_cCards.RemoveAllCards(); }
+        void AddCard(Card &cCard)    { m_cCards.AddCard(cCard); }
+        int  NumberOfCards() const   { return m_cCards.HasCards(); }
+        std::vector<Card> GetCards() const { return m_cCards.Cards(); }
 
         // Announce the moves
         std::string AnnounceMove() const;
@@ -230,6 +251,9 @@ class GameMove
         // Card
         Card m_cCard;
 
+        // Cards
+        PlayingCards m_cCards;
+
         // Number of cards involved
         int m_nCards {0};
 
@@ -242,6 +266,15 @@ class GameMove
 
         // Whether this is an ask
         bool m_bAsk {false};
+
+        // Whether this is an meld
+        bool m_bMeld {false};
+
+        // Whether this is an layoff
+        bool m_bLayoff {false};
+
+        // Whether this is an discard
+        bool m_bDiscard {false};
 
         // Whether this is a show
         bool m_bShow {false};
@@ -264,9 +297,7 @@ class AllowedMoves
     public:
         bool AddMovesInSequence(const int &nSeqNum, const std::string &sMove, const std::string &sArg="");
         bool AddMove(const std::string &sMove, const std::string &sArg="");
-        //std::string NextMoveInSequence(const bool bIncrementIndex=true) const;
         void NextMoveInSequence(std::string &sMoves, const bool bIncrementIndex=true) const;
-        //std::vector<GameMove> NextMoveInSequence(const bool bIncrementIndex=true) const;
         void NextMoveInSequence(std::vector<GameMove> &vMoves, const bool bIncrementIndex=true) const;
         bool ValidMove(const std::string &sMove, const std::string &sArg="") const;
         bool InUse() const { return m_bInitialized; }

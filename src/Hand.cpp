@@ -94,14 +94,85 @@ Book Hand::RemoveBookByRank(int nSizeOfBook)
     return cBook;
 }
 
-bool Hand::MeldOpportunities(const int nCount, const bool bEvalSequence, const bool bEvalBook)
+Match Hand::RemoveMatch(std::vector<Card> &vCards, const int nCount, const bool bEvalSequence, const bool bEvalBook)
+{
+    Match cMatch;
+
+    // If not enough cards in vector to consider, return empty match
+    if (vCards.size() < nCount)
+        return cMatch;
+
+    // Create a hand for the vector of cards to evaluate match opportunities
+    Hand cHand;
+    cHand.AddCards(vCards);
+
+    //
+    // Evaluate meld opportunities; if none return empty match
+    //
+    bool bGoodMatch {false};
+
+    // Evaluate for sequence first
+    if (bEvalSequence)
+    {
+        if (cHand.MatchOpportunities(nCount, true, false))
+        {
+            bGoodMatch = true;
+            cMatch.SetTypeSequence();
+        }
+    }
+
+    // If no sequence, then evaluate for book
+    if (bEvalBook && !bGoodMatch)
+    {
+        if (cHand.MatchOpportunities(nCount, false, true))
+        {
+            bGoodMatch = true;
+            cMatch.SetTypeSameRank();
+        }
+    }
+
+    // If not sequence or book, return empty match
+    if (!bGoodMatch)
+    {
+        return cMatch;
+    }
+
+    //
+    // Remove cards from hand and insert into the match
+    //
+    Card cMatchedCard;
+    for (const Card &cCard : vCards)
+    {
+        cMatchedCard = RemoveCard(cCard);
+        // Evaluate matched card
+        // If valid, add it to match
+        if (cMatchedCard.RankValid() && cMatchedCard.SuitValid())
+        {
+            cMatch.AddCard(cMatchedCard);
+        }
+        // Else remove all previously added cards from match,
+        // add them back to the hand
+        // and return an emoty match
+        else
+        {
+            std::vector<Card> vPreviouslyAddedCards = cMatch.RemoveAllCards();
+            AddCards(vPreviouslyAddedCards);
+            return cMatch;
+        }
+    }
+
+    return cMatch;
+}
+
+
+bool Hand::MatchOpportunities(const int nCount, const bool bEvalSequence, const bool bEvalBook)
 {
     // Evaluate for books of the same rank
     if (bEvalBook)
     {
         for (const Card &cCard : m_vCards)
         {
-            if (HasCardsOfRank(cCard.Rank()) >= nCount)
+            if (HasCardsOfRank(cCard.Rank()) >= nCount) //TODO: Need to be able to evaluate all cards in the hand
                 return true;
         }
     }
@@ -123,7 +194,7 @@ bool Hand::MeldOpportunities(const int nCount, const bool bEvalSequence, const b
                 if (cCard.Value() == cLastCard.Value() + 1)
                 {
                     ++nSeqCount;
-                    if (nSeqCount >= nCount)
+                    if (nSeqCount >= nCount) //TODO: Need to be able to evaluate all cards in the hand
                     {
                         return true;
                     }
@@ -147,11 +218,39 @@ bool Hand::MeldOpportunities(const int nCount, const bool bEvalSequence, const b
     return false;
 }
 
+bool Hand::RemoveLayoffs(std::unordered_multimap<int, Match> &uommMatches, Card &cCard, const bool bEvalSequence, const bool bEvalBook)
+{
+    // Create a hand for the vector of cards to evaluate layoff opportunities
+    Hand cHand;
+    cHand.AddCard(cCard);
+
+    //  Add a Card to a Hand
+    //  if LayoffOpportunity for sequence is true
+    //      find eligible match and add card to uommMatches and remove it from vCards
+    if (cHand.LayoffOpportunities(uommMatches, bEvalSequence, bEvalBook))
+    {
+        for (auto &PlayerMatch : uommMatches)
+        {
+            if (PlayerMatch.second.Eligible())
+            {
+                PlayerMatch.second.AddCard(cCard);
+                PlayerMatch.second.SortByRank();
+                return true;
+            }
+        }
+    }
+
+    return false;
+}
+
 bool Hand::LayoffOpportunities(std::unordered_multimap<int, Match> &uommMatches, const bool bEvalSequence, const bool bEvalBook)
 {
     // Loop through all matches
     for (auto &PlayerMatch : uommMatches)
     {
+        // Set eligibility of the match to false until proven otherwise
+        PlayerMatch.second.SetEligibility(false);
+
         // If evaluating for sequences
         if (bEvalSequence)
         {
@@ -169,11 +268,19 @@ bool Hand::LayoffOpportunities(std::unordered_multimap<int, Match> &uommMatches,
 
                         // If Card value is one less than first card, we have a layoff opportunity
                         if (cCard.Value() == PlayerMatch.second.PeekAtTopCard().Value() - 1)
+                        {
+                            PlayerMatch.second.SetEligibility(true);
                             return true;
+                        }
+
 
                         // If Card value is one more than last card, we have a layoff opportunity
                         if (cCard.Value() == PlayerMatch.second.PeekAtBottomCard().Value() + 1)
+                        {
+                            PlayerMatch.second.SetEligibility(true);
                             return true;
+                        }
+
                     }
                 }
             }
@@ -191,6 +298,7 @@ bool Hand::LayoffOpportunities(std::unordered_multimap<int, Match> &uommMatches,
                     // If rank match matches this card rank, we have a layoff opportuity
                     if (PlayerMatch.second.HasRank(cCard.Rank()))
                     {
+                        PlayerMatch.second.SetEligibility(true);
                         return true;
                     }
                 }
@@ -227,6 +335,7 @@ Json::Value Match::JsonSerialization() const
     jMatch["TypeSameRank"] = m_stType.TypeSameRank;
     jMatch["TypeSameSuit"] = m_stType.TypeSameSuit;
     jMatch["TypeSequence"] = m_stType.TypeSequence;
+    jMatch["Eligibility"]  = m_bEligibleMatch;
 
     return jMatch;
 }
@@ -234,7 +343,7 @@ Json::Value Match::JsonSerialization() const
 /**
   * Deserialize the class from a JSON string
   *
-  * \param sJsonMatch     A JSON string representing a PlayingCards.
+  * \param sJsonMatch     A JSON string representing a Match.
   * \param sErrorMessage  A string to return an error message if needed
   *
   * \return True if deserialization is successful, false otherwise
@@ -260,6 +369,7 @@ bool Match::JsonDeserialization(const std::string &sJsonMatch, std::string &sErr
         m_stType.TypeSameRank = jMatch["TypeSameRank"].asBool();
         m_stType.TypeSameRank = jMatch["TypeSameSuit"].asBool();
         m_stType.TypeSameRank = jMatch["TypeSequence"].asBool();
+        m_bEligibleMatch      = jMatch["Eligibility"].asBool();
 
         return true;
     }
@@ -294,6 +404,7 @@ bool Match::JsonDeserialization(const Json::Value &jMatch, std::string &sErrorMe
     m_stType.TypeSameRank = jMatch["TypeSameRank"].asBool();
     m_stType.TypeSameRank = jMatch["TypeSameSuit"].asBool();
     m_stType.TypeSameRank = jMatch["TypeSequence"].asBool();
+    m_bEligibleMatch      = jMatch["Eligibility"].asBool();
 
     return true;
 }

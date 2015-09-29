@@ -27,6 +27,7 @@
 #ifndef CARDGAME_H
 #define CARDGAME_H
 
+#include <algorithm>
 #include <climits>
 #include <unordered_map>
 

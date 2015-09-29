@@ -63,9 +63,11 @@ class PlayingCards
         Card              DrawTopCard();
         Card              PeekAtTopCard() const;
         Card              PeekAtBottomCard() const;
-        Card              RemoveCard(std::string sRank, std::string sSuit);
-        std::vector<Card> RemoveCardsOfRank(std::string sRank, int nNumberToRemove=0);
-        std::vector<Card> RemoveCardsOfSuit(std::string sSuit, int nNumberToRemove=0);
+        Card              RemoveCard(const std::string &sRank, const std::string &sSuit);
+        Card              RemoveCard(const Card &cCard);
+        std::vector<Card> RemoveCardsOfRank(const std::string &sRank, int nNumberToRemove=0);
+        std::vector<Card> RemoveCardsOfSuit(const std::string &sSuit, int nNumberToRemove=0);
+        std::vector<Card> RemoveAllCards();
 
         // Json object serialization
         Json::Value JsonSerialization() const;

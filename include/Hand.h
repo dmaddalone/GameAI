@@ -61,11 +61,13 @@ class Hand : public PlayingCards
         // Remove books by rank from the hand
         Book RemoveBookByRank(int nCount);
 
-        // Meld opportunities
-        bool MeldOpportunities(const int nCount, const bool bEvalSequence=true, const bool bEvalBook=true);
+        // Melding
+        bool  MatchOpportunities(const int nCount, const bool bEvalSequence=true, const bool bEvalBook=true);
+        Match RemoveMatch(std::vector<Card> &vCards, const int nCount, const bool bEvalSequence=true, const bool bEvalBook=true);
 
         // Layoff opportunities
         bool LayoffOpportunities(std::unordered_multimap<int, Match> &uommMatches, const bool bEvalSequence=true, const bool bEvalBook=true);
+        bool RemoveLayoffs(std::unordered_multimap<int, Match> &uommMatches, Card &cCard, const bool bEvalSequence=true, const bool bEvalBook=true);
 
         // Sort the hand by rank
         void SortByRank();
@@ -134,6 +136,10 @@ class Match : public Hand
         bool TypeSameSuit() const { return m_stType.TypeSameSuit; }
         bool TypeSequence() const { return m_stType.TypeSequence; }
 
+        // Eligible for a layoff
+        void SetEligibility(bool b) { m_bEligibleMatch = b; }
+        bool Eligible()            { return m_bEligibleMatch; }
+
         // Json object (de)serialization
         Json::Value JsonSerialization() const;
         bool        JsonDeserialization(const std::string &sJsonMatch, std::string &sErrorMessage);
@@ -146,6 +152,8 @@ class Match : public Hand
             bool TypeSameSuit { false };
             bool TypeSequence { false };
         } m_stType, m_stResetType;
+
+        bool m_bEligibleMatch {false};
 };
 
 #endif // HAND_H

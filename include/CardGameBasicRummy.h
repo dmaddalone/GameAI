@@ -148,6 +148,10 @@ class CardGameBasicRummy : public CardGame
 
         void EvaluatePossibleMoves(int nPlayer, std::vector<GameMove> &vGameMoves);
 
+        bool DrawCard(int nPlayer, const GameMove &cGameMove);
+        bool MeldCards(int nnPlayer, const GameMove &cGameMove);
+        bool LayoffCards(int nPlayer, const GameMove &cGameMove);
+
     private:
         // Matches are used to hold matches for each player
         std::unordered_multimap<int, Match> m_uommMatches;
@@ -158,8 +162,8 @@ class CardGameBasicRummy : public CardGame
         // Number of cards to make a match
         const int m_knMatchNumber {3};
 
-        //// Return all ranks and suits in the Matches
-        std::string MatchesTypes() const;
+        // Return all ranks and suits in the Matches
+        std::string MatchesTypes(const std::string &sType="") const;
 
         //// Serialize and deserialize Matches
         Json::Value MatchesJsonSerialization() const;

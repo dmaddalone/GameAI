@@ -31,9 +31,9 @@
 
 #include "json/json.h"
 
-const std::array<std::string, 13>  asRank  { { "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A" } };
-const std::array<std::string, 4>   asSuit  { { "h", "d", "c", "s" } };
-const std::array<int, 13>          aiValue { {  2,   3,   4,   5,   6,   7,   8,   9,   10,   11,  12,  13,  14 } };
+const std::array<std::string, 13>  asRank      { { "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A" } };
+const std::array<std::string, 4>   asSuit      { { "H", "D", "C", "S" } };
+const std::array<int, 13>          aiSortValue { {  2,   3,   4,   5,   6,   7,   8,   9,   10,   11,  12,  13,  14 } };
 
 class Card
 {
@@ -57,19 +57,22 @@ class Card
         }
 
         // Get miscellaneous data about the card
-        std::string Suit() const             { return m_sSuit; }
         std::string Rank() const             { return m_sRank; }
-        std::string DisplaySuit() const      { if (m_bTurnedUp) return m_sSuit; else return m_sNotTurnedUp; }
+        std::string Suit() const             { return std::string(1, static_cast<char>(::tolower(m_sSuit[0]))); }
         std::string DisplayRank() const      { if (m_bTurnedUp) return m_sRank; else return m_sNotTurnedUp; }
+        std::string DisplaySuit() const      { if (m_bTurnedUp) return std::string(1, static_cast<char>(::tolower(m_sSuit[0]))); else return m_sNotTurnedUp; }
         std::string DisplayShortName() const { return DisplayRank() + DisplaySuit(); }
         int         Value() const            { return m_nValue; }
 
-        // Set Rank
+        // Set Rank and Suit
         bool        SetRank(std::string sRank) { m_sRank = sRank; return RankValid(); }
         bool        RankValid() const          { for (const std::string &sRank : asRank) { if (sRank == m_sRank) { return true; } }  return false; }
+        bool        SetSuit(std::string sSuit) { m_sSuit = sSuit; return SuitValid(); }
+        bool        SuitValid() const          { for (const std::string &sSuit : asSuit) { if (sSuit == m_sSuit) { return true; } }  return false; }
+        bool        SetRankAndSuit(std::string sRankAndSuit) { m_sRank = sRankAndSuit[0];  m_sSuit = sRankAndSuit[1]; return RankValid() && SuitValid(); }
 
         // Set Value
-        void       SetValueToLowest() { m_nValue = aiValue[0] - 1; }
+        void        SetValueToLowest() { m_nValue = aiSortValue[0] - 1; }
 
         // Set and get whether card is turned up
         void        TurnUp(bool b)    { m_bTurnedUp = b; }

@@ -263,7 +263,7 @@ Card PlayingCards::PeekAtBottomCard() const
   * \return The matching card.
   */
 
-Card PlayingCards::RemoveCard(std::string sRank, std::string sSuit)
+Card PlayingCards::RemoveCard(const std::string &sRank, const std::string &sSuit)
 {
     Card cCard;
 
@@ -280,6 +280,22 @@ Card PlayingCards::RemoveCard(std::string sRank, std::string sSuit)
 }
 
 /**
+  * Remove a specific card from the possession.
+  *
+  * The card matching the rank and suit are removed from the
+  * possession and returned to the caller.
+  *
+  * \param cCard The card to remove
+  *
+  * \return The matching card.
+  */
+
+Card PlayingCards::RemoveCard(const Card &cCard)
+{
+    return RemoveCard(cCard.Rank(), cCard.Suit());
+}
+
+/**
   * Remove a cards of rank from the possession.
   *
   * Cards matching the rank are removed from the possession and returned to the caller.
@@ -290,7 +306,7 @@ Card PlayingCards::RemoveCard(std::string sRank, std::string sSuit)
   * \return A vector of cards.
   */
 
-std::vector<Card> PlayingCards::RemoveCardsOfRank(std::string sRank, int nNumberToRemove)
+std::vector<Card> PlayingCards::RemoveCardsOfRank(const std::string &sRank, int nNumberToRemove)
 {
     std::vector<Card> vCards {};
     int nRemoved {0};
@@ -325,7 +341,7 @@ std::vector<Card> PlayingCards::RemoveCardsOfRank(std::string sRank, int nNumber
   * \return A vector of cards.
   */
 
-std::vector<Card> PlayingCards::RemoveCardsOfSuit(std::string sSuit, int nNumberToRemove)
+std::vector<Card> PlayingCards::RemoveCardsOfSuit(const std::string &sSuit, int nNumberToRemove)
 {
     std::vector<Card> vCards {};
     int nRemoved {0};
@@ -346,6 +362,19 @@ std::vector<Card> PlayingCards::RemoveCardsOfSuit(std::string sSuit, int nNumber
         }
     }
 
+    return vCards;
+}
+
+/**
+  * Remove all cards from the possession.
+  *
+  * \return A vector of removed cards.
+  */
+
+std::vector<Card> PlayingCards::RemoveAllCards()
+{
+    std::vector<Card> vCards {m_vCards};
+    m_vCards.clear();
     return vCards;
 }
 

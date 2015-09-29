@@ -234,9 +234,38 @@ GameMove CardGame::GenerateMove(std::string sMove) const
     // Compare move against drawing
     if (DrawingAllowed())
     {
-        if (sMove.compare(GameVocabulary::DRAW) == 0)
+        // Evaluate against a DRAW command
+        std::string sToken = GameVocabulary::ParseCommand(sMove);
+        if (sToken.compare(GameVocabulary::DRAW) == 0)
         {
             cGameMove.SetDraw(true);
+
+            // Grab argument, which may be STOCK or DISCARD
+            cGameMove.SetArgument(GameVocabulary::ParseArgument(sMove));
+
+            return cGameMove;
+        }
+    }
+
+    if (MeldingAllowed())
+    {
+        // Evaluate against a MELD command
+        std::string sToken = GameVocabulary::ParseCommand(sMove);
+        if (sToken.compare(GameVocabulary::MELD) == 0)
+        {
+            cGameMove.SetMeld(true);
+
+            // Grab arguments, which should be card ranks and suits
+            std::vector<std::string> vArgs = GameVocabulary::ParseArguments(sMove);
+            Card cCard;
+            for (const std::string &sArg : vArgs)
+            {
+                // Add cards
+                if (cCard.SetRankAndSuit(sArg))
+                {
+                    cGameMove.AddCard(cCard);
+                }
+            }
             return cGameMove;
         }
     }

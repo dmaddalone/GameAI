@@ -27,6 +27,7 @@
 #define GAMEVOCABULARY_H
 
 #include <string>
+#include <vector>
 
 namespace GameVocabulary
 {
@@ -72,11 +73,14 @@ namespace GameVocabulary
     static const std::string ARG_DISCARD                    {"DISCARD"};
     //static const std::string ARG_DISCARD_SHORT              {"DI"};
 
-    // Return command from networked messages
-    std::string ParseCommand(const std::string sText);
+    // Return command (first token)
+    std::string ParseCommand(const std::string &sText);
 
-    // Return argument from networked messages
-    std::string ParseArgument(const std::string sText);
+    // Return argument (second token)
+    std::string ParseArgument(const std::string &sText);
+
+    // Return arguments (tokens second..n)
+    std::vector<std::string> ParseArguments(const std::string &sText);
 };
 
 #endif // GAMEVOCABULARY_H

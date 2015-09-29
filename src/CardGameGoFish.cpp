@@ -242,7 +242,6 @@ bool CardGameGoFish::ApplyMove(int nPlayer, GameMove &cGameMove)
     // Check for score
     if (cGameMove.Score())
     {
-        //cGameMove.SetScore(false);
         cGameMove.SetAnotherTurn(true);
         cGameMove.SetPlayerNumber(nPlayer);
         // Capture move for network play

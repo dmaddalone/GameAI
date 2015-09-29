@@ -256,8 +256,9 @@ Json::Value GameMove::JsonSerialization() const
 
     Json::Value jCardValue;
     jCardValue = m_cCard.JsonSerialization();
-
     jValue["Card"] = jCardValue;
+
+    jValue["Cards"] = m_cCards.JsonSerialization();
 
     return jValue;
 }
@@ -308,7 +309,12 @@ bool GameMove::JsonDeserialization(const std::string &sJsonGameMove, std::string
 
         m_nCards        = jValue["nCards"].asInt();
 
-        if (m_cCard.JsonDeserialization(jValue["Card"].toStyledString(), sErrorMessage))
+        if (!m_cCard.JsonDeserialization(jValue["Card"].toStyledString(), sErrorMessage))
+        {
+            return false;
+        }
+
+        if (m_cCards.JsonDeserialization(jValue["Cards"].toStyledString(), sErrorMessage))
         {
             return true;
         }
@@ -322,7 +328,7 @@ bool GameMove::JsonDeserialization(const std::string &sJsonGameMove, std::string
     return false;
 }
 
-bool AllowedMoves::AddMovesInSequence( const int &nSeqNum, const std::string &sMove, const std::string &sArg)
+bool AllowedMoves::AddMovesInSequence(const int &nSeqNum, const std::string &sMove, const std::string &sArg)
 {
     // May only insert moves with sequence less-than or equal to current index
     // and sequence number must be greater than zero.
@@ -387,7 +393,7 @@ void  AllowedMoves::NextMoveInSequence(std::vector<GameMove> &vGameMoves, const 
     }
 }
 
-bool AllowedMoves::ValidMove(const std::string &sMove,  const std::string &sArg) const
+bool AllowedMoves::ValidMove(const std::string &sMove, const std::string &sArg) const
 {
     std::string sSeqMove {};
     std::string sSeqArg  {};
