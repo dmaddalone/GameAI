@@ -34,7 +34,7 @@ Deck::Deck() : PlayingCards()
     {
         for (std::size_t jjj = 0; jjj < asSuit.size(); ++jjj)
         {
-            m_vCards.emplace_back(asRank[iii], asSuit[jjj], aiSortValue[iii]);
+            m_vCards.emplace_back(asRank[iii], asSuit[jjj], aiRankValue[iii], aiSortValue[iii]);
         }
     }
 }
@@ -125,7 +125,7 @@ void Deck::SetAcesLow()
     {
         if (cCard.Rank() == "A")
         {
-            cCard.SetValueToLowest();
+            cCard.SetValuesToLowest();
         }
     }
 }

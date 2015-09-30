@@ -142,6 +142,12 @@ class CardGame : public Game
         // Set the default move for the game
         void SetDefaultMove(std::string sMove) { m_sDefaultMove = sMove; }
 
+        // Manage score
+        void SetScore(int nPlayer, int nScore)     { m_aiScore[nPlayer - 1] = nScore; }
+        void AddToScore(int nPlayer, int nScore)   { m_aiScore[nPlayer - 1] += nScore; }
+        void SubFromScore(int nPlayer, int nScore) { m_aiScore[nPlayer - 1] -= nScore; }
+        int  Score(int nPlayer) const              { return m_aiScore[nPlayer - 1]; }
+
         // Card game deck, hands, and books
         Deck m_cDeck;
         std::vector<Hand>             m_vHands {};
@@ -169,6 +175,9 @@ class CardGame : public Game
 
         // Default move for the game
         std::string m_sDefaultMove {};
+
+        // Game Score
+        int m_aiScore[2] {};
 };
 
 #endif // CARDGAME_H

@@ -14,15 +14,15 @@ TODO: Minimax can't see checkmate easily??
 TODO: Check other TODOs
 
 TODO: Basic Rummy
-- Update for Score (add scoreing in CardGame)
+- Update for Score (add scoring in CardGame)
 - Set default score goal (500?)
 - Establish way to change default score goal
-- Remove UpdateCard and replace with AddCard
+- Remove UpdateCard and replace with AddCard - DONE
 - Build loop to deal after all one player goes out
 - Set way for a player to go out and calculate scores, including "Rummy"
-- In addition to SortValue add RankValue for cards (e.g. Paint = 10, aces = 1, other cards = face value) for scoring
-- Update GameEnded for when player goes out
--- Combine AllowedMoves and GameMOobe flags (e.g., SetFoldingAllowed)??
+- In addition to SortValue add RankValue for cards (e.g. Paint = 10, aces = 1, other cards = face value) for scoring - DONE
+- Update GameEnded for when player goes out - DONE (but may need to update for Hand Ended)
+- Combine AllowedMoves and GameMove flags (e.g., SetFoldingAllowed)??
 ]]>
 			</notes>
 		</Option>

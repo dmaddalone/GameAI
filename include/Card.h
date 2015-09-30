@@ -33,16 +33,19 @@
 
 const std::array<std::string, 13>  asRank      { { "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A" } };
 const std::array<std::string, 4>   asSuit      { { "H", "D", "C", "S" } };
+const std::array<int, 13>          aiRankValue { {  2,   3,   4,   5,   6,   7,   8,   9,   10,   10,  10,  10,  11 } };
 const std::array<int, 13>          aiSortValue { {  2,   3,   4,   5,   6,   7,   8,   9,   10,   11,  12,  13,  14 } };
+
 
 class Card
 {
     public:
         // Standard constructor
-        Card(std::string sRank, std::string sSuit, int nValue) :
+        Card(std::string sRank, std::string sSuit, int nRankValue, int nSortValue) :
             m_sRank(sRank),
             m_sSuit(sSuit),
-            m_nValue(nValue)
+            m_nRankValue(nRankValue),
+            m_nSortValue(nSortValue)
         {
             m_nID = ++m_nCardCount;
         }
@@ -51,7 +54,8 @@ class Card
         Card() :
             m_sRank(""),
             m_sSuit(""),
-            m_nValue(0)
+            m_nRankValue(0),
+            m_nSortValue(0)
         {
             m_nID = 0;
         }
@@ -62,7 +66,8 @@ class Card
         std::string DisplayRank() const      { if (m_bTurnedUp) return m_sRank; else return m_sNotTurnedUp; }
         std::string DisplaySuit() const      { if (m_bTurnedUp) return std::string(1, static_cast<char>(::tolower(m_sSuit[0]))); else return m_sNotTurnedUp; }
         std::string DisplayShortName() const { return DisplayRank() + DisplaySuit(); }
-        int         Value() const            { return m_nValue; }
+        int         RankValue() const        { return m_nRankValue; }
+        int         SortValue() const        { return m_nSortValue; }
 
         // Set Rank and Suit
         bool        SetRank(std::string sRank) { m_sRank = sRank; return RankValid(); }
@@ -72,15 +77,15 @@ class Card
         bool        SetRankAndSuit(std::string sRankAndSuit) { m_sRank = sRankAndSuit[0];  m_sSuit = sRankAndSuit[1]; return RankValid() && SuitValid(); }
 
         // Set Value
-        void        SetValueToLowest() { m_nValue = aiSortValue[0] - 1; }
+        void        SetValuesToLowest() { m_nRankValue = aiRankValue[0] - 1; m_nSortValue = aiSortValue[0] - 1; }
 
         // Set and get whether card is turned up
         void        TurnUp(bool b)    { m_bTurnedUp = b; }
         bool        TurnedUp() const  { return m_bTurnedUp; }
 
-        // Overloaded operators for sorting by card value
-        bool operator<(const Card &cCard) const { return Value() < cCard.Value(); }
-        bool operator>(const Card &cCard) const { return Value() > cCard.Value(); }
+        // Overloaded operators for sorting by card sort value
+        bool operator<(const Card &cCard) const { return SortValue() < cCard.SortValue(); }
+        bool operator>(const Card &cCard) const { return SortValue() > cCard.SortValue(); }
 
         // Get the card ID
         int   ID() const { return m_nID; }
@@ -98,7 +103,8 @@ class Card
         // Rank and Suit
         std::string m_sRank;
         std::string m_sSuit;
-        int         m_nValue {0};
+        int         m_nRankValue {0};
+        int         m_nSortValue {0};
 
         // Whether the card is turned up
         mutable bool m_bTurnedUp { false };

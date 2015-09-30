@@ -240,7 +240,8 @@ bool CardGameWar::ApplyMove(int nPlayer, GameMove &cGameMove)
     cCard.TurnUp(true);
 
     // Add card to GameMove
-    cGameMove.UpdateCard(cCard);
+    //cGameMove.UpdateCard(cCard);
+    cGameMove.AddCard(cCard);
 
     sMessage = "Player " + std::to_string(nPlayer) + " draws " + cCard.DisplayRank();
     m_cLogger.LogInfo(sMessage,1);
@@ -256,8 +257,9 @@ bool CardGameWar::ApplyMove(int nPlayer, GameMove &cGameMove)
         m_vHands[nPlayer - 1].AddCardToTop(cCard);
 
         // Replace the card in th GameMove with a blank card
-        Card cBlankCard;
-        cGameMove.UpdateCard(cBlankCard);
+        //Card cBlankCard;
+        //cGameMove.UpdateCard(cBlankCard);
+        cGameMove.RemoveCards();
 
         return false;
     }
@@ -265,9 +267,9 @@ bool CardGameWar::ApplyMove(int nPlayer, GameMove &cGameMove)
     // If all players have added their cards to the battle, perform the battle
     if (m_uomBattle.size() == m_vHands.size())
     {
-        int  nCurrentCardValue       {m_knUnknownValue};
+        int  nCurrentCardRankValue   {m_knUnknownValue};
         int  nBestPlayer             {m_knUnknownValue};
-        int  nBestCardValue          {m_knUnknownValue};
+        int  nBestCardRankValue      {m_knUnknownValue};
 
         m_bWar = false;
 
@@ -282,10 +284,10 @@ bool CardGameWar::ApplyMove(int nPlayer, GameMove &cGameMove)
             //
             // Evaluate values and select winning card
             //
-            nCurrentCardValue = paPlayerCard.second.Value();
+            nCurrentCardRankValue = paPlayerCard.second.RankValue();
 
             // If current value equals best value, we have a potential war
-            if (nCurrentCardValue == nBestCardValue)
+            if (nCurrentCardRankValue == nBestCardRankValue)
             {
                 // Set flag to true
                 m_bWar = true;
@@ -294,14 +296,14 @@ bool CardGameWar::ApplyMove(int nPlayer, GameMove &cGameMove)
                 nBestPlayer = m_knUnknownValue;
             }
             // If current value greater,
-            else if (nCurrentCardValue > nBestCardValue)
+            else if (nCurrentCardRankValue > nBestCardRankValue)
             {
                 // Clear war flag
                 m_bWar = false;
 
                 // Update best values
-                nBestCardValue = nCurrentCardValue;
-                nBestPlayer    = paPlayerCard.first;
+                nBestCardRankValue = nCurrentCardRankValue;
+                nBestPlayer        = paPlayerCard.first;
             }
         }
 

@@ -550,11 +550,12 @@ std::string CardGameBasicRummy::GameScore() const
 
     // Display meld counts for the game score
 
-    std::string sScore {"\nMeld Count:"};
+    std::string sScore {"\nCurrent Meld Count and Points:"};
 
     for (const Hand &cHand : m_vHands)
     {
-        sScore += " Player " + std::to_string(cHand.ID()) + "=" + std::to_string(m_uommMatches.count(cHand.ID()));
+        sScore += " Player " + std::to_string(cHand.ID()) + " MeldCount=" + std::to_string(m_uommMatches.count(cHand.ID())) +
+            " | Points=" + std::to_string(Score(cHand.ID()));
     }
 
     sScore += "\n";
@@ -598,22 +599,23 @@ bool CardGameBasicRummy::GameEnded(int nPlayer)
     if (CardGame::GameEnded(nPlayer))
         return true;
 
-    // Evaluate whether the player has any valid moves to make
-    std::vector<GameMove> vGameMoves = GenerateMoves(nPlayer);
-    if (vGameMoves.empty())
+    // Evaluate whether the player has any cards in their hand
+    //std::vector<GameMove> vGameMoves = GenerateMoves(nPlayer);
+    //if (vGameMoves.empty())
+    if (m_vHands[nPlayer - 1].HasCards() == 0)
     {
-        int nNumberOfBooks {-1};
-        for (const Hand &cHand : m_vHands)
-        {
+        //int nNumberOfBooks {-1};
+        //for (const Hand &cHand : m_vHands)
+        //{
 /*            if (static_cast<int>(m_uommBooks.count(cHand.ID())) > nNumberOfBooks)
             {
                 nNumberOfBooks = m_uommBooks.count(cHand.ID());
                 m_nWinner = cHand.ID();
             }
 */
-        }
-
-        m_sWinBy = "having " + std::to_string(nNumberOfBooks) + " books";
+        //}
+        m_nWinner = nPlayer;
+        //m_sWinBy = "having " + std::to_string(nNumberOfBooks) + " books";
         m_bGameOver = true;
         return true;
     }
@@ -732,7 +734,8 @@ GameMove CardGameBasicRummy::BlackboardMove(int nPlayer, Blackboard &cBlackboard
             {
                 if (cProbableCard.Rank() == cCard.Rank())
                 {
-                    cGameMove.UpdateCard(cProbableCard);
+                    //cGameMove.UpdateCard(cProbableCard);
+                    cGameMove.AddCard(cProbableCard);
                     cBlackboard.UpdateAsks(cCard.Rank());
                     m_cLogger.LogInfo("Asking for a card that opponent probably has and I need", 2);
                     return cGameMove;
@@ -765,7 +768,8 @@ GameMove CardGameBasicRummy::BlackboardMove(int nPlayer, Blackboard &cBlackboard
             {
                 if (cProbableCard.Rank() == cCard.Rank())
                 {
-                    cGameMove.UpdateCard(cProbableCard);
+                    //cGameMove.UpdateCard(cProbableCard);
+                    cGameMove.AddCard(cProbableCard);
                     cBlackboard.UpdateAsks(cCard.Rank());
                     m_cLogger.LogInfo("Asking for a card that the deck probably has and I need", 2);
                     return cGameMove;
@@ -802,7 +806,8 @@ GameMove CardGameBasicRummy::BlackboardMove(int nPlayer, Blackboard &cBlackboard
         }
     }
 
-    cGameMove.UpdateCard(cBestCard);
+    //cGameMove.UpdateCard(cBestCard);
+    cGameMove.AddCard(cBestCard);
     cBlackboard.UpdateAsks(cBestCard.Rank());
     m_cLogger.LogInfo("Asking for a card that I have and haven't asked for recently", 2);
     return cGameMove;
@@ -843,9 +848,11 @@ void CardGameBasicRummy::BlackboardUpdate(int nPlayer, Blackboard &cBlackboard)
         return;
     }
 
-    std::string sRank = cLastMove.GetCard().Rank();
+    std::vector<Card> vCards = cLastMove.GetCards();
+    //std::string sRank = cLastMove.GetCard().Rank();
+    std::string sRank = vCards[0].Rank();
     bool        bSuccess = cLastMove.Success();
-    int         nCards = cLastMove.Cards();
+    int         nCards = cLastMove.NominalCards();
 
     // Player turn
     if (cLastMove.PlayerNumber() == nPlayer)

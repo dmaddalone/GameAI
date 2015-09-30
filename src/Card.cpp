@@ -34,7 +34,8 @@ Json::Value Card::JsonSerialization() const
 
     jValue["Rank"]        = m_sRank;
     jValue["Suit"]        = m_sSuit;
-    jValue["Value"]       = m_nValue;
+    jValue["RankValue"]   = m_nRankValue;
+    jValue["SortValue"]   = m_nSortValue;
     jValue["ID"]          = m_nID;
     jValue["TurnedUp"]    = m_bTurnedUp;
     jValue["Probability"] = m_fProbability;
@@ -60,7 +61,8 @@ bool Card::JsonDeserialization(const std::string &sJsonCard, std::string &sError
     {
         m_sRank        = jCard["Rank"].asString();
         m_sSuit        = jCard["Suit"].asString();
-        m_nValue       = jCard["Value"].asInt();
+        m_nRankValue   = jCard["RankValue"].asInt();
+        m_nSortValue   = jCard["SortValue"].asInt();
         m_nID          = jCard["ID"].asInt();
         m_bTurnedUp    = jCard["TurnedUp"].asBool();
         m_fProbability = jCard["Probability"].asFloat();
@@ -86,7 +88,8 @@ bool Card::JsonDeserialization(const Json::Value jCard)//, std::string &sErrorMe
 {
     m_sRank        = jCard["Rank"].asString();
     m_sSuit        = jCard["Suit"].asString();
-    m_nValue       = jCard["Value"].asInt();
+    m_nRankValue   = jCard["RankValue"].asInt();
+    m_nSortValue   = jCard["SortValue"].asInt();
     m_nID          = jCard["ID"].asInt();
     m_bTurnedUp    = jCard["TurnedUp"].asBool();
     m_fProbability = jCard["Probability"].asFloat();

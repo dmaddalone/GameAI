@@ -287,7 +287,8 @@ GameMove CardGame::GenerateMove(std::string sMove) const
             if (cCard.SetRank(sToken))
             {
                 cGameMove.SetLayoff(true);
-                cGameMove.UpdateCard(cCard); // TODO: Change to AddCard
+                //cGameMove.UpdateCard(cCard); // TODO: Change to AddCard
+                cGameMove.AddCard(cCard);
                 return cGameMove;
             }
         }
@@ -310,7 +311,8 @@ GameMove CardGame::GenerateMove(std::string sMove) const
             if (cCard.SetRank(sToken))
             {
                 cGameMove.SetAsk(true);
-                cGameMove.UpdateCard(cCard); // TODO: Change to AddCard
+                //cGameMove.UpdateCard(cCard); // TODO: Change to AddCard
+                cGameMove.AddCard(cCard);
                 return cGameMove;
             }
         }
@@ -333,7 +335,8 @@ GameMove CardGame::GenerateMove(std::string sMove) const
             if (cCard.SetRank(sToken))
             {
                 cGameMove.SetDiscard(true);
-                cGameMove.UpdateCard(cCard); // TODO: Change to AddCard
+                //cGameMove.UpdateCard(cCard); // TODO: Change to AddCard
+                cGameMove.AddCard(cCard);
                 return cGameMove;
             }
         }

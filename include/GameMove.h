@@ -186,15 +186,14 @@ class GameMove
         // Compare two moves and whether their their commands are the same
         bool SameCommand(const GameMove &cGameMove) { if (cGameMove.Command().compare(m_sCommand)) return true; else return false; }
 
-        // Add card to move
-        void UpdateCard(Card &cCard) { m_cCard = cCard; }
-        Card GetCard() const         { return m_cCard; }
-        void SetCards(int n)         { m_nCards = n; }
-        int  Cards()                 { return m_nCards; }
+        // Manage number of nominal cards
+        void SetNominalCards(int n)  { m_nNominalCards = n; }
+        int  NominalCards()          { return m_nNominalCards; }
 
-        void RemoveCards()           { m_cCards.RemoveAllCards(); }
-        void AddCard(Card &cCard)    { m_cCards.AddCard(cCard); }
-        int  NumberOfCards() const   { return m_cCards.HasCards(); }
+        // Manage cards
+        void RemoveCards()                 { m_cCards.RemoveAllCards(); }
+        void AddCard(Card &cCard)          { m_cCards.AddCard(cCard); }
+        int  NumberOfCards() const         { return m_cCards.HasCards(); }
         std::vector<Card> GetCards() const { return m_cCards.Cards(); }
 
         // Announce the moves
@@ -248,14 +247,11 @@ class GameMove
         // Whether this is a resignation
         bool m_bResignation {false};
 
-        // Card
-        Card m_cCard;
-
         // Cards
         PlayingCards m_cCards;
 
-        // Number of cards involved
-        int m_nCards {0};
+        // Number of nominal cards
+        int m_nNominalCards {0};
 
         // Whether this is a fold
         bool m_bFold {false};

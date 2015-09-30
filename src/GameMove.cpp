@@ -176,7 +176,8 @@ std::string GameMove::AnnounceToMove() const
 
 std::string GameMove::AnnounceCard() const
 {
-    return m_cCard.DisplayShortName();
+    //return m_cCard.DisplayShortName();
+    return m_cCards.PeekAtTopCard().DisplayShortName();
 }
 
 /**
@@ -189,7 +190,8 @@ std::string GameMove::AnnounceCard() const
 
 std::string GameMove::AnnounceCardRank() const
 {
-    return m_cCard.Rank();
+    //return m_cCard.Rank();
+    return m_cCards.PeekAtTopCard().Rank();
 }
 
 /**
@@ -252,11 +254,12 @@ Json::Value GameMove::JsonSerialization() const
     jValue["bTestMove"]     = m_bTestMove;
     jValue["bSuccess"]      = m_bSuccess;
 
-    jValue["nCards"]        = m_nCards;
+    jValue["nNominalCards"] = m_nNominalCards;
 
-    Json::Value jCardValue;
-    jCardValue = m_cCard.JsonSerialization();
-    jValue["Card"] = jCardValue;
+    //Json::Value jCardValue;
+    //jCardValue = m_cCard.JsonSerialization();
+    //jValue["Card"] = jCardValue;
+
 
     jValue["Cards"] = m_cCards.JsonSerialization();
 
@@ -307,12 +310,12 @@ bool GameMove::JsonDeserialization(const std::string &sJsonGameMove, std::string
         m_bTestMove     = jValue["bTestMove"].asBool();
         m_bSuccess      = jValue["bSuccess"].asBool();
 
-        m_nCards        = jValue["nCards"].asInt();
+        m_nNominalCards = jValue["nNominalCards"].asInt();
 
-        if (!m_cCard.JsonDeserialization(jValue["Card"].toStyledString(), sErrorMessage))
-        {
-            return false;
-        }
+        //if (!m_cCard.JsonDeserialization(jValue["Card"].toStyledString(), sErrorMessage))
+        //{
+        //    return false;
+        //}
 
         if (m_cCards.JsonDeserialization(jValue["Cards"].toStyledString(), sErrorMessage))
         {

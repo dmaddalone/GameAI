@@ -191,7 +191,7 @@ bool Hand::MatchOpportunities(const int nCount, const bool bEvalSequence, const 
             if (cCard.Suit() == cLastCard.Suit())
             {
                 // If Rank / Value is one more than last card
-                if (cCard.Value() == cLastCard.Value() + 1)
+                if (cCard.SortValue() == cLastCard.SortValue() + 1)
                 {
                     ++nSeqCount;
                     if (nSeqCount >= nCount) //TODO: Need to be able to evaluate all cards in the hand
@@ -267,7 +267,7 @@ bool Hand::LayoffOpportunities(std::unordered_multimap<int, Match> &uommMatches,
                         PlayerMatch.second.SortByRank();
 
                         // If Card value is one less than first card, we have a layoff opportunity
-                        if (cCard.Value() == PlayerMatch.second.PeekAtTopCard().Value() - 1)
+                        if (cCard.SortValue() == PlayerMatch.second.PeekAtTopCard().SortValue() - 1)
                         {
                             PlayerMatch.second.SetEligibility(true);
                             return true;
@@ -275,7 +275,7 @@ bool Hand::LayoffOpportunities(std::unordered_multimap<int, Match> &uommMatches,
 
 
                         // If Card value is one more than last card, we have a layoff opportunity
-                        if (cCard.Value() == PlayerMatch.second.PeekAtBottomCard().Value() + 1)
+                        if (cCard.SortValue() == PlayerMatch.second.PeekAtBottomCard().SortValue() + 1)
                         {
                             PlayerMatch.second.SetEligibility(true);
                             return true;

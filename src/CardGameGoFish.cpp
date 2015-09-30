@@ -143,7 +143,8 @@ std::vector<GameMove> CardGameGoFish::GenerateMoves(int nPlayer)
             else
             {
                 cCard.SetRank(sRank);
-                cGameMove.UpdateCard(cCard);
+                //cGameMove.UpdateCard(cCard);
+                cGameMove.AddCard(cCard);
                 cGameMove.SetArgument(sRank);
                 vGameMoves.push_back(cGameMove);
 
@@ -257,7 +258,9 @@ bool CardGameGoFish::ApplyMove(int nPlayer, GameMove &cGameMove)
 
     // Ensure that asked-for rank is in the players hand.  You can't ask for it
     // unless it's in your hand.
-    if (!m_vHands[nPlayer - 1].HasRank(cGameMove.GetCard().Rank()))
+    std::vector<Card> vCards = cGameMove.GetCards();
+    //if (!m_vHands[nPlayer - 1].HasRank(cGameMove.GetCard().Rank()))
+    if (!m_vHands[nPlayer - 1].HasRank(vCards[0].Rank()))
     {
         return false;
     }
@@ -267,20 +270,23 @@ bool CardGameGoFish::ApplyMove(int nPlayer, GameMove &cGameMove)
     //
 
     // Find rank in opposing player's hand
-    if (m_vHands[3 - nPlayer - 1].HasRank(cGameMove.GetCard().Rank()))
+    //if (m_vHands[3 - nPlayer - 1].HasRank(cGameMove.GetCard().Rank()))
+    if (m_vHands[3 - nPlayer - 1].HasRank(vCards[0].Rank()))
     {
         // Pass cards from asked player to asking player
-        std::vector<Card> vCards = m_vHands[2 - nPlayer].RemoveCardsOfRank(cGameMove.GetCard().Rank());
+        //std::vector<Card> vCards = m_vHands[2 - nPlayer].RemoveCardsOfRank(cGameMove.GetCard().Rank());
+        std::vector<Card> vPassedCards = m_vHands[2 - nPlayer].RemoveCardsOfRank(vCards[0].Rank());
 
         cGameMove.SetAnotherTurn(true);
         cGameMove.SetPlayerNumber(nPlayer);
         cGameMove.SetSuccess(true);
-        cGameMove.SetCards(vCards.size());
+        cGameMove.SetNominalCards(vPassedCards.size());
 
-        sMessage = "Player " + std::to_string(3 - nPlayer) + " hands over " + m_asNumbers[vCards.size()] + " " +  cGameMove.AnnounceCardRank();
+        //sMessage = "Player " + std::to_string(3 - nPlayer) + " hands over " + m_asNumbers[vCards.size()] + " " +  cGameMove.AnnounceCardRank();
+        sMessage = "Player " + std::to_string(3 - nPlayer) + " hands over " + m_asNumbers[vPassedCards.size()] + " " +  cGameMove.AnnounceCardRank();
         m_cLogger.LogInfo(sMessage,1);
 
-        m_vHands[nPlayer - 1].AddCards(vCards);
+        m_vHands[nPlayer - 1].AddCards(vPassedCards);
 
     }
     else // Go Fish
@@ -293,10 +299,12 @@ bool CardGameGoFish::ApplyMove(int nPlayer, GameMove &cGameMove)
 
         if (GoFish(nPlayer))
         {
-            cGameMove.SetCards(1);
+            cGameMove.SetNominalCards(1);
 
             Card cCard = m_vHands[nPlayer - 1].PeekAtBottomCard();
-            if (cGameMove.GetCard().Rank() == cCard.Rank())
+            std::vector<Card> vCards = cGameMove.GetCards();
+            //if (cGameMove.GetCard().Rank() == cCard.Rank())
+            if (vCards[0].Rank() == cCard.Rank())
             {
                 m_cLogger.LogInfo("Card drawn has the same rank as originally asked for" ,1);
                 cGameMove.SetAnotherTurn(true);
@@ -581,7 +589,8 @@ GameMove CardGameGoFish::BlackboardMove(int nPlayer, Blackboard &cBlackboard, in
             {
                 if (cProbableCard.Rank() == cCard.Rank())
                 {
-                    cGameMove.UpdateCard(cProbableCard);
+                    //cGameMove.UpdateCard(cProbableCard);
+                    cGameMove.AddCard(cProbableCard);
                     cBlackboard.UpdateAsks(cCard.Rank());
                     m_cLogger.LogInfo("Asking for a card that opponent probably has and I need", 2);
                     return cGameMove;
@@ -614,7 +623,8 @@ GameMove CardGameGoFish::BlackboardMove(int nPlayer, Blackboard &cBlackboard, in
             {
                 if (cProbableCard.Rank() == cCard.Rank())
                 {
-                    cGameMove.UpdateCard(cProbableCard);
+                    //cGameMove.UpdateCard(cProbableCard);
+                    cGameMove.AddCard(cProbableCard);
                     cBlackboard.UpdateAsks(cCard.Rank());
                     m_cLogger.LogInfo("Asking for a card that the deck probably has and I need", 2);
                     return cGameMove;
@@ -651,7 +661,8 @@ GameMove CardGameGoFish::BlackboardMove(int nPlayer, Blackboard &cBlackboard, in
         }
     }
 
-    cGameMove.UpdateCard(cBestCard);
+    //cGameMove.UpdateCard(cBestCard);
+    cGameMove.AddCard(cBestCard);
     cBlackboard.UpdateAsks(cBestCard.Rank());
     m_cLogger.LogInfo("Asking for a card that I have and haven't asked for recently", 2);
     return cGameMove;
@@ -692,9 +703,11 @@ void CardGameGoFish::BlackboardUpdate(int nPlayer, Blackboard &cBlackboard)
         return;
     }
 
-    std::string sRank = cLastMove.GetCard().Rank();
+    std::vector<Card> vCards = cLastMove.GetCards();
+    //std::string sRank = cLastMove.GetCard().Rank();
+    std::string sRank = vCards[0].Rank();
     bool        bSuccess = cLastMove.Success();
-    int         nCards = cLastMove.Cards();
+    int         nCards = cLastMove.NominalCards();
 
     // Player turn
     if (cLastMove.PlayerNumber() == nPlayer)
