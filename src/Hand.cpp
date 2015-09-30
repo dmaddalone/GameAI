@@ -99,7 +99,7 @@ Match Hand::RemoveMatch(std::vector<Card> &vCards, const int nCount, const bool 
     Match cMatch;
 
     // If not enough cards in vector to consider, return empty match
-    if (vCards.size() < nCount)
+    if (static_cast<int>(vCards.size()) < nCount)
         return cMatch;
 
     // Create a hand for the vector of cards to evaluate match opportunities
@@ -307,6 +307,13 @@ bool Hand::LayoffOpportunities(std::unordered_multimap<int, Match> &uommMatches,
     }
 
     return false;
+}
+
+void Hand::Discard(PlayingCards &PlayingCards, Card &cCard)
+{
+    cCard.TurnUp(true);
+    PlayingCards.AddCardToTop(cCard);
+    RemoveCard(cCard);
 }
 
 /**

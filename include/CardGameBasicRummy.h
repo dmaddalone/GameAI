@@ -150,7 +150,8 @@ class CardGameBasicRummy : public CardGame
 
         bool DrawCard(int nPlayer, const GameMove &cGameMove);
         bool MeldCards(int nnPlayer, const GameMove &cGameMove);
-        bool LayoffCards(int nPlayer, const GameMove &cGameMove);
+        bool LayoffCard(int nPlayer, const GameMove &cGameMove);
+        bool Discard(int nPlayer, const GameMove &cGameMove);
 
     private:
         // Matches are used to hold matches for each player
