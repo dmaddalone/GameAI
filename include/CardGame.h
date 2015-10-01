@@ -147,6 +147,7 @@ class CardGame : public Game
         void AddToScore(int nPlayer, int nScore)   { m_aiScore[nPlayer - 1] += nScore; }
         void SubFromScore(int nPlayer, int nScore) { m_aiScore[nPlayer - 1] -= nScore; }
         int  Score(int nPlayer) const              { return m_aiScore[nPlayer - 1]; }
+        int  TargetScore() const                   { return m_nTargetScore; }
 
         // Card game deck, hands, and books
         Deck m_cDeck;
@@ -178,6 +179,7 @@ class CardGame : public Game
 
         // Game Score
         int m_aiScore[2] {};
+        int m_nTargetScore {100};
 };
 
 #endif // CARDGAME_H

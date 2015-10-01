@@ -572,7 +572,7 @@ int main(int argc, char* argv[])
             std::cout << sGameScore << std::endl;
         }
 
-        // Evaluate game state from opoponent's perspective.  If game ended, allow opoonent to finish.
+        // Evaluate game state from opponent's perspective.  If game ended, allow opponent to finish.
         // Then break from loop.
         if (pcGame->GameEnded(3 - nPlayer))
         {

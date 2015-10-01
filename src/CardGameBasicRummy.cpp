@@ -580,6 +580,17 @@ std::string CardGameBasicRummy::GameStatistics() const
     return sGameStats;
 }
 
+int CardGameBasicRummy::ScoreHand(int nPlayer)
+{
+    int nScore {};
+    for (Card &cCard : m_vHands[nPlayer - 1].Cards())
+    {
+        nScore += cCard.RankValue();
+    }
+
+    return nScore;
+}
+
 /**
   * Check to see if a player has won the game.
   *
@@ -592,6 +603,7 @@ std::string CardGameBasicRummy::GameStatistics() const
 
 bool CardGameBasicRummy::GameEnded(int nPlayer)
 {
+
     // Clear win variables
     m_nWinner = -1;
     m_sWinBy.assign("nothing");
@@ -599,25 +611,34 @@ bool CardGameBasicRummy::GameEnded(int nPlayer)
     if (CardGame::GameEnded(nPlayer))
         return true;
 
+    // nPlayer represents the player to move next (the opponent)
+    // Change to player that just moved
+    int nThisPlayer = 3 - nPlayer;
+
     // Evaluate whether the player has any cards in their hand
     //std::vector<GameMove> vGameMoves = GenerateMoves(nPlayer);
     //if (vGameMoves.empty())
-    if (m_vHands[nPlayer - 1].HasCards() == 0)
+    if (m_vHands[nThisPlayer - 1].HasCards() == 0)
     {
-        //int nNumberOfBooks {-1};
-        //for (const Hand &cHand : m_vHands)
-        //{
-/*            if (static_cast<int>(m_uommBooks.count(cHand.ID())) > nNumberOfBooks)
-            {
-                nNumberOfBooks = m_uommBooks.count(cHand.ID());
-                m_nWinner = cHand.ID();
-            }
-*/
-        //}
-        m_nWinner = nPlayer;
-        //m_sWinBy = "having " + std::to_string(nNumberOfBooks) + " books";
-        m_bGameOver = true;
-        return true;
+        std::string sMessage = "Player " + std::to_string(nThisPlayer) + " has gone out.";
+        m_cLogger.LogInfo(sMessage, 1);
+
+        // Find total of cards in opponent's hand
+        int nScore = ScoreHand(nPlayer);
+        sMessage = "Player " + std::to_string(nPlayer) + " has a hand worth " +
+            std::to_string(nScore) + "; added to Player " +
+            std::to_string(nThisPlayer) + "'s cumulative score";
+        m_cLogger.LogInfo(sMessage, 1);
+        AddToScore(nThisPlayer, nScore);
+
+        // If this player's total score is greater than or equal to the goal score, this player wins
+        if (Score(nThisPlayer) >= TargetScore())
+        {
+            m_nWinner = nThisPlayer;
+            m_sWinBy = "having " + std::to_string(Score(nThisPlayer)) + " points.";
+            m_bGameOver = true;
+            return true;
+        }
     }
 
     return false;

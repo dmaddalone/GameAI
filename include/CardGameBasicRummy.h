@@ -153,6 +153,8 @@ class CardGameBasicRummy : public CardGame
         bool LayoffCard(int nPlayer, const GameMove &cGameMove);
         bool Discard(int nPlayer, const GameMove &cGameMove);
 
+        int ScoreHand(int nPlayer);
+
     private:
         // Matches are used to hold matches for each player
         std::unordered_multimap<int, Match> m_uommMatches;
