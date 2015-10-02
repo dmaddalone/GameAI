@@ -242,6 +242,28 @@ bool CardGameBasicRummy::DrawCard(int nPlayer, const GameMove &cGameMove)
             Card cCard = m_cDeck.DrawTopCard();
             m_vHands[nPlayer - 1].AddCard(cCard);
 
+            // If stock has been depleted, the top card of the discard pile
+            // is set aside and the remainder of the discard pile is turned
+            // over to form a new stock.
+            if (m_cDeck.HasCards() == 0)
+            {
+                m_cLogger.LogInfo("Stock has been depleted.  Creating new stock from discard pile.",1);
+
+                // Grab top card from discard pile
+                Card cNewDiscardPileCard = m_cDiscardPile.DrawTopCard();
+
+                // Remove all cards from the discard pile and add them to the stock
+                std::vector<Card> vNewStockCards = m_cDiscardPile.RemoveAllCards();
+                for (Card &cCard : vNewStockCards)
+                {
+                    cCard.TurnUp(false);
+                    m_cDeck.AddCard(cCard);
+                }
+
+                // Add top card from discard pile back to discard pile
+                m_cDiscardPile.AddCard(cNewDiscardPileCard);
+            }
+
             return true;
         }
         else
@@ -349,6 +371,7 @@ bool CardGameBasicRummy::LayoffCard(int nPlayer, const GameMove &cGameMove)
 bool CardGameBasicRummy::Discard(int nPlayer, const GameMove &cGameMove)
 {
     std::vector<Card> vCards = cGameMove.GetCards();
+    vCards[0].TurnUp(true);
     m_vHands[nPlayer - 1].Discard(m_cDiscardPile, vCards[0]);
 
     return true;
@@ -481,10 +504,11 @@ bool CardGameBasicRummy::ApplyMove(int nPlayer, GameMove &cGameMove)
             return false;
     }
 
-    // If players has cards, sort them
+    // If players has cards, sort them and turn off Rummy possibility
     if (m_vHands[nPlayer - 1].HasCards())
     {
         m_vHands[nPlayer - 1].SortByRank();
+        SetRummyOff(nPlayer - 1);
     }
 
     // Increment move counter
@@ -580,12 +604,12 @@ std::string CardGameBasicRummy::GameStatistics() const
     return sGameStats;
 }
 
-int CardGameBasicRummy::ScoreHand(int nPlayer)
+int CardGameBasicRummy::ScoreHand(int nPlayer, int nRummyMultiplier)
 {
     int nScore {};
     for (Card &cCard : m_vHands[nPlayer - 1].Cards())
     {
-        nScore += cCard.RankValue();
+        nScore += cCard.RankValue() * nRummyMultiplier;
     }
 
     return nScore;
@@ -603,7 +627,6 @@ int CardGameBasicRummy::ScoreHand(int nPlayer)
 
 bool CardGameBasicRummy::GameEnded(int nPlayer)
 {
-
     // Clear win variables
     m_nWinner = -1;
     m_sWinBy.assign("nothing");
@@ -616,15 +639,26 @@ bool CardGameBasicRummy::GameEnded(int nPlayer)
     int nThisPlayer = 3 - nPlayer;
 
     // Evaluate whether the player has any cards in their hand
-    //std::vector<GameMove> vGameMoves = GenerateMoves(nPlayer);
-    //if (vGameMoves.empty())
     if (m_vHands[nThisPlayer - 1].HasCards() == 0)
     {
-        std::string sMessage = "Player " + std::to_string(nThisPlayer) + " has gone out.";
+        int nRummyMultiplier {0};
+        std::string sMessage {};
+
+        if (Rummy(nThisPlayer - 1))
+        {
+            sMessage = "Player " + std::to_string(nThisPlayer) + " has gone Rummy!";
+            nRummyMultiplier = 2;
+        }
+        else
+        {
+            sMessage = "Player " + std::to_string(nThisPlayer) + " has gone out.";
+            nRummyMultiplier = 1;
+        }
+
         m_cLogger.LogInfo(sMessage, 1);
 
         // Find total of cards in opponent's hand
-        int nScore = ScoreHand(nPlayer);
+        int nScore = ScoreHand(nPlayer, nRummyMultiplier);
         sMessage = "Player " + std::to_string(nPlayer) + " has a hand worth " +
             std::to_string(nScore) + "; added to Player " +
             std::to_string(nThisPlayer) + "'s cumulative score";
@@ -639,9 +673,46 @@ bool CardGameBasicRummy::GameEnded(int nPlayer)
             m_bGameOver = true;
             return true;
         }
+        // Else start a new hand of Rummy
+        else
+        {
+            m_cLogger.LogInfo("New hand being dealt", 1);
+            BeginHand();
+        }
     }
 
     return false;
+}
+
+/**
+  * Begin a hand of Basic Rummy.
+  *
+  * Shuffle and deal cards to the player's hands and start the
+  * discard pile.
+  *
+  */
+
+void CardGameBasicRummy::BeginHand()
+{
+    // Initialize deck
+    m_cDeck.Initialize();
+    m_cDeck.SetAcesLow();
+
+    // Shuffle and Deal cards
+    m_cDeck.Shuffle();
+    m_cDeck.Deal(10, m_vHands);
+
+    // Deal next card up to start the discard pile
+    m_cDiscardPile.RemoveAllCards();
+    Card cCard = m_cDeck.DrawTopCard();
+    cCard.TurnUp(true);
+    m_cDiscardPile.AddCard(cCard);
+
+    // Sort hands
+    for (Hand &cHand : m_vHands)
+    {
+        cHand.SortByRank();
+    }
 }
 
 /**

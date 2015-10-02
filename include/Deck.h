@@ -41,10 +41,16 @@ class Deck : public PlayingCards
 {
     public:
         // Constructor
-        Deck();
+        Deck() : PlayingCards()
+        {
+            Initialize();
+        }
 
         // Destructor
         virtual ~Deck() {}
+
+        // Initialize the deck
+        void Initialize();
 
         // Shuffle the deck
         void Shuffle();

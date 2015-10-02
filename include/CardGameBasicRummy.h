@@ -35,28 +35,12 @@
 class CardGameBasicRummy : public CardGame
 {
     public:
-        // Construct a War card game
+        // Construct a Basic Rummy card game
         CardGameBasicRummy(GameType ecGameType) :
             CardGame(ecGameType, 2)
         {
             // Stochastic game
             SetEnvironmentDeterministic(false);
-
-            // Shuffle and Deal cards
-            m_cDeck.SetAcesLow();
-            m_cDeck.Shuffle();
-            m_cDeck.Deal(10, m_vHands);
-
-            // Sort hands
-            for (Hand &cHand : m_vHands)
-            {
-                cHand.SortByRank();
-            }
-
-            // Deal next card up to start the discard pile
-            Card cCard = m_cDeck.DrawTopCard();
-            cCard.TurnUp(true);
-            m_cDiscardPile.AddCard(cCard);
 
             // Set flags
             SetDrawingAllowed(true);
@@ -77,6 +61,9 @@ class CardGameBasicRummy : public CardGame
             m_cAllowedMoves.AddMovesInSequence(3, GameVocabulary::DISCARD);
             m_cAllowedMoves.AddMove(GameVocabulary::SHOW);
             m_cAllowedMoves.AddMove(GameVocabulary::SCORE);
+
+            // Shuffle and Deal cards
+            BeginHand();
 
             // Configure logger
             m_cLogger.UseTag(false);
@@ -146,6 +133,7 @@ class CardGameBasicRummy : public CardGame
         // Initialize Blackboard
         virtual void BlackboardInitialize(int nPlayer, Blackboard &cBlackboard) const override;
 
+        void BeginHand();
         void EvaluatePossibleMoves(int nPlayer, std::vector<GameMove> &vGameMoves);
 
         bool DrawCard(int nPlayer, const GameMove &cGameMove);
@@ -153,7 +141,11 @@ class CardGameBasicRummy : public CardGame
         bool LayoffCard(int nPlayer, const GameMove &cGameMove);
         bool Discard(int nPlayer, const GameMove &cGameMove);
 
-        int ScoreHand(int nPlayer);
+        int ScoreHand(int nPlayer, int nRummyMultiplier=1);
+
+        void InitializeRummy()       { m_abRummy[0] = m_abRummy[1] = true; }
+        void SetRummyOff(int nIndex) { m_abRummy[nIndex] = false; }
+        bool Rummy(int nIndex)       { return m_abRummy[nIndex]; }
 
     private:
         // Matches are used to hold matches for each player
@@ -161,6 +153,9 @@ class CardGameBasicRummy : public CardGame
 
         // Discard Pile
         PlayingCards m_cDiscardPile;
+
+        // Rummy flags
+        bool m_abRummy[2] {true};
 
         // Number of cards to make a match
         const int m_knMatchNumber {3};

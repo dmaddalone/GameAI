@@ -20,12 +20,12 @@
 #include "Deck.h"
 
 /**
-  * Constructor
+  * Initialize the deck
   *
   * Create a standard deck of 52 playing cards.
   */
 
-Deck::Deck() : PlayingCards()
+void Deck::Initialize()
 {
     // Create standard 52 card deck
     m_vCards.clear();
@@ -76,6 +76,7 @@ void Deck::Deal(int nNumberOfCardsPerHand, std::vector<Hand> &vHands, bool bDeal
 {
     std::vector<Card>::size_type nTotalCards {0};
 
+    // Calculate total number of cards to deal
     if (nNumberOfCardsPerHand == 0)
     {
         nTotalCards = m_vCards.size();
@@ -102,7 +103,13 @@ void Deck::Deal(int nNumberOfCardsPerHand, std::vector<Hand> &vHands, bool bDeal
         }
     }
 
-    //while (nTotalCards && nTotalCards >= vHands.size())
+    // Clear hands
+    for (Hand &cHand : vHands)
+    {
+        cHand.RemoveAllCards();
+    }
+
+    // Deal total number of cards
     while (nTotalCards)
     {
         for (Hand &cHand : vHands)
