@@ -63,9 +63,9 @@ class Card
         // Get miscellaneous data about the card
         std::string Rank() const             { return m_sRank; }
         std::string Suit() const             { return std::string(1, static_cast<char>(::tolower(m_sSuit[0]))); }
-        std::string DisplayRank() const      { if (m_bTurnedUp) return m_sRank; else return m_sNotTurnedUp; }
-        std::string DisplaySuit() const      { if (m_bTurnedUp) return std::string(1, static_cast<char>(::tolower(m_sSuit[0]))); else return m_sNotTurnedUp; }
-        std::string DisplayShortName() const { return DisplayRank() + DisplaySuit(); }
+        std::string DisplayRank(bool bForce=false) const { if (m_bTurnedUp || bForce) return m_sRank; else return m_sNotTurnedUp; }
+        std::string DisplaySuit(bool bForce=false) const { if (m_bTurnedUp || bForce) return std::string(1, static_cast<char>(::tolower(m_sSuit[0]))); else return m_sNotTurnedUp; }
+        std::string DisplayShortName(bool bForce=false) const { return DisplayRank(bForce) + DisplaySuit(bForce); }
         int         RankValue() const        { return m_nRankValue; }
         int         SortValue() const        { return m_nSortValue; }
 

@@ -31,13 +31,13 @@ int Hand::m_nCount {0};
   * \return String of cards.
   */
 
-std::string Hand::DisplayCards() const
+std::string Hand::DisplayCards(bool bForce) const
 {
     std::string sCards {};
 
     for (const Card &cCard : m_vCards)
     {
-        sCards.append(cCard.DisplayShortName());
+        sCards.append(cCard.DisplayShortName(bForce));
         sCards.append(" ");
     }
 
@@ -53,13 +53,13 @@ std::string Hand::DisplayCards() const
   * \return String of ranks of cards.
   */
 
-std::string Hand::DisplayRanks() const
+std::string Hand::DisplayRanks(bool bForce) const
 {
     std::string sCards {};
 
     for (const Card &cCard : m_vCards)
     {
-        sCards.append(cCard.DisplayRank());
+        sCards.append(cCard.DisplayRank(bForce));
         sCards.append(" ");
     }
 

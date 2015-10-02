@@ -145,8 +145,8 @@ class CardGameBasicRummy : public CardGame
         int ScoreHand(int nPlayer, int nRummyMultiplier=1);
 
         void InitializeRummy()       { m_abRummy[0] = m_abRummy[1] = true; }
-        void SetRummyOff(int nIndex) { m_abRummy[nIndex] = false; }
-        bool Rummy(int nIndex)       { return m_abRummy[nIndex]; }
+        void SetRummyOff(int nIndex) { m_abRummy[nIndex - 1] = false; }
+        bool Rummy(int nIndex)       { return m_abRummy[nIndex - 1]; }
 
     private:
         // Matches are used to hold matches for each player

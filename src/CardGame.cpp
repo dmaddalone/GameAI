@@ -332,10 +332,9 @@ GameMove CardGame::GenerateMove(std::string sMove) const
             Card cCard;
 
             // Evaluate for valid rank
-            if (cCard.SetRank(sToken))
+            if (cCard.SetRankAndSuit(sToken))
             {
                 cGameMove.SetDiscard(true);
-                //cGameMove.UpdateCard(cCard); // TODO: Change to AddCard
                 cGameMove.AddCard(cCard);
                 return cGameMove;
             }

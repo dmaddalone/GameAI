@@ -135,29 +135,29 @@ class GameMove
         bool Resignation() const    { return m_bResignation; }
 
         // Set and return whether a fold has been made
-        void SetFold(bool b) { m_bFold = b; if (b) m_sCommand = GameVocabulary::FOLD; else m_sCommand.clear(); }
+        void SetFold(bool b) { m_bMove = false; m_bFold = b; if (b) m_sCommand = GameVocabulary::FOLD; else m_sCommand.clear(); }
         bool Fold() const    { return m_bFold; }
 
         // Set and return whether a draw has been made
-        void SetDraw(bool b)      { m_bDraw = b; m_nDraw = 1; if (b) m_sCommand = GameVocabulary::DRAW; else m_sCommand.clear(); }
+        void SetDraw(bool b)      { m_bMove = false; m_bDraw = b; m_nDraw = 1; if (b) m_sCommand = GameVocabulary::DRAW; else m_sCommand.clear(); }
         void SetDrawNumber(int n) { m_nDraw = n; }
         bool Draw() const         { return m_bDraw; }
         int  DrawNumber() const   { return m_nDraw; }
 
         // Set and return whether an ask has been made
-        void SetAsk(bool b)       { m_bAsk = b; if (b) m_sCommand = GameVocabulary::ASK; else m_sCommand.clear(); }
+        void SetAsk(bool b)       { m_bMove = false; m_bAsk = b; if (b) m_sCommand = GameVocabulary::ASK; else m_sCommand.clear(); }
         bool Ask() const          { return m_bAsk; }
 
         // Set and return whether a meld has been made
-        void SetMeld(bool b)       { m_bMeld = b; if (b) m_sCommand = GameVocabulary::MELD; else m_sCommand.clear(); }
+        void SetMeld(bool b)       { m_bMove = false; m_bMeld = b; if (b) m_sCommand = GameVocabulary::MELD; else m_sCommand.clear(); }
         bool Meld() const          { return m_bMeld; }
 
         // Set and return whether a layoff has been made
-        void SetLayoff(bool b)       { m_bLayoff = b; if (b) m_sCommand = GameVocabulary::LAYOFF; else m_sCommand.clear(); }
+        void SetLayoff(bool b)       { m_bMove = false; m_bLayoff = b; if (b) m_sCommand = GameVocabulary::LAYOFF; else m_sCommand.clear(); }
         bool Layoff() const          { return m_bLayoff; }
 
         // Set and return whether discard has been made
-        void SetDiscard(bool b)       { m_bDiscard = b; if (b) m_sCommand = GameVocabulary::DISCARD; else m_sCommand.clear(); }
+        void SetDiscard(bool b)       { m_bMove = false; m_bDiscard = b; if (b) m_sCommand = GameVocabulary::DISCARD; else m_sCommand.clear(); }
         bool Discard() const          { return m_bDiscard; }
 
         // Set and return whether a show has been made
@@ -184,7 +184,7 @@ class GameMove
         bool SameTo(const GameMove &cGameMove) { if ((cGameMove.ToX() == m_nToX) && (cGameMove.ToY() == m_nToY)) return true; else return false;}
 
         // Compare two moves and whether their their commands are the same
-        bool SameCommand(const GameMove &cGameMove) { if (cGameMove.Command().compare(m_sCommand)) return true; else return false; }
+        bool SameCommand(const GameMove &cGameMove) { if (cGameMove.Command().compare(m_sCommand) == 0) return true; else return false; }
 
         // Manage number of nominal cards
         void SetNominalCards(int n)  { m_nNominalCards = n; }
@@ -293,10 +293,12 @@ class AllowedMoves
     public:
         bool AddMovesInSequence(const int &nSeqNum, const std::string &sMove, const std::string &sArg="");
         bool AddMove(const std::string &sMove, const std::string &sArg="");
-        void NextMoveInSequence(std::string &sMoves, const bool bIncrementIndex=true) const;
-        void NextMoveInSequence(std::vector<GameMove> &vMoves, const bool bIncrementIndex=true) const;
+        void NextMoveInSequence(std::string &sMoves) const;
+        void NextMoveInSequence(std::vector<GameMove> &vMoves) const;
         bool ValidMove(const std::string &sMove, const std::string &sArg="") const;
-        void ResetSequence() { m_nAddMoveIndex = m_knLowestSequenceNumber + 1; }
+        void ProgressSequence() { if (++m_nMoveIndex == m_nAddMoveIndex) ResetSequence(); }
+        void RevertSequence() { if (--m_nMoveIndex <= m_knLowestSequenceNumber) ResetSequence(); }
+        void ResetSequence()  { m_nMoveIndex = m_knLowestSequenceNumber + 1; }
         bool InUse() const   { return m_bInitialized; }
 
     private:

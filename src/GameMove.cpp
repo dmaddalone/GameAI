@@ -27,7 +27,7 @@ bool GameMove::SetCommand(const std::string &sCommand)
     std::size_t nPos = sCommand.find(GameVocabulary::DELIMETER);
     if (nPos != std::string::npos)
     {
-        sMove = sCommand.substr(0, nPos - 1);
+        sMove = sCommand.substr(0, nPos);
         sArg  = sCommand.substr(nPos + 1);
     }
     else
@@ -35,51 +35,72 @@ bool GameMove::SetCommand(const std::string &sCommand)
         sMove = sCommand;
     }
 
-    if (sMove.compare(GameVocabulary::MOVE))
+    if (sMove.compare(GameVocabulary::MOVE) == 0)
     {
         SetMove(true);
         return true;
     }
 
-    if (sMove.compare(GameVocabulary::NO_MOVE))
+    if (sMove.compare(GameVocabulary::NO_MOVE) == 0)
     {
         SetNoMove(true);
         return true;
     }
 
-    if (sMove.compare(GameVocabulary::RESIGN))
+    if (sMove.compare(GameVocabulary::RESIGN) == 0)
     {
         SetResignation(true);
         return true;
     }
 
-    if (sMove.compare(GameVocabulary::FOLD))
+    if (sMove.compare(GameVocabulary::FOLD) == 0)
     {
         SetFold(true);
         return true;
     }
 
-    if (sMove.compare(GameVocabulary::DRAW))
+    if (sMove.compare(GameVocabulary::DRAW) == 0)
     {
         SetDraw(true);
         SetArgument(sArg);
         return true;
     }
 
-    if (sMove.compare(GameVocabulary::ASK))
+    if (sMove.compare(GameVocabulary::MELD) == 0)
+    {
+        SetMeld(true);
+        SetArgument(sArg);
+        return true;
+    }
+
+    if (sMove.compare(GameVocabulary::LAYOFF) == 0)
+    {
+        SetLayoff(true);
+        SetArgument(sArg);
+        return true;
+    }
+
+    if (sMove.compare(GameVocabulary::DISCARD) == 0)
+    {
+        SetDiscard(true);
+        SetArgument(sArg);
+        return true;
+    }
+
+    if (sMove.compare(GameVocabulary::ASK) == 0)
     {
         SetAsk(true);
         SetArgument(sArg);
         return true;
     }
 
-    if (sMove.compare(GameVocabulary::SHOW))
+    if (sMove.compare(GameVocabulary::SHOW) == 0)
     {
         SetShow(true);
         return true;
     }
 
-    if (sMove.compare(GameVocabulary::SCORE))
+    if (sMove.compare(GameVocabulary::SCORE) == 0)
     {
         SetScore(true);
         return true;
@@ -335,7 +356,7 @@ bool AllowedMoves::AddMovesInSequence(const int &nSeqNum, const std::string &sMo
 {
     // May only insert moves with sequence less-than or equal to current index
     // and sequence number must be greater than zero.
-    if ((nSeqNum >= m_nAddMoveIndex) || (nSeqNum <= m_knLowestSequenceNumber))
+    if ((nSeqNum > m_nAddMoveIndex) || (nSeqNum <= m_knLowestSequenceNumber))
         return false;
 
     std::string sMoveArg = sMove + GameVocabulary::DELIMETER + sArg;
@@ -354,16 +375,16 @@ bool AllowedMoves::AddMovesInSequence(const int &nSeqNum, const std::string &sMo
 bool AllowedMoves::AddMove(const std::string &sMove, const std::string &sArg)
 {
     std::string sMoveArg = sMove + GameVocabulary::DELIMETER + sArg;
-    m_mmMoves.insert(std::pair<int, std::string>(m_knLowestSequenceNumber, sMove));
-    return false;
+    m_mmMoves.insert(std::pair<int, std::string>(m_knLowestSequenceNumber, sMoveArg));
+    return true;
 }
 
-void AllowedMoves::NextMoveInSequence(std::string &sMoves, const bool bIncrementIndex) const
+void AllowedMoves::NextMoveInSequence(std::string &sMoves) const
 {
     sMoves.clear();
 
     std::vector<GameMove> vGameMoves {};
-    NextMoveInSequence(vGameMoves, bIncrementIndex);
+    NextMoveInSequence(vGameMoves);
 
     for (const auto &cGameMove : vGameMoves)
     {
@@ -371,7 +392,7 @@ void AllowedMoves::NextMoveInSequence(std::string &sMoves, const bool bIncrement
     }
 }
 
-void  AllowedMoves::NextMoveInSequence(std::vector<GameMove> &vGameMoves, const bool bIncrementIndex) const
+void  AllowedMoves::NextMoveInSequence(std::vector<GameMove> &vGameMoves) const
 {
     GameMove              cGameMove;
     vGameMoves.clear();
@@ -385,14 +406,6 @@ void  AllowedMoves::NextMoveInSequence(std::vector<GameMove> &vGameMoves, const 
     {
         cGameMove.SetCommand(it->second);
         vGameMoves.push_back(cGameMove);
-    }
-
-    // Evaluate need to increment move index
-    if (bIncrementIndex)
-    {
-        ++m_nMoveIndex;
-        if (m_nMoveIndex == m_nAddMoveIndex)
-            m_nMoveIndex = m_knLowestSequenceNumber + 1;
     }
 }
 
@@ -415,4 +428,3 @@ bool AllowedMoves::ValidMove(const std::string &sMove, const std::string &sArg) 
 
     return false;
 }
-

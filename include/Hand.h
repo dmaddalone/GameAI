@@ -55,8 +55,8 @@ class Hand : public PlayingCards
         };
 
         // Get information about the hand
-        std::string DisplayCards() const;
-        std::string DisplayRanks() const;
+        std::string DisplayCards(bool bForce=false) const;
+        std::string DisplayRanks(bool bForce=false) const;
 
         // Remove books by rank from the hand
         Book RemoveBookByRank(int nCount);

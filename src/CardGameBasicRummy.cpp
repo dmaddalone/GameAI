@@ -187,13 +187,15 @@ std::string CardGameBasicRummy::ValidMoves(int nPlayer)
     std::string sMoves {};
     std::vector<GameMove> vGameMoves {};
 
-    m_cAllowedMoves.NextMoveInSequence(sMoves, false);
+    m_cAllowedMoves.NextMoveInSequence(vGameMoves);
     EvaluatePossibleMoves(nPlayer, vGameMoves);
 
     for (const GameMove &cGameMove : vGameMoves)
     {
-        sMoves += cGameMove.Command() + GameVocabulary::DELIMETER + cGameMove.Argument() + "\n";
+        sMoves += "\n" + cGameMove.Command() + GameVocabulary::DELIMETER + cGameMove.Argument();
     }
+
+    sMoves += "\n" + m_vHands[nPlayer - 1].DisplayCards(true);
 
     return sMoves;
 }
@@ -421,13 +423,14 @@ bool CardGameBasicRummy::ApplyMove(int nPlayer, GameMove &cGameMove)
         // Capture move for network play
         m_vGameMoves.push_back(cGameMove);
 
-        // Display game stats
+        // Display game
         for (Hand &cHand : m_vHands)
         {
             std::cout << "Player " << cHand.ID() << " has " << cHand.HasCards() << " cards." << std::endl;
         }
         std::cout << "The deck has " << m_cDeck.HasCards() << " cards." << std::endl;
         std::cout << "The discard pile has " << m_cDiscardPile.HasCards() << " cards." << std::endl;
+        std::cout << "The top of the discard pile is " << m_cDiscardPile.PeekAtTopCard().DisplayShortName() << std::endl;
         std::cout << "Rank Matches:     " << MatchesTypes("R") << std::endl;
         std::cout << "Sequence Matches: " << MatchesTypes("S") << std::endl;
 
@@ -441,6 +444,7 @@ bool CardGameBasicRummy::ApplyMove(int nPlayer, GameMove &cGameMove)
         cGameMove.SetPlayerNumber(nPlayer);
         // Capture move for network play
         m_vGameMoves.push_back(cGameMove);
+
         return true;
     }
 
@@ -473,16 +477,21 @@ bool CardGameBasicRummy::ApplyMove(int nPlayer, GameMove &cGameMove)
     if (cGameMove.Draw())
     {
         cGameMove.SetAnotherTurn(true);
+        cGameMove.SetPlayerNumber(nPlayer);
         vGameMoves.push_back(cGameMove);
         if (!DrawCard(nPlayer, cGameMove))
             return false;
+
+        m_cAllowedMoves.ProgressSequence();
     }
 
     // Check for meld
     if (cGameMove.Meld())
     {
         cGameMove.SetAnotherTurn(true);
+        cGameMove.SetPlayerNumber(nPlayer);
         vGameMoves.push_back(cGameMove);
+
         if (!MeldCards(nPlayer, cGameMove))
             return false;
     }
@@ -491,7 +500,9 @@ bool CardGameBasicRummy::ApplyMove(int nPlayer, GameMove &cGameMove)
     if (cGameMove.Layoff())
     {
         cGameMove.SetAnotherTurn(true);
+        cGameMove.SetPlayerNumber(nPlayer);
         vGameMoves.push_back(cGameMove);
+
         if (!LayoffCard(nPlayer, cGameMove))
             return false;
     }
@@ -500,15 +511,18 @@ bool CardGameBasicRummy::ApplyMove(int nPlayer, GameMove &cGameMove)
     if (cGameMove.Discard())
     {
         vGameMoves.push_back(cGameMove);
+
         if (!Discard(nPlayer, cGameMove))
             return false;
+
+        m_cAllowedMoves.ProgressSequence();
     }
 
     // If players has cards, sort them and turn off Rummy possibility
     if (m_vHands[nPlayer - 1].HasCards())
     {
         m_vHands[nPlayer - 1].SortByRank();
-        SetRummyOff(nPlayer - 1);
+        SetRummyOff(nPlayer);
     }
 
     // Increment move counter
@@ -578,7 +592,7 @@ std::string CardGameBasicRummy::GameScore() const
 
     for (const Hand &cHand : m_vHands)
     {
-        sScore += " Player " + std::to_string(cHand.ID()) + " MeldCount=" + std::to_string(m_uommMatches.count(cHand.ID())) +
+        sScore += "\nPlayer " + std::to_string(cHand.ID()) + " MeldCount=" + std::to_string(m_uommMatches.count(cHand.ID())) +
             " | Points=" + std::to_string(Score(cHand.ID()));
     }
 
@@ -644,7 +658,7 @@ bool CardGameBasicRummy::GameEnded(int nPlayer)
         int nRummyMultiplier {0};
         std::string sMessage {};
 
-        if (Rummy(nThisPlayer - 1))
+        if (Rummy(nThisPlayer))
         {
             sMessage = "Player " + std::to_string(nThisPlayer) + " has gone Rummy!";
             nRummyMultiplier = 2;
