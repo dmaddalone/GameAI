@@ -14,17 +14,19 @@ TODO: Minimax can't see checkmate easily??
 TODO: Check other TODOs
 
 TODO: Basic Rummy
-- Update for Score (add scoring in CardGame) 
-- Set default score goal (500?) - DONE
 - Establish way to change default score goal
-- Remove UpdateCard and replace with AddCard - DONE
-- Build loop to deal after all one player goes out
-- Set way for a player to go out and calculate scores, including "Rummy"
-- In addition to SortValue add RankValue for cards (e.g. Paint = 10, aces = 1, other cards = face value) for scoring - DONE
-- Update GameEnded for when player goes out - DONE (but may need to update for Hand Ended)
 - Combine AllowedMoves and GameMove flags (e.g., SetFoldingAllowed)??
-- Manage the stock - if it runs out, turn over the discard pile
-]]>
+- Deal to alternating hands
+
+- In addition to SortValue add RankValue for cards (e.g. Paint = 10, aces = 1, other cards = face value) for scoring - DONE
+- Remove UpdateCard and replace with AddCard - DONE
+- Set default score goal (500?) - DONE
+- Update for Score (add scoring in CardGame)  - DONE
+
+- Update GameEnded for when player goes out - DONE (but may need to update for Hand Ended) - DONE
+- Manage the stock - if it runs out, turn over the discard pile - DONE
+- Set way for a player to go out and calculate scores, including "Rummy" - DONE
+- Build loop to deal after all one player goes out - DONE]]>
 			</notes>
 		</Option>
 		<Build>
@@ -33,7 +35,7 @@ TODO: Basic Rummy
 				<Option object_output="obj/Debug/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
-				<Option parameters="-1 ai  -2 human -g go-fish" />
+				<Option parameters="-1 human  -2 human -g rummy" />
 				<Compiler>
 					<Add option="-std=c++11" />
 					<Add option="-Wextra" />

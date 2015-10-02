@@ -415,3 +415,4 @@ bool AllowedMoves::ValidMove(const std::string &sMove, const std::string &sArg) 
 
     return false;
 }
+

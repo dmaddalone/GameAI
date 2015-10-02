@@ -698,7 +698,7 @@ void CardGameBasicRummy::BeginHand()
     m_cDeck.Initialize();
     m_cDeck.SetAcesLow();
 
-    // Shuffle and Deal cards
+    // Shuffle and deal cards
     m_cDeck.Shuffle();
     m_cDeck.Deal(10, m_vHands);
 
@@ -713,6 +713,9 @@ void CardGameBasicRummy::BeginHand()
     {
         cHand.SortByRank();
     }
+
+    // Set allowed moves sequence
+    m_cAllowedMoves.ResetSequence();
 }
 
 /**

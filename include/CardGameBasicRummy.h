@@ -58,9 +58,10 @@ class CardGameBasicRummy : public CardGame
             m_cAllowedMoves.AddMovesInSequence(1, GameVocabulary::DRAW, GameVocabulary::ARG_DISCARD);
             m_cAllowedMoves.AddMovesInSequence(2, GameVocabulary::MELD);
             m_cAllowedMoves.AddMovesInSequence(2, GameVocabulary::LAYOFF);
-            m_cAllowedMoves.AddMovesInSequence(3, GameVocabulary::DISCARD);
+            m_cAllowedMoves.AddMovesInSequence(2, GameVocabulary::DISCARD);
             m_cAllowedMoves.AddMove(GameVocabulary::SHOW);
             m_cAllowedMoves.AddMove(GameVocabulary::SCORE);
+            //m_cAllowedMoves.AddMove(GameVocabulary::RESIGN);
 
             // Shuffle and Deal cards
             BeginHand();

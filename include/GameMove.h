@@ -296,7 +296,8 @@ class AllowedMoves
         void NextMoveInSequence(std::string &sMoves, const bool bIncrementIndex=true) const;
         void NextMoveInSequence(std::vector<GameMove> &vMoves, const bool bIncrementIndex=true) const;
         bool ValidMove(const std::string &sMove, const std::string &sArg="") const;
-        bool InUse() const { return m_bInitialized; }
+        void ResetSequence() { m_nAddMoveIndex = m_knLowestSequenceNumber + 1; }
+        bool InUse() const   { return m_bInitialized; }
 
     private:
         std::multimap<int, std::string> m_mmMoves                {};

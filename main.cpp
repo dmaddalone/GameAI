@@ -164,6 +164,8 @@ static std::unique_ptr<Game> GenerateGame(std::string sGame)
         return Game::Make(GameType::TYPE_CARDGAME_WAR);
     else if (sGame == "go-fish")
         return Game::Make(GameType::TYPE_CARDGAME_GO_FISH);
+    else if (sGame == "rummy")
+        return Game::Make(GameType::TYPE_CARDGAME_BASIC_RUMMY);
     else
         return nullptr;
 }

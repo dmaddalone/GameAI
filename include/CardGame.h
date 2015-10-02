@@ -178,7 +178,7 @@ class CardGame : public Game
         std::string m_sDefaultMove {};
 
         // Game Score
-        int m_aiScore[2] {};
+        int m_aiScore[2]   {};
         int m_nTargetScore {100};
 };
 
