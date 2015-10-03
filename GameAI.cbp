@@ -17,6 +17,13 @@ TODO: Basic Rummy
 - Establish way to change default score goal
 - Combine AllowedMoves and GameMove flags (e.g., SetFoldingAllowed)??
 - Deal to alternating hands
+- Discard not working on 10s
+- Meld not not working
+- Match types are duplicative ("R", "S")
+- Layoff not working on 4c
+- Make Discard() a bool
+
+
 
 - In addition to SortValue add RankValue for cards (e.g. Paint = 10, aces = 1, other cards = face value) for scoring - DONE
 - Remove UpdateCard and replace with AddCard - DONE
@@ -26,7 +33,11 @@ TODO: Basic Rummy
 - Update GameEnded for when player goes out - DONE (but may need to update for Hand Ended) - DONE
 - Manage the stock - if it runs out, turn over the discard pile - DONE
 - Set way for a player to go out and calculate scores, including "Rummy" - DONE
-- Build loop to deal after all one player goes out - DONE]]>
+- Build loop to deal after all one player goes out - DONE
+
+- Broke out AllowedMoves - DONE
+- Sort cards after draw - DONE
+- After draw from discard, sort by rank not working - DONE]]>
 			</notes>
 		</Option>
 		<Build>
@@ -65,7 +76,7 @@ TODO: Basic Rummy
 				<Option object_output="obj/Debug/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
-				<Option parameters="-1 ai -2 ai -g go-fish -v3" />
+				<Option parameters="-1 human -2 human -g rummy" />
 				<Compiler>
 					<Add option="-std=c++11" />
 					<Add option="-Wextra" />
@@ -102,6 +113,7 @@ TODO: Basic Rummy
 		<Unit filename="../jsoncpp/dist/json/json.h" />
 		<Unit filename="../jsoncpp/dist/jsoncpp.cpp" />
 		<Unit filename="include/AIPlayer.h" />
+		<Unit filename="include/AllowedMoves.h" />
 		<Unit filename="include/Blackboard.h" />
 		<Unit filename="include/BoardGame.h" />
 		<Unit filename="include/Card.h" />
@@ -144,6 +156,7 @@ TODO: Basic Rummy
 		<Unit filename="include/TTT.h" />
 		<Unit filename="main.cpp" />
 		<Unit filename="src/AIPlayer.cpp" />
+		<Unit filename="src/AllowedMoves.cpp" />
 		<Unit filename="src/Blackboard.cpp" />
 		<Unit filename="src/BoardGame.cpp" />
 		<Unit filename="src/Card.cpp" />

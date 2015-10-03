@@ -214,9 +214,13 @@ void PlayingCards::AddCards(std::vector<Card> &vCards)
 
 Card PlayingCards::DrawTopCard()
 {
-    Card cCard = m_vCards.front();
+    Card cCard;
 
-    m_vCards.erase(m_vCards.begin());
+    if (HasCards() > 0)
+    {
+        cCard = m_vCards.front();
+        m_vCards.erase(m_vCards.begin());
+    }
 
     return cCard;
 }
@@ -231,7 +235,11 @@ Card PlayingCards::DrawTopCard()
 
 Card PlayingCards::PeekAtTopCard() const
 {
-    Card cCard = m_vCards[0];
+    Card cCard;
+    if (HasCards() > 0)
+    {
+        cCard = m_vCards[0];
+    }
 
     return cCard;
 }
@@ -246,7 +254,12 @@ Card PlayingCards::PeekAtTopCard() const
 
 Card PlayingCards::PeekAtBottomCard() const
 {
-    Card cCard = m_vCards.back();
+    Card cCard;
+
+    if (HasCards() > 0)
+    {
+        cCard = m_vCards.back();
+    }
 
     return cCard;
 }

@@ -195,7 +195,17 @@ std::string CardGameBasicRummy::ValidMoves(int nPlayer)
         sMoves += "\n" + cGameMove.Command() + GameVocabulary::DELIMETER + cGameMove.Argument();
     }
 
-    sMoves += "\n" + m_vHands[nPlayer - 1].DisplayCards(true);
+    sMoves += "\nThe top of the discard pile is ";
+    if (m_cDiscardPile.HasCards() > 0)
+    {
+        sMoves += m_cDiscardPile.PeekAtTopCard().DisplayShortName();
+    }
+    else
+    {
+        sMoves += "empty";
+    }
+
+    sMoves += "\nYour hand is " + m_vHands[nPlayer - 1].DisplayCards(true);
 
     return sMoves;
 }
@@ -243,6 +253,7 @@ bool CardGameBasicRummy::DrawCard(int nPlayer, const GameMove &cGameMove)
 
             Card cCard = m_cDeck.DrawTopCard();
             m_vHands[nPlayer - 1].AddCard(cCard);
+            m_vHands[nPlayer - 1].SortByRank();
 
             // If stock has been depleted, the top card of the discard pile
             // is set aside and the remainder of the discard pile is turned
@@ -284,6 +295,7 @@ bool CardGameBasicRummy::DrawCard(int nPlayer, const GameMove &cGameMove)
 
             Card cCard = m_cDiscardPile.DrawTopCard();
             m_vHands[nPlayer - 1].AddCard(cCard);
+            m_vHands[nPlayer - 1].SortByRank();
 
             return true;
         }
@@ -430,7 +442,6 @@ bool CardGameBasicRummy::ApplyMove(int nPlayer, GameMove &cGameMove)
         }
         std::cout << "The deck has " << m_cDeck.HasCards() << " cards." << std::endl;
         std::cout << "The discard pile has " << m_cDiscardPile.HasCards() << " cards." << std::endl;
-        std::cout << "The top of the discard pile is " << m_cDiscardPile.PeekAtTopCard().DisplayShortName() << std::endl;
         std::cout << "Rank Matches:     " << MatchesTypes("R") << std::endl;
         std::cout << "Sequence Matches: " << MatchesTypes("S") << std::endl;
 

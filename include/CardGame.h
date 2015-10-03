@@ -31,6 +31,7 @@
 #include <climits>
 #include <unordered_map>
 
+#include "AllowedMoves.h"
 #include "Game.h"
 #include "GameMove.h"
 #include "Deck.h"

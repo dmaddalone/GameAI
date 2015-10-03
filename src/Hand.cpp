@@ -152,7 +152,7 @@ Match Hand::RemoveMatch(std::vector<Card> &vCards, const int nCount, const bool 
         }
         // Else remove all previously added cards from match,
         // add them back to the hand
-        // and return an emoty match
+        // and return an empty match
         else
         {
             std::vector<Card> vPreviouslyAddedCards = cMatch.RemoveAllCards();
@@ -309,11 +309,17 @@ bool Hand::LayoffOpportunities(std::unordered_multimap<int, Match> &uommMatches,
     return false;
 }
 
-void Hand::Discard(PlayingCards &PlayingCards, Card &cCard)
+void Hand::Discard(PlayingCards &cPlayingCards, Card &cCard)
 {
-    cCard.TurnUp(true);
-    PlayingCards.AddCardToTop(cCard);
-    RemoveCard(cCard);
+    // Get the matching card, cDiscardCard, from the hand (matching card has
+    // all properties, while cCard has only rank and suit)
+    Card cDiscardCard = RemoveCard(cCard);
+
+    // Copy turn up property
+    cDiscardCard.TurnUp(cCard.TurnedUp());
+
+    // Add matched cDiscardCard to discard pile (cPlayingCards)
+    cPlayingCards.AddCardToTop(cDiscardCard);
 }
 
 /**
