@@ -70,7 +70,7 @@ class Hand : public PlayingCards
         bool RemoveLayoffs(std::unordered_multimap<int, Match> &uommMatches, Card &cCard, const bool bEvalSequence=true, const bool bEvalBook=true);
 
         // Discard
-        void Discard(PlayingCards &PlayingCards, Card &cCard);
+        void Discard(PlayingCards &cDiscardPile, const Card &cCard);
 
         // Sort the hand by rank
         void SortByRank();

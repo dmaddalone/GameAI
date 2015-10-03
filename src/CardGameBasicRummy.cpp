@@ -248,10 +248,12 @@ bool CardGameBasicRummy::DrawCard(int nPlayer, const GameMove &cGameMove)
     {
         if (m_cDeck.HasCards())
         {
-            sMessage = "Player " + std::to_string(nPlayer) + " draws from the stock";
+            Card cCard = m_cDeck.DrawTopCard();
+
+            sMessage = "Player " + std::to_string(nPlayer) + " draws " +
+                cCard.DisplayShortName(true) + " from the stock";
             m_cLogger.LogInfo(sMessage,1);
 
-            Card cCard = m_cDeck.DrawTopCard();
             m_vHands[nPlayer - 1].AddCard(cCard);
             m_vHands[nPlayer - 1].SortByRank();
 
@@ -379,7 +381,7 @@ bool CardGameBasicRummy::LayoffCard(int nPlayer, const GameMove &cGameMove)
   * \param nPlayer   The player whose turn it is.
   * \param cGameMove The player's game move object
   *
-  * \return True if there is acard to discard, false otherwise.
+  * \return True if there is a card to discard, false otherwise.
   */
 
 bool CardGameBasicRummy::Discard(int nPlayer, const GameMove &cGameMove)

@@ -22,6 +22,63 @@
 // Initial static int to zero; used to generate unique identifier numbers for cards
 int Card::m_nCardCount {0};
 
+bool Card::SetRankAndSuit(const std::string &sRankAndSuit)
+{
+    std::cout << "[DEBUG] sRankAndSuit.length()=" << sRankAndSuit.length() << std::endl;
+    if (sRankAndSuit.empty())
+        return false;
+
+    std::string sSuit(1, sRankAndSuit.back());
+    std::cout << "[DEBUG] sSuit=" << sSuit << std::endl;
+    if (!SetSuit(sSuit))
+        return false;
+
+    std::string sRank(sRankAndSuit.substr(0, sRankAndSuit.length() - 1));
+    std::cout << "[DEBUG] sRank=" << sRank << std::endl;
+    if (!SetRank(sRank))
+        return false;
+
+    return true;
+    //m_sSuit = sRankAndSuit.back();
+
+    //SetSuit(std::string sSuit(sRankAndSuit.back()));
+
+    //m_sSuit = sRankAndSuit.back();
+//    sRankAndSuit.pop_back();
+    //m_sRank = sRankAndSuit;
+
+/*
+
+    std::string::iterator it = sRankAndSuit.end();
+    --it;
+    m_sSuit = *it;
+    sRankAndSuit.erase(it);
+    m_sRank = sRankAndSuit;
+*/
+/*
+
+    if (isalpha(sRankAndSuit[0]))
+    {
+        m_sRank = sRankAndSuit[0];
+    }
+    else
+    {
+        try
+        {
+            m_sRank = std::to_string(stoi(sRankAndSuit));
+        }
+        catch (...)
+        {
+            return false;
+        }
+    }
+
+    m_sSuit = sRankAndSuit.back();
+*/
+
+    return RankValid() && SuitValid();
+}
+
 /**
   * Serialize the class into a Json object.
   *
@@ -44,7 +101,7 @@ Json::Value Card::JsonSerialization() const
 }
 
 /**
-  * Deserialize the class from a JSON string.
+  *Deserialize the class from a JSON string.
   *
   * \param sJsonCard     A JSON string representing a Card.
   * \param sErrorMessage A string to return an error message if needed

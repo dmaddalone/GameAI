@@ -17,27 +17,16 @@ TODO: Basic Rummy
 - Establish way to change default score goal
 - Combine AllowedMoves and GameMove flags (e.g., SetFoldingAllowed)??
 - Deal to alternating hands
-- Discard not working on 10s
 - Meld not not working
 - Match types are duplicative ("R", "S")
 - Layoff not working on 4c
 - Make Discard() a bool
 
-
-
-- In addition to SortValue add RankValue for cards (e.g. Paint = 10, aces = 1, other cards = face value) for scoring - DONE
-- Remove UpdateCard and replace with AddCard - DONE
-- Set default score goal (500?) - DONE
-- Update for Score (add scoring in CardGame)  - DONE
-
-- Update GameEnded for when player goes out - DONE (but may need to update for Hand Ended) - DONE
-- Manage the stock - if it runs out, turn over the discard pile - DONE
-- Set way for a player to go out and calculate scores, including "Rummy" - DONE
-- Build loop to deal after all one player goes out - DONE
-
 - Broke out AllowedMoves - DONE
 - Sort cards after draw - DONE
-- After draw from discard, sort by rank not working - DONE]]>
+- After draw from discard, sort by rank not working - DONE
+- Discard not working on 10s - DONE
+- When drawing from stock, announce the card - DONE]]>
 			</notes>
 		</Option>
 		<Build>

@@ -309,7 +309,7 @@ bool Hand::LayoffOpportunities(std::unordered_multimap<int, Match> &uommMatches,
     return false;
 }
 
-void Hand::Discard(PlayingCards &cPlayingCards, Card &cCard)
+void Hand::Discard(PlayingCards &cDiscardPile, const Card &cCard)
 {
     // Get the matching card, cDiscardCard, from the hand (matching card has
     // all properties, while cCard has only rank and suit)
@@ -318,8 +318,8 @@ void Hand::Discard(PlayingCards &cPlayingCards, Card &cCard)
     // Copy turn up property
     cDiscardCard.TurnUp(cCard.TurnedUp());
 
-    // Add matched cDiscardCard to discard pile (cPlayingCards)
-    cPlayingCards.AddCardToTop(cDiscardCard);
+    // Add matched cDiscardCard to discard pile
+    cDiscardPile.AddCardToTop(cDiscardCard);
 }
 
 /**

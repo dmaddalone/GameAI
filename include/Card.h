@@ -26,6 +26,8 @@
 #ifndef CARD_H
 #define CARD_H
 
+#include <iostream> // for testing
+
 #include <array>
 #include <string>
 
@@ -70,11 +72,11 @@ class Card
         int         SortValue() const        { return m_nSortValue; }
 
         // Set Rank and Suit
-        bool        SetRank(std::string sRank) { m_sRank = sRank; return RankValid(); }
+        bool        SetRank(std::string &sRank) { m_sRank = sRank; return RankValid(); }
         bool        RankValid() const          { for (const std::string &sRank : asRank) { if (sRank == m_sRank) { return true; } }  return false; }
-        bool        SetSuit(std::string sSuit) { m_sSuit = sSuit; return SuitValid(); }
+        bool        SetSuit(std::string &sSuit) { m_sSuit = sSuit; return SuitValid(); }
         bool        SuitValid() const          { for (const std::string &sSuit : asSuit) { if (sSuit == m_sSuit) { return true; } }  return false; }
-        bool        SetRankAndSuit(std::string sRankAndSuit) { m_sRank = sRankAndSuit[0];  m_sSuit = sRankAndSuit[1]; return RankValid() && SuitValid(); }
+        bool        SetRankAndSuit(const std::string &sRankAndSuit);
 
         // Set Value
         void        SetValuesToLowest() { m_nRankValue = aiRankValue[0] - 1; m_nSortValue = aiSortValue[0] - 1; }
