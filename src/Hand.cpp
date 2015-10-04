@@ -166,7 +166,7 @@ bool Hand::MatchOpportunities(const int nCount, const bool bEvalSequence, const 
         int  nSeqCount {1};
         Card cLastCard;
 
-        SortByRank();
+        SortBySuit();
 
         for (const Card &cCard : m_vCards)
         {
@@ -203,31 +203,36 @@ bool Hand::MatchOpportunities(const int nCount, const bool bEvalSequence, const 
 
 bool Hand::RemoveLayoffs(std::unordered_multimap<int, Match> &uommMatches, Card &cCard, const bool bEvalSequence, const bool bEvalBook)
 {
-    // Create a hand for the vector of cards to evaluate layoff opportunities
-    Hand cHand;
-    cHand.AddCard(cCard);
+    // Create a hand for the layoff card to evaluate layoff opportunities
+    Hand cProbableLayoffHand;
+    Card cLayoffCard = RemoveCard(cCard);
+    cProbableLayoffHand.AddCard(cLayoffCard);
 
     //  Add a Card to a Hand
     //  if LayoffOpportunity for sequence is true
     //      find eligible match and add card to uommMatches and remove it from vCards
-    if (cHand.LayoffOpportunities(uommMatches, bEvalSequence, bEvalBook))
+    if (cProbableLayoffHand.LayoffOpportunities(uommMatches, bEvalSequence, bEvalBook))
     {
         for (auto &PlayerMatch : uommMatches)
         {
             if (PlayerMatch.second.Eligible())
             {
-                PlayerMatch.second.AddCard(cCard);
+                PlayerMatch.second.AddCard(cLayoffCard);
                 PlayerMatch.second.SortByRank();
                 return true;
             }
         }
     }
 
+    // Place layoff card back into hand
+    AddCard(cLayoffCard);
     return false;
 }
 
 bool Hand::LayoffOpportunities(std::unordered_multimap<int, Match> &uommMatches, const bool bEvalSequence, const bool bEvalBook)
 {
+    SortBySuit();
+
     // Loop through all matches
     for (auto &PlayerMatch : uommMatches)
     {
@@ -256,14 +261,12 @@ bool Hand::LayoffOpportunities(std::unordered_multimap<int, Match> &uommMatches,
                             return true;
                         }
 
-
                         // If Card value is one more than last card, we have a layoff opportunity
                         if (cCard.SortValue() == PlayerMatch.second.PeekAtBottomCard().SortValue() + 1)
                         {
                             PlayerMatch.second.SetEligibility(true);
                             return true;
                         }
-
                     }
                 }
             }
@@ -313,6 +316,20 @@ void Hand::Discard(PlayingCards &cDiscardPile, const Card &cCard)
 void Hand::SortByRank()
 {
     std::sort(m_vCards.begin(), m_vCards.end());
+}
+
+void Hand::SortBySuit()
+{
+    SortByRank();
+
+    std::sort(m_vCards.begin(), m_vCards.end(),
+        [](const Card &cFirstCard, const Card &cSecondCard) -> bool
+        {
+            //return cFirstCard.SortValue() > cSecondCard.SortValue() &&
+            //       cFirstCard.Suit() > cSecondCard.Suit();
+
+            return cFirstCard.Suit() > cSecondCard.Suit();
+        });
 }
 
 

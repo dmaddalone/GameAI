@@ -205,6 +205,7 @@ std::string CardGameBasicRummy::ValidMoves(int nPlayer)
         sMoves += "empty";
     }
 
+    m_vHands[nPlayer -1].SortByRank();
     sMoves += "\nYour hand is " + m_vHands[nPlayer - 1].DisplayCards(true);
 
     return sMoves;
@@ -257,6 +258,8 @@ bool CardGameBasicRummy::DrawCard(int nPlayer, const GameMove &cGameMove)
             m_vHands[nPlayer - 1].AddCard(cCard);
             m_vHands[nPlayer - 1].SortByRank();
 
+            ++m_aiNumberOfDrawsFromStock[nPlayer - 1];
+
             // If stock has been depleted, the top card of the discard pile
             // is set aside and the remainder of the discard pile is turned
             // over to form a new stock.
@@ -298,6 +301,8 @@ bool CardGameBasicRummy::DrawCard(int nPlayer, const GameMove &cGameMove)
             Card cCard = m_cDiscardPile.DrawTopCard();
             m_vHands[nPlayer - 1].AddCard(cCard);
             m_vHands[nPlayer - 1].SortByRank();
+
+            ++m_aiNumberOfDrawsFromDiscard[nPlayer - 1];
 
             return true;
         }
@@ -343,13 +348,27 @@ bool CardGameBasicRummy::MeldCards(int nPlayer, const GameMove &cGameMove)
         return false;
     }
 
-    // Generate a match from the hand
+    // Grab cards
     std::vector<Card> vCards = cGameMove.GetCards();
+
+    // Ensure cards in the player's hand
+    for (const Card &cCard : vCards)
+    {
+        if (!m_vHands[nPlayer - 1].HasCard(cCard))
+        {
+            return false;
+        }
+    }
+
+    // Generate a match from the hand
     Match cMatch = m_vHands[nPlayer - 1].RemoveMatch(vCards, m_knMatchNumber);
     if (cMatch.HasCards() >= m_knMatchNumber)
     {
         // Insert into matches
         m_uommMatches.insert(std::make_pair(m_vHands[nPlayer - 1].ID(), cMatch));
+
+        ++m_aiNumberOfMelds[nPlayer - 1];
+
         return true;
     }
 
@@ -370,7 +389,20 @@ bool CardGameBasicRummy::MeldCards(int nPlayer, const GameMove &cGameMove)
 bool CardGameBasicRummy::LayoffCard(int nPlayer, const GameMove &cGameMove)
 {
     std::vector<Card> vCards = cGameMove.GetCards();
-    return m_vHands[nPlayer - 1].RemoveLayoffs(m_uommMatches, vCards[0]);
+
+    // Ensure the cards in the player's hand
+    if (!m_vHands[nPlayer - 1].HasCard(vCards[0]))
+    {
+        return false;
+    }
+
+    if (m_vHands[nPlayer - 1].RemoveLayoffs(m_uommMatches, vCards[0]))
+    {
+        ++m_aiNumberOfLayoffs[nPlayer - 1];
+        return true;
+    }
+
+    return false;
 }
 
 /**
@@ -387,6 +419,13 @@ bool CardGameBasicRummy::LayoffCard(int nPlayer, const GameMove &cGameMove)
 bool CardGameBasicRummy::Discard(int nPlayer, const GameMove &cGameMove)
 {
     std::vector<Card> vCards = cGameMove.GetCards();
+
+    // Ensure the cards in the player's hand
+    if (!m_vHands[nPlayer - 1].HasCard(vCards[0]))
+    {
+        return false;
+    }
+
     vCards[0].TurnUp(true);
     m_vHands[nPlayer - 1].Discard(m_cDiscardPile, vCards[0]);
 
@@ -491,7 +530,7 @@ bool CardGameBasicRummy::ApplyMove(int nPlayer, GameMove &cGameMove)
     {
         cGameMove.SetAnotherTurn(true);
         cGameMove.SetPlayerNumber(nPlayer);
-        vGameMoves.push_back(cGameMove);
+        //vGameMoves.push_back(cGameMove);
         if (!DrawCard(nPlayer, cGameMove))
             return false;
 
@@ -503,7 +542,7 @@ bool CardGameBasicRummy::ApplyMove(int nPlayer, GameMove &cGameMove)
     {
         cGameMove.SetAnotherTurn(true);
         cGameMove.SetPlayerNumber(nPlayer);
-        vGameMoves.push_back(cGameMove);
+        //vGameMoves.push_back(cGameMove);
 
         if (!MeldCards(nPlayer, cGameMove))
             return false;
@@ -514,7 +553,7 @@ bool CardGameBasicRummy::ApplyMove(int nPlayer, GameMove &cGameMove)
     {
         cGameMove.SetAnotherTurn(true);
         cGameMove.SetPlayerNumber(nPlayer);
-        vGameMoves.push_back(cGameMove);
+        //vGameMoves.push_back(cGameMove);
 
         if (!LayoffCard(nPlayer, cGameMove))
             return false;
@@ -523,7 +562,7 @@ bool CardGameBasicRummy::ApplyMove(int nPlayer, GameMove &cGameMove)
     // Check for discard
     if (cGameMove.Discard())
     {
-        vGameMoves.push_back(cGameMove);
+        //vGameMoves.push_back(cGameMove);
 
         if (!Discard(nPlayer, cGameMove))
             return false;
@@ -600,7 +639,6 @@ std::string CardGameBasicRummy::GameScore() const
     }
 
     // Display meld counts for the game score
-
     std::string sScore {"\nCurrent Meld Count and Points:"};
 
     for (const Hand &cHand : m_vHands)
@@ -617,7 +655,14 @@ std::string CardGameBasicRummy::GameScore() const
 /**
   * Return a string providing a current statistics of the game.
   *
-  * Count the number of successful asks per player.
+  * Per player:
+  * The number of melds
+  * The number of layoffs
+  * The number of draws from the discard
+  * The number of draws from the stock
+  * The number of hands won and lost
+  * The average and median points per hand gained from the opponent
+  * The average and median points per hand given to the opponent
   *
   * \return A string containing the game stats.
   */
@@ -692,6 +737,9 @@ bool CardGameBasicRummy::GameEnded(int nPlayer)
         m_cLogger.LogInfo(sMessage, 1);
         AddToScore(nThisPlayer, nScore);
 
+        ++m_aiNumberOfHandsWon[nThisPlayer - 1];
+        m_afTotalPointsPerHandWon[nThisPlayer - 1] += nScore;
+
         // If this player's total score is greater than or equal to the goal score, this player wins
         if (Score(nThisPlayer) >= TargetScore())
         {
@@ -734,6 +782,9 @@ void CardGameBasicRummy::BeginHand()
     Card cCard = m_cDeck.DrawTopCard();
     cCard.TurnUp(true);
     m_cDiscardPile.AddCard(cCard);
+
+    // Clear matches
+    m_uommMatches.clear();
 
     // Sort hands
     for (Hand &cHand : m_vHands)

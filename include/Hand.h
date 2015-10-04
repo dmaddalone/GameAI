@@ -72,8 +72,9 @@ class Hand : public PlayingCards
         // Discard
         void Discard(PlayingCards &cDiscardPile, const Card &cCard);
 
-        // Sort the hand by rank
+        // Sorting
         void SortByRank();
+        void SortBySuit();
 
         // Return the ID of the hand
         int ID() const { return m_nID; }

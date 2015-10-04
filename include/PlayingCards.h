@@ -45,6 +45,7 @@ class PlayingCards
 
         // Return miscellaneous information on the playing cards
         int  HasCards() const;
+        bool HasCard(const Card &cCardInQuestion) const;
         bool HasRank(const std::string &sRank) const;
         bool HasSuit(const std::string &sSuit) const;
         int  HasCardsOfRank(const std::string &sRank) const;

@@ -17,8 +17,9 @@ TODO: Basic Rummy
 - Establish way to change default score goal
 - Combine AllowedMoves and GameMove flags (e.g., SetFoldingAllowed)??
 - Deal to alternating hands
-- Layoff not working on 4c
 - Make Discard() a bool
+- Simplify commands, e.g., Choose card to DISCARD
+- Comments
 
 
 - Broke out AllowedMoves - DONE
@@ -28,7 +29,8 @@ TODO: Basic Rummy
 - When drawing from stock, announce the card - DONE
 
 - Meld not not working - DONE
-- Match types are duplicative ("R", "S") - DONE]]>
+- Match types are duplicative ("R", "S") - DONE
+- Layoff not working on 4c]]>
 			</notes>
 		</Option>
 		<Build>

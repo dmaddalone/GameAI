@@ -34,9 +34,9 @@
 #include "json/json.h"
 
 const std::array<std::string, 13>  asRank      { { "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A" } };
-const std::array<std::string, 4>   asSuit      { { "H", "D", "C", "S" } };
 const std::array<int, 13>          aiRankValue { {  2,   3,   4,   5,   6,   7,   8,   9,   10,   10,  10,  10,  11 } };
 const std::array<int, 13>          aiSortValue { {  2,   3,   4,   5,   6,   7,   8,   9,   10,   11,  12,  13,  14 } };
+const std::array<std::string, 4>   asSuit      { { "H", "D", "C", "S" } };
 
 
 class Card

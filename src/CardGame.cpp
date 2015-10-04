@@ -270,7 +270,7 @@ GameMove CardGame::GenerateMove(std::string sMove) const
         }
     }
 
-    // Compare move against laying off a card
+    // Compare move against a LAYOFF command
     if (LayingOffAllowed())
     {
         // Evaluate against an ASK command
@@ -283,8 +283,8 @@ GameMove CardGame::GenerateMove(std::string sMove) const
             // Create blank card
             Card cCard;
 
-            // Evaluate for valid rank
-            if (cCard.SetRank(sToken))
+            // Evaluate for valid rank and suit
+            if (cCard.SetRankAndSuit(sToken))
             {
                 cGameMove.SetLayoff(true);
                 //cGameMove.UpdateCard(cCard); // TODO: Change to AddCard
@@ -325,7 +325,7 @@ GameMove CardGame::GenerateMove(std::string sMove) const
         std::string sToken = GameVocabulary::ParseCommand(sMove);
         if (sToken.compare(GameVocabulary::DISCARD) == 0)
         {
-            // Grab argument, which should be card rank
+            // Grab argument, which should be card rank and suit
             sToken = GameVocabulary::ParseArgument(sMove);
 
             // Create blank card

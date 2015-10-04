@@ -30,6 +30,20 @@ int PlayingCards::HasCards() const
     return m_vCards.size();
 }
 
+bool PlayingCards::HasCard(const Card &cCardInQuestion) const
+{
+    for (const Card &cCard : m_vCards)
+    {
+        if (cCard.Suit() == cCardInQuestion.Suit() &&
+            cCard.Rank() == cCardInQuestion.Rank())
+        {
+            return true;
+        }
+    }
+
+    return false;
+}
+
 /**
   * Evaluate whether a rank is in possession.
   *
