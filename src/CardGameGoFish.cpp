@@ -286,6 +286,7 @@ bool CardGameGoFish::ApplyMove(int nPlayer, GameMove &cGameMove)
         sMessage = "Player " + std::to_string(3 - nPlayer) + " hands over " + m_asNumbers[vPassedCards.size()] + " " +  cGameMove.AnnounceCardRank();
         m_cLogger.LogInfo(sMessage,1);
 
+        //m_vHands[nPlayer - 1].AddCards(vPassedCards);
         m_vHands[nPlayer - 1].AddCards(vPassedCards);
 
     }

@@ -17,16 +17,17 @@ TODO: Basic Rummy
 - Establish way to change default score goal
 - Combine AllowedMoves and GameMove flags (e.g., SetFoldingAllowed)??
 - Deal to alternating hands
-- Meld not not working
 - Match types are duplicative ("R", "S")
 - Layoff not working on 4c
 - Make Discard() a bool
+- Meld not not working 
 
 - Broke out AllowedMoves - DONE
 - Sort cards after draw - DONE
 - After draw from discard, sort by rank not working - DONE
 - Discard not working on 10s - DONE
-- When drawing from stock, announce the card - DONE]]>
+- When drawing from stock, announce the card - DONE
+]]>
 			</notes>
 		</Option>
 		<Build>

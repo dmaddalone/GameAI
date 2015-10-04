@@ -344,8 +344,17 @@ bool CardGameBasicRummy::MeldCards(int nPlayer, const GameMove &cGameMove)
     }
 
     // Generate a match from the hand
+    std::cout << "[DEBUG] CadGameBasicRummy: cGameMove.NumberOfCards()=" << cGameMove.NumberOfCards() << std::endl;
     std::vector<Card> vCards = cGameMove.GetCards();
-    Match cMatch = m_vHands[nPlayer - 1].RemoveMatch(vCards, m_knMatchNumber);
+    std::cout << "[DEBUG] CadGameBasicRummy: vCards.size()=" << vCards.size() << std::endl;
+    Match cMatch = m_vHands[nPlayer - 1].RemoveMatch(vCards, m_knMatchNumber);/*CRASH -#0 0049E9E7	Card::Suit[abi:cxx11]() const(this=0x327df8) (include/Card.h:67)
+#1 0045F3FF	PlayingCards::RemoveCards(this=0x2743d20, vCardsToRemove=...) (C:\Users\Maddalone\CCPP\GameAI\src\PlayingCards.cpp:396)
+#2 00455CAB	Hand::RemoveMatch(this=0x2743d20, vCards=..., nCount=3, bEvalSequence=true, bEvalBook=true) (C:\Users\Maddalone\CCPP\GameAI\src\Hand.cpp:108)
+#3 0042677E	CardGameBasicRummy::MeldCards(this=0x27439b0, nPlayer=1, cGameMove=...) (C:\Users\Maddalone\CCPP\GameAI\src\CardGameBasicRummy.cpp:348)
+#4 004270DC	CardGameBasicRummy::ApplyMove(this=0x27439b0, nPlayer=1, cGameMove=...) (C:\Users\Maddalone\CCPP\GameAI\src\CardGameBasicRummy.cpp:508)
+#5 004575CC	Human::Move(this=0x328130, cGame=...) (C:\Users\Maddalone\CCPP\GameAI\src\Human.cpp:78)
+#6 00418A6B	main(argc=7, argv=0x322540) (C:\Users\Maddalone\CCPP\GameAI\main.cpp:564)
+*/
     if (cMatch.HasCards() >= m_knMatchNumber)
     {
         // Insert into matches
@@ -505,7 +514,17 @@ bool CardGameBasicRummy::ApplyMove(int nPlayer, GameMove &cGameMove)
         cGameMove.SetPlayerNumber(nPlayer);
         vGameMoves.push_back(cGameMove);
 
-        if (!MeldCards(nPlayer, cGameMove))
+        std::cout << "[DEBUG] CadGameBasicRummy: cGameMove.NumberOfCards()=" << cGameMove.NumberOfCards() << std::endl;
+
+        if (!MeldCards(nPlayer, cGameMove))/*CRASH -
+#0 0049E9E7	Card::Suit[abi:cxx11]() const(this=0x327df8) (include/Card.h:67)
+#1 0045F3FF	PlayingCards::RemoveCards(this=0x2743d20, vCardsToRemove=...) (C:\Users\Maddalone\CCPP\GameAI\src\PlayingCards.cpp:396)
+#2 00455CAB	Hand::RemoveMatch(this=0x2743d20, vCards=..., nCount=3, bEvalSequence=true, bEvalBook=true) (C:\Users\Maddalone\CCPP\GameAI\src\Hand.cpp:108)
+#3 0042677E	CardGameBasicRummy::MeldCards(this=0x27439b0, nPlayer=1, cGameMove=...) (C:\Users\Maddalone\CCPP\GameAI\src\CardGameBasicRummy.cpp:348)
+#4 004270DC	CardGameBasicRummy::ApplyMove(this=0x27439b0, nPlayer=1, cGameMove=...) (C:\Users\Maddalone\CCPP\GameAI\src\CardGameBasicRummy.cpp:508)
+#5 004575CC	Human::Move(this=0x328130, cGame=...) (C:\Users\Maddalone\CCPP\GameAI\src\Human.cpp:78)
+#6 00418A6B	main(argc=7, argv=0x322540) (C:\Users\Maddalone\CCPP\GameAI\main.cpp:564)
+*/
             return false;
     }
 
@@ -605,7 +624,7 @@ std::string CardGameBasicRummy::GameScore() const
 
     for (const Hand &cHand : m_vHands)
     {
-        sScore += "\nPlayer " + std::to_string(cHand.ID()) + " MeldCount=" + std::to_string(m_uommMatches.count(cHand.ID())) +
+        sScore += "\nPlayer " + std::to_string(cHand.ID()) + " Meld Count=" + std::to_string(m_uommMatches.count(cHand.ID())) +
             " | Points=" + std::to_string(Score(cHand.ID()));
     }
 

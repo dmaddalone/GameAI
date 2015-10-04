@@ -170,7 +170,7 @@ std::string PlayingCards::RanksAndSuits() const
   * \param cCard The card to add.
   */
 
-void PlayingCards::AddCard(Card &cCard)
+void PlayingCards::AddCard(const Card &cCard)
 {
     m_vCards.push_back(cCard);
 }
@@ -181,7 +181,7 @@ void PlayingCards::AddCard(Card &cCard)
   * \param cCard The card to add.
   */
 
-void PlayingCards::AddCardToTop(Card &cCard)
+void PlayingCards::AddCardToTop(const Card &cCard)
 {
     std::vector<Card>::iterator it = m_vCards.begin();
     m_vCards.insert(it, cCard);
@@ -195,9 +195,9 @@ void PlayingCards::AddCardToTop(Card &cCard)
   * \param vCards Vector of cards to add.
   */
 
-void PlayingCards::AddCards(std::vector<Card> &vCards)
+void PlayingCards::AddCards(const std::vector<Card> &vCards)
 {
-    for (Card &cCard : vCards)
+    for (const Card &cCard : vCards)
     {
         m_vCards.push_back(cCard);
     }
@@ -280,12 +280,18 @@ Card PlayingCards::RemoveCard(const std::string &sRank, const std::string &sSuit
 {
     Card cCard;
 
-    for (std::vector<Card>::iterator it = m_vCards.begin(); it != m_vCards.end(); ++it)
+    std::vector<Card>::iterator it = m_vCards.begin();
+    while(it != m_vCards.end())
     {
         if ((it->Rank() == sRank) && (it->Suit() == sSuit))
         {
             cCard = *it;
             m_vCards.erase(it);
+            break;
+        }
+        else
+        {
+            ++it;
         }
     }
 
@@ -372,6 +378,46 @@ std::vector<Card> PlayingCards::RemoveCardsOfSuit(const std::string &sSuit, int 
         else
         {
             ++it;
+        }
+    }
+
+    return vCards;
+}
+
+std::vector<Card> PlayingCards::RemoveCards(const std::vector<Card> &vCardsToRemove)
+{
+    std::cout << "[DEBUG] PlayingCards: vCardsToRemove.size()=" << vCardsToRemove.size() << std::endl;
+    std::cout << "[DEBUG] PlayingCards: this->HasCards()=" << this->HasCards() << std::endl;
+    std::cout << "[DEBUG] PlayingCards: this->RanksAndSuits()=" << this->RanksAndSuits() << std::endl;
+
+    std::vector<Card> vCards{};
+
+    std::vector<Card>::iterator it = m_vCards.begin();
+    while (it != m_vCards.end())
+    {
+        //std::cout << "[DEBUG] PlayingCards: *it=" << *it << std::endl;
+        std::cout << "[DEBUG] PlayingCards: it->Suit()=" << it->Suit() << " it->Rank()=" << it->Rank() << std::endl;
+        for (const Card &cCardToRemove : vCardsToRemove)
+        {
+            std::cout << "[DEBUG] PlayingCards: cCardToRemove.Suit()=" << cCardToRemove.Suit() << " cCardToRemove.Rank()=" << cCardToRemove.Rank() << std::endl;
+            if (it->Suit() == cCardToRemove.Suit() && it->Rank() == cCardToRemove.Rank())/*CRASH -
+#0 0049E9E7	Card::Suit[abi:cxx11]() const(this=0x327df8) (include/Card.h:67)
+#1 0045F3FF	PlayingCards::RemoveCards(this=0x2743d20, vCardsToRemove=...) (C:\Users\Maddalone\CCPP\GameAI\src\PlayingCards.cpp:396)
+#2 00455CAB	Hand::RemoveMatch(this=0x2743d20, vCards=..., nCount=3, bEvalSequence=true, bEvalBook=true) (C:\Users\Maddalone\CCPP\GameAI\src\Hand.cpp:108)
+#3 0042677E	CardGameBasicRummy::MeldCards(this=0x27439b0, nPlayer=1, cGameMove=...) (C:\Users\Maddalone\CCPP\GameAI\src\CardGameBasicRummy.cpp:348)
+#4 004270DC	CardGameBasicRummy::ApplyMove(this=0x27439b0, nPlayer=1, cGameMove=...) (C:\Users\Maddalone\CCPP\GameAI\src\CardGameBasicRummy.cpp:508)
+#5 004575CC	Human::Move(this=0x328130, cGame=...) (C:\Users\Maddalone\CCPP\GameAI\src\Human.cpp:78)
+#6 00418A6B	main(argc=7, argv=0x322540) (C:\Users\Maddalone\CCPP\GameAI\main.cpp:564)
+*/
+            {
+                vCards.push_back(*it);
+                it = m_vCards.erase(it);
+            }
+            else
+            {
+                //++it;
+                std::advance(it, 1);
+            }
         }
     }
 

@@ -55,9 +55,9 @@ class PlayingCards
         std::string RanksAndSuits() const;
 
         // Add cards to playing cards
-        void AddCard(Card &cCard);
-        void AddCardToTop(Card &cCard);
-        void AddCards(std::vector<Card> &vCards);
+        void AddCard(const Card &cCard);
+        void AddCardToTop(const Card &cCard);
+        void AddCards(const std::vector<Card> &vCards);
 
         // Return a card or a vector of cards
         Card              DrawTopCard();
@@ -67,6 +67,7 @@ class PlayingCards
         Card              RemoveCard(const Card &cCard);
         std::vector<Card> RemoveCardsOfRank(const std::string &sRank, int nNumberToRemove=0);
         std::vector<Card> RemoveCardsOfSuit(const std::string &sSuit, int nNumberToRemove=0);
+        std::vector<Card> RemoveCards(const std::vector<Card> &vCardsToRemove);
         std::vector<Card> RemoveAllCards();
 
         // Json object serialization

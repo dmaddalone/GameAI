@@ -72,7 +72,7 @@ std::vector<std::string> GameVocabulary::ParseArguments(const std::string &sText
             nEndPos = sText.find(GameVocabulary::DELIMETER, nStartPos + 1);
             if (nEndPos != std::string::npos)
             {
-                vArgs.push_back(sText.substr(nStartPos + 1, nStartPos + 1 - nEndPos));
+                vArgs.push_back(sText.substr(nStartPos + 1, nEndPos - nStartPos - 1));
             }
             else
             {

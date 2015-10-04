@@ -98,13 +98,27 @@ Match Hand::RemoveMatch(std::vector<Card> &vCards, const int nCount, const bool 
 {
     Match cMatch;
 
+    std::cout << "[DEBUG] Match Hand: vCards.size()=" << vCards.size() << std::endl;
+    std::cout << "[DEBUG] Match Hand: this->HasCards()=" << this->HasCards() << std::endl;
+
     // If not enough cards in vector to consider, return empty match
     if (static_cast<int>(vCards.size()) < nCount)
         return cMatch;
 
-    // Create a hand for the vector of cards to evaluate match opportunities
-    Hand cHand;
-    cHand.AddCards(vCards);
+    // Create a new hand to evaluate match opportunities by removing the
+    // matched cards from this hand.  If no opportunities, put the cards back.
+    Hand cPossibleMatchHand;
+    std::vector<Card> vMatchedCards = RemoveCards(vCards);  /*CRASH -
+#0 0049E9E7	Card::Suit[abi:cxx11]() const(this=0x327df8) (include/Card.h:67)
+#1 0045F3FF	PlayingCards::RemoveCards(this=0x2743d20, vCardsToRemove=...) (C:\Users\Maddalone\CCPP\GameAI\src\PlayingCards.cpp:396)
+#2 00455CAB	Hand::RemoveMatch(this=0x2743d20, vCards=..., nCount=3, bEvalSequence=true, bEvalBook=true) (C:\Users\Maddalone\CCPP\GameAI\src\Hand.cpp:108)
+#3 0042677E	CardGameBasicRummy::MeldCards(this=0x27439b0, nPlayer=1, cGameMove=...) (C:\Users\Maddalone\CCPP\GameAI\src\CardGameBasicRummy.cpp:348)
+#4 004270DC	CardGameBasicRummy::ApplyMove(this=0x27439b0, nPlayer=1, cGameMove=...) (C:\Users\Maddalone\CCPP\GameAI\src\CardGameBasicRummy.cpp:508)
+#5 004575CC	Human::Move(this=0x328130, cGame=...) (C:\Users\Maddalone\CCPP\GameAI\src\Human.cpp:78)
+#6 00418A6B	main(argc=7, argv=0x322540) (C:\Users\Maddalone\CCPP\GameAI\main.cpp:564)
+*/
+
+    cPossibleMatchHand.AddCards(vMatchedCards);
 
     //
     // Evaluate meld opportunities; if none return empty match
@@ -114,7 +128,7 @@ Match Hand::RemoveMatch(std::vector<Card> &vCards, const int nCount, const bool 
     // Evaluate for sequence first
     if (bEvalSequence)
     {
-        if (cHand.MatchOpportunities(nCount, true, false))
+        if (cPossibleMatchHand.MatchOpportunities(nCount, true, false))
         {
             bGoodMatch = true;
             cMatch.SetTypeSequence();
@@ -124,7 +138,7 @@ Match Hand::RemoveMatch(std::vector<Card> &vCards, const int nCount, const bool 
     // If no sequence, then evaluate for book
     if (bEvalBook && !bGoodMatch)
     {
-        if (cHand.MatchOpportunities(nCount, false, true))
+        if (cPossibleMatchHand.MatchOpportunities(nCount, false, true))
         {
             bGoodMatch = true;
             cMatch.SetTypeSameRank();
@@ -134,32 +148,36 @@ Match Hand::RemoveMatch(std::vector<Card> &vCards, const int nCount, const bool 
     // If not sequence or book, return empty match
     if (!bGoodMatch)
     {
+        // Put cards back into this had from possible match hand.
+        AddCards(vMatchedCards);
         return cMatch;
     }
 
     //
-    // Remove cards from hand and insert into the match
+    // Remove cards from possible match hand and insert into the match
     //
-    Card cMatchedCard;
-    for (const Card &cCard : vCards)
-    {
-        cMatchedCard = RemoveCard(cCard);
-        // Evaluate matched card
-        // If valid, add it to match
-        if (cMatchedCard.RankValid() && cMatchedCard.SuitValid())
-        {
-            cMatch.AddCard(cMatchedCard);
-        }
+    //Card cMatchedCard;
+    //for (const Card &cMatchedCard : vMatchedCards)
+    //{
+        //cMatchedCard = cPossibleMatchHand.RemoveCard(cCard);
+        //// Evaluate matched card
+        //// If valid, add it to match
+        //if (cMatchedCard.RankValid() && cMatchedCard.SuitValid())
+        //{
+        //    cMatch.AddCard(cMatchedCard);
+        //}
         // Else remove all previously added cards from match,
         // add them back to the hand
         // and return an empty match
-        else
-        {
-            std::vector<Card> vPreviouslyAddedCards = cMatch.RemoveAllCards();
-            AddCards(vPreviouslyAddedCards);
-            return cMatch;
-        }
-    }
+        //else
+        //{
+        //    std::vector<Card> vPreviouslyAddedCards = cMatch.RemoveAllCards();
+        //    AddCards(vPreviouslyAddedCards);
+        //    return cMatch;
+        //}
+    //}
+
+    cMatch.AddCards(vMatchedCards);
 
     return cMatch;
 }
