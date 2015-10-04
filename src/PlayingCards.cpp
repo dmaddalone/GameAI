@@ -386,37 +386,21 @@ std::vector<Card> PlayingCards::RemoveCardsOfSuit(const std::string &sSuit, int 
 
 std::vector<Card> PlayingCards::RemoveCards(const std::vector<Card> &vCardsToRemove)
 {
-    std::cout << "[DEBUG] PlayingCards: vCardsToRemove.size()=" << vCardsToRemove.size() << std::endl;
-    std::cout << "[DEBUG] PlayingCards: this->HasCards()=" << this->HasCards() << std::endl;
-    std::cout << "[DEBUG] PlayingCards: this->RanksAndSuits()=" << this->RanksAndSuits() << std::endl;
-
     std::vector<Card> vCards{};
 
-    std::vector<Card>::iterator it = m_vCards.begin();
-    while (it != m_vCards.end())
+    for (const Card &cCardToRemove : vCardsToRemove)
     {
-        //std::cout << "[DEBUG] PlayingCards: *it=" << *it << std::endl;
-        std::cout << "[DEBUG] PlayingCards: it->Suit()=" << it->Suit() << " it->Rank()=" << it->Rank() << std::endl;
-        for (const Card &cCardToRemove : vCardsToRemove)
+        std::vector<Card>::iterator it = m_vCards.begin();
+        while (it != m_vCards.end())
         {
-            std::cout << "[DEBUG] PlayingCards: cCardToRemove.Suit()=" << cCardToRemove.Suit() << " cCardToRemove.Rank()=" << cCardToRemove.Rank() << std::endl;
-            if (it->Suit() == cCardToRemove.Suit() && it->Rank() == cCardToRemove.Rank())/*CRASH -
-#0 0049E9E7	Card::Suit[abi:cxx11]() const(this=0x327df8) (include/Card.h:67)
-#1 0045F3FF	PlayingCards::RemoveCards(this=0x2743d20, vCardsToRemove=...) (C:\Users\Maddalone\CCPP\GameAI\src\PlayingCards.cpp:396)
-#2 00455CAB	Hand::RemoveMatch(this=0x2743d20, vCards=..., nCount=3, bEvalSequence=true, bEvalBook=true) (C:\Users\Maddalone\CCPP\GameAI\src\Hand.cpp:108)
-#3 0042677E	CardGameBasicRummy::MeldCards(this=0x27439b0, nPlayer=1, cGameMove=...) (C:\Users\Maddalone\CCPP\GameAI\src\CardGameBasicRummy.cpp:348)
-#4 004270DC	CardGameBasicRummy::ApplyMove(this=0x27439b0, nPlayer=1, cGameMove=...) (C:\Users\Maddalone\CCPP\GameAI\src\CardGameBasicRummy.cpp:508)
-#5 004575CC	Human::Move(this=0x328130, cGame=...) (C:\Users\Maddalone\CCPP\GameAI\src\Human.cpp:78)
-#6 00418A6B	main(argc=7, argv=0x322540) (C:\Users\Maddalone\CCPP\GameAI\main.cpp:564)
-*/
+            if (it->Suit() == cCardToRemove.Suit() && it->Rank() == cCardToRemove.Rank())
             {
                 vCards.push_back(*it);
-                it = m_vCards.erase(it);
+                m_vCards.erase(it);
             }
             else
             {
-                //++it;
-                std::advance(it, 1);
+                ++it;
             }
         }
     }

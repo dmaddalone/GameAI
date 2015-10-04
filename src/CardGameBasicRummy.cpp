@@ -344,17 +344,8 @@ bool CardGameBasicRummy::MeldCards(int nPlayer, const GameMove &cGameMove)
     }
 
     // Generate a match from the hand
-    std::cout << "[DEBUG] CadGameBasicRummy: cGameMove.NumberOfCards()=" << cGameMove.NumberOfCards() << std::endl;
     std::vector<Card> vCards = cGameMove.GetCards();
-    std::cout << "[DEBUG] CadGameBasicRummy: vCards.size()=" << vCards.size() << std::endl;
-    Match cMatch = m_vHands[nPlayer - 1].RemoveMatch(vCards, m_knMatchNumber);/*CRASH -#0 0049E9E7	Card::Suit[abi:cxx11]() const(this=0x327df8) (include/Card.h:67)
-#1 0045F3FF	PlayingCards::RemoveCards(this=0x2743d20, vCardsToRemove=...) (C:\Users\Maddalone\CCPP\GameAI\src\PlayingCards.cpp:396)
-#2 00455CAB	Hand::RemoveMatch(this=0x2743d20, vCards=..., nCount=3, bEvalSequence=true, bEvalBook=true) (C:\Users\Maddalone\CCPP\GameAI\src\Hand.cpp:108)
-#3 0042677E	CardGameBasicRummy::MeldCards(this=0x27439b0, nPlayer=1, cGameMove=...) (C:\Users\Maddalone\CCPP\GameAI\src\CardGameBasicRummy.cpp:348)
-#4 004270DC	CardGameBasicRummy::ApplyMove(this=0x27439b0, nPlayer=1, cGameMove=...) (C:\Users\Maddalone\CCPP\GameAI\src\CardGameBasicRummy.cpp:508)
-#5 004575CC	Human::Move(this=0x328130, cGame=...) (C:\Users\Maddalone\CCPP\GameAI\src\Human.cpp:78)
-#6 00418A6B	main(argc=7, argv=0x322540) (C:\Users\Maddalone\CCPP\GameAI\main.cpp:564)
-*/
+    Match cMatch = m_vHands[nPlayer - 1].RemoveMatch(vCards, m_knMatchNumber);
     if (cMatch.HasCards() >= m_knMatchNumber)
     {
         // Insert into matches
@@ -453,8 +444,8 @@ bool CardGameBasicRummy::ApplyMove(int nPlayer, GameMove &cGameMove)
         }
         std::cout << "The deck has " << m_cDeck.HasCards() << " cards." << std::endl;
         std::cout << "The discard pile has " << m_cDiscardPile.HasCards() << " cards." << std::endl;
-        std::cout << "Rank Matches:     " << MatchesTypes("R") << std::endl;
-        std::cout << "Sequence Matches: " << MatchesTypes("S") << std::endl;
+        std::cout << "Rank Matches:     " << MatchesTypes(MatchType::TYPE_SAME_RANK) << std::endl;
+        std::cout << "Sequence Matches: " << MatchesTypes(MatchType::TYPE_SEQUENCE) << std::endl;
 
         return true;
     }
@@ -514,17 +505,7 @@ bool CardGameBasicRummy::ApplyMove(int nPlayer, GameMove &cGameMove)
         cGameMove.SetPlayerNumber(nPlayer);
         vGameMoves.push_back(cGameMove);
 
-        std::cout << "[DEBUG] CadGameBasicRummy: cGameMove.NumberOfCards()=" << cGameMove.NumberOfCards() << std::endl;
-
-        if (!MeldCards(nPlayer, cGameMove))/*CRASH -
-#0 0049E9E7	Card::Suit[abi:cxx11]() const(this=0x327df8) (include/Card.h:67)
-#1 0045F3FF	PlayingCards::RemoveCards(this=0x2743d20, vCardsToRemove=...) (C:\Users\Maddalone\CCPP\GameAI\src\PlayingCards.cpp:396)
-#2 00455CAB	Hand::RemoveMatch(this=0x2743d20, vCards=..., nCount=3, bEvalSequence=true, bEvalBook=true) (C:\Users\Maddalone\CCPP\GameAI\src\Hand.cpp:108)
-#3 0042677E	CardGameBasicRummy::MeldCards(this=0x27439b0, nPlayer=1, cGameMove=...) (C:\Users\Maddalone\CCPP\GameAI\src\CardGameBasicRummy.cpp:348)
-#4 004270DC	CardGameBasicRummy::ApplyMove(this=0x27439b0, nPlayer=1, cGameMove=...) (C:\Users\Maddalone\CCPP\GameAI\src\CardGameBasicRummy.cpp:508)
-#5 004575CC	Human::Move(this=0x328130, cGame=...) (C:\Users\Maddalone\CCPP\GameAI\src\Human.cpp:78)
-#6 00418A6B	main(argc=7, argv=0x322540) (C:\Users\Maddalone\CCPP\GameAI\main.cpp:564)
-*/
+        if (!MeldCards(nPlayer, cGameMove))
             return false;
     }
 
@@ -1010,7 +991,7 @@ void CardGameBasicRummy::BlackboardUpdate(int nPlayer, Blackboard &cBlackboard)
             //
             // Update ProbableDeck
             //
-            int nNumberOfCardsOfRankInMyHand = m_vHands[nPlayer - 1].HasCardsOfRank(sRank);
+            //int nNumberOfCardsOfRankInMyHand = m_vHands[nPlayer - 1].HasCardsOfRank(sRank);
 
             // Remove any cards of rank from ProbableDeck
             cBlackboard.m_cProbableDeck.RemoveCardsOfRank(sRank);
@@ -1043,7 +1024,7 @@ void CardGameBasicRummy::BlackboardUpdate(int nPlayer, Blackboard &cBlackboard)
             //
             // Update ProbableDeck
             //
-            int nNumberOfCardsOfRankInMyHand = m_vHands[nPlayer - 1].HasCardsOfRank(sRank);
+            //int nNumberOfCardsOfRankInMyHand = m_vHands[nPlayer - 1].HasCardsOfRank(sRank);
 
             // Remove any cards of rank from ProbableDeck
             cBlackboard.m_cProbableDeck.RemoveCardsOfRank(sRank);
@@ -1235,21 +1216,17 @@ void CardGameBasicRummy::BlackboardUpdate(int nPlayer, Blackboard &cBlackboard)
   *
   */
 
-std::string CardGameBasicRummy::MatchesTypes(const std::string&sTypes) const
+std::string CardGameBasicRummy::MatchesTypes(const MatchType ecMatchType) const
 {
     std::string sMatches {};
 
     for (const auto &PlayerMatch : m_uommMatches)
     {
-        if (sTypes.compare("R") && PlayerMatch.second.TypeSameRank())
+        if (ecMatchType == PlayerMatch.second.Type())
         {
             sMatches += PlayerMatch.second.RanksAndSuits() + " | ";
         }
-        else if (sTypes.compare("S") && PlayerMatch.second.TypeSequence())
-        {
-            sMatches += PlayerMatch.second.RanksAndSuits() + " | ";
-        }
-        else
+        else if (ecMatchType == MatchType::TYPE_NONE)
         {
             sMatches += PlayerMatch.second.RanksAndSuits() + " | ";
         }

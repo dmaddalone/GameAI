@@ -116,6 +116,15 @@ class Book : public Hand
         {}
 };
 
+// Used to identify the type of match
+enum class MatchType
+{
+    TYPE_NONE,
+    TYPE_SAME_RANK,
+    TYPE_SAME_SUIT,
+    TYPE_SEQUENCE
+};
+
 /** \class Match
  *
  * \brief The Match class represents a match of playing cards, which
@@ -132,16 +141,12 @@ class Match : public Hand
         {}
 
         // Set and get match type
-        void SetTypeSameRank()    { m_stType = m_stResetType; m_stType.TypeSameRank = true; }
-        void SetTypeSameSuit()    { m_stType = m_stResetType; m_stType.TypeSameSuit = true; }
-        void SetTypeSequence()    { m_stType = m_stResetType; m_stType.TypeSequence = true; }
-        bool TypeSameRank() const { return m_stType.TypeSameRank; }
-        bool TypeSameSuit() const { return m_stType.TypeSameSuit; }
-        bool TypeSequence() const { return m_stType.TypeSequence; }
+        void SetType(MatchType ecMatchType) { m_ecMatchType = ecMatchType; }
+        MatchType Type() const              { return m_ecMatchType; }
 
         // Eligible for a layoff
         void SetEligibility(bool b) { m_bEligibleMatch = b; }
-        bool Eligible()            { return m_bEligibleMatch; }
+        bool Eligible() const       { return m_bEligibleMatch; }
 
         // Json object (de)serialization
         Json::Value JsonSerialization() const;
@@ -149,14 +154,8 @@ class Match : public Hand
         bool        JsonDeserialization(const Json::Value &jMatch, std::string &sErrorMessage);
 
     private:
-        struct
-        {
-            bool TypeSameRank { false };
-            bool TypeSameSuit { false };
-            bool TypeSequence { false };
-        } m_stType, m_stResetType;
-
-        bool m_bEligibleMatch {false};
+        MatchType m_ecMatchType    {MatchType::TYPE_NONE};
+        bool      m_bEligibleMatch {false};
 };
 
 #endif // HAND_H

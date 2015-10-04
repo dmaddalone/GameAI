@@ -333,10 +333,6 @@ bool GameMove::JsonDeserialization(const std::string &sJsonGameMove, std::string
 
         m_nNominalCards = jValue["nNominalCards"].asInt();
 
-        //if (!m_cCard.JsonDeserialization(jValue["Card"].toStyledString(), sErrorMessage))
-        //{
-        //    return false;
-        //}
 
         if (m_cCards.JsonDeserialization(jValue["Cards"].toStyledString(), sErrorMessage))
         {

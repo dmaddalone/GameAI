@@ -98,9 +98,6 @@ Match Hand::RemoveMatch(std::vector<Card> &vCards, const int nCount, const bool 
 {
     Match cMatch;
 
-    std::cout << "[DEBUG] Match Hand: vCards.size()=" << vCards.size() << std::endl;
-    std::cout << "[DEBUG] Match Hand: this->HasCards()=" << this->HasCards() << std::endl;
-
     // If not enough cards in vector to consider, return empty match
     if (static_cast<int>(vCards.size()) < nCount)
         return cMatch;
@@ -108,16 +105,7 @@ Match Hand::RemoveMatch(std::vector<Card> &vCards, const int nCount, const bool 
     // Create a new hand to evaluate match opportunities by removing the
     // matched cards from this hand.  If no opportunities, put the cards back.
     Hand cPossibleMatchHand;
-    std::vector<Card> vMatchedCards = RemoveCards(vCards);  /*CRASH -
-#0 0049E9E7	Card::Suit[abi:cxx11]() const(this=0x327df8) (include/Card.h:67)
-#1 0045F3FF	PlayingCards::RemoveCards(this=0x2743d20, vCardsToRemove=...) (C:\Users\Maddalone\CCPP\GameAI\src\PlayingCards.cpp:396)
-#2 00455CAB	Hand::RemoveMatch(this=0x2743d20, vCards=..., nCount=3, bEvalSequence=true, bEvalBook=true) (C:\Users\Maddalone\CCPP\GameAI\src\Hand.cpp:108)
-#3 0042677E	CardGameBasicRummy::MeldCards(this=0x27439b0, nPlayer=1, cGameMove=...) (C:\Users\Maddalone\CCPP\GameAI\src\CardGameBasicRummy.cpp:348)
-#4 004270DC	CardGameBasicRummy::ApplyMove(this=0x27439b0, nPlayer=1, cGameMove=...) (C:\Users\Maddalone\CCPP\GameAI\src\CardGameBasicRummy.cpp:508)
-#5 004575CC	Human::Move(this=0x328130, cGame=...) (C:\Users\Maddalone\CCPP\GameAI\src\Human.cpp:78)
-#6 00418A6B	main(argc=7, argv=0x322540) (C:\Users\Maddalone\CCPP\GameAI\main.cpp:564)
-*/
-
+    std::vector<Card> vMatchedCards = RemoveCards(vCards);
     cPossibleMatchHand.AddCards(vMatchedCards);
 
     //
@@ -131,7 +119,7 @@ Match Hand::RemoveMatch(std::vector<Card> &vCards, const int nCount, const bool 
         if (cPossibleMatchHand.MatchOpportunities(nCount, true, false))
         {
             bGoodMatch = true;
-            cMatch.SetTypeSequence();
+            cMatch.SetType(MatchType::TYPE_SEQUENCE);
         }
     }
 
@@ -141,7 +129,7 @@ Match Hand::RemoveMatch(std::vector<Card> &vCards, const int nCount, const bool 
         if (cPossibleMatchHand.MatchOpportunities(nCount, false, true))
         {
             bGoodMatch = true;
-            cMatch.SetTypeSameRank();
+            cMatch.SetType(MatchType::TYPE_SAME_RANK);
         }
     }
 
@@ -153,30 +141,7 @@ Match Hand::RemoveMatch(std::vector<Card> &vCards, const int nCount, const bool 
         return cMatch;
     }
 
-    //
-    // Remove cards from possible match hand and insert into the match
-    //
-    //Card cMatchedCard;
-    //for (const Card &cMatchedCard : vMatchedCards)
-    //{
-        //cMatchedCard = cPossibleMatchHand.RemoveCard(cCard);
-        //// Evaluate matched card
-        //// If valid, add it to match
-        //if (cMatchedCard.RankValid() && cMatchedCard.SuitValid())
-        //{
-        //    cMatch.AddCard(cMatchedCard);
-        //}
-        // Else remove all previously added cards from match,
-        // add them back to the hand
-        // and return an empty match
-        //else
-        //{
-        //    std::vector<Card> vPreviouslyAddedCards = cMatch.RemoveAllCards();
-        //    AddCards(vPreviouslyAddedCards);
-        //    return cMatch;
-        //}
-    //}
-
+    // Insert cards into the match
     cMatch.AddCards(vMatchedCards);
 
     return cMatch;
@@ -273,7 +238,7 @@ bool Hand::LayoffOpportunities(std::unordered_multimap<int, Match> &uommMatches,
         if (bEvalSequence)
         {
             // If this match is a sequence
-            if (PlayerMatch.second.TypeSequence())
+            if (PlayerMatch.second.Type() == MatchType::TYPE_SEQUENCE)
             {
                 // Loop through all cards in this hand
                 for (const Card &cCard : m_vCards)
@@ -308,7 +273,7 @@ bool Hand::LayoffOpportunities(std::unordered_multimap<int, Match> &uommMatches,
         if (bEvalBook)
         {
             // If this match is a sequence
-            if (PlayerMatch.second.TypeSameRank())
+            if (PlayerMatch.second.Type() == MatchType::TYPE_SAME_RANK)
             {
                 // Loop through all cards in this hand
                 for (const Card &cCard : m_vCards)
@@ -363,9 +328,7 @@ Json::Value Match::JsonSerialization() const
     Json::Value jMatch;
 
     jMatch["Cards"]        = jCards;
-    jMatch["TypeSameRank"] = m_stType.TypeSameRank;
-    jMatch["TypeSameSuit"] = m_stType.TypeSameSuit;
-    jMatch["TypeSequence"] = m_stType.TypeSequence;
+    jMatch["Type"]         = static_cast<int>(m_ecMatchType);
     jMatch["Eligibility"]  = m_bEligibleMatch;
 
     return jMatch;
@@ -389,20 +352,7 @@ bool Match::JsonDeserialization(const std::string &sJsonMatch, std::string &sErr
     // Deserialize match specifics
     if (jReader.parse(sJsonMatch, jMatch, false))
     {
-        // Deserialize cards first
-        jCards = jMatch["Cards"];
-
-        if (!Hand::JsonDeserialization(jCards, sErrorMessage))
-        {
-            return false;
-        }
-
-        m_stType.TypeSameRank = jMatch["TypeSameRank"].asBool();
-        m_stType.TypeSameRank = jMatch["TypeSameSuit"].asBool();
-        m_stType.TypeSameRank = jMatch["TypeSequence"].asBool();
-        m_bEligibleMatch      = jMatch["Eligibility"].asBool();
-
-        return true;
+        return JsonDeserialization(jMatch, sErrorMessage);
     }
     else
     {
@@ -432,11 +382,8 @@ bool Match::JsonDeserialization(const Json::Value &jMatch, std::string &sErrorMe
         return false;
     }
 
-    m_stType.TypeSameRank = jMatch["TypeSameRank"].asBool();
-    m_stType.TypeSameRank = jMatch["TypeSameSuit"].asBool();
-    m_stType.TypeSameRank = jMatch["TypeSequence"].asBool();
-    m_bEligibleMatch      = jMatch["Eligibility"].asBool();
+    m_ecMatchType    = static_cast<MatchType>(jMatch["Type"].asInt());
+    m_bEligibleMatch = jMatch["Eligibility"].asBool();
 
     return true;
 }
-

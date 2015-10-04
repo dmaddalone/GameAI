@@ -161,8 +161,8 @@ class CardGameBasicRummy : public CardGame
         // Number of cards to make a match
         const int m_knMatchNumber {3};
 
-        // Return all ranks and suits in the Matches
-        std::string MatchesTypes(const std::string &sType="") const;
+        // Return matches as a string
+        std::string MatchesTypes(const MatchType ecMatchType=MatchType::TYPE_NONE) const;
 
         //// Serialize and deserialize Matches
         Json::Value MatchesJsonSerialization() const;
