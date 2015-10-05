@@ -16,21 +16,18 @@ TODO: Check other TODOs
 TODO: Basic Rummy
 - Establish way to change default score goal
 - Combine AllowedMoves and GameMove flags (e.g., SetFoldingAllowed)??
-- Deal to alternating hands
+- Deal to alternating players; first dealer is first player.  The non-dealer plays first.
 - Make Discard() a bool
 - Simplify commands, e.g., Choose card to DISCARD
 - Comments
 
 
-- Broke out AllowedMoves - DONE
-- Sort cards after draw - DONE
-- After draw from discard, sort by rank not working - DONE
-- Discard not working on 10s - DONE
-- When drawing from stock, announce the card - DONE
+- AI
+-- High cards are dangerous to hold for long
 
-- Meld not not working - DONE
-- Match types are duplicative ("R", "S") - DONE
-- Layoff not working on 4c]]>
+- Compute and display stats - DONE
+- SCORE should show target score - DONE
+- Call GameScore after player goes out - DONE]]>
 			</notes>
 		</Option>
 		<Build>
@@ -86,7 +83,7 @@ TODO: Basic Rummy
 				<Option object_output="obj/Release/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
-				<Option parameters="-1 server -2 human -g war" />
+				<Option parameters="-1 human -2 human -g rummy" />
 				<Compiler>
 					<Add option="-O2" />
 					<Add option="-std=c++11" />

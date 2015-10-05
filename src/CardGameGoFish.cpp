@@ -676,7 +676,7 @@ GameMove CardGameGoFish::BlackboardMove(int nPlayer, Blackboard &cBlackboard, in
   * Probable Opponent's Hand based on the last move.
   *
   * \param nPlayer      The player
-  * \param cBlackboatrd The blackboard for this player
+  * \param cBlackboard The blackboard for this player
   *
   */
 
@@ -704,11 +704,10 @@ void CardGameGoFish::BlackboardUpdate(int nPlayer, Blackboard &cBlackboard)
         return;
     }
 
-    std::vector<Card> vCards = cLastMove.GetCards();
-    //std::string sRank = cLastMove.GetCard().Rank();
-    std::string sRank = vCards[0].Rank();
-    bool        bSuccess = cLastMove.Success();
-    int         nCards = cLastMove.NominalCards();
+    std::vector<Card> vCards   = cLastMove.GetCards();
+    std::string       sRank    = vCards[0].Rank();
+    bool              bSuccess = cLastMove.Success();
+    int               nCards   = cLastMove.NominalCards();
 
     // Player turn
     if (cLastMove.PlayerNumber() == nPlayer)

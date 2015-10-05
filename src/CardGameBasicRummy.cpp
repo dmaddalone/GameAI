@@ -481,7 +481,7 @@ bool CardGameBasicRummy::ApplyMove(int nPlayer, GameMove &cGameMove)
         {
             std::cout << "Player " << cHand.ID() << " has " << cHand.HasCards() << " cards." << std::endl;
         }
-        std::cout << "The deck has " << m_cDeck.HasCards() << " cards." << std::endl;
+        std::cout << "The stock has " << m_cDeck.HasCards() << " cards." << std::endl;
         std::cout << "The discard pile has " << m_cDiscardPile.HasCards() << " cards." << std::endl;
         std::cout << "Rank Matches:     " << MatchesTypes(MatchType::TYPE_SAME_RANK) << std::endl;
         std::cout << "Sequence Matches: " << MatchesTypes(MatchType::TYPE_SEQUENCE) << std::endl;
@@ -599,7 +599,7 @@ bool CardGameBasicRummy::ApplyMove(int nPlayer, GameMove &cGameMove)
 
 std::string CardGameBasicRummy::AnnounceMove(int nPlayer, const GameMove &cGameMove) const
 {
-    return "\rPlayer " + std::to_string(nPlayer) + ": " + cGameMove.Command() + " " + cGameMove.AnnounceCard();
+    return "\rPlayer " + std::to_string(nPlayer) + ": " + cGameMove.Command() + " " + cGameMove.Argument();
 }
 
 /**
@@ -647,7 +647,7 @@ std::string CardGameBasicRummy::GameScore() const
             " | Points=" + std::to_string(Score(cHand.ID()));
     }
 
-    sScore += "\n";
+    sScore += "\nTarget Score=" + std::to_string(TargetScore()) + "\n";
 
     return sScore;
 }
@@ -662,16 +662,27 @@ std::string CardGameBasicRummy::GameScore() const
   * The number of draws from the stock
   * The number of hands won and lost
   * The average and median points per hand gained from the opponent
-  * The average and median points per hand given to the opponent
   *
   * \return A string containing the game stats.
   */
 
 std::string CardGameBasicRummy::GameStatistics() const
 {
-    std::string sGameStats = "Successful Asks\n";
-    ////sGameStats += "Player 1 = " + std::to_string(m_aiSuccessfulAsks[0]) + " (" + std::to_string(static_cast<float>(m_aiSuccessfulAsks[0]) / static_cast<float>(m_nNumberOfMoves) * 100.0) + "%)\n";
-    ////sGameStats += "Player 2 = " + std::to_string(m_aiSuccessfulAsks[1]) + " (" + std::to_string(static_cast<float>(m_aiSuccessfulAsks[1]) / static_cast<float>(m_nNumberOfMoves) * 100.0) + "%)\n";
+    std::string sGameStats = "Statistic            Player 1       Player 2\n";
+    sGameStats            += "Num. of Melds         " + std::to_string(m_aiNumberOfMelds[0])             +
+                             "              " + std::to_string(m_aiNumberOfMelds[1])                     + "\n";
+    sGameStats            += "Num. of Layoffs        " + std::to_string(m_aiNumberOfLayoffs[0])          +
+                             "              " + std::to_string(m_aiNumberOfLayoffs[1])                   + "\n";
+    sGameStats            += "Num. of Draws Stock    " + std::to_string(m_aiNumberOfDrawsFromStock[0])   +
+                             "              " + std::to_string(m_aiNumberOfDrawsFromStock[1])            + "\n";
+    sGameStats            += "Num. of Draws Discard  " + std::to_string(m_aiNumberOfDrawsFromDiscard[0]) +
+                             "              " + std::to_string(m_aiNumberOfDrawsFromDiscard[1])          + "\n";
+    sGameStats            += "Num. of Hands Won      " + std::to_string(m_aiNumberOfHandsWon[0])         +
+                             "              " + std::to_string(m_aiNumberOfHandsWon[1])                  + "\n";
+    sGameStats            += "Avg. Points Won / Hand " +
+        std::to_string(static_cast<float>(Score(1)) / static_cast<float>(m_aiNumberOfHandsWon[0]))       +
+                                                                                        "              " +
+        std::to_string(static_cast<float>(Score(2)) / static_cast<float>(m_aiNumberOfHandsWon[1]))       + "\n";
 
     return sGameStats;
 }
@@ -737,8 +748,9 @@ bool CardGameBasicRummy::GameEnded(int nPlayer)
         m_cLogger.LogInfo(sMessage, 1);
         AddToScore(nThisPlayer, nScore);
 
+        std::cout << GameScore() << std::endl;
+
         ++m_aiNumberOfHandsWon[nThisPlayer - 1];
-        m_afTotalPointsPerHandWon[nThisPlayer - 1] += nScore;
 
         // If this player's total score is greater than or equal to the goal score, this player wins
         if (Score(nThisPlayer) >= TargetScore())
@@ -846,8 +858,8 @@ void CardGameBasicRummy::BlackboardInitialize(int nPlayer, Blackboard &cBlackboa
 /**
   * Generate a move from the Blackboard
   *
-  * Evaluate the probability of successfully pulling needed cards from opponent's
-  * probable hand, the probable deck, or cards that have not been recently asked for.
+  * Evaluate the probability of successfully pulling needed cards from the
+  * probable deck (aka, stock).
   *
   * \param nPlayer      The player
   * \param cBlackboatrd The blackboard for this player
@@ -928,7 +940,7 @@ GameMove CardGameBasicRummy::BlackboardMove(int nPlayer, Blackboard &cBlackboard
             static_cast<float>(cBlackboard.m_cProbableDeck.HasCardsOfRank(cProbableCard.Rank())) /
             static_cast<float>(cBlackboard.m_cProbableDeck.NumberOfCards())  * cProbableCard.Probability();
 
-        sLogMessage = "P(pull " + cProbableCard.Rank() + ") from Deck = " +
+        sLogMessage = "P(pull " + cProbableCard.Rank() + ") from Stock = " +
             std::to_string(fProbabilityOfPullingCard) + "[" +
             std::to_string(cBlackboard.m_cProbableDeck.HasCardsOfRank(cProbableCard.Rank())) +
             " / " + std::to_string(cBlackboard.m_cProbableDeck.NumberOfCards()) +
@@ -944,7 +956,7 @@ GameMove CardGameBasicRummy::BlackboardMove(int nPlayer, Blackboard &cBlackboard
                     //cGameMove.UpdateCard(cProbableCard);
                     cGameMove.AddCard(cProbableCard);
                     cBlackboard.UpdateAsks(cCard.Rank());
-                    m_cLogger.LogInfo("Asking for a card that the deck probably has and I need", 2);
+                    m_cLogger.LogInfo("Asking for a card that the stock probably has and I need", 2);
                     return cGameMove;
                 }
             }
@@ -993,7 +1005,7 @@ GameMove CardGameBasicRummy::BlackboardMove(int nPlayer, Blackboard &cBlackboard
   * Probable Opponent's Hand based on the last move.
   *
   * \param nPlayer      The player
-  * \param cBlackboatrd The blackboard for this player
+  * \param cBlackboard The blackboard for this player
   *
   */
 
@@ -1022,7 +1034,6 @@ void CardGameBasicRummy::BlackboardUpdate(int nPlayer, Blackboard &cBlackboard)
     }
 
     std::vector<Card> vCards = cLastMove.GetCards();
-    //std::string sRank = cLastMove.GetCard().Rank();
     std::string sRank = vCards[0].Rank();
     bool        bSuccess = cLastMove.Success();
     int         nCards = cLastMove.NominalCards();

@@ -177,15 +177,12 @@ class CardGameBasicRummy : public CardGame
         //   The number of draws from the discard
         //   The number of draws from the stock
         //   The number of hands won and lost
-        //   The average and median points per hand gained from the opponent
-        //   The average and median points per hand given to the opponent
+        //   The average points per hand gained from the opponent
         int m_aiNumberOfMelds[2]             {0};
         int m_aiNumberOfLayoffs[2]           {0};
         int m_aiNumberOfDrawsFromDiscard[2]  {0};
         int m_aiNumberOfDrawsFromStock[2]    {0};
         int m_aiNumberOfHandsWon[2]          {0};
-        float m_afTotalPointsPerHandWon[2] {0};
-        float m_afMedianPotinsPerHandWon[2]  {0};
 };
 
 #endif // CARDGAMEBASICRUMMY_H
