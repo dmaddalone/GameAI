@@ -119,8 +119,8 @@ class CardGameGoFish : public CardGame
         bool GoFish(int nPlayer);
 
     protected:
-        // Initialize Blackboard
-        virtual void BlackboardInitialize(int nPlayer, Blackboard &cBlackboard) const override;
+        //// Initialize Blackboard
+        //virtual void BlackboardInitialize(int nPlayer, Blackboard &cBlackboard) const override;
 
     private:
         // Books used to hold books for each player
@@ -132,6 +132,7 @@ class CardGameGoFish : public CardGame
         // Return all ranks in the Books
         std::string BooksRanks() const;
         std::string BooksUniqueRanks() const;
+        bool        BookMade(const std::string&sRank) const;
 
         // Serialize and deserialize Books
         Json::Value BooksJsonSerialization() const;

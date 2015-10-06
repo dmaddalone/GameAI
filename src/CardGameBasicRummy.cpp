@@ -241,7 +241,7 @@ std::vector<GameMove> CardGameBasicRummy::GenerateMoves(int nPlayer)
   * \return True if there are cards to pull, false otherwise.
   */
 
-bool CardGameBasicRummy::DrawCard(int nPlayer, const GameMove &cGameMove)
+bool CardGameBasicRummy::DrawCard(int nPlayer, GameMove &cGameMove)
 {
     std::string sMessage {};
 
@@ -257,6 +257,9 @@ bool CardGameBasicRummy::DrawCard(int nPlayer, const GameMove &cGameMove)
 
             m_vHands[nPlayer - 1].AddCard(cCard);
             m_vHands[nPlayer - 1].SortByRank();
+
+            // Add card to Game Move for Blackboard updates
+            cGameMove.AddCard(cCard);
 
             ++m_aiNumberOfDrawsFromStock[nPlayer - 1];
 
@@ -334,7 +337,7 @@ bool CardGameBasicRummy::DrawCard(int nPlayer, const GameMove &cGameMove)
   * \return True if there are cards to meld, false otherwise.
   */
 
-bool CardGameBasicRummy::MeldCards(int nPlayer, const GameMove &cGameMove)
+bool CardGameBasicRummy::MeldCards(int nPlayer, GameMove &cGameMove)
 {
     std::string sMessage {};
 
@@ -386,7 +389,7 @@ bool CardGameBasicRummy::MeldCards(int nPlayer, const GameMove &cGameMove)
   * \return True if there are cards to layoff, false otherwise.
   */
 
-bool CardGameBasicRummy::LayoffCard(int nPlayer, const GameMove &cGameMove)
+bool CardGameBasicRummy::LayoffCard(int nPlayer, GameMove &cGameMove)
 {
     std::vector<Card> vCards = cGameMove.GetCards();
 
@@ -416,7 +419,7 @@ bool CardGameBasicRummy::LayoffCard(int nPlayer, const GameMove &cGameMove)
   * \return True if there is a card to discard, false otherwise.
   */
 
-bool CardGameBasicRummy::Discard(int nPlayer, const GameMove &cGameMove)
+bool CardGameBasicRummy::Discard(int nPlayer, GameMove &cGameMove)
 {
     std::vector<Card> vCards = cGameMove.GetCards();
 
@@ -813,46 +816,16 @@ void CardGameBasicRummy::BeginHand()
   *
   * Initialize the Probable Deck and the Probable Opponent Hand.
   *
+  * TODO: Move to CardGame
   */
 
 void CardGameBasicRummy::BlackboardInitialize(int nPlayer, Blackboard &cBlackboard) const
 {
-    //
-    // Set the number of cards the ProbableDeck and the ProbableOpponentHand should have
-    //
+    // Remove the cards on the discard pile
+    std::vector<Card> vCards = m_cDiscardPile.Cards();
+    cBlackboard.m_cProbableDeck.RemoveCards(vCards);
 
-    // ProbableDeck: Subtract size of player's hand multiplied by two from ProbableDeck
-    cBlackboard.m_cProbableDeck.SetNumberOfCards(cBlackboard.m_cProbableDeck.HasCards() - (m_vHands[1 - nPlayer].HasCards() * 2));
-
-    // ProbableOpponentHand: Set to number of cards in player's hand
-    cBlackboard.m_cProbableOpponentHand.SetNumberOfCards(m_vHands[1 - nPlayer].HasCards());
-
-    // Remove cards matching the player's hand from ProbableDeck
-    std::vector<Card> vCards {};
-    for (const Card &cCard : m_vHands[nPlayer -1].Cards())
-    {
-        // Remove one card of sRank from ProbableDeck
-        vCards = cBlackboard.m_cProbableDeck.RemoveCardsOfRank(cCard.Rank(), 1);
-        if (vCards.size() != 1)
-        {
-            std::string sError = "Expected to remove one card from probable deck, but removed " + std::to_string(vCards.size());
-            throw GameAIException(sError);
-        }
-    }
-
-    // "Copy" cards from ProbableDeck to ProbableOpponentHand
-    std::string sErrorMessage {};
-    Json::Value jValue = cBlackboard.m_cProbableDeck.JsonSerialization();
-    if (!cBlackboard.m_cProbableOpponentHand.JsonDeserialization(jValue.toStyledString(), sErrorMessage))
-    {
-        std::string sError = "Error during JsonDeserialization: " + sErrorMessage;
-        throw GameAIException(sError);
-    }
-
-    // Set initialized flag
-    cBlackboard.SetInitialized();
-
-    return;
+    CardGame::BlackboardInitialize(nPlayer, cBlackboard);
 }
 
 /**
@@ -884,8 +857,19 @@ GameMove CardGameBasicRummy::BlackboardMove(int nPlayer, Blackboard &cBlackboard
     // Turn off 'Move' for card games
     cGameMove.SetMove(false);
 
-    // Set as ASK
-    cGameMove.SetAsk(true);
+    // Generate a vector of all possible valid moves for the player
+    //std::vector<GameMove> vGameMoves = GenerateMoves(nPlayer);
+
+    //for (const GameMove &cGameMove : vGameMoves)
+    //{
+    //    if (cGameMove.Draw())
+    //    {
+    //        if (cGameMove.IsArgument(GameVocabulary::ARG_STOCK))
+    //    }
+    //}
+
+    //// Set as ASK
+    //cGameMove.SetAsk(true);
 
     //
     // Ask for cards that opponent probably has and I need
@@ -1004,7 +988,7 @@ GameMove CardGameBasicRummy::BlackboardMove(int nPlayer, Blackboard &cBlackboard
   * Update the probability that cards exist in the Probable Deck and the
   * Probable Opponent's Hand based on the last move.
   *
-  * \param nPlayer      The player
+  * \param nPlayer     The player
   * \param cBlackboard The blackboard for this player
   *
   */
@@ -1023,240 +1007,31 @@ void CardGameBasicRummy::BlackboardUpdate(int nPlayer, Blackboard &cBlackboard)
     // Check last move
     //
     GameMove cLastMove = LastMove();
-
-    // If not an ASK, return
-    if (!cLastMove.Ask())
-    {
-        //// Update rank probabilities
-        cBlackboard.m_cProbableDeck.UpdateRankProbabilities(cBlackboard.m_cProbableOpponentHand.NumberOfCards());
-        cBlackboard.m_cProbableOpponentHand.UpdateRankProbabilities(cBlackboard.m_cProbableDeck.NumberOfCards());
-        return;
-    }
-
     std::vector<Card> vCards = cLastMove.GetCards();
-    std::string sRank = vCards[0].Rank();
-    bool        bSuccess = cLastMove.Success();
-    int         nCards = cLastMove.NominalCards();
 
     // Player turn
     if (cLastMove.PlayerNumber() == nPlayer)
     {
-        // If Successful ASK
-        if (bSuccess)
+        // Evaluate a DRAW move from the stock
+        if (cLastMove.Draw() && cLastMove.IsArgument(GameVocabulary::ARG_STOCK))
         {
-            //
-            // Update ProbableOpponentHand
-            //
-            // Remove cards of rank from ProbableOpponentHand
-            cBlackboard.m_cProbableOpponentHand.RemoveCardsOfRank(sRank);
-
-            //
-            // Update ProbableDeck
-            //
-            //int nNumberOfCardsOfRankInMyHand = m_vHands[nPlayer - 1].HasCardsOfRank(sRank);
-
-            // Remove any cards of rank from ProbableDeck
-            cBlackboard.m_cProbableDeck.RemoveCardsOfRank(sRank);
-
-            // Add cards of rank back to ProbableDeck with certainty
-            Card cCard;
-            cCard.SetRank(sRank);
-            cCard.SetProbability(1.0);
-/*
-            for (int iii = 0; iii < m_knBookNumber - nNumberOfCardsOfRankInMyHand; ++iii)
-            {
-                sLogMessage = "Update Prob Deck: P(" + sRank + ")=" + std::to_string(cCard.Probability());
-                m_cLogger.LogInfo(sLogMessage,3);
-
-                cBlackboard.m_cProbableDeck.AddCard(cCard);
-            }
-*/
-            // Update success stats
-            ////++m_aiSuccessfulAsks[cLastMove.PlayerNumber() - 1];
-        }
-        // Else if ASK not Successful, but Go-Fish was
-        else if (nCards > 0) //
-        {
-            //
-            // Update ProbableOpponentHand
-            //
-            // Remove cards of rank from ProbableOpponentHand
-            cBlackboard.m_cProbableOpponentHand.RemoveCardsOfRank(sRank);
-
-            //
-            // Update ProbableDeck
-            //
-            //int nNumberOfCardsOfRankInMyHand = m_vHands[nPlayer - 1].HasCardsOfRank(sRank);
-
-            // Remove any cards of rank from ProbableDeck
-            cBlackboard.m_cProbableDeck.RemoveCardsOfRank(sRank);
-
-            // Add cards of rank back to ProbableDeck with certainty
-            Card cCard;
-            cCard.SetRank(sRank);
-            cCard.SetProbability(1.0);
-/*
-            for (int iii = 0; iii < m_knBookNumber - nNumberOfCardsOfRankInMyHand; ++iii)
-            {
-                sLogMessage = "Update Prob Deck: P(" + sRank + ")=" + std::to_string(cCard.Probability());
-                m_cLogger.LogInfo(sLogMessage,3);
-
-                cBlackboard.m_cProbableDeck.AddCard(cCard);
-            }
-*/
-        }
-        // Else Ask and Go-Fish not Successful
-        else
-        {
-            //
-            // Update ProbableOpponentHand
-            //
-            // Remove cards of rank from ProbableOpponentHand
-            cBlackboard.m_cProbableOpponentHand.RemoveCardsOfRank(sRank);
+            // Update ProbableDeck - remove drawn card from ProbableDeck
+            cBlackboard.m_cProbableDeck.RemoveCard(vCards[0]);
         }
     }
     // Opponent turn
     else
     {
-        if (bSuccess)
+        // Evaluate a MELD, LAYOFF, or DISCARD
+        if (cLastMove.Meld() || cLastMove.Layoff() || cLastMove.Discard())
         {
-            //
-            // Update ProbableOpponentHand
-            //
-            // Remove cards of rank from ProbableOpponentHand
-            cBlackboard.m_cProbableOpponentHand.RemoveCardsOfRank(sRank);
-
-            // Add cards of rank back to ProbableOpponentHand with certainty
-            Card cCard;
-            cCard.SetRank(sRank);
-            cCard.SetProbability(1.0);
-            for (int iii = 0; iii < nCards + 1; ++iii)
-            {
-                sLogMessage = "Update Prob Hand: P(" + sRank + ")=" + std::to_string(cCard.Probability());
-                m_cLogger.LogInfo(sLogMessage,3);
-
-                cBlackboard.m_cProbableOpponentHand.AddCard(cCard);
-            }
-            // Add cards of rank back to ProbableOpponentHand with less than certainty
-            cCard.SetProbability(0.0);
-/*
-            for (int iii = nCards + 1; iii < m_knBookNumber; ++iii)
-            {
-                sLogMessage = "Update Prob Hand: P(" + sRank + ")=" + std::to_string(cCard.Probability());
-                m_cLogger.LogInfo(sLogMessage,3);
-
-                cBlackboard.m_cProbableOpponentHand.AddCard(cCard);
-            }
-*/
-
-            //
             // Update ProbableDeck
-            //
-            // Remove any cards of rank from ProbableDeck
-            cBlackboard.m_cProbableDeck.RemoveCardsOfRank(sRank);
+            cBlackboard.m_cProbableDeck.RemoveCards(vCards);
 
-            // Add cards of rank back to ProbableDeck
-            //Card cCard;
-            cCard.SetRank(sRank);
-            cCard.SetProbability(0.0);
-/*
-            for (int iii = nCards + 1; iii < m_knBookNumber; ++iii)
-            {
-                sLogMessage = "Update Prob Deck: P(" + sRank + ")=" + std::to_string(cCard.Probability());
-                m_cLogger.LogInfo(sLogMessage,3);
-
-                cBlackboard.m_cProbableDeck.AddCard(cCard);
-            }
-*/
-            // Update success stats
-            ////++m_aiSuccessfulAsks[cLastMove.PlayerNumber() - 1];
-        }
-        // Else if ASK not Successful, but Go-Fish was
-        else if (nCards > 0) //
-        {
-            //
-            // Update ProbableOpponentHand
-            //
-            // Remove cards of rank from ProbableOpponentHand
-            cBlackboard.m_cProbableOpponentHand.RemoveCardsOfRank(sRank);
-
-            // Add cards of rank back to ProbableOpponentHand with certainty
-            Card cCard;
-            cCard.SetRank(sRank);
-            cCard.SetProbability(1.0);
-            for (int iii = 0; iii < nCards + 1; ++iii)
-            {
-                sLogMessage = "Update Prob Hand: P(" + sRank + ")=" + std::to_string(cCard.Probability());
-                m_cLogger.LogInfo(sLogMessage,3);
-
-                cBlackboard.m_cProbableOpponentHand.AddCard(cCard);
-            }
-
-            // Add cards of rank back to ProbableOpponentHand with less than certainty
-            cCard.SetProbability(0.0);
-/*
-            for (int iii = nCards + 1; iii < m_knBookNumber; ++iii)
-            {
-                sLogMessage = "Update Prob Hand: P(" + sRank + ")=" + std::to_string(cCard.Probability());
-                m_cLogger.LogInfo(sLogMessage,3);
-
-                cBlackboard.m_cProbableOpponentHand.AddCard(cCard);
-            }
-*/
-            //
-            // Update ProbableDeck
-            //
-            // Remove any cards of rank from ProbableDeck
-            cBlackboard.m_cProbableDeck.RemoveCardsOfRank(sRank);
-
-            // Add cards of rank back to ProbableDeck
-            //Card cCard;
-            cCard.SetRank(sRank);
-            cCard.SetProbability(0.0);
-/*
-            for (int iii = nCards + 1; iii < m_knBookNumber; ++iii)
-            {
-                sLogMessage = "Update Prob Deck: P(" + sRank + ")=" + std::to_string(cCard.Probability());
-                m_cLogger.LogInfo(sLogMessage,3);
-
-                cBlackboard.m_cProbableDeck.AddCard(cCard);
-            }
-*/
-        }
-        // Else Ask and Go-Fish not Successful
-        else
-        {
-            //
-            // Update ProbableOpponentHand
-            //
-
-            // Remove cards of rank from ProbableOpponentHand
-            cBlackboard.m_cProbableOpponentHand.RemoveCardsOfRank(sRank);
+            // Update ProbableHand
+            cBlackboard.m_cProbableOpponentHand.RemoveCards(vCards);
         }
     }
-
-    //
-    // Update based on books
-    //
-    sRank.clear();
-/*
-    for (const char &cToken : BooksUniqueRanks())
-    {
-        if (cToken != ' ')
-        {
-            sRank += cToken;
-        }
-        else
-        {
-            cBlackboard.m_cProbableDeck.RemoveCardsOfRank(sRank);
-            cBlackboard.m_cProbableOpponentHand.RemoveCardsOfRank(sRank);
-            sRank.clear();
-        }
-    }
-*/
-    //
-    // Set the number of cards the ProbableDeck and the ProbableOpponentHand should have
-    //
 
     // Update number of cards in Probable Deck and Probable Opponent's Hand
     cBlackboard.m_cProbableDeck.SetNumberOfCards(m_cDeck.HasCards());

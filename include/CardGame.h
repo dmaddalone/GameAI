@@ -122,7 +122,7 @@ class CardGame : public Game
 
     protected:
         // Initialize Blackboard
-        virtual void BlackboardInitialize(int nPlayer, Blackboard &cBlackboard) const override { (void)nPlayer; (void)cBlackboard; return; }
+        virtual void BlackboardInitialize(int nPlayer, Blackboard &cBlackboard) const override;
 
         // Set flags
         void SetFoldingAllowed(bool b)                { m_bFoldingAllowed = b; }

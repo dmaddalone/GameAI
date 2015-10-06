@@ -25,9 +25,46 @@ TODO: Basic Rummy
 - AI
 -- High cards are dangerous to hold for long
 
-- Compute and display stats - DONE
-- SCORE should show target score - DONE
-- Call GameScore after player goes out - DONE]]>
+
+if (last player = this player)
+{
+  if (game move == draw)
+  {
+    if (game arg == stock)
+    {
+      Card card = card drawn
+      blackboard probable deck remove card
+      blackboard probable oppo remove card
+    }
+  }
+}
+else // oppo
+{
+   if (game move == draw)
+  {
+    if (game arg == stock)
+   {
+      blackboard probable deck reduce number of cards
+      blackboard probable oppo increase number of cards
+    }
+    else // discard pile
+    {
+      blackboard probable oppo increase number of cards
+      blackboard probable oppo add card
+    }
+  }
+  else if (game move == meld || layoff)
+  {
+    blackboard probable deck remove cards
+    blackboard probable oppo remove cards
+    blackboard probable oppo decrease number of cards
+  }
+  else // discard
+  {
+    blackboard probable deck remove card
+    blackboard probable oppo remove card
+  }
+}]]>
 			</notes>
 		</Option>
 		<Build>

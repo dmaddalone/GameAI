@@ -137,10 +137,10 @@ class CardGameBasicRummy : public CardGame
         void BeginHand();
         void EvaluatePossibleMoves(int nPlayer, std::vector<GameMove> &vGameMoves);
 
-        bool DrawCard(int nPlayer, const GameMove &cGameMove);
-        bool MeldCards(int nnPlayer, const GameMove &cGameMove);
-        bool LayoffCard(int nPlayer, const GameMove &cGameMove);
-        bool Discard(int nPlayer, const GameMove &cGameMove);
+        bool DrawCard(int nPlayer, GameMove &cGameMove);
+        bool MeldCards(int nPlayer, GameMove &cGameMove);
+        bool LayoffCard(int nPlayer, GameMove &cGameMove);
+        bool Discard(int nPlayer, GameMove &cGameMove);
 
         int ScoreHand(int nPlayer, int nRummyMultiplier=1);
 

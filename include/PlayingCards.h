@@ -77,8 +77,10 @@ class PlayingCards
         bool        JsonDeserialization(const Json::Value jCards, std::string &sErrorMessage);
 
         // Setting and getting the nominal number of cards; used for probabilities
-        void SetNumberOfCards(int n)    { m_nNumberOfCards = n; }
-        int  NumberOfCards()            { return m_nNumberOfCards; }
+        void SetNumberOfCards(int n)      { m_nNumberOfCards = n; }
+        //void ReduceNumberOfCards(int n)   { m_nNumberOfCards -= n; }
+        //void IncreaseNumberOfCards(int n) { m_nNumberOfCards += n; }
+        int  NumberOfCards()              { return m_nNumberOfCards; }
 
         // Update probabilities that the ranks exist
         void UpdateRankProbabilities(int nOtherCards);

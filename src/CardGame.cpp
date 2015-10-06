@@ -464,3 +464,48 @@ bool CardGame::GameEnded(int nPlayer)
 
     return false;
 }
+
+/**
+  * Initialize the blackboard
+  *
+  * Initialize the Probable Deck and the Probable Opponent Hand.
+  *
+  */
+
+void CardGame::BlackboardInitialize(int nPlayer, Blackboard &cBlackboard) const
+{
+    //
+    // Set the number of cards the ProbableDeck and the ProbableOpponentHand should have
+    //
+
+    // ProbableDeck: Set to number of cards in the deck
+    cBlackboard.m_cProbableDeck.SetNumberOfCards(m_cDeck.HasCards()); //cBlackboard.m_cProbableDeck.HasCards() - (m_vHands[nPlayer - 1].HasCards() * 2));
+
+    // ProbableOpponentHand: Set to number of cards in player's hand
+    cBlackboard.m_cProbableOpponentHand.SetNumberOfCards(m_vHands[nPlayer - 1].HasCards());
+
+    // Remove cards matching the player's hand from ProbableDeck
+    std::vector<Card> vCards {};
+    for (const Card &cCard : m_vHands[nPlayer -1].Cards())
+    {
+        // Remove one card of sRank from ProbableDeck
+        vCards = cBlackboard.m_cProbableDeck.RemoveCardsOfRank(cCard.Rank(), 1);
+        if (vCards.size() != 1)
+        {
+            std::string sError = "Expected to remove one card from probable deck, but removed " + std::to_string(vCards.size());
+            throw GameAIException(sError);
+        }
+    }
+
+    // "Copy" cards from ProbableDeck to ProbableOpponentHand
+    std::string sErrorMessage {};
+    Json::Value jValue = cBlackboard.m_cProbableDeck.JsonSerialization();
+    if (!cBlackboard.m_cProbableOpponentHand.JsonDeserialization(jValue.toStyledString(), sErrorMessage))
+    {
+        std::string sError = "Error during JsonDeserialization: " + sErrorMessage;
+        throw GameAIException(sError);
+    }
+
+    // Set initialized flag
+    cBlackboard.SetInitialized();
+}
