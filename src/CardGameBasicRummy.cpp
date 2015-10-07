@@ -821,10 +821,11 @@ void CardGameBasicRummy::BeginHand()
 
 void CardGameBasicRummy::BlackboardInitialize(int nPlayer, Blackboard &cBlackboard) const
 {
-    // Remove the cards on the discard pile
+    // Remove the cards on the discard pile from the deck
     std::vector<Card> vCards = m_cDiscardPile.Cards();
     cBlackboard.m_cProbableDeck.RemoveCards(vCards);
 
+    // Call parent class to finish BB init
     CardGame::BlackboardInitialize(nPlayer, cBlackboard);
 }
 
@@ -840,7 +841,7 @@ void CardGameBasicRummy::BlackboardInitialize(int nPlayer, Blackboard &cBlackboa
   * \return A game move.
   */
 
-GameMove CardGameBasicRummy::BlackboardMove(int nPlayer, Blackboard &cBlackboard, int nProbability) const
+GameMove CardGameBasicRummy::BlackboardMove(int nPlayer, Blackboard &cBlackboard, int nProbability)
 {
     // Probability threshold
     float fProbabilityThreshold = static_cast<float>(nProbability) / 10;
@@ -858,15 +859,18 @@ GameMove CardGameBasicRummy::BlackboardMove(int nPlayer, Blackboard &cBlackboard
     cGameMove.SetMove(false);
 
     // Generate a vector of all possible valid moves for the player
-    //std::vector<GameMove> vGameMoves = GenerateMoves(nPlayer);
+    std::vector<GameMove> vGameMoves = GenerateMoves(nPlayer);
 
-    //for (const GameMove &cGameMove : vGameMoves)
-    //{
-    //    if (cGameMove.Draw())
-    //    {
-    //        if (cGameMove.IsArgument(GameVocabulary::ARG_STOCK))
-    //    }
-    //}
+    for (const GameMove &cGameMove : vGameMoves)
+    {
+        if (cGameMove.Draw())
+        {
+            if (cGameMove.IsArgument(GameVocabulary::ARG_STOCK))
+            {
+
+            }
+        }
+    }
 
     //// Set as ASK
     //cGameMove.SetAsk(true);

@@ -88,7 +88,7 @@ class CardGame : public Game
         virtual void BlackboardUpdate(int nPlayer, Blackboard &cBlackboard) override { (void)nPlayer; (void)cBlackboard; return; }
 
         // Generate a move from the Blackboard
-        virtual GameMove BlackboardMove(int nPlayer, Blackboard &cBlackboard, int nProbability) const override { (void)nPlayer; (void)cBlackboard; (void)nProbability; GameMove cGameMove; return cGameMove; }
+        virtual GameMove BlackboardMove(int nPlayer, Blackboard &cBlackboard, int nProbability) override { (void)nPlayer; (void)cBlackboard; (void)nProbability; GameMove cGameMove; return cGameMove; }
 
         // Return the score of the game
         virtual std::string GameScore() const override;
