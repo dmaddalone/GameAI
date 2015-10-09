@@ -497,7 +497,7 @@ GameMove CardGameGoFish::BlackboardMove(int nPlayer, Blackboard &cBlackboard, in
     // Logging messages
     std::string sLogMessage {};
 
-    // Generic GamevMove
+    // Generic GameMove
     GameMove cGameMove;
 
     // Turn off 'Move' for card games

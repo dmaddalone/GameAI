@@ -852,7 +852,7 @@ GameMove CardGameBasicRummy::BlackboardMove(int nPlayer, Blackboard &cBlackboard
     // Logging messages
     std::string sLogMessage {};
 
-    // Generic GamevMove
+    // Generic GameMove
     GameMove cGameMove;
 
     // Turn off 'Move' for card games
@@ -861,128 +861,43 @@ GameMove CardGameBasicRummy::BlackboardMove(int nPlayer, Blackboard &cBlackboard
     // Generate a vector of all possible valid moves for the player
     std::vector<GameMove> vGameMoves = GenerateMoves(nPlayer);
 
-    for (const GameMove &cGameMove : vGameMoves)
+    for (const GameMove &cPossibleGameMove : vGameMoves)
     {
-        if (cGameMove.Draw())
+        if (cPossibleGameMove.Draw())
         {
-            if (cGameMove.IsArgument(GameVocabulary::ARG_STOCK))
+            if (cPossibleGameMove.IsArgument(GameVocabulary::ARG_DISCARD))
             {
+                // TODO: Evaluate for layoffs and matches before adding discard card
+                // Add top car from discard pile to theoretical hand
+                Hand cTheoreticalHand = m_vHands[nPlayer - 1];
+                cTheoreticalHand.AddCard(m_cDiscardPile.PeekAtTopCard());
 
-            }
-        }
-    }
-
-    //// Set as ASK
-    //cGameMove.SetAsk(true);
-
-    //
-    // Ask for cards that opponent probably has and I need
-    //
-    //TODO: cProbableOpponentHand.SortByProbability();
-    for (auto &cProbableCard : cBlackboard.m_cProbableOpponentHand.Cards())
-    {
-        // Calculate probability of successfully pulling the card
-        if (cProbableCard.Probability() < 1.0)
-        {
-            fProbabilityOfPullingCard =
-                static_cast<float>(cBlackboard.m_cProbableOpponentHand.HasCardsOfRank(cProbableCard.Rank())) /
-                static_cast<float>(cBlackboard.m_cProbableOpponentHand.NumberOfCards()) * cProbableCard.Probability();
-        }
-        else
-        {
-            fProbabilityOfPullingCard = cProbableCard.Probability();
-        }
-
-        sLogMessage = "P(pull " + cProbableCard.Rank() + ") from Player" +
-            std::to_string(3 - nPlayer) + " = " +
-            std::to_string(fProbabilityOfPullingCard) + "[" +
-            std::to_string(cBlackboard.m_cProbableOpponentHand.HasCardsOfRank(cProbableCard.Rank())) +
-            " / " + std::to_string(cBlackboard.m_cProbableOpponentHand.NumberOfCards()) +
-            " * " + std::to_string(cProbableCard.Probability()) + "]";
-        m_cLogger.LogInfo(sLogMessage, 3);
-
-        if (fProbabilityOfPullingCard >= fProbabilityThreshold)
-        {
-            for (Card &cCard : m_vHands[nPlayer - 1].Cards())
-            {
-                if (cProbableCard.Rank() == cCard.Rank())
+                // Evaluate for Layoff
+                if (cTheoreticalHand.LayoffOpportunities(m_uommMatches))
                 {
-                    //cGameMove.UpdateCard(cProbableCard);
-                    cGameMove.AddCard(cProbableCard);
-                    cBlackboard.UpdateAsks(cCard.Rank());
-                    m_cLogger.LogInfo("Asking for a card that opponent probably has and I need", 2);
-                    return cGameMove;
+                    cGameMove.SetDraw(true);
+                    cGameMove.SetArgument(cPossibleGameMove.Argument());
+                }
+
+                // Evaluate for Matches
+                if (cTheoreticalHand.MatchOpportunities(m_knMatchNumber))
+                {
+                    cGameMove.SetDraw(true);
+                    cGameMove.SetArgument(cPossibleGameMove.Argument());
+                }
+                // Evaluate for near matches
+                else if (m_knMatchNumber >= 3)
+                {
+                    if (cTheoreticalHand.MatchOpportunities(m_knMatchNumber - 1))
+                    {
+                        cGameMove.SetDraw(true);
+                        cGameMove.SetArgument(cPossibleGameMove.Argument());
+                    }
                 }
             }
         }
     }
 
-    //
-    // Ask for cards that the deck has, and I have a good chance of pulling
-    //
-    //TODO: cProbableDeck.SortByProbability();
-    for (auto &cProbableCard : cBlackboard.m_cProbableDeck.Cards())
-    {
-        // Calculate probability of successfully pulling the card
-        float fProbabilityOfPullingCard =
-            static_cast<float>(cBlackboard.m_cProbableDeck.HasCardsOfRank(cProbableCard.Rank())) /
-            static_cast<float>(cBlackboard.m_cProbableDeck.NumberOfCards())  * cProbableCard.Probability();
-
-        sLogMessage = "P(pull " + cProbableCard.Rank() + ") from Stock = " +
-            std::to_string(fProbabilityOfPullingCard) + "[" +
-            std::to_string(cBlackboard.m_cProbableDeck.HasCardsOfRank(cProbableCard.Rank())) +
-            " / " + std::to_string(cBlackboard.m_cProbableDeck.NumberOfCards()) +
-            " * " + std::to_string(cProbableCard.Probability()) + "]";
-        m_cLogger.LogInfo(sLogMessage, 3);
-
-        if (fProbabilityOfPullingCard >= fProbabilityThreshold)
-        {
-            for (Card &cCard : m_vHands[nPlayer - 1].Cards())
-            {
-                if (cProbableCard.Rank() == cCard.Rank())
-                {
-                    //cGameMove.UpdateCard(cProbableCard);
-                    cGameMove.AddCard(cProbableCard);
-                    cBlackboard.UpdateAsks(cCard.Rank());
-                    m_cLogger.LogInfo("Asking for a card that the stock probably has and I need", 2);
-                    return cGameMove;
-                }
-            }
-        }
-    }
-
-    //
-    // Ask for cards that I have many of and I have not asked for recently
-    //
-    Card cLastCard;
-    Card cBestCard;
-    int nBestCardNumber {INT_MIN};
-    int nThisCardNumber {100};
-
-    // Loop through my hands in order of number of Ranks in hand (sorted by ApplyMove)
-    for (Card &cCard : m_vHands[nPlayer - 1].Cards())
-    {
-        if (cLastCard.Rank() != cCard.Rank())
-        {
-            cLastCard = cCard;
-            nThisCardNumber = 100 - cBlackboard.Asks(cCard.Rank());
-        }
-        else
-        {
-            ++nThisCardNumber;
-        }
-
-        if (nThisCardNumber > nBestCardNumber)
-        {
-            nBestCardNumber = nThisCardNumber;
-            cBestCard = cCard;
-        }
-    }
-
-    //cGameMove.UpdateCard(cBestCard);
-    cGameMove.AddCard(cBestCard);
-    cBlackboard.UpdateAsks(cBestCard.Rank());
-    m_cLogger.LogInfo("Asking for a card that I have and haven't asked for recently", 2);
     return cGameMove;
 }
 

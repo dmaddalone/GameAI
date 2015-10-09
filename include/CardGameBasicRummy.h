@@ -127,9 +127,6 @@ class CardGameBasicRummy : public CardGame
         //// Override Game::SetSync()
         //void SetSync(bool b)  { CardGame::SetSync(b); m_bSyncBooks = b; }
 
-        //// Draw a card from the stock
-        //bool GoFish(int nPlayer);
-
     protected:
         // Initialize Blackboard
         virtual void BlackboardInitialize(int nPlayer, Blackboard &cBlackboard) const override;
@@ -176,8 +173,7 @@ class CardGameBasicRummy : public CardGame
         //   The number of layoffs
         //   The number of draws from the discard
         //   The number of draws from the stock
-        //   The number of hands won and lost
-        //   The average points per hand gained from the opponent
+        //   The number of hands won
         int m_aiNumberOfMelds[2]             {0};
         int m_aiNumberOfLayoffs[2]           {0};
         int m_aiNumberOfDrawsFromDiscard[2]  {0};
