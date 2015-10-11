@@ -102,7 +102,7 @@ class CardGame : public Game
         // Clone the current game
         virtual std::unique_ptr<Game> Clone() const = 0;
 
-        // Get flags
+        // Get move flags
         bool FoldingAllowed() const                { return m_bFoldingAllowed; }
         bool DrawingAllowed() const                { return m_bDrawingAllowed; }
         bool DrawingFromStockAllowed() const       { return m_bDrawFromStockAllowed; }
@@ -117,6 +117,9 @@ class CardGame : public Game
         // Override Game::SetSync()
         void SetSync(bool b)  { Game::SetSync(b); m_bSyncDeck = m_bSyncFirstHand = m_bSyncSecondHand = b; }
 
+        // Get state flags
+        bool NewHand(int nPlayer)                  { return m_abNewHand[nPlayer -1]; }
+
         // Get the default move for the game
         std::string DefaultMove() const { return m_sDefaultMove; }
 
@@ -124,7 +127,7 @@ class CardGame : public Game
         // Initialize Blackboard
         virtual void BlackboardInitialize(int nPlayer, Blackboard &cBlackboard) const override;
 
-        // Set flags
+        // Set move flags
         void SetFoldingAllowed(bool b)                { m_bFoldingAllowed = b; }
         void SetDrawingAllowed(bool b)                { m_bDrawingAllowed = b; }
         void SetDrawingFromStockAllowed(bool b)       { m_bDrawFromStockAllowed = b; }
@@ -135,6 +138,9 @@ class CardGame : public Game
         void SetDiscardingAllowed(bool b)             { m_bDiscardingAllowed = b; }
         void SetShowingAllowed(bool b)                { m_bShowingAllowed = b; }
         void SetScoringAllowed(bool b)                { m_bScoringAllowed = b; }
+
+        // Set state flags
+        void SetNewHand(int nPlayer, bool b)          { m_abNewHand[nPlayer -1] = b; }
 
         // AllowedMoves used for multiple moves with a single turn, i.e.,
         // Draw, Meld, Discard
@@ -151,14 +157,14 @@ class CardGame : public Game
         int  TargetScore() const                   { return m_nTargetScore; }
 
         // Card game deck, hands, and books
-        Deck m_cDeck;
-        std::vector<Hand>             m_vHands {};
+        Deck              m_cDeck;
+        std::vector<Hand> m_vHands {};
 
         // Used to initialize comparison variables
         const int m_knUnknownValue {-1};
 
     private:
-        // Play option flags
+        // Play move flags
         bool m_bFoldingAllowed             { false };
         bool m_bDrawingAllowed             { false };
         bool m_bDrawFromStockAllowed       { false };
@@ -174,6 +180,9 @@ class CardGame : public Game
         bool m_bSyncDeck       { false };
         bool m_bSyncFirstHand  { false };
         bool m_bSyncSecondHand { false };
+
+        // State flags
+        bool m_abNewHand[2] {false};
 
         // Default move for the game
         std::string m_sDefaultMove {};

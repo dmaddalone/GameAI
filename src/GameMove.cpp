@@ -277,12 +277,7 @@ Json::Value GameMove::JsonSerialization() const
 
     jValue["nNominalCards"] = m_nNominalCards;
 
-    //Json::Value jCardValue;
-    //jCardValue = m_cCard.JsonSerialization();
-    //jValue["Card"] = jCardValue;
-
-
-    jValue["Cards"] = m_cCards.JsonSerialization();
+    jValue["Cards"]         = m_cCards.JsonSerialization();
 
     return jValue;
 }

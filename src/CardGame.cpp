@@ -287,7 +287,6 @@ GameMove CardGame::GenerateMove(std::string sMove) const
             if (cCard.SetRankAndSuit(sToken))
             {
                 cGameMove.SetLayoff(true);
-                //cGameMove.UpdateCard(cCard); // TODO: Change to AddCard
                 cGameMove.AddCard(cCard);
                 return cGameMove;
             }
@@ -311,7 +310,6 @@ GameMove CardGame::GenerateMove(std::string sMove) const
             if (cCard.SetRank(sToken))
             {
                 cGameMove.SetAsk(true);
-                //cGameMove.UpdateCard(cCard); // TODO: Change to AddCard
                 cGameMove.AddCard(cCard);
                 return cGameMove;
             }
@@ -414,11 +412,11 @@ std::string CardGame::AnnounceMove(int nPlayer, const GameMove &cGameMove) const
 
 int CardGame::EvaluateGameState(int nPlayer)
 {
-    // If won, return largest positive integer // TODO: make these constants
+    // If won, return largest positive integer
     if (m_nWinner == nPlayer)
         return INT_MAX;
 
-    // If lost, return largest negative integer // TODO: make these constants
+    // If lost, return largest negative integer
     if (m_nWinner == (3 - nPlayer))
         return INT_MIN;
 
@@ -468,15 +466,14 @@ bool CardGame::GameEnded(int nPlayer)
 /**
   * Initialize the blackboard
   *
-  * Initialize the Probable Deck and the Probable Opponent Hand.
+  * Set the number of cards the ProbableDeck and the ProbableOpponentHand should have.
   *
   */
 
 void CardGame::BlackboardInitialize(int nPlayer, Blackboard &cBlackboard) const
 {
-    //
-    // Set the number of cards the ProbableDeck and the ProbableOpponentHand should have
-    //
+    std::string sMessage = "Initializing Blackboard for player " + std::to_string(nPlayer);
+    m_cLogger.LogInfo(sMessage, 3);
 
     // ProbableDeck: Set to number of cards in the deck
     cBlackboard.m_cProbableDeck.SetNumberOfCards(m_cDeck.HasCards()); //cBlackboard.m_cProbableDeck.HasCards() - (m_vHands[nPlayer - 1].HasCards() * 2));
@@ -507,5 +504,5 @@ void CardGame::BlackboardInitialize(int nPlayer, Blackboard &cBlackboard) const
     }
 
     // Set initialized flag
-    cBlackboard.SetInitialized();
+    cBlackboard.SetInitialized(true);
 }

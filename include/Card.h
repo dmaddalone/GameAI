@@ -102,7 +102,7 @@ class Card
         // Json object serialization and deserialization
         Json::Value JsonSerialization() const;
         bool        JsonDeserialization(const std::string &sJsonCard, std::string &sErrorMessage);
-        bool        JsonDeserialization(const Json::Value jCard);
+        bool        JsonDeserialization(const Json::Value &jCard);
 
     private:
         // Rank and Suit

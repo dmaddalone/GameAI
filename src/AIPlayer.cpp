@@ -43,7 +43,7 @@ bool AIPlayer::Move(Game &cGame)
     // Evaluate last move
     cGameMove = cGame.LastMove();
 
-    // If last move was opponent's, update the blackboard, if game is not deterministic
+    // If last move was opponent's and game is not deterministic, update the blackboard.
     if (cGameMove.PlayerNumber() != m_nPlayerNumber)
     {
         if (!cGame.EnvironmentDeterministic())

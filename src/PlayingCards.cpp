@@ -398,6 +398,17 @@ std::vector<Card> PlayingCards::RemoveCardsOfSuit(const std::string &sSuit, int 
     return vCards;
 }
 
+/**
+  * Remove a cards from the possession.
+  *
+  * Cards matching the passed vector of cards are are removed from the possession
+  * and returned to the caller.
+  *
+  * \param vCardsToRemove  The vector of cards to remove.
+  *
+  * \return A vector of removed cards.
+  */
+
 std::vector<Card> PlayingCards::RemoveCards(const std::vector<Card> &vCardsToRemove)
 {
     std::vector<Card> vCards{};

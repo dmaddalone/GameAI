@@ -76,16 +76,7 @@ bool Card::JsonDeserialization(const std::string &sJsonCard, std::string &sError
 
      if (jReader.parse(sJsonCard, jCard, false))
     {
-        m_sRank        = jCard["Rank"].asString();
-        m_sSuit        = jCard["Suit"].asString();
-        m_nRankValue   = jCard["RankValue"].asInt();
-        m_nSortValue   = jCard["SortValue"].asInt();
-        m_nID          = jCard["ID"].asInt();
-        m_bTurnedUp    = jCard["TurnedUp"].asBool();
-        m_fProbability = jCard["Probability"].asFloat();
-        m_bEligible    = jCard["Eligible"].asBool();
-
-        return true;
+        return JsonDeserialization(jCard);
     }
     else
     {
@@ -99,10 +90,10 @@ bool Card::JsonDeserialization(const std::string &sJsonCard, std::string &sError
   *
   * \param jCard A Json::Value representing a Card.
   *
-  * \return True if deserialization is successful, false otherwise
+  * \return True.
   */
 
-bool Card::JsonDeserialization(const Json::Value jCard)//, std::string &sErrorMessage)
+bool Card::JsonDeserialization(const Json::Value &jCard)
 {
     m_sRank        = jCard["Rank"].asString();
     m_sSuit        = jCard["Suit"].asString();
@@ -111,6 +102,7 @@ bool Card::JsonDeserialization(const Json::Value jCard)//, std::string &sErrorMe
     m_nID          = jCard["ID"].asInt();
     m_bTurnedUp    = jCard["TurnedUp"].asBool();
     m_fProbability = jCard["Probability"].asFloat();
+    m_bEligible    = jCard["Eligible"].asBool();
 
     return true;
 }

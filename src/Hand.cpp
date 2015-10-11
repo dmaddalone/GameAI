@@ -69,11 +69,11 @@ std::string Hand::DisplayRanks(bool bForce) const
 /**
   * Remove books of ranks from the hand.
   *
-  * Remove books from hand and return as a hand.
+  * Remove books from hand and return as a Book.
   *
   * \param nSizeOfBook Number representing how many cards make a book.
   *
-  * \return Hand representing the book.
+  * \return Book representing the book.
   */
 
 Book Hand::RemoveBookByRank(int nSizeOfBook)
@@ -93,6 +93,20 @@ Book Hand::RemoveBookByRank(int nSizeOfBook)
 
     return cBook;
 }
+
+/**
+  * Remove matches from the hand.
+  *
+  * Given a set of cards, evaluate whether they constitute a good match.  If so,
+  * remove them from the hand and return them as a Match.
+  *
+  * \param vCards        Cards to evaluate
+  * \param nCount        The minimum number of cards needed for a match
+  * \param bEvalSequence Flag to evaluate sequences
+  * \param bEvalBook     Flag to evaluate books
+  *
+  * \return Match representing the match.
+  */
 
 Match Hand::RemoveMatch(std::vector<Card> &vCards, const int nCount, const bool bEvalSequence, const bool bEvalBook)
 {
@@ -147,6 +161,17 @@ Match Hand::RemoveMatch(std::vector<Card> &vCards, const int nCount, const bool 
     return cMatch;
 }
 
+/**
+  * Find match opportunities.
+  *
+  * Find opportunities to create matches in the hand.
+  *
+  * \param nCount        The minimum number of cards needed for a match
+  * \param bEvalSequence Flag to evaluate sequences
+  * \param bEvalBook     Flag to evaluate books
+  *
+  * \return True if matches exist, false otherwise.
+  */
 
 bool Hand::MatchOpportunities(const int nCount, const bool bEvalSequence, const bool bEvalBook)
 {
@@ -224,6 +249,20 @@ bool Hand::MatchOpportunities(const int nCount, const bool bEvalSequence, const 
     return bOpportunity;
 }
 
+/**
+  * Remove layoff from the hand.
+  *
+  * Given a set of matches, evaluate whether any cards in the hand may layoff
+  * against them.
+  *
+  * \param uommMatches   Set of matches
+  * \param cCard         The card to evaluate
+  * \param bEvalSequence Flag to evaluate sequences
+  * \param bEvalBook     Flag to evaluate books
+  *
+  * \return Match representing the match.
+  */
+
 bool Hand::RemoveLayoffs(std::unordered_multimap<int, Match> &uommMatches, Card &cCard, const bool bEvalSequence, const bool bEvalBook)
 {
     // Create a hand for the layoff card to evaluate layoff opportunities
@@ -251,6 +290,19 @@ bool Hand::RemoveLayoffs(std::unordered_multimap<int, Match> &uommMatches, Card 
     AddCard(cLayoffCard);
     return false;
 }
+
+
+/**
+  * Find layoff opportunities.
+  *
+  * Find opportunities to create layoffs in the hand.
+  *
+  * \param uommMatches   Set of matches
+  * \param bEvalSequence Flag to evaluate sequences
+  * \param bEvalBook     Flag to evaluate books
+  *
+  * \return True if matches exist, false otherwise.
+  */
 
 bool Hand::LayoffOpportunities(std::unordered_multimap<int, Match> &uommMatches, const bool bEvalSequence, const bool bEvalBook)
 {
@@ -329,6 +381,15 @@ bool Hand::LayoffOpportunities(std::unordered_multimap<int, Match> &uommMatches,
     return bOpportunity;
 }
 
+/**
+  * Discard a card from the hand to the discard pile.
+  *
+  * \param cDiscardPile A discard pile
+  * \param cCard        The card to discard
+  *
+  * \return Match representing the match.
+  */
+
 void Hand::Discard(PlayingCards &cDiscardPile, const Card &cCard)
 {
     // Get the matching card, cDiscardCard, from the hand (matching card has
@@ -352,6 +413,11 @@ void Hand::SortByRank()
     std::sort(m_vCards.begin(), m_vCards.end());
 }
 
+/**
+  * Sort hand by suit.
+  *
+  */
+
 void Hand::SortBySuit()
 {
     SortByRank();
@@ -359,9 +425,6 @@ void Hand::SortBySuit()
     std::sort(m_vCards.begin(), m_vCards.end(),
         [](const Card &cFirstCard, const Card &cSecondCard) -> bool
         {
-            //return cFirstCard.SortValue() > cSecondCard.SortValue() &&
-            //       cFirstCard.Suit() > cSecondCard.Suit();
-
             return cFirstCard.Suit() > cSecondCard.Suit();
         });
 }

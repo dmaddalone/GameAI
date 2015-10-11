@@ -124,23 +124,29 @@ class CardGameBasicRummy : public CardGame
             GameVocabulary::SCORE + ", " +
             GameVocabulary::RESIGN + "."; }
 
-        //// Override Game::SetSync()
-        //void SetSync(bool b)  { CardGame::SetSync(b); m_bSyncBooks = b; }
+        // Override Game::SetSync()
+        void SetSync(bool b)  { CardGame::SetSync(b); m_bSyncMatches = b; }
 
     protected:
         // Initialize Blackboard
         virtual void BlackboardInitialize(int nPlayer, Blackboard &cBlackboard) const override;
 
+        // Begin a hand of Rummy
         void BeginHand();
+
+        // Based on the state of the game, eliminate moves
         void EvaluatePossibleMoves(int nPlayer, std::vector<GameMove> &vGameMoves);
 
+        // Rummy moves
         bool DrawCard(int nPlayer, GameMove &cGameMove);
         bool MeldCards(int nPlayer, GameMove &cGameMove);
         bool LayoffCard(int nPlayer, GameMove &cGameMove);
         bool Discard(int nPlayer, GameMove &cGameMove);
 
-        int ScoreHand(int nPlayer, int nRummyMultiplier=1);
+        // Calculate the score of the game
+        int  ScoreHand(int nPlayer, int nRummyMultiplier=1);
 
+        // Manage a player's ability to Go Rummy
         void InitializeRummy()       { m_abRummy[0] = m_abRummy[1] = true; }
         void SetRummyOff(int nIndex) { m_abRummy[nIndex - 1] = false; }
         bool Rummy(int nIndex)       { return m_abRummy[nIndex - 1]; }

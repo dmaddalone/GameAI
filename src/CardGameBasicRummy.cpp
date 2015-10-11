@@ -22,7 +22,7 @@
 /**
   * Display the cards.
   *
-  * For Go Fish, this is NOP.
+  * For Rummy, this is NOP.
   *
   */
 
@@ -95,6 +95,13 @@ bool CardGameBasicRummy::ApplySyncInfo(const std::string &sGameInformation, std:
     // Pass to base class and return
     return CardGame::ApplySyncInfo(sGameInformation, sErrorMessage);
 }
+
+/**
+  * Update an output parameter to hold valid possible moves, based on game state.
+  *
+  * \param nPlayer    Player whose turn it is
+  * \param vGameMoves Vector to hold updated set of possible moves
+  */
 
 void CardGameBasicRummy::EvaluatePossibleMoves(int nPlayer, std::vector<GameMove> &vGameMoves)
 {
@@ -187,14 +194,19 @@ std::string CardGameBasicRummy::ValidMoves(int nPlayer)
     std::string sMoves {};
     std::vector<GameMove> vGameMoves {};
 
+    // Update vGameMoves with allowed moves
     m_cAllowedMoves.NextMoveInSequence(vGameMoves);
+
+    // Update vGameMoves with possible allowed moves
     EvaluatePossibleMoves(nPlayer, vGameMoves);
 
+    // Display possible moves
     for (const GameMove &cGameMove : vGameMoves)
     {
         sMoves += "\n" + cGameMove.Command() + GameVocabulary::DELIMETER + cGameMove.Argument();
     }
 
+    // Display top of discard pile
     sMoves += "\nThe top of the discard pile is ";
     if (m_cDiscardPile.HasCards() > 0)
     {
@@ -205,6 +217,7 @@ std::string CardGameBasicRummy::ValidMoves(int nPlayer)
         sMoves += "empty";
     }
 
+    // Display player's hand
     m_vHands[nPlayer -1].SortByRank();
     sMoves += "\nYour hand is " + m_vHands[nPlayer - 1].DisplayCards(true);
 
@@ -226,7 +239,10 @@ std::vector<GameMove> CardGameBasicRummy::GenerateMoves(int nPlayer)
 {
     std::vector<GameMove> vGameMoves {};
 
+    // Update vGameMoves with allowed moves
     m_cAllowedMoves.NextMoveInSequence(vGameMoves);
+
+    // Update vGameMoves with possible allowed moves
     EvaluatePossibleMoves(nPlayer, vGameMoves);
 
     return vGameMoves;
@@ -238,13 +254,14 @@ std::vector<GameMove> CardGameBasicRummy::GenerateMoves(int nPlayer)
   * \param nPlayer    The player whose turn it is.
   * \param cGamdeMove The player's game move object
   *
-  * \return True if there are cards to pull, false otherwise.
+  * \return True if there are cards to draw, false otherwise.
   */
 
 bool CardGameBasicRummy::DrawCard(int nPlayer, GameMove &cGameMove)
 {
     std::string sMessage {};
 
+    // Evaluate DRAW STOCK
     if (cGameMove.IsArgument(GameVocabulary::ARG_STOCK))
     {
         if (m_cDeck.HasCards())
@@ -294,6 +311,7 @@ bool CardGameBasicRummy::DrawCard(int nPlayer, GameMove &cGameMove)
         }
     }
 
+    // Evaluate DRAW DISCARD
     if (cGameMove.IsArgument(GameVocabulary::ARG_DISCARD))
     {
         if (m_cDiscardPile.HasCards())
@@ -370,6 +388,7 @@ bool CardGameBasicRummy::MeldCards(int nPlayer, GameMove &cGameMove)
         // Insert into matches
         m_uommMatches.insert(std::make_pair(m_vHands[nPlayer - 1].ID(), cMatch));
 
+        // For game stats
         ++m_aiNumberOfMelds[nPlayer - 1];
 
         return true;
@@ -401,6 +420,7 @@ bool CardGameBasicRummy::LayoffCard(int nPlayer, GameMove &cGameMove)
 
     if (m_vHands[nPlayer - 1].RemoveLayoffs(m_uommMatches, vCards[0]))
     {
+        // For game stats
         ++m_aiNumberOfLayoffs[nPlayer - 1];
         return true;
     }
@@ -438,15 +458,8 @@ bool CardGameBasicRummy::Discard(int nPlayer, GameMove &cGameMove)
 /**
   * Apply a move to the game.
   *
-  * Check for commands other than ASK
-  * For an ASK command:
-  *   Ensure rank being asked for is in player's hand
-  *   Ask opponent for rank
-  *     If Opponent has rank, she hands it over to player
-  *     If not, player is to go-fish
-  *   Evaluate for any books held by player
-  *   Sort cards
-  *   If player is out of cards, go fish
+  * Check for RESIGN, SHOW, SCORE
+  * For other commands, evaluate DRAW, MELD, LAYOFF, and DISCARD.
   *
   * \param nPlayer   The player whose turn it is.
   * \param cGameMove The player's move
@@ -471,7 +484,7 @@ bool CardGameBasicRummy::ApplyMove(int nPlayer, GameMove &cGameMove)
         return true;
     }
 
-    // Check for show
+    // Check for SHOW
     if (cGameMove.Show())
     {
         cGameMove.SetAnotherTurn(true);
@@ -492,7 +505,7 @@ bool CardGameBasicRummy::ApplyMove(int nPlayer, GameMove &cGameMove)
         return true;
     }
 
-    // Check for score
+    // Check for SCORE
     if (cGameMove.Score())
     {
         cGameMove.SetAnotherTurn(true);
@@ -506,8 +519,8 @@ bool CardGameBasicRummy::ApplyMove(int nPlayer, GameMove &cGameMove)
     // Generate a vector of all possible valid moves for the player
     std::vector<GameMove> vGameMoves = GenerateMoves(nPlayer);
 
-    // Compare passed GameMove to generated game moves.  If one is found to be
-    // the same, make the move on the board.
+    // Compare passed GameMove to generated game moves.
+    // TODO: Use AllowedMoves?
     bool bValidMove = false;
     for (GameMove &cValidGameMove : vGameMoves)
     {
@@ -528,57 +541,54 @@ bool CardGameBasicRummy::ApplyMove(int nPlayer, GameMove &cGameMove)
     // Apply move to the game
     //
 
-    // Check for draw
+    // Check for DRAW
     if (cGameMove.Draw())
     {
         cGameMove.SetAnotherTurn(true);
         cGameMove.SetPlayerNumber(nPlayer);
-        //vGameMoves.push_back(cGameMove);
         if (!DrawCard(nPlayer, cGameMove))
             return false;
 
         m_cAllowedMoves.ProgressSequence();
     }
 
-    // Check for meld
+    // Check for MELD
     if (cGameMove.Meld())
     {
         cGameMove.SetAnotherTurn(true);
         cGameMove.SetPlayerNumber(nPlayer);
-        //vGameMoves.push_back(cGameMove);
 
         if (!MeldCards(nPlayer, cGameMove))
             return false;
     }
 
-    // Check for layoff
+    // Check for LAYOFF
     if (cGameMove.Layoff())
     {
         cGameMove.SetAnotherTurn(true);
         cGameMove.SetPlayerNumber(nPlayer);
-        //vGameMoves.push_back(cGameMove);
 
         if (!LayoffCard(nPlayer, cGameMove))
             return false;
     }
 
-    // Check for discard
+    // Check for DISCARD
     if (cGameMove.Discard())
     {
-        //vGameMoves.push_back(cGameMove);
-
         if (!Discard(nPlayer, cGameMove))
             return false;
 
         m_cAllowedMoves.ProgressSequence();
+
+        // If player still has cards in hand, turn off Rummy
+        if (m_vHands[nPlayer - 1].HasCards())
+            SetRummyOff(nPlayer);
     }
 
-    // If players has cards, sort them and turn off Rummy possibility
+    // If player has cards, sort them
     if (m_vHands[nPlayer - 1].HasCards())
     {
         m_vHands[nPlayer - 1].SortByRank();
-        SetRummyOff(nPlayer); //TODO - This turns off Rummy too soon; should be set after a series of melds and layoffs and a discard
-                              //TODO - Make sure this gets re-initialized after the go out or Rummy
     }
 
     // Increment move counter
@@ -691,6 +701,17 @@ std::string CardGameBasicRummy::GameStatistics() const
     return sGameStats;
 }
 
+/**
+  * Return a score for a player's hand
+  *
+  * To be used after one the other player has gone out or gone Rummy.
+  *
+  * \param nPlayer          The player's hand to score
+  * \param nRummyMultiplier The multiplier to use on the score
+  *
+  * \return The score of the hand.
+  */
+
 int CardGameBasicRummy::ScoreHand(int nPlayer, int nRummyMultiplier)
 {
     int nScore {};
@@ -754,6 +775,7 @@ bool CardGameBasicRummy::GameEnded(int nPlayer)
 
         std::cout << GameScore() << std::endl;
 
+        // For game stats
         ++m_aiNumberOfHandsWon[nThisPlayer - 1];
 
         // If this player's total score is greater than or equal to the goal score, this player wins
@@ -799,25 +821,30 @@ void CardGameBasicRummy::BeginHand()
     cCard.TurnUp(true);
     m_cDiscardPile.AddCard(cCard);
 
+    // Set allowed moves sequence
+    m_cAllowedMoves.ResetSequence();
+
     // Clear matches
     m_uommMatches.clear();
+
+    // Players may go Rummy
+    InitializeRummy();
+
+    // Set new hand flag for both players
+    SetNewHand(1, true);
+    SetNewHand(2, true);
 
     // Sort hands
     for (Hand &cHand : m_vHands)
     {
         cHand.SortByRank();
     }
-
-    // Set allowed moves sequence
-    m_cAllowedMoves.ResetSequence();
 }
 
 /**
   * Initialize the blackboard
   *
-  * Initialize the Probable Deck and the Probable Opponent Hand.
-  *
-  * TODO: Move to CardGame
+  * Initialize the discard pile and call parent class.
   */
 
 void CardGameBasicRummy::BlackboardInitialize(int nPlayer, Blackboard &cBlackboard) const
@@ -837,7 +864,7 @@ void CardGameBasicRummy::BlackboardInitialize(int nPlayer, Blackboard &cBlackboa
   * probable deck (aka, stock).
   *
   * \param nPlayer      The player
-  * \param cBlackboatrd The blackboard for this player
+  * \param cBlackboard  The blackboard for this player
   *
   * \return A game move.
   */
@@ -1019,6 +1046,7 @@ GameMove CardGameBasicRummy::BlackboardMove(int nPlayer, Blackboard &cBlackboard
         // Evaluate DISCARD
         //
         // TODO: don't discard card that has multiple opportunities
+        // TODO: don't discard card that was just draw from the discard pile
         // If not already a Meld or Layoff
         if (cPossibleGameMove.Discard() && !cGameMove.Meld() && !cGameMove.Layoff())
         {
@@ -1076,13 +1104,17 @@ GameMove CardGameBasicRummy::BlackboardMove(int nPlayer, Blackboard &cBlackboard
 
 void CardGameBasicRummy::BlackboardUpdate(int nPlayer, Blackboard &cBlackboard)
 {
+    std::string sMessage = "Updating Blackboard for player " + std::to_string(nPlayer);
+    m_cLogger.LogInfo(sMessage, 3);
+
     Hand cHandToEvaluate {};
     std::string sLogMessage {};
 
     // If not initialized, initialize
-    if (!cBlackboard.Initialized()) // TODO: Need to re-initialize upon a new hand
+    if (!cBlackboard.Initialized() || NewHand(nPlayer))
     {
         BlackboardInitialize(nPlayer, cBlackboard);
+        SetNewHand(nPlayer, false);
     }
 
     //

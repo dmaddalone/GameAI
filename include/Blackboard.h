@@ -38,8 +38,8 @@ class Blackboard
         virtual ~Blackboard() {};
 
         // Manage Initialization
-        bool Initialized()     { return m_bInitialized; }
-        void SetInitialized()  { m_bInitialized = true; }
+        bool Initialized()                { return m_bInitialized; }
+        void SetInitialized(bool b=true)  { m_bInitialized = b; }
 
         // Manage the number of asks
         void UpdateAsks(const std::string &sRank);
