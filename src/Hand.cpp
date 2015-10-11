@@ -150,13 +150,28 @@ Match Hand::RemoveMatch(std::vector<Card> &vCards, const int nCount, const bool 
 
 bool Hand::MatchOpportunities(const int nCount, const bool bEvalSequence, const bool bEvalBook)
 {
+    bool bOpportunity {false};
+
+    // Set all cards to ineligible
+    for (Card &cCard : m_vCards)
+    {
+        cCard.SetEligibility(false);
+    }
+
+    // Ensure we have enough cards to satisfy the nCount
+    if (static_cast<int>(m_vCards.size()) < nCount)
+        return false;
+
     // Evaluate for books of the same rank
     if (bEvalBook)
     {
-        for (const Card &cCard : m_vCards)
+        for (Card &cCard : m_vCards)
         {
-            if (HasCardsOfRank(cCard.Rank()) >= nCount) //TODO: Need to be able to evaluate all cards in the hand
-                return true;
+            if (HasCardsOfRank(cCard.Rank()) >= nCount)
+            {
+                bOpportunity = true;
+                cCard.SetEligibility(true);
+            }
         }
     }
 
@@ -164,11 +179,13 @@ bool Hand::MatchOpportunities(const int nCount, const bool bEvalSequence, const 
     if (bEvalSequence)
     {
         int  nSeqCount {1};
+        //Card &cLastCard = m_vCards[0];
         Card cLastCard;
+        int  nCardCounter {0};
 
         SortBySuit();
 
-        for (const Card &cCard : m_vCards)
+        for (Card &cCard : m_vCards)
         {
             // Same suit?
             if (cCard.Suit() == cLastCard.Suit())
@@ -177,9 +194,14 @@ bool Hand::MatchOpportunities(const int nCount, const bool bEvalSequence, const 
                 if (cCard.SortValue() == cLastCard.SortValue() + 1)
                 {
                     ++nSeqCount;
-                    if (nSeqCount >= nCount) //TODO: Need to be able to evaluate all cards in the hand
+                    if (nSeqCount >= nCount)
                     {
-                        return true;
+                        bOpportunity = true;
+                        cCard.SetEligibility(true);
+                        for (int iii = nSeqCount - 1; iii > 0; --iii)
+                        {
+                            m_vCards[nCardCounter - iii].SetEligibility(true);
+                        }
                     }
                 }
                 else
@@ -195,10 +217,11 @@ bool Hand::MatchOpportunities(const int nCount, const bool bEvalSequence, const 
             }
 
             cLastCard = cCard;
+            ++nCardCounter;
         }
     }
 
-    return false;
+    return bOpportunity;
 }
 
 bool Hand::RemoveLayoffs(std::unordered_multimap<int, Match> &uommMatches, Card &cCard, const bool bEvalSequence, const bool bEvalBook)
@@ -231,7 +254,15 @@ bool Hand::RemoveLayoffs(std::unordered_multimap<int, Match> &uommMatches, Card 
 
 bool Hand::LayoffOpportunities(std::unordered_multimap<int, Match> &uommMatches, const bool bEvalSequence, const bool bEvalBook)
 {
+    bool bOpportunity {false};
+
     SortBySuit();
+
+    // Set all cards to ineligible
+    for (Card &cCard : m_vCards)
+    {
+        cCard.SetEligibility(false);
+    }
 
     // Loop through all matches
     for (auto &PlayerMatch : uommMatches)
@@ -246,7 +277,7 @@ bool Hand::LayoffOpportunities(std::unordered_multimap<int, Match> &uommMatches,
             if (PlayerMatch.second.Type() == MatchType::TYPE_SEQUENCE)
             {
                 // Loop through all cards in this hand
-                for (const Card &cCard : m_vCards)
+                for (Card &cCard : m_vCards)
                 {
                     // If a card suit matches the sequence match suit
                     if (PlayerMatch.second.HasSuit(cCard.Suit()))
@@ -258,14 +289,16 @@ bool Hand::LayoffOpportunities(std::unordered_multimap<int, Match> &uommMatches,
                         if (cCard.SortValue() == PlayerMatch.second.PeekAtTopCard().SortValue() - 1)
                         {
                             PlayerMatch.second.SetEligibility(true);
-                            return true;
+                            cCard.SetEligibility(true);
+                            bOpportunity =  true;
                         }
 
                         // If Card value is one more than last card, we have a layoff opportunity
                         if (cCard.SortValue() == PlayerMatch.second.PeekAtBottomCard().SortValue() + 1)
                         {
                             PlayerMatch.second.SetEligibility(true);
-                            return true;
+                            cCard.SetEligibility(true);
+                            bOpportunity = true;
                         }
                     }
                 }
@@ -279,20 +312,21 @@ bool Hand::LayoffOpportunities(std::unordered_multimap<int, Match> &uommMatches,
             if (PlayerMatch.second.Type() == MatchType::TYPE_SAME_RANK)
             {
                 // Loop through all cards in this hand
-                for (const Card &cCard : m_vCards)
+                for (Card &cCard : m_vCards)
                 {
-                    // If rank match matches this card rank, we have a layoff opportuity
+                    // If rank match matches this card rank, we have a layoff opportunity
                     if (PlayerMatch.second.HasRank(cCard.Rank()))
                     {
                         PlayerMatch.second.SetEligibility(true);
-                        return true;
+                        cCard.SetEligibility(true);
+                        bOpportunity = true;
                     }
                 }
             }
         }
     }
 
-    return false;
+    return bOpportunity;
 }
 
 void Hand::Discard(PlayingCards &cDiscardPile, const Card &cCard)

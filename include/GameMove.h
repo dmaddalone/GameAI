@@ -148,24 +148,24 @@ class GameMove
         bool Ask() const          { return m_bAsk; }
 
         // Set and return whether a meld has been made
-        void SetMeld(bool b)       { m_bMove = false; m_bMeld = b; if (b) m_sCommand = GameVocabulary::MELD; else m_sCommand.clear(); }
-        bool Meld() const          { return m_bMeld; }
+        void SetMeld(bool b)      { m_bMove = false; m_bMeld = b; if (b) m_sCommand = GameVocabulary::MELD; else m_sCommand.clear(); }
+        bool Meld() const         { return m_bMeld; }
 
         // Set and return whether a layoff has been made
-        void SetLayoff(bool b)       { m_bMove = false; m_bLayoff = b; if (b) m_sCommand = GameVocabulary::LAYOFF; else m_sCommand.clear(); }
-        bool Layoff() const          { return m_bLayoff; }
+        void SetLayoff(bool b)    { m_bMove = false; m_bLayoff = b; if (b) m_sCommand = GameVocabulary::LAYOFF; else m_sCommand.clear(); }
+        bool Layoff() const       { return m_bLayoff; }
 
         // Set and return whether discard has been made
-        void SetDiscard(bool b)       { m_bMove = false; m_bDiscard = b; if (b) m_sCommand = GameVocabulary::DISCARD; else m_sCommand.clear(); }
-        bool Discard() const          { return m_bDiscard; }
+        void SetDiscard(bool b)   { m_bMove = false; m_bDiscard = b; if (b) m_sCommand = GameVocabulary::DISCARD; else m_sCommand.clear(); }
+        bool Discard() const      { return m_bDiscard; }
 
         // Set and return whether a show has been made
-        void SetShow(bool b)       { m_bShow = b; if (b) m_sCommand = GameVocabulary::SHOW; else m_sCommand.clear(); }
-        bool Show() const          { return m_bShow; }
+        void SetShow(bool b)      { m_bShow = b; if (b) m_sCommand = GameVocabulary::SHOW; else m_sCommand.clear(); }
+        bool Show() const         { return m_bShow; }
 
         // Set and return whether a score request has been made
-        void SetScore(bool b)      { m_bScore = b; if (b) m_sCommand = GameVocabulary::SCORE; else m_sCommand.clear(); }
-        bool Score() const         { return m_bScore; }
+        void SetScore(bool b)     { m_bScore = b; if (b) m_sCommand = GameVocabulary::SCORE; else m_sCommand.clear(); }
+        bool Score() const        { return m_bScore; }
 
         // Whether another turn may be had
         void SetAnotherTurn(bool b) { m_bAnotherTurn = b; }
@@ -177,21 +177,21 @@ class GameMove
 
         // Set and return whether this is a success
         void SetSuccess(bool b)  { m_bSuccess = b; }
-        bool Success()           { return m_bSuccess; }
+        bool Success() const     { return m_bSuccess; }
 
         // Compare two moves and whether their to-moves are the same
-        bool SameTo(const GameMove &cGameMove) { if ((cGameMove.ToX() == m_nToX) && (cGameMove.ToY() == m_nToY)) return true; else return false;}
+        bool SameTo(const GameMove &cGameMove) const { if ((cGameMove.ToX() == m_nToX) && (cGameMove.ToY() == m_nToY)) return true; else return false;}
 
         // Compare two moves and whether their their commands are the same
-        bool SameCommand(const GameMove &cGameMove) { if (cGameMove.Command().compare(m_sCommand) == 0) return true; else return false; }
+        bool SameCommand(const GameMove &cGameMove) const { if (cGameMove.Command().compare(m_sCommand) == 0) return true; else return false; }
 
         // Manage number of nominal cards
         void SetNominalCards(int n)  { m_nNominalCards = n; }
-        int  NominalCards()          { return m_nNominalCards; }
+        int  NominalCards() const    { return m_nNominalCards; }
 
         // Manage cards
         void RemoveCards()                 { m_cCards.RemoveAllCards(); }
-        void AddCard(Card &cCard)          { m_cCards.AddCard(cCard); }
+        void AddCard(const Card &cCard)    { m_cCards.AddCard(cCard); }
         int  NumberOfCards() const         { return m_cCards.HasCards(); }
         std::vector<Card> GetCards() const { return m_cCards.Cards(); }
 

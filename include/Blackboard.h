@@ -27,6 +27,7 @@
 #ifndef BLACKBOARD_H
 #define BLACKBOARD_H
 
+#include "Card.h"
 #include "Deck.h"
 #include "Hand.h"
 
@@ -44,6 +45,18 @@ class Blackboard
         void UpdateAsks(const std::string &sRank);
         int  Asks(const std::string &sRank) const;
 
+        // Manage Layoff and Match Opportunities
+        void SetLayoffOpportunities(int n)    { m_nLayoffOpportunities = n; }
+        int  LayoffOpportunities() const      { return m_nLayoffOpportunities; }
+        void SetMatchOpportunities(int n)     { m_nMatchOpportunities = n; }
+        int  MatchOpportunities() const       { return m_nMatchOpportunities; }
+        void SetNearMatchOpportunities(int n) { m_nNearMatchOpportunities = n; }
+        int  NearMatchOpportunities() const   { return m_nNearMatchOpportunities; }
+
+        // Manage Card
+        void SetCard(const Card &cCard)    { m_cCard = cCard; }
+        Card GetCard() const               { return m_cCard; }
+
         //
         // Public members
         //
@@ -56,6 +69,14 @@ class Blackboard
 
         // Manage asks
         std::map<std::string, int> m_mAsks {};
+
+        // Layoff and Match Opportunities
+        int m_nLayoffOpportunities {};
+        int m_nMatchOpportunities {};
+        int m_nNearMatchOpportunities {};
+
+        // Card
+        Card m_cCard;
 };
 
 #endif // BLACKBOARD_H

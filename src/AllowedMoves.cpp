@@ -42,18 +42,17 @@ void AllowedMoves::NextMoveInSequence(std::string &sMoves) const
 
 void  AllowedMoves::NextMoveInSequence(std::vector<GameMove> &vGameMoves) const
 {
-    GameMove              cGameMove;
     vGameMoves.clear();
 
     // Get iterator range for moves associated with current move index
     std::pair <std::multimap<int, std::string>::const_iterator,
                std::multimap<int, std::string>::const_iterator> itRange = m_mmMoves.equal_range(m_nMoveIndex);
 
-    // Add moves to to return variable
+    // Add moves to vector
     for (std::multimap<int, std::string>::const_iterator it = itRange.first; it != itRange.second; ++it)
     {
-        cGameMove.SetCommand(it->second);
-        vGameMoves.push_back(cGameMove);
+        vGameMoves.emplace_back();
+        vGameMoves.back().SetCommand(it->second);
     }
 }
 

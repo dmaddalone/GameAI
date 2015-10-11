@@ -26,8 +26,6 @@
 #ifndef CARD_H
 #define CARD_H
 
-#include <iostream> // for testing
-
 #include <array>
 #include <string>
 
@@ -70,6 +68,7 @@ class Card
         std::string DisplayShortName(bool bForce=false) const { return DisplayRank(bForce) + DisplaySuit(bForce); }
         int         RankValue() const        { return m_nRankValue; }
         int         SortValue() const        { return m_nSortValue; }
+        bool        SameRankAndSuit(const Card &cCard) { return cCard.Rank() == m_sRank && cCard.Suit() == m_sSuit; }
 
         // Set Rank and Suit
         bool        SetRank(std::string &sRank) { m_sRank = sRank; return RankValid(); }
@@ -96,6 +95,10 @@ class Card
         void  SetProbability(float fProb) { m_fProbability = fProb; }
         float Probability() const         { return m_fProbability; }
 
+        // Set and get eligibility
+        void SetEligibility(bool b) { m_bEligible = b; }
+        bool Eligible() const       { return m_bEligible; }
+
         // Json object serialization and deserialization
         Json::Value JsonSerialization() const;
         bool        JsonDeserialization(const std::string &sJsonCard, std::string &sErrorMessage);
@@ -121,6 +124,9 @@ class Card
 
         // Used for Bayesian probabilities
         float m_fProbability {0.0};
+
+        // Used to generically mark cards
+        bool m_bEligible {false};
 };
 
 #endif // CARD_H
