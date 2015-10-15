@@ -34,7 +34,7 @@ class ChessPetty : public ChessGame
 {
     public:
         // Constructor
-        ChessPetty(GameType ecGameType) : ChessGame(ecGameType, 5, 6, 12, true, true, true)
+        explicit ChessPetty(GameType ecGameType) : ChessGame(ecGameType, 5, 6, 12, true, true, true)
         {
             // Turn off castling, pawn double move, and en passant
             m_abCastlingAllowed[0] = false;

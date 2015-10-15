@@ -911,8 +911,8 @@ bool Reversi::GameEnded(int nPlayer)
         std::vector<GameMove> vGameMovesPlayer2 = GenerateMoves(m_knPlayer2);
         if (vGameMovesPlayer2.empty())
         {
-            return true;
             m_bGameOver = true;
+            return true;
         }
     }
 

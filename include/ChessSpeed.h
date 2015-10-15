@@ -34,7 +34,7 @@ class ChessSpeed : public ChessGame
 {
     public:
         // Constructor
-        ChessSpeed(GameType ecGameType) : ChessGame(ecGameType, 5, 6, 12, true, true, true)
+        explicit ChessSpeed(GameType ecGameType) : ChessGame(ecGameType, 5, 6, 12, true, true, true)
         {
             // Turn off pawn double move and en passant
             m_bDoublePawnMoveAllowed = false;

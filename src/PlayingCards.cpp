@@ -421,7 +421,7 @@ std::vector<Card> PlayingCards::RemoveCards(const std::vector<Card> &vCardsToRem
             if (it->Suit() == cCardToRemove.Suit() && it->Rank() == cCardToRemove.Rank())
             {
                 vCards.push_back(*it);
-                m_vCards.erase(it);
+                it = m_vCards.erase(it);
             }
             else
             {

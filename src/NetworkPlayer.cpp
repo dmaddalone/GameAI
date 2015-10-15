@@ -176,7 +176,6 @@ bool NetworkPlayer::SendLastMove(Game &cGame)
 bool NetworkPlayer::RecvLastMove(Game &cGame)
 {
     GameMove cGameMove;
-    std::string sCommand;
     std::string sErrorMessage;
     std::string sMessage;
 

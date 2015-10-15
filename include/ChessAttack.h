@@ -34,7 +34,7 @@ class ChessAttack : public ChessGame
 {
     public:
         // Constructor
-        ChessAttack(GameType ecGameType) : ChessGame(ecGameType, 5, 6, 12, true, true, true)
+        explicit ChessAttack(GameType ecGameType) : ChessGame(ecGameType, 5, 6, 12, true, true, true)
         {
             SetBoard();
         }

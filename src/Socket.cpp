@@ -215,7 +215,7 @@ int Socket::Recv(std::string &sMessage, int nLength) const
   * \return True if connect was successful.  False otherwise.
   */
 
-bool Socket::Connect(const std::string sHost, const int nPort)
+bool Socket::Connect(const std::string &sHost, const int nPort)
 {
     // Evaluate socket ID
     if (!IsValid())

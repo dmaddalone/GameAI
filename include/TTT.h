@@ -32,7 +32,7 @@ class TTT : public LinearGame
 {
     public:
         // Constructor
-        TTT(GameType ecGameType) : LinearGame(ecGameType, 3, 3, 'X', 'O', 3, true, true, true, true) {}
+        explicit TTT(GameType ecGameType) : LinearGame(ecGameType, 3, 3, 'X', 'O', 3, true, true, true, true) {}
         // Destructor
         ~TTT() {}
 

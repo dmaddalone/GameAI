@@ -39,7 +39,7 @@ class NetworkPlayer: public Socket, public Player
 {
     public:
         // Construct a client player
-        NetworkPlayer(PlayerType ecPlayerType);
+        explicit NetworkPlayer(PlayerType ecPlayerType);
 
         // Destructor
         virtual ~NetworkPlayer() {}

@@ -129,16 +129,12 @@ void  AllowedMoves::NextMoveInSequence(std::vector<GameMove> &vGameMoves) const
 
 bool AllowedMoves::ValidMove(const std::string &sMove, const std::string &sArg) const
 {
-    std::string sSeqMove {};
-    std::string sSeqArg  {};
-    std::size_t nPos     {};
-
     // Find move and argument parameters in the allowed moves
     for (const auto &SequenceMove : m_mmMoves)
     {
-        nPos     = SequenceMove.second.find(GameVocabulary::DELIMETER);
-        sSeqMove = SequenceMove.second.substr(0,nPos - 1);
-        sSeqArg  = SequenceMove.second.substr(nPos + 1);
+        std::size_t nPos     = SequenceMove.second.find(GameVocabulary::DELIMETER);
+        std::string sSeqMove = SequenceMove.second.substr(0,nPos - 1);
+        std::string sSeqArg  = SequenceMove.second.substr(nPos + 1);
         if ((sSeqMove.compare(sMove) == 0) && (sSeqArg.compare(sArg)))
         {
             return true;

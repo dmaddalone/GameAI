@@ -63,7 +63,7 @@ class Game
 {
     public:
         // Construct a game of ecGameType and two players
-        Game(GameType ecGameType)
+        explicit Game(GameType ecGameType)
         { m_ecGameType = ecGameType; }
 
         //

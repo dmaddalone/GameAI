@@ -337,10 +337,12 @@ bool CardGameBasicRummy::DrawCard(int nPlayer, GameMove &cGameMove)
     if (cGameMove.Argument().empty())
     {
         sMessage = "Player " + std::to_string(nPlayer) + " does not know where to draw from";
+        m_cLogger.LogInfo(sMessage,1);
     }
     else
     {
         sMessage = "Player " + std::to_string(nPlayer) + " cannot draw from " + cGameMove.Argument();
+        m_cLogger.LogInfo(sMessage,1);
     }
 
     return false;
@@ -469,9 +471,6 @@ bool CardGameBasicRummy::Discard(int nPlayer, GameMove &cGameMove)
 
 bool CardGameBasicRummy::ApplyMove(int nPlayer, GameMove &cGameMove)
 {
-    // For logging
-    std::string sMessage {};
-
     // Check player number
     if ((nPlayer != m_knPlayer1) && (nPlayer != m_knPlayer2))
         return false;
@@ -849,9 +848,24 @@ void CardGameBasicRummy::BeginHand()
 
 void CardGameBasicRummy::BlackboardInitialize(int nPlayer, Blackboard &cBlackboard) const
 {
+    // Initialize the ProbableDeck
+    cBlackboard.m_cProbableDeck.Initialize();
+
     // Remove the cards on the discard pile from the deck
     std::vector<Card> vCards = m_cDiscardPile.Cards();
     cBlackboard.m_cProbableDeck.RemoveCards(vCards);
+
+    // Remove cards matching the player's hand from ProbableDeck
+    for (const Card &cCard : m_vHands[nPlayer -1].Cards())
+    {
+        // Remove one card of sRank from ProbableDeck
+        Card cRemovedCard = cBlackboard.m_cProbableDeck.RemoveCard(cCard);
+        if (cRemovedCard.Rank() != cCard.Rank())
+        {
+            std::string sError = "Expected to remove card " + cCard.DisplayShortName(true) + " from probable deck, but card not available.";
+            throw GameAIException(sError);
+        }
+    }
 
     // Call parent class to finish BB init
     CardGame::BlackboardInitialize(nPlayer, cBlackboard);
@@ -871,18 +885,20 @@ void CardGameBasicRummy::BlackboardInitialize(int nPlayer, Blackboard &cBlackboa
 
 GameMove CardGameBasicRummy::BlackboardMove(int nPlayer, Blackboard &cBlackboard, int nProbability)
 {
+    (void)nProbability; // TODO: Use
+
     int nOpportunities {};
-    std::string sCards {};
-    std::vector<Card> vDoNotDiscard {};
+    //std::string sCards {};
+    //std::vector<Card> vDoNotDiscard {};
 
-    // Probability threshold
-    float fProbabilityThreshold = static_cast<float>(nProbability) / 10;
+    // Probability threshold - TODO: Use
+    //float fProbabilityThreshold = static_cast<float>(nProbability) / 10;
 
-    // Probability of pulling card
-    float fProbabilityOfPullingCard {};
+    // Probability of pulling card - TODO: Use
+    //float fProbabilityOfPullingCard {};
 
-    // Logging messages
-    std::string sLogMessage {};
+    //// Logging messages
+    //std::string sLogMessage {};
 
     // Generic GameMove
     GameMove cGameMove;
@@ -1294,7 +1310,6 @@ bool CardGameBasicRummy::MatchesJsonDeserialization(const std::string &sJsonMatc
 {
     Json::Reader jReader;
     Json::Value  jMatches;
-    int nPlayer;
     Match cMatch;
 
     // Parse the JSON string into a Json object,
@@ -1304,7 +1319,7 @@ bool CardGameBasicRummy::MatchesJsonDeserialization(const std::string &sJsonMatc
 
         for (const Json::Value &jValue : jMatches)
         {
-            nPlayer = jValue["Player"].asInt();
+            int nPlayer = jValue["Player"].asInt();
 
             if (cMatch.JsonDeserialization(jValue["Match"], sErrorMessage))
             {

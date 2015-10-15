@@ -34,7 +34,7 @@ class ChessGardner : public ChessGame
 {
     public:
         // Constructor
-        ChessGardner(GameType ecGameType) : ChessGame(ecGameType, 5, 5, 12, true, true, true)
+        explicit ChessGardner(GameType ecGameType) : ChessGame(ecGameType, 5, 5, 12, true, true, true)
         {
             SetBoard();
         }

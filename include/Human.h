@@ -33,7 +33,7 @@ class Human: public Player
 {
     public:
         // Construct a human player
-        Human(PlayerType ecPlayerType) : Player(ecPlayerType) {}
+        explicit Human(PlayerType ecPlayerType) : Player(ecPlayerType) {}
 
         // Initializer
         virtual void Initialize(std::string sHost, int nPort, bool &bSwap) override { (void)sHost; (void)nPort; (void)bSwap; }

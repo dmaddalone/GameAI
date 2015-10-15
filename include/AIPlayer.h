@@ -40,7 +40,7 @@ class AIPlayer : public Player
 {
     public:
         // Construct a AIPlayer object
-        AIPlayer(PlayerType ecPlayerType) : Player(ecPlayerType) {};
+        explicit AIPlayer(PlayerType ecPlayerType) : Player(ecPlayerType) {};
 
         // Destructor
         ~AIPlayer() {};

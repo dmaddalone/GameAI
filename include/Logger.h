@@ -35,7 +35,7 @@ class Logger
         // Construct a Logger class with default logging level of zero
         Logger()           : m_nLevel(0) {}
         // Construct a Logger class with logging level set as a parameter
-        Logger(int nLevel) : m_nLevel(nLevel) {}
+        explicit Logger(int nLevel) : m_nLevel(nLevel) {}
 
         // Set and return the logging level
         void SetLevel(int nLevel)   { m_nLevel = nLevel; }
@@ -47,17 +47,17 @@ class Logger
         void UseLevelIndent(bool b) { m_bUseLevelIndent = b; }
 
         // Calls for different types of logging
-        void LogInfo(const std::string sMessage, int nLevel=0) const;
-        void LogWarn(const std::string sMessage);
-        void LogError(const std::string sMessage);
-        void LogFatal(const std::string sMessage);
-        void LogDebug(const std::string sMessage);
+        void LogInfo(const std::string &sMessage, int nLevel=0) const;
+        void LogWarn(const std::string &sMessage);
+        void LogError(const std::string &sMessage);
+        void LogFatal(const std::string &sMessage);
+        void LogDebug(const std::string &sMessage);
 
     private:
         // Generate a time stamp
         std::string TimeStamp() const;
         // Write the logging message
-        void Log(const std::string sTag, const std::string sMessage, int nLevel) const;
+        void Log(const std::string &sTag, const std::string &sMessage, int nLevel) const;
 
         // The logging level
         int  m_nLevel;

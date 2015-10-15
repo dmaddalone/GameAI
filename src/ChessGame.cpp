@@ -1763,11 +1763,10 @@ int ChessGame::ReadMovesFromFile(const std::string &sFileName)
 
     // Read Psuedo PGN
     // Then read and apply moves
-    char cPeek;
     std::string sLine;
     while (true)
     {
-        cPeek = fsFile.peek();
+        char cPeek = fsFile.peek();
         // If first character is [, this is not a move
         if (cPeek == '[')
         {

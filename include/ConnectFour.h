@@ -32,7 +32,7 @@ class ConnectFour : public LinearGame
 {
     public:
         // Constructor
-        ConnectFour(GameType ecGameType) : LinearGame(ecGameType, 7, 6, '1', '2', 4, true, true, true, false) {}
+        explicit ConnectFour(GameType ecGameType) : LinearGame(ecGameType, 7, 6, '1', '2', 4, true, true, true, false) {}
 
         // Destructor
         ~ConnectFour() {}

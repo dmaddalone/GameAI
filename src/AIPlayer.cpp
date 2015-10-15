@@ -240,7 +240,6 @@ int AIPlayer::MinMove(int nPlayer, Game &cGame, int nDepth, int nAlpha, int nBet
 
     // Evaluate all possible moves
     std::unique_ptr<Game> pcGameClone {};
-    int nScore {};
     for (GameMove cGameMove : vGameMoves)
     {
         // Clone the game
@@ -250,7 +249,7 @@ int AIPlayer::MinMove(int nPlayer, Game &cGame, int nDepth, int nAlpha, int nBet
         pcGameClone->ApplyMove(nPlayer, cGameMove);
 
         // Return the score of this applied move by calling the maximizing player's move evaluation
-        nScore = MaxMove(3 - nPlayer, *pcGameClone, nDepth - 1, nAlpha, nBeta);
+        int nScore = MaxMove(3 - nPlayer, *pcGameClone, nDepth - 1, nAlpha, nBeta);
 
         // Log the evaluated moves score
         sMessage = "MinMove Depth=" + std::to_string(nDepth) + " Player=" + std::to_string(nPlayer) +
@@ -304,7 +303,6 @@ int AIPlayer::MaxMove(int nPlayer, Game &cGame, int nDepth, int nAlpha, int nBet
     // Evaluate all possible moves
 
     std::unique_ptr<Game> pcGameClone {};
-    int nScore {};
     for (GameMove cGameMove : vGameMoves)
     {
         // Clone the game
@@ -314,7 +312,7 @@ int AIPlayer::MaxMove(int nPlayer, Game &cGame, int nDepth, int nAlpha, int nBet
         pcGameClone->ApplyMove(nPlayer, cGameMove);
 
         // Return the score of this applied move by calling the maximizing player's move evaluation
-        nScore = MinMove(3 - nPlayer, *pcGameClone, nDepth -1, nAlpha, nBeta);
+        int nScore = MinMove(3 - nPlayer, *pcGameClone, nDepth -1, nAlpha, nBeta);
 
         // Log the evaluated moves score
         sMessage = "MaxMove Depth=" + std::to_string(nDepth) + " Player=" + std::to_string(nPlayer) +

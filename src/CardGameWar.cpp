@@ -482,7 +482,6 @@ bool CardGameWar::BattleJsonDeserialization(const std::string &sJsonBattle, std:
 {
     Json::Reader jReader;
     Json::Value jBattle;
-    int nPlayer;
     Card cCard;
 
     if (jReader.parse(sJsonBattle, jBattle, false))
@@ -491,7 +490,7 @@ bool CardGameWar::BattleJsonDeserialization(const std::string &sJsonBattle, std:
 
         for (const Json::Value &jValue : jBattle)
         {
-            nPlayer = jValue["Player"].asInt();
+            int nPlayer = jValue["Player"].asInt();
 
             if (cCard.JsonDeserialization(jValue["Card"].toStyledString(), sErrorMessage))
             {

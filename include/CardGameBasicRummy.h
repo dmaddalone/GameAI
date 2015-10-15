@@ -36,7 +36,7 @@ class CardGameBasicRummy : public CardGame
 {
     public:
         // Construct a Basic Rummy card game
-        CardGameBasicRummy(GameType ecGameType) :
+        explicit CardGameBasicRummy(GameType ecGameType) :
             CardGame(ecGameType, 2)
         {
             // Stochastic game

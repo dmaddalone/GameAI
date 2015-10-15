@@ -34,7 +34,7 @@ class ChessElena : public ChessGame
 {
     public:
         // Constructor
-        ChessElena(GameType ecGameType) : ChessGame(ecGameType, 5, 6, 12, true, true, true)
+        explicit ChessElena(GameType ecGameType) : ChessGame(ecGameType, 5, 6, 12, true, true, true)
         {
             // Turn off castling, pawn double move, and en passant
             m_abCastlingAllowed[0] = false;

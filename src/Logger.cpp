@@ -51,7 +51,7 @@ std::string Logger::TimeStamp() const
   * \param nLevel The logging level
   */
 
-void Logger::Log(const std::string sTag, const std::string sMessage, int nLevel) const
+void Logger::Log(const std::string &sTag, const std::string &sMessage, int nLevel) const
 {
     // If message is empty, return
     if (sMessage.empty())
@@ -94,7 +94,7 @@ void Logger::Log(const std::string sTag, const std::string sMessage, int nLevel)
   * \param nLevel The logging level, defaulted to zero
   */
 
-void Logger::LogInfo(const std::string sMessage, int nLevel) const
+void Logger::LogInfo(const std::string &sMessage, int nLevel) const
 {
     if (m_nLevel >= nLevel)
         Log("INFO:", sMessage, nLevel);
@@ -109,7 +109,7 @@ void Logger::LogInfo(const std::string sMessage, int nLevel) const
   * \param sMessage The log message
   */
 
-void Logger::LogWarn(const std::string sMessage)
+void Logger::LogWarn(const std::string &sMessage)
 {
     Log("WARN:", sMessage, 1);
 }
@@ -122,7 +122,7 @@ void Logger::LogWarn(const std::string sMessage)
   * \param sMessage The log message
   */
 
-void Logger::LogError(const std::string sMessage)
+void Logger::LogError(const std::string &sMessage)
 {
     Log("ERROR:", sMessage, 1);
 }
@@ -135,7 +135,7 @@ void Logger::LogError(const std::string sMessage)
   * \param sMessage The log message
   */
 
-void Logger::LogFatal(const std::string sMessage)
+void Logger::LogFatal(const std::string &sMessage)
 {
     Log("FATAL:", sMessage, 1);
 }
@@ -148,7 +148,7 @@ void Logger::LogFatal(const std::string sMessage)
   * \param sMessage The log message
   */
 
-void Logger::LogDebug(const std::string sMessage)
+void Logger::LogDebug(const std::string &sMessage)
 {
     Log("DEBUG:", sMessage, 1);
 }

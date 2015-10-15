@@ -32,7 +32,7 @@ class Server: public NetworkPlayer
 {
     public:
         // Construct a server player
-        Server(PlayerType ecPlayerType);
+        explicit Server(PlayerType ecPlayerType);
 
         // Destructor
         ~Server() {};

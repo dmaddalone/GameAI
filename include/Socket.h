@@ -60,7 +60,7 @@ class Socket
         bool Accept();
 
         // Client setup
-        bool Connect (const std::string host, const int port);
+        bool Connect (const std::string &host, const int port);
 
         // Data transmission
         bool Send(const std::string &sMessage) const;

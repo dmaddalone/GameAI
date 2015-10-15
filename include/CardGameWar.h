@@ -35,7 +35,7 @@ class CardGameWar : public CardGame
 {
     public:
         // Construct a War card game
-        CardGameWar(GameType ecGameType) :
+        explicit CardGameWar(GameType ecGameType) :
             CardGame(ecGameType, 2)
         {
             // Shuffle and Deal cards

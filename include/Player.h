@@ -43,7 +43,7 @@ class Player
 {
     public:
         // Construct a player of ecPlayerType and provide it with an identifying number
-        Player(PlayerType ecPlayerType) { m_ecPlayerType = ecPlayerType; m_nPlayerNumber = m_nPlayerCount; }
+        explicit Player(PlayerType ecPlayerType) { m_ecPlayerType = ecPlayerType; m_nPlayerNumber = m_nPlayerCount; }
 
         //
         // Virtual functions to be defined by dervied classes

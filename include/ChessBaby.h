@@ -34,7 +34,7 @@ class ChessBaby : public ChessGame
 {
     public:
         // Constructor
-        ChessBaby(GameType ecGameType) : ChessGame(ecGameType, 5, 5, 12, true, true, true)
+        explicit ChessBaby(GameType ecGameType) : ChessGame(ecGameType, 5, 5, 12, true, true, true)
         {
             SetBoard();
         }

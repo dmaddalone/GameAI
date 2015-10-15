@@ -475,6 +475,31 @@ bool CardGameGoFish::GameEnded(int nPlayer)
 }
 
 /**
+  * Initialize the blackboard
+  *
+  * Initialize the discard pile and call parent class.
+  */
+
+void CardGameGoFish::BlackboardInitialize(int nPlayer, Blackboard &cBlackboard) const
+{
+    // Remove cards matching the player's hand from ProbableDeck
+    std::vector<Card> vCards {};
+    for (const Card &cCard : m_vHands[nPlayer -1].Cards())
+    {
+        // Remove one card of sRank from ProbableDeck
+        vCards = cBlackboard.m_cProbableDeck.RemoveCardsOfRank(cCard.Rank(), 1);
+        if (vCards.size() != 1)
+        {
+            std::string sError = "Expected to remove one card from probable deck, but removed " + std::to_string(vCards.size());
+            throw GameAIException(sError);
+        }
+    }
+
+    // Call parent class to finish BB init
+    CardGame::BlackboardInitialize(nPlayer, cBlackboard);
+}
+
+/**
   * Generate a move from the Blackboard
   *
   * Evaluate the probability of successfully pulling needed cards from opponent's
@@ -585,12 +610,11 @@ GameMove CardGameGoFish::BlackboardMove(int nPlayer, Blackboard &cBlackboard, in
     //
     Card cBestCard;
     int nLowestAsks {INT_MAX};
-    int nAsks {};
 
     // Loop through my hands in order of number of Ranks in hand (sorted by ApplyMove)
     for (const Card &cCard : m_vHands[nPlayer - 1].Cards())
     {
-        nAsks = cBlackboard.Asks(cCard.Rank());
+        int nAsks = cBlackboard.Asks(cCard.Rank());
         if (nAsks < nLowestAsks)
         {
             nLowestAsks = nAsks;
@@ -870,7 +894,6 @@ bool CardGameGoFish::BooksJsonDeserialization(const std::string &sJsonBooks, std
 {
     Json::Reader jReader;
     Json::Value  jBooks;
-    int nPlayer;
     Book cBook;
 
     // Parse the JSON string into a Json object
@@ -880,7 +903,7 @@ bool CardGameGoFish::BooksJsonDeserialization(const std::string &sJsonBooks, std
 
         for (const Json::Value &jValue : jBooks)
         {
-            nPlayer = jValue["Player"].asInt();
+            int nPlayer = jValue["Player"].asInt();
 
             if (cBook.JsonDeserialization(jValue["Book"].toStyledString(), sErrorMessage))
             {

@@ -36,7 +36,7 @@ class CardGameGoFish : public CardGame
 {
     public:
         // Construct a War card game
-        CardGameGoFish(GameType ecGameType) :
+        explicit CardGameGoFish(GameType ecGameType) :
             CardGame(ecGameType, 2)
         {
             // Stochastic game
@@ -117,6 +117,10 @@ class CardGameGoFish : public CardGame
 
         // Draw a card from the stock
         bool GoFish(int nPlayer);
+
+    protected:
+        // Initialize Blackboard
+        virtual void BlackboardInitialize(int nPlayer, Blackboard &cBlackboard) const override;
 
     private:
         // Books used to hold books for each player

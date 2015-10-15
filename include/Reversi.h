@@ -32,7 +32,7 @@ class Reversi : public LinearGame
 {
     public:
         // Construct a Reversi game, and set up the board
-        Reversi(GameType ecGameType) : LinearGame(ecGameType, m_kiDimension, m_kiDimension, 'D', 'L', 0, true, true, true, true)
+        explicit Reversi(GameType ecGameType) : LinearGame(ecGameType, m_kiDimension, m_kiDimension, 'D', 'L', 0, true, true, true, true)
         { SetBoard(); }
 
         // Deconstructor

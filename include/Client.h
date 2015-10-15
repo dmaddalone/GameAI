@@ -32,7 +32,7 @@ class Client: public NetworkPlayer
 {
     public:
         // Construct a client player
-        Client(PlayerType ecPlayerType);
+        explicit Client(PlayerType ecPlayerType);
 
         // Destructor
         ~Client() {}
