@@ -45,6 +45,11 @@ class Blackboard
         void UpdateAsks(const std::string &sRank);
         int  Asks(const std::string &sRank) const;
 
+        // Manage discards
+        void UpdateDiscard(const std::string sRankAndSuit) { m_vDiscards.push_back(sRankAndSuit); }
+        bool RecentlyDiscarded(const std::string&sRankAndSuit, const int nCards) const;
+        void ClearDiscard() { m_vDiscards.clear(); }
+
         // Manage Layoff and Match Opportunities
         void SetLayoffOpportunities(int n)    { m_nLayoffOpportunities = n; }
         int  LayoffOpportunities() const      { return m_nLayoffOpportunities; }
@@ -74,6 +79,9 @@ class Blackboard
         int m_nLayoffOpportunities {};
         int m_nMatchOpportunities {};
         int m_nNearMatchOpportunities {};
+
+        // Discards
+        std::vector<std::string> m_vDiscards {};
 
         // Card
         Card m_cCard;

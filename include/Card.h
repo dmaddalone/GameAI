@@ -95,9 +95,11 @@ class Card
         void  SetProbability(float fProb) { m_fProbability = fProb; }
         float Probability() const         { return m_fProbability; }
 
-        // Set and get eligibility
+        // Set and get generic flags
         void SetEligibility(bool b) { m_bEligible = b; }
         bool Eligible() const       { return m_bEligible; }
+        void SetMarked(bool b)      { m_bMarked = b; }
+        bool Marked() const         { return m_bMarked; }
 
         // Json object serialization and deserialization
         Json::Value JsonSerialization() const;
@@ -127,6 +129,7 @@ class Card
 
         // Used to generically mark cards
         bool m_bEligible {false};
+        bool m_bMarked   {false};
 };
 
 #endif // CARD_H

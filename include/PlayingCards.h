@@ -40,7 +40,7 @@ class PlayingCards
         // Destructor
         virtual ~PlayingCards() {};
 
-        // Return cards
+        // Return copy cards
         std::vector<Card> Cards() const { return m_vCards; }
 
         // Return miscellaneous information on the playing cards

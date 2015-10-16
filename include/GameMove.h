@@ -138,25 +138,25 @@ class GameMove
         bool Fold() const    { return m_bFold; }
 
         // Set and return whether a draw has been made
-        void SetDraw(bool b)      { m_bMove = false; m_bDraw = b; m_nDraw = 1; if (b) m_sCommand = GameVocabulary::DRAW; else m_sCommand.clear(); }
+        void SetDraw(bool b)      { m_bMove = false; m_bDraw = b; m_nDraw = 1; if (b) m_sCommand = GameVocabulary::DRAW; else { ClearCardMove(); SetDrawNumber(0); } }
         void SetDrawNumber(int n) { m_nDraw = n; }
         bool Draw() const         { return m_bDraw; }
         int  DrawNumber() const   { return m_nDraw; }
 
         // Set and return whether an ask has been made
-        void SetAsk(bool b)       { m_bMove = false; m_bAsk = b; if (b) m_sCommand = GameVocabulary::ASK; else m_sCommand.clear(); }
+        void SetAsk(bool b)       { m_bMove = false; m_bAsk = b; if (b) m_sCommand = GameVocabulary::ASK; else ClearCardMove(); }
         bool Ask() const          { return m_bAsk; }
 
         // Set and return whether a meld has been made
-        void SetMeld(bool b)      { m_bMove = false; m_bMeld = b; if (b) m_sCommand = GameVocabulary::MELD; else m_sCommand.clear(); }
+        void SetMeld(bool b)      { m_bMove = false; m_bMeld = b; if (b) m_sCommand = GameVocabulary::MELD; else ClearCardMove(); }
         bool Meld() const         { return m_bMeld; }
 
         // Set and return whether a layoff has been made
-        void SetLayoff(bool b)    { m_bMove = false; m_bLayoff = b; if (b) m_sCommand = GameVocabulary::LAYOFF; else m_sCommand.clear(); }
+        void SetLayoff(bool b)    { m_bMove = false; m_bLayoff = b; if (b) m_sCommand = GameVocabulary::LAYOFF; else ClearCardMove(); }
         bool Layoff() const       { return m_bLayoff; }
 
         // Set and return whether discard has been made
-        void SetDiscard(bool b)   { m_bMove = false; m_bDiscard = b; if (b) m_sCommand = GameVocabulary::DISCARD; else m_sCommand.clear(); }
+        void SetDiscard(bool b)   { m_bMove = false; m_bDiscard = b; if (b) m_sCommand = GameVocabulary::DISCARD; else ClearCardMove(); }
         bool Discard() const      { return m_bDiscard; }
 
         // Set and return whether a show has been made
@@ -205,6 +205,10 @@ class GameMove
         // Json object (de)serialization
         Json::Value JsonSerialization() const;
         bool        JsonDeserialization(const std::string &sJsonGameValue, std::string &sErrorMessage);
+
+    protected:
+        // Clearing a game move for card games
+        void ClearCardMove() { m_sCommand.clear(); m_sArgument.clear(); RemoveCards(); }
 
     private:
         // Used to convert int coordinates to char values for internal representation using ASCII representation

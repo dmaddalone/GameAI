@@ -56,6 +56,7 @@ Json::Value Card::JsonSerialization() const
     jValue["TurnedUp"]    = m_bTurnedUp;
     jValue["Probability"] = m_fProbability;
     jValue["Eligible"]    = m_bEligible;
+    jValue["Marked"]      = m_bMarked;
 
     return jValue;
 }
@@ -103,6 +104,7 @@ bool Card::JsonDeserialization(const Json::Value &jCard)
     m_bTurnedUp    = jCard["TurnedUp"].asBool();
     m_fProbability = jCard["Probability"].asFloat();
     m_bEligible    = jCard["Eligible"].asBool();
+    m_bMarked      = jCard["Marked"].asBool();
 
     return true;
 }

@@ -28,6 +28,8 @@
 #ifndef CARDGAMEBASICRUMMY_H
 #define CARDGAMEBASICRUMMY_H
 
+#include <iomanip>
+#include <sstream>
 #include <unordered_map>
 
 #include "CardGame.h"
@@ -125,7 +127,7 @@ class CardGameBasicRummy : public CardGame
             GameVocabulary::RESIGN + "."; }
 
         // Override Game::SetSync()
-        void SetSync(bool b)  { CardGame::SetSync(b); m_bSyncMatches = b; }
+        void SetSync(bool b)  { CardGame::SetSync(b); m_bSyncMatches = m_bSyncDiscardPile = b; }
 
     protected:
         // Initialize Blackboard
@@ -147,6 +149,9 @@ class CardGameBasicRummy : public CardGame
         int  ScoreHand(int nPlayer, int nRummyMultiplier=1);
 
         // Manage a player's ability to Go Rummy
+        void InitializePlayedCards(int nIndex) { m_abPlayedCards[nIndex - 1] = false; }
+        void SetPlayedCards(int nIndex)        { m_abPlayedCards[nIndex - 1] = true; }
+        bool PlayedCards(int nIndex)           { return m_abPlayedCards[nIndex - 1]; }
         void InitializeRummy()       { m_abRummy[0] = m_abRummy[1] = true; }
         void SetRummyOff(int nIndex) { m_abRummy[nIndex - 1] = false; }
         bool Rummy(int nIndex)       { return m_abRummy[nIndex - 1]; }
@@ -167,12 +172,20 @@ class CardGameBasicRummy : public CardGame
         // Return matches as a string
         std::string MatchesTypes(const MatchType ecMatchType=MatchType::TYPE_NONE) const;
 
+        // Number of times to re-use the stock during a hand
+        const int m_knStockDepletedLimit {2};
+        int m_nStockDepletedCount {0};
+
         //// Serialize and deserialize Matches
         Json::Value MatchesJsonSerialization() const;
         bool        MatchesJsonDeserialization(const std::string &sJsonPlayingCards, std::string &sErrorMessage);
 
         // Sync flags
-        bool m_bSyncMatches { false };
+        bool m_bSyncMatches     { false };
+        bool m_bSyncDiscardPile { false };
+
+        // Played cards flag
+        bool m_abPlayedCards[2] { false };
 
         // Stats Per player:
         //   The number of melds
@@ -180,11 +193,13 @@ class CardGameBasicRummy : public CardGame
         //   The number of draws from the discard
         //   The number of draws from the stock
         //   The number of hands won
+        //   The number of Rummys
         int m_aiNumberOfMelds[2]             {0};
         int m_aiNumberOfLayoffs[2]           {0};
         int m_aiNumberOfDrawsFromDiscard[2]  {0};
         int m_aiNumberOfDrawsFromStock[2]    {0};
         int m_aiNumberOfHandsWon[2]          {0};
+        int m_aiNumberOfRummys[2]            {0};
 };
 
 #endif // CARDGAMEBASICRUMMY_H

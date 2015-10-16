@@ -40,18 +40,28 @@ void CardGameBasicRummy::Display() const
 
 bool CardGameBasicRummy::GetSyncInfo(std::string &sGameInformation)
 {
+    std::string sLogInfo {};
     sGameInformation.clear();
 
     //Sync matches
     if (m_bSyncMatches)
     {
         m_cLogger.LogInfo("Gathering synchronization on matches", 2);
-        std::string sLogInfo = "Matches: " + MatchesTypes();
+        sLogInfo = "Matches: " + MatchesTypes();
         m_cLogger.LogInfo(sLogInfo, 3);
 
         // Serialize matches
         sGameInformation = MatchesJsonSerialization().toStyledString();
         m_bSyncMatches = false;
+        return true;
+    }
+    else if (m_bSyncDiscardPile)
+    {
+        m_cLogger.LogInfo("Gathering synchronization on discard pile", 2);
+        sLogInfo = "Discard Pile Ranks and Suits: " + m_cDiscardPile.RanksAndSuits();
+        m_cLogger.LogInfo(sLogInfo, 3);
+        sGameInformation = m_cDiscardPile.JsonSerialization().toStyledString();
+        m_bSyncDiscardPile = false;
         return true;
     }
 
@@ -85,6 +95,21 @@ bool CardGameBasicRummy::ApplySyncInfo(const std::string &sGameInformation, std:
             std::string sLogInfo = "Matches: " + MatchesTypes();
             m_cLogger.LogInfo(sLogInfo, 3);
             return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+    else if (m_bSyncDiscardPile)
+    {
+        m_cLogger.LogInfo("Applying synchronization on discard pile", 2);
+
+        if (m_cDiscardPile.JsonDeserialization(sGameInformation, sErrorMessage))
+        {
+            m_bSyncDiscardPile = false;
+            m_cLogger.LogInfo("Discard Pile Cards: ", 3);
+            m_cLogger.LogInfo(m_cDiscardPile.RanksAndSuits(), 3);
         }
         else
         {
@@ -285,21 +310,28 @@ bool CardGameBasicRummy::DrawCard(int nPlayer, GameMove &cGameMove)
             // over to form a new stock.
             if (m_cDeck.HasCards() == 0)
             {
-                m_cLogger.LogInfo("Stock has been depleted.  Creating new stock from discard pile.",1);
-
-                // Grab top card from discard pile
-                Card cNewDiscardPileCard = m_cDiscardPile.DrawTopCard();
-
-                // Remove all cards from the discard pile and add them to the stock
-                std::vector<Card> vNewStockCards = m_cDiscardPile.RemoveAllCards();
-                for (Card &cCard : vNewStockCards)
+                if (++m_nStockDepletedCount > m_knStockDepletedLimit)
                 {
-                    cCard.TurnUp(false);
-                    m_cDeck.AddCard(cCard);
+                    m_cLogger.LogInfo("Stock has been depleted and the hand has reached the limit of reusing the discard pile.",1);
                 }
+                else
+                {
+                    m_cLogger.LogInfo("Stock has been depleted.  Creating new stock from discard pile.",1);
 
-                // Add top card from discard pile back to discard pile
-                m_cDiscardPile.AddCard(cNewDiscardPileCard);
+                    // Grab top card from discard pile
+                    Card cNewDiscardPileCard = m_cDiscardPile.DrawTopCard();
+
+                    // Remove all cards from the discard pile and add them to the stock
+                    std::vector<Card> vNewStockCards = m_cDiscardPile.RemoveAllCards();
+                    for (Card &cCard : vNewStockCards)
+                    {
+                        cCard.TurnUp(false);
+                        m_cDeck.AddCard(cCard);
+                    }
+
+                    // Add top card from discard pile back to discard pile
+                    m_cDiscardPile.AddCard(cNewDiscardPileCard);
+                }
             }
 
             return true;
@@ -319,10 +351,17 @@ bool CardGameBasicRummy::DrawCard(int nPlayer, GameMove &cGameMove)
             sMessage = "Player " + std::to_string(nPlayer) + " draws from the discard pile";
             m_cLogger.LogInfo(sMessage,1);
 
+            // Draw top card
             Card cCard = m_cDiscardPile.DrawTopCard();
+
+            //// Use generic flag to mark the card -- Do Not Discard on next discard
+            //cCard.SetMarked(true);
+
+            // Add card to hand
             m_vHands[nPlayer - 1].AddCard(cCard);
             m_vHands[nPlayer - 1].SortByRank();
 
+            // For stats
             ++m_aiNumberOfDrawsFromDiscard[nPlayer - 1];
 
             return true;
@@ -445,14 +484,32 @@ bool CardGameBasicRummy::Discard(int nPlayer, GameMove &cGameMove)
 {
     std::vector<Card> vCards = cGameMove.GetCards();
 
+    // If hand has no cards left, return true
+    if (m_vHands[nPlayer - 1].HasCards() == 0)
+    {
+        return true;
+    }
+
     // Ensure the cards in the player's hand
     if (!m_vHands[nPlayer - 1].HasCard(vCards[0]))
     {
         return false;
     }
 
+    // Turn up
     vCards[0].TurnUp(true);
+    //// Set Unmarked (used to identify cards draw from the discard)
+    //vCards[0].SetMarked(false);
+    // Perform the discard
     m_vHands[nPlayer - 1].Discard(m_cDiscardPile, vCards[0]);
+
+    //// Clear generic flag to mark cards -- Was used in DRAW DISCARD
+    //vCards = m_vHands[nPlayer - 1].RemoveAllCards();
+    //for (Card &cCard : vCards)
+    //{
+    //    cCard.SetMarked(false);
+    //}
+    //m_vHands[nPlayer - 1].AddCards(vCards);
 
     return true;
 }
@@ -548,7 +605,11 @@ bool CardGameBasicRummy::ApplyMove(int nPlayer, GameMove &cGameMove)
         if (!DrawCard(nPlayer, cGameMove))
             return false;
 
+        // Move to next set of allowed moves
         m_cAllowedMoves.ProgressSequence();
+
+        // Init flag for beginning of ability to play (meld, layoff) cards
+        InitializePlayedCards(nPlayer);
     }
 
     // Check for MELD
@@ -559,6 +620,9 @@ bool CardGameBasicRummy::ApplyMove(int nPlayer, GameMove &cGameMove)
 
         if (!MeldCards(nPlayer, cGameMove))
             return false;
+
+        // Set flag to indicate cards have been played
+        SetPlayedCards(nPlayer);
     }
 
     // Check for LAYOFF
@@ -569,6 +633,9 @@ bool CardGameBasicRummy::ApplyMove(int nPlayer, GameMove &cGameMove)
 
         if (!LayoffCard(nPlayer, cGameMove))
             return false;
+
+        // Set flag to indicate cards have been played
+        SetPlayedCards(nPlayer);
     }
 
     // Check for DISCARD
@@ -577,17 +644,20 @@ bool CardGameBasicRummy::ApplyMove(int nPlayer, GameMove &cGameMove)
         if (!Discard(nPlayer, cGameMove))
             return false;
 
+        // Move to next set of allowed moves
         m_cAllowedMoves.ProgressSequence();
-
-        // If player still has cards in hand, turn off Rummy
-        if (m_vHands[nPlayer - 1].HasCards())
-            SetRummyOff(nPlayer);
     }
 
     // If player has cards, sort them
-    if (m_vHands[nPlayer - 1].HasCards())
+    if (m_vHands[nPlayer - 1].HasCards() > 0)
     {
         m_vHands[nPlayer - 1].SortByRank();
+
+        // If the turn is over and cards have been played, turn off Rummy
+        if (!cGameMove.AnotherTurn() && PlayedCards(nPlayer))
+        {
+            SetRummyOff(nPlayer);
+        }
     }
 
     // Increment move counter
@@ -673,6 +743,7 @@ std::string CardGameBasicRummy::GameScore() const
   * The number of layoffs
   * The number of draws from the discard
   * The number of draws from the stock
+  * The number of Rummys
   * The number of hands won and lost
   * The average and median points per hand gained from the opponent
   *
@@ -681,23 +752,42 @@ std::string CardGameBasicRummy::GameScore() const
 
 std::string CardGameBasicRummy::GameStatistics() const
 {
-    std::string sGameStats = "Statistic            Player 1       Player 2\n";
-    sGameStats            += "Num. of Melds          " + std::to_string(m_aiNumberOfMelds[0])            +
-                             "              " + std::to_string(m_aiNumberOfMelds[1])                     + "\n";
-    sGameStats            += "Num. of Layoffs        " + std::to_string(m_aiNumberOfLayoffs[0])          +
-                             "              " + std::to_string(m_aiNumberOfLayoffs[1])                   + "\n";
-    sGameStats            += "Num. of Draws Stock    " + std::to_string(m_aiNumberOfDrawsFromStock[0])   +
-                             "              " + std::to_string(m_aiNumberOfDrawsFromStock[1])            + "\n";
-    sGameStats            += "Num. of Draws Discard  " + std::to_string(m_aiNumberOfDrawsFromDiscard[0]) +
-                             "              " + std::to_string(m_aiNumberOfDrawsFromDiscard[1])          + "\n";
-    sGameStats            += "Num. of Hands Won      " + std::to_string(m_aiNumberOfHandsWon[0])         +
-                             "              " + std::to_string(m_aiNumberOfHandsWon[1])                  + "\n";
-    sGameStats            += "Avg. Points Won / Hand "                                                   +
-        std::to_string(static_cast<float>(Score(1)) / static_cast<float>(m_aiNumberOfHandsWon[0]))       +
-                                                                                        "              " +
-        std::to_string(static_cast<float>(Score(2)) / static_cast<float>(m_aiNumberOfHandsWon[1]))       + "\n";
+    std::stringstream ssGameStats;
 
-    return sGameStats;
+    ssGameStats << "Statistic";
+    ssGameStats.width(25); ssGameStats << std::right << "Player 1";
+    ssGameStats.width(16); ssGameStats << std::right << "Player 2\n";
+
+    ssGameStats << "Num. of Melds";
+    ssGameStats.width(17); ssGameStats << m_aiNumberOfMelds[0];
+    ssGameStats.width(15); ssGameStats << m_aiNumberOfMelds[1] << "\n";
+
+    ssGameStats << "Num. of Layoffs";
+    ssGameStats.width(15); ssGameStats << m_aiNumberOfLayoffs[0];
+    ssGameStats.width(15); ssGameStats << m_aiNumberOfLayoffs[1] << "\n";
+
+    ssGameStats << "Num. of Draws Stock";
+    ssGameStats.width(11); ssGameStats << m_aiNumberOfDrawsFromStock[0];
+    ssGameStats.width(15); ssGameStats << m_aiNumberOfDrawsFromStock[1] << "\n";
+
+    ssGameStats << "Num. of Draws Discard";
+    ssGameStats.width(9);  ssGameStats << m_aiNumberOfDrawsFromDiscard[0];
+    ssGameStats.width(15); ssGameStats << m_aiNumberOfDrawsFromDiscard[1] << "\n";
+
+    ssGameStats << "Num. of Rummys";
+    ssGameStats.width(16); ssGameStats << m_aiNumberOfRummys[0];
+    ssGameStats.width(15); ssGameStats << m_aiNumberOfRummys[1] << "\n";
+
+    ssGameStats << "Num. of Hands Won";
+    ssGameStats.width(13); ssGameStats << m_aiNumberOfHandsWon[0];
+    ssGameStats.width(15); ssGameStats << m_aiNumberOfHandsWon[1] << "\n";
+
+    ssGameStats << "Avg. Points Won / Hand";
+    ssGameStats << std::setprecision(2) << std::fixed;
+    ssGameStats.width(11); ssGameStats << static_cast<float>(Score(1)) / static_cast<float>(m_aiNumberOfHandsWon[0]);
+    ssGameStats.width(15); ssGameStats << static_cast<float>(Score(2)) / static_cast<float>(m_aiNumberOfHandsWon[1]) << "\n";
+
+    return ssGameStats.str();
 }
 
 /**
@@ -734,6 +824,9 @@ int CardGameBasicRummy::ScoreHand(int nPlayer, int nRummyMultiplier)
 
 bool CardGameBasicRummy::GameEnded(int nPlayer)
 {
+    // Flag to deal a new hand
+    bool bDealNewHand {false};
+
     // Clear win variables
     m_nWinner = -1;
     m_sWinBy.assign("nothing");
@@ -755,6 +848,8 @@ bool CardGameBasicRummy::GameEnded(int nPlayer)
         {
             sMessage = "Player " + std::to_string(nThisPlayer) + " has gone Rummy!";
             nRummyMultiplier = 2;
+            // For game stats
+            ++m_aiNumberOfRummys[nThisPlayer - 1];
         }
         else
         {
@@ -764,11 +859,13 @@ bool CardGameBasicRummy::GameEnded(int nPlayer)
 
         m_cLogger.LogInfo(sMessage, 1);
 
+        // Display opponent's hand
+        sMessage = "Player " + std::to_string(nPlayer) + "'s hand: " + m_vHands[nPlayer - 1].DisplayCards(true);
         // Find total of cards in opponent's hand
         int nScore = ScoreHand(nPlayer, nRummyMultiplier);
         sMessage = "Player " + std::to_string(nPlayer) + " has a hand worth " +
-            std::to_string(nScore) + "; added to Player " +
-            std::to_string(nThisPlayer) + "'s cumulative score";
+        std::to_string(nScore) + "; added to Player " +
+        std::to_string(nThisPlayer) + "'s cumulative score";
         m_cLogger.LogInfo(sMessage, 1);
         AddToScore(nThisPlayer, nScore);
 
@@ -777,20 +874,54 @@ bool CardGameBasicRummy::GameEnded(int nPlayer)
         // For game stats
         ++m_aiNumberOfHandsWon[nThisPlayer - 1];
 
-        // If this player's total score is greater than or equal to the goal score, this player wins
-        if (Score(nThisPlayer) >= TargetScore())
-        {
-            m_nWinner = nThisPlayer;
-            m_sWinBy = "having " + std::to_string(Score(nThisPlayer)) + " points.";
-            m_bGameOver = true;
-            return true;
-        }
-        // Else start a new hand of Rummy
-        else
-        {
-            m_cLogger.LogInfo("New hand being dealt", 1);
-            BeginHand();
-        }
+        // Deal new hand
+        bDealNewHand = true;
+    }
+    // Evaluate whether the stock depletion limit has been reached
+    else if (m_nStockDepletedCount > m_knStockDepletedLimit)
+    {
+        // Find total of cards in opponent's hand
+        int nScore = ScoreHand(nPlayer, 1);
+        std::string sMessage = "Player " + std::to_string(nPlayer) + " has a hand worth " +
+        std::to_string(nScore) + "; added to Player " +
+        std::to_string(nThisPlayer) + "'s cumulative score";
+        m_cLogger.LogInfo(sMessage, 1);
+        AddToScore(nThisPlayer, nScore);
+
+        // Find total of cards in player's hand
+        nScore = ScoreHand(nThisPlayer, 1);
+        sMessage = "Player " + std::to_string(nThisPlayer) + " has a hand worth " +
+        std::to_string(nScore) + "; added to Player " +
+        std::to_string(nPlayer) + "'s cumulative score";
+        m_cLogger.LogInfo(sMessage, 1);
+        AddToScore(nPlayer, nScore);
+
+        // Deal new hand
+        bDealNewHand = true;
+    }
+
+    // If this player's total score is greater than or equal to the goal score, this player wins
+    if (Score(nThisPlayer) >= TargetScore())
+    {
+        m_nWinner = nThisPlayer;
+        m_sWinBy = "having " + std::to_string(Score(nThisPlayer)) + " points.";
+        m_bGameOver = true;
+        return true;
+    }
+    // If opponent's total score is greater than or equal to the goal score, this opponent wins
+    else if (Score(nPlayer) >= TargetScore())
+    {
+        m_nWinner = nPlayer;
+        m_sWinBy = "having " + std::to_string(Score(nPlayer)) + " points.";
+        m_bGameOver = true;
+        return true;
+    }
+
+    // Evaluate for a new hand of Rummy
+    if (bDealNewHand)
+    {
+        m_cLogger.LogInfo("New hand being dealt", 1);
+        BeginHand();
     }
 
     return false;
@@ -819,6 +950,9 @@ void CardGameBasicRummy::BeginHand()
     Card cCard = m_cDeck.DrawTopCard();
     cCard.TurnUp(true);
     m_cDiscardPile.AddCard(cCard);
+
+    // Reset stock reuse count
+    m_nStockDepletedCount = 0;
 
     // Set allowed moves sequence
     m_cAllowedMoves.ResetSequence();
@@ -866,6 +1000,9 @@ void CardGameBasicRummy::BlackboardInitialize(int nPlayer, Blackboard &cBlackboa
             throw GameAIException(sError);
         }
     }
+
+    // Clear discards
+    cBlackboard.ClearDiscard();
 
     // Call parent class to finish BB init
     CardGame::BlackboardInitialize(nPlayer, cBlackboard);
@@ -992,13 +1129,18 @@ GameMove CardGameBasicRummy::BlackboardMove(int nPlayer, Blackboard &cBlackboard
                             ++nOpportunities;
                     }
 
-                    // If number of matches with the discard card are greater than
+                    // If number of near matches with the discard card are greater than
                     // the number of matches without it, set the game move to draw
-                    // from the discard pile
+                    // from the discard pile, UNLESS we have recently discarded
+                    // the card
                     if (nOpportunities > cBlackboard.NearMatchOpportunities())
                     {
-                        cGameMove.SetDraw(true);
-                        cGameMove.SetArgument(GameVocabulary::ARG_DISCARD);
+                        if (!cBlackboard.RecentlyDiscarded(m_cDiscardPile.PeekAtTopCard().DisplayShortName(true), 3))
+                        {
+                            cGameMove.SetDraw(true);
+                            cGameMove.SetArgument(GameVocabulary::ARG_DISCARD);
+                        }
+
                     }
                 }
             } //  if (cPossibleGameMove.IsArgument(GameVocabulary::ARG_DISCARD))
@@ -1011,28 +1153,99 @@ GameMove CardGameBasicRummy::BlackboardMove(int nPlayer, Blackboard &cBlackboard
         {
             m_cLogger.LogInfo("Evaluating MELD move", 3);
 
-            cGameMove.SetMeld(true);
-
-            std::string sArg {};
-
-            // Find cards to meld - Sequence first, then Book (same rank)
-            if (!m_vHands[nPlayer -1].MatchOpportunities(m_knMatchNumber, true, false))
+            // Do not meld if:
+            // 1) Player still has a chance for Rummy
+            // 2) Opponent has more than 5 cards in their hand
+            // 3) The deck has more than 15 cards
+            if (Rummy(nPlayer) && (m_vHands[2 - nPlayer].HasCards() > 5) && (m_cDeck.HasCards() > 15))
             {
-                m_vHands[nPlayer -1].MatchOpportunities(m_knMatchNumber, false, true);
+                // NOP
+                m_cLogger.LogInfo("Holding MELD cards", 3);
             }
-
-            for (const Card &cCard : m_vHands[nPlayer - 1].Cards())
+            else
             {
-                // Add cards to GameMove
-                if (cCard.Eligible())
+                cGameMove.SetMeld(true);
+
+                std::string sArg {};
+
+                // Find cards to meld - Sequence first, then Book (same rank)
+                if (m_vHands[nPlayer - 1].MatchOpportunities(m_knMatchNumber, true, false))
                 {
-                    cGameMove.AddCard(cCard);
-                    sArg += cCard.DisplayShortName(true) + " ";
-                }
-            }
+                    // Sort cards by rank and suit to isolate sequences if more
+                    // than one exists in the hand
+                    m_vHands[nPlayer - 1].SortByRank();
+                    m_vHands[nPlayer - 1].SortBySuit();
 
-            cGameMove.SetArgument(sArg);
-        }
+                    //std::string sMessage = "Sequence Opportunity: " + m_vHands[nPlayer - 1].RanksAndSuits();
+                    //m_cLogger.LogDebug(sMessage);
+
+                    // sSequenceSuit and nLastSortValue used to select one
+                    // sequence from the hand
+                    std::string sSequenceSuit  {};
+                    int         nLastSortValue {0};
+
+                    for (const Card &cCard : m_vHands[nPlayer - 1].Cards())
+                    {
+                        if (cCard.Eligible())
+                        {
+                            // Set for one sequence suit
+                            if (sSequenceSuit.empty())
+                            {
+                                sSequenceSuit = cCard.Suit();
+                            }
+
+                            // Set for one sequence
+                            if (nLastSortValue == 0)
+                            {
+                                nLastSortValue = cCard.SortValue() - 1;
+                            }
+
+                            // If suit is the same and rank value is one more than last
+                            // add card to to game move
+                            if ((cCard.Suit() == sSequenceSuit) && (cCard.SortValue() == nLastSortValue + 1))
+                            {
+                                cGameMove.AddCard(cCard);
+                                sArg += cCard.DisplayShortName(true) + " ";
+                                nLastSortValue = cCard.SortValue();
+                            }
+                        }
+                    }
+
+                    cGameMove.SetArgument(sArg);
+                }
+                // Find cards to meld - Book (same rank)
+                else if (m_vHands[nPlayer -1].MatchOpportunities(m_knMatchNumber, false, true))
+                {
+                    // Sort cards by rank to isolate books if more than one exists
+                    // in the hand
+                    m_vHands[nPlayer - 1].SortByRank();
+
+                    // nSortValue used to select one book from the hand
+                    int nSortValue {0};
+
+                    for (const Card &cCard : m_vHands[nPlayer - 1].Cards())
+                    {
+                        if (cCard.Eligible())
+                        {
+                            // Set for one sequence
+                            if (nSortValue == 0)
+                            {
+                                nSortValue = cCard.SortValue();
+                            }
+
+                            // If rank value is one more than last add card to to game move
+                            if (cCard.SortValue() == nSortValue)
+                            {
+                                cGameMove.AddCard(cCard);
+                                sArg += cCard.DisplayShortName(true) + " ";
+                            }
+                        }
+                    }
+
+                    cGameMove.SetArgument(sArg);
+                } // else if (m_vHands[nPlayer -1].MatchOpportunities(m_knMatchNumber, false, true))
+            } // if ((m_vHands[2 - nPlayer].HasCards() > 5) && if (m_cDeck.HasCards() > 15)
+        } // if (cPossibleGameMove.Meld())
 
         //
         // Evaluate a LAYOFF
@@ -1042,18 +1255,30 @@ GameMove CardGameBasicRummy::BlackboardMove(int nPlayer, Blackboard &cBlackboard
         {
             m_cLogger.LogInfo("Evaluating LAYOFF move", 3);
 
-            cGameMove.SetLayoff(true);
-
-            // Find cards to layoff
-            m_vHands[nPlayer -1].LayoffOpportunities(m_uommMatches);
-            for (const Card &cCard : m_vHands[nPlayer - 1].Cards())
+            // Do not layoff if:
+            // 1) Player still has a chance for Rummy
+            // 2) Opponent has more than 5 cards in their hand
+            // 3) The deck has more than 15 cards
+            if (Rummy(nPlayer) && (m_vHands[2 - nPlayer].HasCards() > 5) && (m_cDeck.HasCards() > 15))
             {
-                // Add cards to GameMove
-                if (cCard.Eligible())
+                // NOP
+                m_cLogger.LogInfo("Holding LAYOFF cards", 3);
+            }
+            else
+            {
+                cGameMove.SetLayoff(true);
+
+                // Find cards to layoff
+                m_vHands[nPlayer -1].LayoffOpportunities(m_uommMatches);
+                for (const Card &cCard : m_vHands[nPlayer - 1].Cards())
                 {
-                    cGameMove.AddCard(cCard);
-                    cGameMove.SetArgument(cCard.DisplayShortName(true));
-                    break;
+                    // Add cards to GameMove
+                    if (cCard.Eligible())
+                    {
+                        cGameMove.AddCard(cCard);
+                        cGameMove.SetArgument(cCard.DisplayShortName(true));
+                        break;
+                    }
                 }
             }
         }
@@ -1062,46 +1287,158 @@ GameMove CardGameBasicRummy::BlackboardMove(int nPlayer, Blackboard &cBlackboard
         // Evaluate DISCARD
         //
         // TODO: don't discard card that has multiple opportunities
-        // TODO: don't discard card that was just draw from the discard pile
+        // TODO: don't discard card that was just drawn from the discard pile
         // If not already a Meld or Layoff
         if (cPossibleGameMove.Discard() && !cGameMove.Meld() && !cGameMove.Layoff())
         {
             m_cLogger.LogInfo("Evaluating DISCARD move", 3);
 
+            bool bContinueToEvaluate {false};
+
             cGameMove.SetDiscard(true);
 
-            // Evaluate hand to decide which card to discard
-            Hand cTheoreticalHand = m_vHands[nPlayer - 1];
-
-            // Evaluate for near Match opportunities in player's hand
-            if (cTheoreticalHand.MatchOpportunities(m_knMatchNumber - 1))
+            // If no cards in hand
+            if (m_vHands[nPlayer - 1].HasCards() == 0)
             {
-                for (const Card &cCard : cTheoreticalHand.Cards())
-                {
-                    // Remove cards that are near matching
-                    if (cCard.Eligible())
-                    {
-                        cTheoreticalHand.RemoveCard(cCard);
-                    }
-                }
+                // NOP
             }
-
-            // If cards still exist in the hand, sort by rank and select the highest to discard
-            if (cTheoreticalHand.HasCards() > 0)
+            // If only one card in hand
+            else if (m_vHands[nPlayer - 1].HasCards() == 1)
             {
-                cTheoreticalHand.SortByRank();
-                cGameMove.AddCard(cTheoreticalHand.PeekAtBottomCard());
-                cGameMove.SetArgument(cTheoreticalHand.PeekAtBottomCard().DisplayShortName(true));
-            }
-            // Else no cards exist in theoretical hand; select highest ranking from real hand
-            else
-            {
-                m_vHands[nPlayer - 1].SortByRank();
-                m_vHands[nPlayer - 1].SortBySuit();
+                // Select only card from hand as discard selection
                 cGameMove.AddCard(m_vHands[nPlayer - 1].PeekAtBottomCard());
                 cGameMove.SetArgument(m_vHands[nPlayer - 1].PeekAtBottomCard().DisplayShortName(true));
+                cBlackboard.UpdateDiscard(m_vHands[nPlayer - 1].PeekAtBottomCard().DisplayShortName(true));
             }
-        }
+            else
+            {
+
+                // Evaluate hand to decide which card to discard
+                Hand cTheoreticalHand = m_vHands[nPlayer - 1];
+
+                // Hold cards removed from the Theoretical Hand
+                std::vector<Card> vRemovedCards {};
+
+                // Evaluate for Match opportunities in player's hand
+                if (cTheoreticalHand.MatchOpportunities(m_knMatchNumber))
+                {
+                    for (const Card &cCard : cTheoreticalHand.Cards())
+                    {
+                        // Remove cards that are near matching
+                        if (cCard.Eligible())
+                        {
+                            Card cRemovedCard = cTheoreticalHand.RemoveCard(cCard);
+                            vRemovedCards.push_back(cRemovedCard);
+                        }
+                    }
+                }
+
+                // Evaluate number of cards remaining
+                if (cTheoreticalHand.HasCards() == 0)
+                {
+                    // If none, put cards back
+                    cTheoreticalHand.AddCards(vRemovedCards);
+
+                    // Set flag to stop evaluating
+                    bContinueToEvaluate = false;
+                }
+
+                // Evaluate for Layoff opportunities in player's hand
+                if (bContinueToEvaluate)
+                {
+                    if (cTheoreticalHand.LayoffOpportunities(m_uommMatches))
+                    {
+                        vRemovedCards.clear();
+                        for (const Card &cCard : cTheoreticalHand.Cards())
+                        {
+                            // Remove cards that are near matching
+                            if (cCard.Eligible())
+                            {
+                                Card cRemovedCard = cTheoreticalHand.RemoveCard(cCard);
+                                vRemovedCards.push_back(cRemovedCard);
+                            }
+                        }
+                    }
+                }
+
+                // Evaluate number of cards remaining
+                if (cTheoreticalHand.HasCards() == 0)
+                {
+                    // If none, put cards back
+                    cTheoreticalHand.AddCards(vRemovedCards);
+
+                    // Set flag to stop evaluating
+                    bContinueToEvaluate = false;
+                }
+
+                // Evaluate for near Match opportunities in player's hand
+                if (bContinueToEvaluate)
+                {
+                    if (cTheoreticalHand.MatchOpportunities(m_knMatchNumber - 1))
+                    {
+                        for (const Card &cCard : cTheoreticalHand.Cards())
+                        {
+                            // Remove cards that are near matching
+                            if (cCard.Eligible())
+                            {
+                                Card cRemovedCard = cTheoreticalHand.RemoveCard(cCard);
+                                vRemovedCards.push_back(cRemovedCard);
+                            }
+                        }
+                    }
+                }
+
+                // Evaluate number of cards remaining
+                if (cTheoreticalHand.HasCards() == 0)
+                {
+                    // If none, put cards back
+                    cTheoreticalHand.AddCards(vRemovedCards);
+                }
+
+                //// Evaluate for card that was drawn from the discard pile (Marked())
+                //for (const Card &cCard : cTheoreticalHand.Cards())
+                //{
+                //    if (cCard.Marked())
+                //        cTheoreticalHand.RemoveCard(cCard);
+                //}
+
+                // If cards still exist in the hand, sort by rank and select the highest to discard
+                //if (cTheoreticalHand.HasCards() > 0)
+                //{
+                    cTheoreticalHand.SortByRank();
+                    cGameMove.AddCard(cTheoreticalHand.PeekAtBottomCard());
+                    cGameMove.SetArgument(cTheoreticalHand.PeekAtBottomCard().DisplayShortName(true));
+                    cBlackboard.UpdateDiscard(cTheoreticalHand.PeekAtBottomCard().DisplayShortName(true));
+                //}
+                //// Else no cards exist in theoretical hand; select highest ranking from real hand
+                ////// unless it is marked
+                //else
+                //{
+                //    m_vHands[nPlayer - 1].SortByRank();
+                //    m_vHands[nPlayer - 1].SortBySuit();
+
+                    //Card cRemovedCard;
+                    //Card cBottomCard = m_vHands[nPlayer - 1].PeekAtBottomCard();
+
+                    //// If bottom card has been marked, remove it from hand
+                    //if (cBottomCard.Marked())
+                    //{
+                    //    cRemovedCard = m_vHands[nPlayer - 1].RemoveCard(cBottomCard);
+                    //}
+
+                    // Select bottom card from hand as discard selection
+                 //   cGameMove.AddCard(m_vHands[nPlayer - 1].PeekAtBottomCard());
+                 //   cGameMove.SetArgument(m_vHands[nPlayer - 1].PeekAtBottomCard().DisplayShortName(true));
+                 //   cBlackboard.UpdateDiscard(m_vHands[nPlayer - 1].PeekAtBottomCard().DisplayShortName(true));
+
+                    //// If removed card is a card, add it back to the hand
+                    //if (!cRemovedCard.Rank().empty())
+                    //{
+                    //    m_vHands[nPlayer - 1].AddCard(cRemovedCard);
+                    //}
+                //} // if (cTheoreticalHand.HasCards() > 0)
+            } // if (m_vHands[nPlayer - 1].HasCards() == 0)
+        } // if (cPossibleGameMove.Discard() && !cGameMove.Meld() && !cGameMove.Layoff())
     } // for (const GameMove &cPossibleGameMove : vGameMoves)
 
     return cGameMove;

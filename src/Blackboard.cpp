@@ -71,3 +71,28 @@ int Blackboard::Asks(const std::string &sRank) const
         return 0;
     }
 }
+/**
+  * Evaluate whether a card of rank and suit has been recently discarded.
+  *
+  * \param sRankAndSuit The card rank and suit being evaluated
+  * \param nCards       The number of cards to evaluate
+  *
+  * \return True if rank and suit found within nCards, false otherwise
+  */
+
+bool Blackboard::RecentlyDiscarded(const std::string&sRankAndSuit, const int nCards) const
+{
+    std::vector<std::string>::const_reverse_iterator rit = m_vDiscards.rbegin();
+    int nCount {0};
+
+    while (rit != m_vDiscards.rend() && nCount < nCards)
+    {
+        if (sRankAndSuit.compare(*rit) == 0)
+            return true;
+
+        ++rit;
+        ++nCount;
+    }
+
+    return false;
+}

@@ -119,7 +119,9 @@ Match Hand::RemoveMatch(std::vector<Card> &vCards, const int nCount, const bool 
     // Create a new hand to evaluate match opportunities by removing the
     // matched cards from this hand.  If no opportunities, put the cards back.
     Hand cPossibleMatchHand;
+    // Remove the cards from this hand
     std::vector<Card> vMatchedCards = RemoveCards(vCards);
+    // Add the removed cards to the possible hand
     cPossibleMatchHand.AddCards(vMatchedCards);
 
     //
