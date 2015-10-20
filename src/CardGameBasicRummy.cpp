@@ -354,12 +354,12 @@ bool CardGameBasicRummy::DrawCard(int nPlayer, GameMove &cGameMove)
             // Draw top card
             Card cCard = m_cDiscardPile.DrawTopCard();
 
-            //// Use generic flag to mark the card -- Do Not Discard on next discard
-            //cCard.SetMarked(true);
-
             // Add card to hand
             m_vHands[nPlayer - 1].AddCard(cCard);
             m_vHands[nPlayer - 1].SortByRank();
+
+            // Add card to Game Move for Blackboard updates
+            cGameMove.AddCard(cCard);
 
             // For stats
             ++m_aiNumberOfDrawsFromDiscard[nPlayer - 1];
@@ -1022,14 +1022,12 @@ void CardGameBasicRummy::BlackboardInitialize(int nPlayer, Blackboard &cBlackboa
 
 GameMove CardGameBasicRummy::BlackboardMove(int nPlayer, Blackboard &cBlackboard, int nProbability)
 {
-    (void)nProbability; // TODO: Use
-
     int nOpportunities {};
     //std::string sCards {};
     //std::vector<Card> vDoNotDiscard {};
 
-    // Probability threshold - TODO: Use
-    //float fProbabilityThreshold = static_cast<float>(nProbability) / 10;
+    // Probability threshold
+    float fProbabilityThreshold = static_cast<float>(nProbability) / 10;
 
     // Probability of pulling card - TODO: Use
     //float fProbabilityOfPullingCard {};
@@ -1157,7 +1155,13 @@ GameMove CardGameBasicRummy::BlackboardMove(int nPlayer, Blackboard &cBlackboard
             // 1) Player still has a chance for Rummy
             // 2) Opponent has more than 5 cards in their hand
             // 3) The deck has more than 15 cards
-            if (Rummy(nPlayer) && (m_vHands[2 - nPlayer].HasCards() > 5) && (m_cDeck.HasCards() > 15))
+            // 4) No more than 2 matches are on the table
+            // 5) Score of hand is less than what is needed to win
+            if (Rummy(nPlayer) &&
+                (m_vHands[2 - nPlayer].HasCards() >= 6) &&
+                (m_cDeck.HasCards() >= 16) &&
+                (m_uommMatches.size() <= 2) &&
+                (ScoreHand(nPlayer, 2) < TargetScore() - Score(2 - nPlayer + 1)))
             {
                 // NOP
                 m_cLogger.LogInfo("Holding MELD cards", 3);
@@ -1259,7 +1263,13 @@ GameMove CardGameBasicRummy::BlackboardMove(int nPlayer, Blackboard &cBlackboard
             // 1) Player still has a chance for Rummy
             // 2) Opponent has more than 5 cards in their hand
             // 3) The deck has more than 15 cards
-            if (Rummy(nPlayer) && (m_vHands[2 - nPlayer].HasCards() > 5) && (m_cDeck.HasCards() > 15))
+            // 4) No more than 2 matches are on the table
+            // 5) Score of hand is less than what is needed to win
+            if (Rummy(nPlayer) &&
+                (m_vHands[2 - nPlayer].HasCards() >= 6) &&
+                (m_cDeck.HasCards() >= 16) &&
+                (m_uommMatches.size() <= 2) &&
+                (ScoreHand(nPlayer, 2) < TargetScore() - Score(2 - nPlayer + 1)))
             {
                 // NOP
                 m_cLogger.LogInfo("Holding LAYOFF cards", 3);
@@ -1287,7 +1297,6 @@ GameMove CardGameBasicRummy::BlackboardMove(int nPlayer, Blackboard &cBlackboard
         // Evaluate DISCARD
         //
         // TODO: don't discard card that has multiple opportunities
-        // TODO: don't discard card that was just drawn from the discard pile
         // If not already a Meld or Layoff
         if (cPossibleGameMove.Discard() && !cGameMove.Meld() && !cGameMove.Layoff())
         {
@@ -1319,7 +1328,9 @@ GameMove CardGameBasicRummy::BlackboardMove(int nPlayer, Blackboard &cBlackboard
                 // Hold cards removed from the Theoretical Hand
                 std::vector<Card> vRemovedCards {};
 
+                //
                 // Evaluate for Match opportunities in player's hand
+                //
                 if (cTheoreticalHand.MatchOpportunities(m_knMatchNumber))
                 {
                     for (const Card &cCard : cTheoreticalHand.Cards())
@@ -1327,8 +1338,8 @@ GameMove CardGameBasicRummy::BlackboardMove(int nPlayer, Blackboard &cBlackboard
                         // Remove cards that are near matching
                         if (cCard.Eligible())
                         {
-                            Card cRemovedCard = cTheoreticalHand.RemoveCard(cCard);
-                            vRemovedCards.push_back(cRemovedCard);
+                            cTheoreticalHand.RemoveCard(cCard);
+                            vRemovedCards.push_back(cCard);
                         }
                     }
                 }
@@ -1343,7 +1354,9 @@ GameMove CardGameBasicRummy::BlackboardMove(int nPlayer, Blackboard &cBlackboard
                     bContinueToEvaluate = false;
                 }
 
+                //
                 // Evaluate for Layoff opportunities in player's hand
+                //
                 if (bContinueToEvaluate)
                 {
                     if (cTheoreticalHand.LayoffOpportunities(m_uommMatches))
@@ -1354,8 +1367,8 @@ GameMove CardGameBasicRummy::BlackboardMove(int nPlayer, Blackboard &cBlackboard
                             // Remove cards that are near matching
                             if (cCard.Eligible())
                             {
-                                Card cRemovedCard = cTheoreticalHand.RemoveCard(cCard);
-                                vRemovedCards.push_back(cRemovedCard);
+                                cTheoreticalHand.RemoveCard(cCard);
+                                vRemovedCards.push_back(cCard);
                             }
                         }
                     }
@@ -1371,19 +1384,98 @@ GameMove CardGameBasicRummy::BlackboardMove(int nPlayer, Blackboard &cBlackboard
                     bContinueToEvaluate = false;
                 }
 
+                //
                 // Evaluate for near Match opportunities in player's hand
+                //
                 if (bContinueToEvaluate)
                 {
                     if (cTheoreticalHand.MatchOpportunities(m_knMatchNumber - 1))
                     {
+                        vRemovedCards.clear();
                         for (const Card &cCard : cTheoreticalHand.Cards())
                         {
                             // Remove cards that are near matching
                             if (cCard.Eligible())
                             {
-                                Card cRemovedCard = cTheoreticalHand.RemoveCard(cCard);
-                                vRemovedCards.push_back(cRemovedCard);
+                                cTheoreticalHand.RemoveCard(cCard);
+                                vRemovedCards.push_back(cCard);
                             }
+                        }
+                    }
+                }
+
+                // Evaluate number of cards remaining
+                if (cTheoreticalHand.HasCards() == 0)
+                {
+                    // If none, put cards back
+                    cTheoreticalHand.AddCards(vRemovedCards);
+
+                    // Set flag to stop evaluating
+                    bContinueToEvaluate = false;
+                }
+
+                //
+                // Evaluate for cards that may be needed by opponent
+                //
+                if (bContinueToEvaluate)
+                {
+                    std::vector<Card> vProbableOpponentCards {};
+
+                    vRemovedCards.clear();
+
+                    // Loop thru all remaining cards in the theoretical hand evaluating ranks
+                    for (const Card &cCard : cTheoreticalHand.Cards())
+                    {
+                        // Evaluate whether the opponent has this rank in her hand
+                        if (cBlackboard.m_cProbableOpponentHand.HasRank(cCard.Rank()))
+                        {
+                            // Remove all cards of rank from the opponent hand
+                            vProbableOpponentCards = cBlackboard.m_cProbableOpponentHand.RemoveCardsOfRank(cCard.Rank());
+
+                            // Loop thru cards of rank from opponent
+                            for (const Card &cProbableCard : vProbableOpponentCards)
+                            {
+                                // If probability is greater than threshold, remove it from the theoretical hand
+                                if (cProbableCard.Probability() > fProbabilityThreshold)
+                                {
+                                    cTheoreticalHand.RemoveCard(cCard);
+                                    vRemovedCards.push_back(cCard);
+                                    break;
+                                }
+                            }
+
+                            // Put all cards of rank back into the opponent hand
+                            cBlackboard.m_cProbableOpponentHand.AddCards(vProbableOpponentCards);
+                        }
+                    }
+
+                    // Loop thru all remaining cards in the theoretical hand evaluating sequences
+                    for (const Card &cCard : cTheoreticalHand.Cards())
+                    {
+                        // Evaluate whether the opponent has this suit in her hand
+                        if (cBlackboard.m_cProbableOpponentHand.HasRank(cCard.Suit()))
+                        {
+                            // Remove all cards of suit from the opponent hand
+                            vProbableOpponentCards = cBlackboard.m_cProbableOpponentHand.RemoveCardsOfSuit(cCard.Suit());
+
+                            // Loop thru cards of rank from opponent
+                            for (const Card &cProbableCard : vProbableOpponentCards)
+                            {
+                                // If the theoretical hand card can fit into a sequence with the probable card
+                                if ((cCard.SortValue() == cProbableCard.SortValue() + 1) || (cCard.SortValue() == cProbableCard.SortValue() - 1))
+                                {
+                                    // If probability is greater than threshold, remove it from the theoretical hand
+                                    if (cProbableCard.Probability() > fProbabilityThreshold)
+                                    {
+                                        cTheoreticalHand.RemoveCard(cCard);
+                                        vRemovedCards.push_back(cCard);
+                                        break;
+                                    }
+                                }
+                            }
+
+                            // Put all cards of rank back into the opponent hand
+                            cBlackboard.m_cProbableOpponentHand.AddCards(vProbableOpponentCards);
                         }
                     }
                 }
@@ -1395,48 +1487,32 @@ GameMove CardGameBasicRummy::BlackboardMove(int nPlayer, Blackboard &cBlackboard
                     cTheoreticalHand.AddCards(vRemovedCards);
                 }
 
-                //// Evaluate for card that was drawn from the discard pile (Marked())
-                //for (const Card &cCard : cTheoreticalHand.Cards())
-                //{
-                //    if (cCard.Marked())
-                //        cTheoreticalHand.RemoveCard(cCard);
-                //}
 
-                // If cards still exist in the hand, sort by rank and select the highest to discard
-                //if (cTheoreticalHand.HasCards() > 0)
-                //{
-                    cTheoreticalHand.SortByRank();
-                    cGameMove.AddCard(cTheoreticalHand.PeekAtBottomCard());
-                    cGameMove.SetArgument(cTheoreticalHand.PeekAtBottomCard().DisplayShortName(true));
-                    cBlackboard.UpdateDiscard(cTheoreticalHand.PeekAtBottomCard().DisplayShortName(true));
-                //}
-                //// Else no cards exist in theoretical hand; select highest ranking from real hand
-                ////// unless it is marked
-                //else
-                //{
-                //    m_vHands[nPlayer - 1].SortByRank();
-                //    m_vHands[nPlayer - 1].SortBySuit();
+                // Evaluate for cards recently discarded
+                cTheoreticalHand.SortByRank();
+                int nNumberOfCards = cTheoreticalHand.HasCards();
+                vRemovedCards.clear();
 
-                    //Card cRemovedCard;
-                    //Card cBottomCard = m_vHands[nPlayer - 1].PeekAtBottomCard();
+                // Review cards; if recently discarded, don't discard again
+                for (Card &cCard : cTheoreticalHand.Cards())
+                {
+                    if (cBlackboard.RecentlyDiscarded(cCard.DisplayShortName(true), nNumberOfCards))
+                    {
+                        Card cRemovedCard = cTheoreticalHand.RemoveCard(cCard);
+                        vRemovedCards.push_back(cRemovedCard);
+                    }
+                }
 
-                    //// If bottom card has been marked, remove it from hand
-                    //if (cBottomCard.Marked())
-                    //{
-                    //    cRemovedCard = m_vHands[nPlayer - 1].RemoveCard(cBottomCard);
-                    //}
+                // If no cards in hand left, add the removed cards back
+                if (cTheoreticalHand.HasCards() == 0)
+                {
+                    cTheoreticalHand.AddCards(vRemovedCards);
+                }
 
-                    // Select bottom card from hand as discard selection
-                 //   cGameMove.AddCard(m_vHands[nPlayer - 1].PeekAtBottomCard());
-                 //   cGameMove.SetArgument(m_vHands[nPlayer - 1].PeekAtBottomCard().DisplayShortName(true));
-                 //   cBlackboard.UpdateDiscard(m_vHands[nPlayer - 1].PeekAtBottomCard().DisplayShortName(true));
-
-                    //// If removed card is a card, add it back to the hand
-                    //if (!cRemovedCard.Rank().empty())
-                    //{
-                    //    m_vHands[nPlayer - 1].AddCard(cRemovedCard);
-                    //}
-                //} // if (cTheoreticalHand.HasCards() > 0)
+                // Select the highest ranking card to discard
+                cGameMove.AddCard(cTheoreticalHand.PeekAtBottomCard());
+                cGameMove.SetArgument(cTheoreticalHand.PeekAtBottomCard().DisplayShortName(true));
+                cBlackboard.UpdateDiscard(cTheoreticalHand.PeekAtBottomCard().DisplayShortName(true));
             } // if (m_vHands[nPlayer - 1].HasCards() == 0)
         } // if (cPossibleGameMove.Discard() && !cGameMove.Meld() && !cGameMove.Layoff())
     } // for (const GameMove &cPossibleGameMove : vGameMoves)
@@ -1497,6 +1573,14 @@ void CardGameBasicRummy::BlackboardUpdate(int nPlayer, Blackboard &cBlackboard)
 
             // Update ProbableHand
             cBlackboard.m_cProbableOpponentHand.RemoveCards(vCards);
+        }
+
+        // Evaluate a DRAW DISCARD
+        if (cLastMove.Draw() && cLastMove.IsArgument(GameVocabulary::ARG_DISCARD))
+        {
+            Card cCard = vCards[0];
+            cCard.SetProbability(1.0);
+            cBlackboard.m_cProbableOpponentHand.AddCard(cCard);
         }
     }
 
