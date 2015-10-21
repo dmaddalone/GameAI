@@ -869,7 +869,9 @@ bool CardGameBasicRummy::GameEnded(int nPlayer)
         m_cLogger.LogInfo(sMessage, 1);
         AddToScore(nThisPlayer, nScore);
 
-        std::cout << GameScore() << std::endl;
+        std::string sGameScore = GameScore();
+        if (!sGameScore.empty())
+            std::cout << GameScore() << std::endl;
 
         // For game stats
         ++m_aiNumberOfHandsWon[nThisPlayer - 1];

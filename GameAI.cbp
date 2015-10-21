@@ -64,7 +64,7 @@ TODO: Basic Rummy
 				<Option object_output="obj/Debug/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
-				<Option parameters="-1 ai -2 ai -g rummy -v3" />
+				<Option parameters="-1 ai -2 human -g rummy " />
 				<Compiler>
 					<Add option="-std=c++11" />
 					<Add option="-Wextra" />
