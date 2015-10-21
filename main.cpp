@@ -63,7 +63,7 @@ static void ShowUsage(std::string sName)
               << "GAME is one of the following:\n"
               << "    connectfour chess         chess-jm         war\n"
               << "    reversi     chess-attack  chess-los-alamos go-fish\n"
-              << "    ttt         chess-baby    chess-petty      \n"
+              << "    ttt         chess-baby    chess-petty      rummy\n"
               << "                chess-elena   chess-quick      \n"
               << "                chess-gardner chess-speed      \n"
               << "LEVEL is an integer 0 to 3.  The default is 1.\n"

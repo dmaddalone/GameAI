@@ -12,7 +12,7 @@ LD = g++.exe
 WINDRES = windres.exe
 
 INC = 
-CFLAGS = -Wall -fexceptions
+CFLAGS = -fexceptions
 RESINC = 
 LIBDIR = 
 LIB = 
@@ -62,13 +62,13 @@ OBJDIR_RELEASE_WINDOWS = obj\\Release
 DEP_RELEASE_WINDOWS = 
 OUT_RELEASE_WINDOWS = bin\\Release\\GameAI.exe
 
-OBJ_DEBUG = $(OBJDIR_DEBUG)\\src\\ChessBaby.o $(OBJDIR_DEBUG)\\src\\ChessSpeed.o $(OBJDIR_DEBUG)\\src\\ChessQuick.o $(OBJDIR_DEBUG)\\src\\ChessPetty.o $(OBJDIR_DEBUG)\\src\\ChessLosAlamos.o $(OBJDIR_DEBUG)\\src\\ChessJacobsMeirovitz.o $(OBJDIR_DEBUG)\\src\\ChessGardner.o $(OBJDIR_DEBUG)\\src\\ChessGame.o $(OBJDIR_DEBUG)\\src\\ChessElena.o $(OBJDIR_DEBUG)\\src\\Client.o $(OBJDIR_DEBUG)\\src\\ChessAttack.o $(OBJDIR_DEBUG)\\src\\Chess.o $(OBJDIR_DEBUG)\\src\\CardGameWar.o $(OBJDIR_DEBUG)\\src\\CardGame.o $(OBJDIR_DEBUG)\\src\\Card.o $(OBJDIR_DEBUG)\\src\\BoardGame.o $(OBJDIR_DEBUG)\\main.o $(OBJDIR_DEBUG)\\src\\LinearGame.o $(OBJDIR_DEBUG)\\src\\TTT.o $(OBJDIR_DEBUG)\\src\\Socket.o $(OBJDIR_DEBUG)\\src\\Server.o $(OBJDIR_DEBUG)\\src\\Reversi.o $(OBJDIR_DEBUG)\\src\\Player.o $(OBJDIR_DEBUG)\\src\\NetworkPlayer.o $(OBJDIR_DEBUG)\\src\\Minimax.o $(OBJDIR_DEBUG)\\src\\Logger.o $(OBJDIR_DEBUG)\\src\\Human.o $(OBJDIR_DEBUG)\\src\\Hand.o $(OBJDIR_DEBUG)\\src\\GameVocabulary.o $(OBJDIR_DEBUG)\\src\\GameMove.o $(OBJDIR_DEBUG)\\src\\GameBoard.o $(OBJDIR_DEBUG)\\src\\Game.o $(OBJDIR_DEBUG)\\src\\Deck.o $(OBJDIR_DEBUG)\\src\\ConnectFour.o
+OBJ_DEBUG = $(OBJDIR_DEBUG)\\src\\CardGameBasicRummy.o $(OBJDIR_DEBUG)\\src\\ChessLosAlamos.o $(OBJDIR_DEBUG)\\src\\ChessJacobsMeirovitz.o $(OBJDIR_DEBUG)\\src\\ChessGardner.o $(OBJDIR_DEBUG)\\src\\ChessGame.o $(OBJDIR_DEBUG)\\src\\ChessElena.o $(OBJDIR_DEBUG)\\src\\ChessBaby.o $(OBJDIR_DEBUG)\\src\\ChessAttack.o $(OBJDIR_DEBUG)\\src\\Chess.o $(OBJDIR_DEBUG)\\src\\CardGameWar.o $(OBJDIR_DEBUG)\\src\\CardGameGoFish.o $(OBJDIR_DEBUG)\\src\\ChessPetty.o $(OBJDIR_DEBUG)\\src\\CardGame.o $(OBJDIR_DEBUG)\\src\\Card.o $(OBJDIR_DEBUG)\\src\\BoardGame.o $(OBJDIR_DEBUG)\\src\\Blackboard.o $(OBJDIR_DEBUG)\\src\\AllowedMoves.o $(OBJDIR_DEBUG)\\src\\AIPlayer.o $(OBJDIR_DEBUG)\\main.o $(OBJDIR_DEBUG)\\src\\Hand.o $(OBJDIR_DEBUG)\\src\\TTT.o $(OBJDIR_DEBUG)\\src\\Socket.o $(OBJDIR_DEBUG)\\src\\Server.o $(OBJDIR_DEBUG)\\src\\Reversi.o $(OBJDIR_DEBUG)\\src\\PlayingCards.o $(OBJDIR_DEBUG)\\src\\Player.o $(OBJDIR_DEBUG)\\src\\NetworkPlayer.o $(OBJDIR_DEBUG)\\src\\Logger.o $(OBJDIR_DEBUG)\\src\\LinearGame.o $(OBJDIR_DEBUG)\\src\\Human.o $(OBJDIR_DEBUG)\\src\\GameVocabulary.o $(OBJDIR_DEBUG)\\src\\GameMove.o $(OBJDIR_DEBUG)\\src\\GameBoard.o $(OBJDIR_DEBUG)\\src\\Game.o $(OBJDIR_DEBUG)\\src\\Deck.o $(OBJDIR_DEBUG)\\src\\ConnectFour.o $(OBJDIR_DEBUG)\\src\\Client.o $(OBJDIR_DEBUG)\\src\\ChessSpeed.o $(OBJDIR_DEBUG)\\src\\ChessQuick.o $(OBJDIR_DEBUG)\\__\\jsoncpp\\dist\\jsoncpp.o
 
-OBJ_RELEASE = $(OBJDIR_RELEASE)\\src\\ChessBaby.o $(OBJDIR_RELEASE)\\src\\ChessSpeed.o $(OBJDIR_RELEASE)\\src\\ChessQuick.o $(OBJDIR_RELEASE)\\src\\ChessPetty.o $(OBJDIR_RELEASE)\\src\\ChessLosAlamos.o $(OBJDIR_RELEASE)\\src\\ChessJacobsMeirovitz.o $(OBJDIR_RELEASE)\\src\\ChessGardner.o $(OBJDIR_RELEASE)\\src\\ChessGame.o $(OBJDIR_RELEASE)\\src\\ChessElena.o $(OBJDIR_RELEASE)\\src\\Client.o $(OBJDIR_RELEASE)\\src\\ChessAttack.o $(OBJDIR_RELEASE)\\src\\Chess.o $(OBJDIR_RELEASE)\\src\\CardGameWar.o $(OBJDIR_RELEASE)\\src\\CardGame.o $(OBJDIR_RELEASE)\\src\\Card.o $(OBJDIR_RELEASE)\\src\\BoardGame.o $(OBJDIR_RELEASE)\\main.o $(OBJDIR_RELEASE)\\src\\LinearGame.o $(OBJDIR_RELEASE)\\src\\TTT.o $(OBJDIR_RELEASE)\\src\\Socket.o $(OBJDIR_RELEASE)\\src\\Server.o $(OBJDIR_RELEASE)\\src\\Reversi.o $(OBJDIR_RELEASE)\\src\\Player.o $(OBJDIR_RELEASE)\\src\\NetworkPlayer.o $(OBJDIR_RELEASE)\\src\\Minimax.o $(OBJDIR_RELEASE)\\src\\Logger.o $(OBJDIR_RELEASE)\\src\\Human.o $(OBJDIR_RELEASE)\\src\\Hand.o $(OBJDIR_RELEASE)\\src\\GameVocabulary.o $(OBJDIR_RELEASE)\\src\\GameMove.o $(OBJDIR_RELEASE)\\src\\GameBoard.o $(OBJDIR_RELEASE)\\src\\Game.o $(OBJDIR_RELEASE)\\src\\Deck.o $(OBJDIR_RELEASE)\\src\\ConnectFour.o
+OBJ_RELEASE = $(OBJDIR_RELEASE)\\src\\CardGameBasicRummy.o $(OBJDIR_RELEASE)\\src\\ChessLosAlamos.o $(OBJDIR_RELEASE)\\src\\ChessJacobsMeirovitz.o $(OBJDIR_RELEASE)\\src\\ChessGardner.o $(OBJDIR_RELEASE)\\src\\ChessGame.o $(OBJDIR_RELEASE)\\src\\ChessElena.o $(OBJDIR_RELEASE)\\src\\ChessBaby.o $(OBJDIR_RELEASE)\\src\\ChessAttack.o $(OBJDIR_RELEASE)\\src\\Chess.o $(OBJDIR_RELEASE)\\src\\CardGameWar.o $(OBJDIR_RELEASE)\\src\\CardGameGoFish.o $(OBJDIR_RELEASE)\\src\\ChessPetty.o $(OBJDIR_RELEASE)\\src\\CardGame.o $(OBJDIR_RELEASE)\\src\\Card.o $(OBJDIR_RELEASE)\\src\\BoardGame.o $(OBJDIR_RELEASE)\\src\\Blackboard.o $(OBJDIR_RELEASE)\\src\\AllowedMoves.o $(OBJDIR_RELEASE)\\src\\AIPlayer.o $(OBJDIR_RELEASE)\\main.o $(OBJDIR_RELEASE)\\src\\Hand.o $(OBJDIR_RELEASE)\\src\\TTT.o $(OBJDIR_RELEASE)\\src\\Socket.o $(OBJDIR_RELEASE)\\src\\Server.o $(OBJDIR_RELEASE)\\src\\Reversi.o $(OBJDIR_RELEASE)\\src\\PlayingCards.o $(OBJDIR_RELEASE)\\src\\Player.o $(OBJDIR_RELEASE)\\src\\NetworkPlayer.o $(OBJDIR_RELEASE)\\src\\Logger.o $(OBJDIR_RELEASE)\\src\\LinearGame.o $(OBJDIR_RELEASE)\\src\\Human.o $(OBJDIR_RELEASE)\\src\\GameVocabulary.o $(OBJDIR_RELEASE)\\src\\GameMove.o $(OBJDIR_RELEASE)\\src\\GameBoard.o $(OBJDIR_RELEASE)\\src\\Game.o $(OBJDIR_RELEASE)\\src\\Deck.o $(OBJDIR_RELEASE)\\src\\ConnectFour.o $(OBJDIR_RELEASE)\\src\\Client.o $(OBJDIR_RELEASE)\\src\\ChessSpeed.o $(OBJDIR_RELEASE)\\src\\ChessQuick.o $(OBJDIR_RELEASE)\\__\\jsoncpp\\dist\\jsoncpp.o
 
-OBJ_DEBUG_WINDOWS = $(OBJDIR_DEBUG_WINDOWS)\\src\\ChessBaby.o $(OBJDIR_DEBUG_WINDOWS)\\src\\ChessSpeed.o $(OBJDIR_DEBUG_WINDOWS)\\src\\ChessQuick.o $(OBJDIR_DEBUG_WINDOWS)\\src\\ChessPetty.o $(OBJDIR_DEBUG_WINDOWS)\\src\\ChessLosAlamos.o $(OBJDIR_DEBUG_WINDOWS)\\src\\ChessJacobsMeirovitz.o $(OBJDIR_DEBUG_WINDOWS)\\src\\ChessGardner.o $(OBJDIR_DEBUG_WINDOWS)\\src\\ChessGame.o $(OBJDIR_DEBUG_WINDOWS)\\src\\ChessElena.o $(OBJDIR_DEBUG_WINDOWS)\\src\\Client.o $(OBJDIR_DEBUG_WINDOWS)\\src\\ChessAttack.o $(OBJDIR_DEBUG_WINDOWS)\\src\\Chess.o $(OBJDIR_DEBUG_WINDOWS)\\src\\CardGameWar.o $(OBJDIR_DEBUG_WINDOWS)\\src\\CardGame.o $(OBJDIR_DEBUG_WINDOWS)\\src\\Card.o $(OBJDIR_DEBUG_WINDOWS)\\src\\BoardGame.o $(OBJDIR_DEBUG_WINDOWS)\\main.o $(OBJDIR_DEBUG_WINDOWS)\\src\\LinearGame.o $(OBJDIR_DEBUG_WINDOWS)\\src\\TTT.o $(OBJDIR_DEBUG_WINDOWS)\\src\\Socket.o $(OBJDIR_DEBUG_WINDOWS)\\src\\Server.o $(OBJDIR_DEBUG_WINDOWS)\\src\\Reversi.o $(OBJDIR_DEBUG_WINDOWS)\\src\\Player.o $(OBJDIR_DEBUG_WINDOWS)\\src\\NetworkPlayer.o $(OBJDIR_DEBUG_WINDOWS)\\src\\Minimax.o $(OBJDIR_DEBUG_WINDOWS)\\src\\Logger.o $(OBJDIR_DEBUG_WINDOWS)\\src\\Human.o $(OBJDIR_DEBUG_WINDOWS)\\src\\Hand.o $(OBJDIR_DEBUG_WINDOWS)\\src\\GameVocabulary.o $(OBJDIR_DEBUG_WINDOWS)\\src\\GameMove.o $(OBJDIR_DEBUG_WINDOWS)\\src\\GameBoard.o $(OBJDIR_DEBUG_WINDOWS)\\src\\Game.o $(OBJDIR_DEBUG_WINDOWS)\\src\\Deck.o $(OBJDIR_DEBUG_WINDOWS)\\src\\ConnectFour.o
+OBJ_DEBUG_WINDOWS = $(OBJDIR_DEBUG_WINDOWS)\\src\\CardGameBasicRummy.o $(OBJDIR_DEBUG_WINDOWS)\\src\\ChessLosAlamos.o $(OBJDIR_DEBUG_WINDOWS)\\src\\ChessJacobsMeirovitz.o $(OBJDIR_DEBUG_WINDOWS)\\src\\ChessGardner.o $(OBJDIR_DEBUG_WINDOWS)\\src\\ChessGame.o $(OBJDIR_DEBUG_WINDOWS)\\src\\ChessElena.o $(OBJDIR_DEBUG_WINDOWS)\\src\\ChessBaby.o $(OBJDIR_DEBUG_WINDOWS)\\src\\ChessAttack.o $(OBJDIR_DEBUG_WINDOWS)\\src\\Chess.o $(OBJDIR_DEBUG_WINDOWS)\\src\\CardGameWar.o $(OBJDIR_DEBUG_WINDOWS)\\src\\CardGameGoFish.o $(OBJDIR_DEBUG_WINDOWS)\\src\\ChessPetty.o $(OBJDIR_DEBUG_WINDOWS)\\src\\CardGame.o $(OBJDIR_DEBUG_WINDOWS)\\src\\Card.o $(OBJDIR_DEBUG_WINDOWS)\\src\\BoardGame.o $(OBJDIR_DEBUG_WINDOWS)\\src\\Blackboard.o $(OBJDIR_DEBUG_WINDOWS)\\src\\AllowedMoves.o $(OBJDIR_DEBUG_WINDOWS)\\src\\AIPlayer.o $(OBJDIR_DEBUG_WINDOWS)\\main.o $(OBJDIR_DEBUG_WINDOWS)\\src\\Hand.o $(OBJDIR_DEBUG_WINDOWS)\\src\\TTT.o $(OBJDIR_DEBUG_WINDOWS)\\src\\Socket.o $(OBJDIR_DEBUG_WINDOWS)\\src\\Server.o $(OBJDIR_DEBUG_WINDOWS)\\src\\Reversi.o $(OBJDIR_DEBUG_WINDOWS)\\src\\PlayingCards.o $(OBJDIR_DEBUG_WINDOWS)\\src\\Player.o $(OBJDIR_DEBUG_WINDOWS)\\src\\NetworkPlayer.o $(OBJDIR_DEBUG_WINDOWS)\\src\\Logger.o $(OBJDIR_DEBUG_WINDOWS)\\src\\LinearGame.o $(OBJDIR_DEBUG_WINDOWS)\\src\\Human.o $(OBJDIR_DEBUG_WINDOWS)\\src\\GameVocabulary.o $(OBJDIR_DEBUG_WINDOWS)\\src\\GameMove.o $(OBJDIR_DEBUG_WINDOWS)\\src\\GameBoard.o $(OBJDIR_DEBUG_WINDOWS)\\src\\Game.o $(OBJDIR_DEBUG_WINDOWS)\\src\\Deck.o $(OBJDIR_DEBUG_WINDOWS)\\src\\ConnectFour.o $(OBJDIR_DEBUG_WINDOWS)\\src\\Client.o $(OBJDIR_DEBUG_WINDOWS)\\src\\ChessSpeed.o $(OBJDIR_DEBUG_WINDOWS)\\src\\ChessQuick.o $(OBJDIR_DEBUG_WINDOWS)\\__\\jsoncpp\\dist\\jsoncpp.o
 
-OBJ_RELEASE_WINDOWS = $(OBJDIR_RELEASE_WINDOWS)\\src\\ChessBaby.o $(OBJDIR_RELEASE_WINDOWS)\\src\\ChessSpeed.o $(OBJDIR_RELEASE_WINDOWS)\\src\\ChessQuick.o $(OBJDIR_RELEASE_WINDOWS)\\src\\ChessPetty.o $(OBJDIR_RELEASE_WINDOWS)\\src\\ChessLosAlamos.o $(OBJDIR_RELEASE_WINDOWS)\\src\\ChessJacobsMeirovitz.o $(OBJDIR_RELEASE_WINDOWS)\\src\\ChessGardner.o $(OBJDIR_RELEASE_WINDOWS)\\src\\ChessGame.o $(OBJDIR_RELEASE_WINDOWS)\\src\\ChessElena.o $(OBJDIR_RELEASE_WINDOWS)\\src\\Client.o $(OBJDIR_RELEASE_WINDOWS)\\src\\ChessAttack.o $(OBJDIR_RELEASE_WINDOWS)\\src\\Chess.o $(OBJDIR_RELEASE_WINDOWS)\\src\\CardGameWar.o $(OBJDIR_RELEASE_WINDOWS)\\src\\CardGame.o $(OBJDIR_RELEASE_WINDOWS)\\src\\Card.o $(OBJDIR_RELEASE_WINDOWS)\\src\\BoardGame.o $(OBJDIR_RELEASE_WINDOWS)\\main.o $(OBJDIR_RELEASE_WINDOWS)\\src\\LinearGame.o $(OBJDIR_RELEASE_WINDOWS)\\src\\TTT.o $(OBJDIR_RELEASE_WINDOWS)\\src\\Socket.o $(OBJDIR_RELEASE_WINDOWS)\\src\\Server.o $(OBJDIR_RELEASE_WINDOWS)\\src\\Reversi.o $(OBJDIR_RELEASE_WINDOWS)\\src\\Player.o $(OBJDIR_RELEASE_WINDOWS)\\src\\NetworkPlayer.o $(OBJDIR_RELEASE_WINDOWS)\\src\\Minimax.o $(OBJDIR_RELEASE_WINDOWS)\\src\\Logger.o $(OBJDIR_RELEASE_WINDOWS)\\src\\Human.o $(OBJDIR_RELEASE_WINDOWS)\\src\\Hand.o $(OBJDIR_RELEASE_WINDOWS)\\src\\GameVocabulary.o $(OBJDIR_RELEASE_WINDOWS)\\src\\GameMove.o $(OBJDIR_RELEASE_WINDOWS)\\src\\GameBoard.o $(OBJDIR_RELEASE_WINDOWS)\\src\\Game.o $(OBJDIR_RELEASE_WINDOWS)\\src\\Deck.o $(OBJDIR_RELEASE_WINDOWS)\\src\\ConnectFour.o
+OBJ_RELEASE_WINDOWS = $(OBJDIR_RELEASE_WINDOWS)\\src\\CardGameBasicRummy.o $(OBJDIR_RELEASE_WINDOWS)\\src\\ChessLosAlamos.o $(OBJDIR_RELEASE_WINDOWS)\\src\\ChessJacobsMeirovitz.o $(OBJDIR_RELEASE_WINDOWS)\\src\\ChessGardner.o $(OBJDIR_RELEASE_WINDOWS)\\src\\ChessGame.o $(OBJDIR_RELEASE_WINDOWS)\\src\\ChessElena.o $(OBJDIR_RELEASE_WINDOWS)\\src\\ChessBaby.o $(OBJDIR_RELEASE_WINDOWS)\\src\\ChessAttack.o $(OBJDIR_RELEASE_WINDOWS)\\src\\Chess.o $(OBJDIR_RELEASE_WINDOWS)\\src\\CardGameWar.o $(OBJDIR_RELEASE_WINDOWS)\\src\\CardGameGoFish.o $(OBJDIR_RELEASE_WINDOWS)\\src\\ChessPetty.o $(OBJDIR_RELEASE_WINDOWS)\\src\\CardGame.o $(OBJDIR_RELEASE_WINDOWS)\\src\\Card.o $(OBJDIR_RELEASE_WINDOWS)\\src\\BoardGame.o $(OBJDIR_RELEASE_WINDOWS)\\src\\Blackboard.o $(OBJDIR_RELEASE_WINDOWS)\\src\\AllowedMoves.o $(OBJDIR_RELEASE_WINDOWS)\\src\\AIPlayer.o $(OBJDIR_RELEASE_WINDOWS)\\main.o $(OBJDIR_RELEASE_WINDOWS)\\src\\Hand.o $(OBJDIR_RELEASE_WINDOWS)\\src\\TTT.o $(OBJDIR_RELEASE_WINDOWS)\\src\\Socket.o $(OBJDIR_RELEASE_WINDOWS)\\src\\Server.o $(OBJDIR_RELEASE_WINDOWS)\\src\\Reversi.o $(OBJDIR_RELEASE_WINDOWS)\\src\\PlayingCards.o $(OBJDIR_RELEASE_WINDOWS)\\src\\Player.o $(OBJDIR_RELEASE_WINDOWS)\\src\\NetworkPlayer.o $(OBJDIR_RELEASE_WINDOWS)\\src\\Logger.o $(OBJDIR_RELEASE_WINDOWS)\\src\\LinearGame.o $(OBJDIR_RELEASE_WINDOWS)\\src\\Human.o $(OBJDIR_RELEASE_WINDOWS)\\src\\GameVocabulary.o $(OBJDIR_RELEASE_WINDOWS)\\src\\GameMove.o $(OBJDIR_RELEASE_WINDOWS)\\src\\GameBoard.o $(OBJDIR_RELEASE_WINDOWS)\\src\\Game.o $(OBJDIR_RELEASE_WINDOWS)\\src\\Deck.o $(OBJDIR_RELEASE_WINDOWS)\\src\\ConnectFour.o $(OBJDIR_RELEASE_WINDOWS)\\src\\Client.o $(OBJDIR_RELEASE_WINDOWS)\\src\\ChessSpeed.o $(OBJDIR_RELEASE_WINDOWS)\\src\\ChessQuick.o $(OBJDIR_RELEASE_WINDOWS)\\__\\jsoncpp\\dist\\jsoncpp.o
 
 all: debug release debug_windows release_windows
 
@@ -78,6 +78,7 @@ before_debug:
 	cmd /c if not exist bin\\Debug md bin\\Debug
 	cmd /c if not exist $(OBJDIR_DEBUG)\\src md $(OBJDIR_DEBUG)\\src
 	cmd /c if not exist $(OBJDIR_DEBUG) md $(OBJDIR_DEBUG)
+	cmd /c if not exist $(OBJDIR_DEBUG)\\__\\jsoncpp\\dist md $(OBJDIR_DEBUG)\\__\\jsoncpp\\dist
 
 after_debug: 
 
@@ -86,17 +87,8 @@ debug: before_debug out_debug after_debug
 out_debug: before_debug $(OBJ_DEBUG) $(DEP_DEBUG)
 	$(LD) $(LIBDIR_DEBUG) -o $(OUT_DEBUG) $(OBJ_DEBUG)  $(LDFLAGS_DEBUG) $(LIB_DEBUG)
 
-$(OBJDIR_DEBUG)\\src\\ChessBaby.o: src\\ChessBaby.cpp
-	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c src\\ChessBaby.cpp -o $(OBJDIR_DEBUG)\\src\\ChessBaby.o
-
-$(OBJDIR_DEBUG)\\src\\ChessSpeed.o: src\\ChessSpeed.cpp
-	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c src\\ChessSpeed.cpp -o $(OBJDIR_DEBUG)\\src\\ChessSpeed.o
-
-$(OBJDIR_DEBUG)\\src\\ChessQuick.o: src\\ChessQuick.cpp
-	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c src\\ChessQuick.cpp -o $(OBJDIR_DEBUG)\\src\\ChessQuick.o
-
-$(OBJDIR_DEBUG)\\src\\ChessPetty.o: src\\ChessPetty.cpp
-	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c src\\ChessPetty.cpp -o $(OBJDIR_DEBUG)\\src\\ChessPetty.o
+$(OBJDIR_DEBUG)\\src\\CardGameBasicRummy.o: src\\CardGameBasicRummy.cpp
+	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c src\\CardGameBasicRummy.cpp -o $(OBJDIR_DEBUG)\\src\\CardGameBasicRummy.o
 
 $(OBJDIR_DEBUG)\\src\\ChessLosAlamos.o: src\\ChessLosAlamos.cpp
 	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c src\\ChessLosAlamos.cpp -o $(OBJDIR_DEBUG)\\src\\ChessLosAlamos.o
@@ -113,8 +105,8 @@ $(OBJDIR_DEBUG)\\src\\ChessGame.o: src\\ChessGame.cpp
 $(OBJDIR_DEBUG)\\src\\ChessElena.o: src\\ChessElena.cpp
 	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c src\\ChessElena.cpp -o $(OBJDIR_DEBUG)\\src\\ChessElena.o
 
-$(OBJDIR_DEBUG)\\src\\Client.o: src\\Client.cpp
-	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c src\\Client.cpp -o $(OBJDIR_DEBUG)\\src\\Client.o
+$(OBJDIR_DEBUG)\\src\\ChessBaby.o: src\\ChessBaby.cpp
+	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c src\\ChessBaby.cpp -o $(OBJDIR_DEBUG)\\src\\ChessBaby.o
 
 $(OBJDIR_DEBUG)\\src\\ChessAttack.o: src\\ChessAttack.cpp
 	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c src\\ChessAttack.cpp -o $(OBJDIR_DEBUG)\\src\\ChessAttack.o
@@ -125,6 +117,12 @@ $(OBJDIR_DEBUG)\\src\\Chess.o: src\\Chess.cpp
 $(OBJDIR_DEBUG)\\src\\CardGameWar.o: src\\CardGameWar.cpp
 	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c src\\CardGameWar.cpp -o $(OBJDIR_DEBUG)\\src\\CardGameWar.o
 
+$(OBJDIR_DEBUG)\\src\\CardGameGoFish.o: src\\CardGameGoFish.cpp
+	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c src\\CardGameGoFish.cpp -o $(OBJDIR_DEBUG)\\src\\CardGameGoFish.o
+
+$(OBJDIR_DEBUG)\\src\\ChessPetty.o: src\\ChessPetty.cpp
+	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c src\\ChessPetty.cpp -o $(OBJDIR_DEBUG)\\src\\ChessPetty.o
+
 $(OBJDIR_DEBUG)\\src\\CardGame.o: src\\CardGame.cpp
 	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c src\\CardGame.cpp -o $(OBJDIR_DEBUG)\\src\\CardGame.o
 
@@ -134,11 +132,20 @@ $(OBJDIR_DEBUG)\\src\\Card.o: src\\Card.cpp
 $(OBJDIR_DEBUG)\\src\\BoardGame.o: src\\BoardGame.cpp
 	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c src\\BoardGame.cpp -o $(OBJDIR_DEBUG)\\src\\BoardGame.o
 
+$(OBJDIR_DEBUG)\\src\\Blackboard.o: src\\Blackboard.cpp
+	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c src\\Blackboard.cpp -o $(OBJDIR_DEBUG)\\src\\Blackboard.o
+
+$(OBJDIR_DEBUG)\\src\\AllowedMoves.o: src\\AllowedMoves.cpp
+	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c src\\AllowedMoves.cpp -o $(OBJDIR_DEBUG)\\src\\AllowedMoves.o
+
+$(OBJDIR_DEBUG)\\src\\AIPlayer.o: src\\AIPlayer.cpp
+	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c src\\AIPlayer.cpp -o $(OBJDIR_DEBUG)\\src\\AIPlayer.o
+
 $(OBJDIR_DEBUG)\\main.o: main.cpp
 	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c main.cpp -o $(OBJDIR_DEBUG)\\main.o
 
-$(OBJDIR_DEBUG)\\src\\LinearGame.o: src\\LinearGame.cpp
-	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c src\\LinearGame.cpp -o $(OBJDIR_DEBUG)\\src\\LinearGame.o
+$(OBJDIR_DEBUG)\\src\\Hand.o: src\\Hand.cpp
+	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c src\\Hand.cpp -o $(OBJDIR_DEBUG)\\src\\Hand.o
 
 $(OBJDIR_DEBUG)\\src\\TTT.o: src\\TTT.cpp
 	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c src\\TTT.cpp -o $(OBJDIR_DEBUG)\\src\\TTT.o
@@ -152,23 +159,23 @@ $(OBJDIR_DEBUG)\\src\\Server.o: src\\Server.cpp
 $(OBJDIR_DEBUG)\\src\\Reversi.o: src\\Reversi.cpp
 	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c src\\Reversi.cpp -o $(OBJDIR_DEBUG)\\src\\Reversi.o
 
+$(OBJDIR_DEBUG)\\src\\PlayingCards.o: src\\PlayingCards.cpp
+	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c src\\PlayingCards.cpp -o $(OBJDIR_DEBUG)\\src\\PlayingCards.o
+
 $(OBJDIR_DEBUG)\\src\\Player.o: src\\Player.cpp
 	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c src\\Player.cpp -o $(OBJDIR_DEBUG)\\src\\Player.o
 
 $(OBJDIR_DEBUG)\\src\\NetworkPlayer.o: src\\NetworkPlayer.cpp
 	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c src\\NetworkPlayer.cpp -o $(OBJDIR_DEBUG)\\src\\NetworkPlayer.o
 
-$(OBJDIR_DEBUG)\\src\\Minimax.o: src\\Minimax.cpp
-	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c src\\Minimax.cpp -o $(OBJDIR_DEBUG)\\src\\Minimax.o
-
 $(OBJDIR_DEBUG)\\src\\Logger.o: src\\Logger.cpp
 	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c src\\Logger.cpp -o $(OBJDIR_DEBUG)\\src\\Logger.o
 
+$(OBJDIR_DEBUG)\\src\\LinearGame.o: src\\LinearGame.cpp
+	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c src\\LinearGame.cpp -o $(OBJDIR_DEBUG)\\src\\LinearGame.o
+
 $(OBJDIR_DEBUG)\\src\\Human.o: src\\Human.cpp
 	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c src\\Human.cpp -o $(OBJDIR_DEBUG)\\src\\Human.o
-
-$(OBJDIR_DEBUG)\\src\\Hand.o: src\\Hand.cpp
-	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c src\\Hand.cpp -o $(OBJDIR_DEBUG)\\src\\Hand.o
 
 $(OBJDIR_DEBUG)\\src\\GameVocabulary.o: src\\GameVocabulary.cpp
 	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c src\\GameVocabulary.cpp -o $(OBJDIR_DEBUG)\\src\\GameVocabulary.o
@@ -188,16 +195,30 @@ $(OBJDIR_DEBUG)\\src\\Deck.o: src\\Deck.cpp
 $(OBJDIR_DEBUG)\\src\\ConnectFour.o: src\\ConnectFour.cpp
 	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c src\\ConnectFour.cpp -o $(OBJDIR_DEBUG)\\src\\ConnectFour.o
 
+$(OBJDIR_DEBUG)\\src\\Client.o: src\\Client.cpp
+	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c src\\Client.cpp -o $(OBJDIR_DEBUG)\\src\\Client.o
+
+$(OBJDIR_DEBUG)\\src\\ChessSpeed.o: src\\ChessSpeed.cpp
+	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c src\\ChessSpeed.cpp -o $(OBJDIR_DEBUG)\\src\\ChessSpeed.o
+
+$(OBJDIR_DEBUG)\\src\\ChessQuick.o: src\\ChessQuick.cpp
+	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c src\\ChessQuick.cpp -o $(OBJDIR_DEBUG)\\src\\ChessQuick.o
+
+$(OBJDIR_DEBUG)\\__\\jsoncpp\\dist\\jsoncpp.o: ..\\jsoncpp\\dist\\jsoncpp.cpp
+	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c ..\\jsoncpp\\dist\\jsoncpp.cpp -o $(OBJDIR_DEBUG)\\__\\jsoncpp\\dist\\jsoncpp.o
+
 clean_debug: 
 	cmd /c del /f $(OBJ_DEBUG) $(OUT_DEBUG)
 	cmd /c rd bin\\Debug
 	cmd /c rd $(OBJDIR_DEBUG)\\src
 	cmd /c rd $(OBJDIR_DEBUG)
+	cmd /c rd $(OBJDIR_DEBUG)\\__\\jsoncpp\\dist
 
 before_release: 
 	cmd /c if not exist bin\\Release md bin\\Release
 	cmd /c if not exist $(OBJDIR_RELEASE)\\src md $(OBJDIR_RELEASE)\\src
 	cmd /c if not exist $(OBJDIR_RELEASE) md $(OBJDIR_RELEASE)
+	cmd /c if not exist $(OBJDIR_RELEASE)\\__\\jsoncpp\\dist md $(OBJDIR_RELEASE)\\__\\jsoncpp\\dist
 
 after_release: 
 
@@ -206,17 +227,8 @@ release: before_release out_release after_release
 out_release: before_release $(OBJ_RELEASE) $(DEP_RELEASE)
 	$(LD) $(LIBDIR_RELEASE) -o $(OUT_RELEASE) $(OBJ_RELEASE)  $(LDFLAGS_RELEASE) $(LIB_RELEASE)
 
-$(OBJDIR_RELEASE)\\src\\ChessBaby.o: src\\ChessBaby.cpp
-	$(CXX) $(CFLAGS_RELEASE) $(INC_RELEASE) -c src\\ChessBaby.cpp -o $(OBJDIR_RELEASE)\\src\\ChessBaby.o
-
-$(OBJDIR_RELEASE)\\src\\ChessSpeed.o: src\\ChessSpeed.cpp
-	$(CXX) $(CFLAGS_RELEASE) $(INC_RELEASE) -c src\\ChessSpeed.cpp -o $(OBJDIR_RELEASE)\\src\\ChessSpeed.o
-
-$(OBJDIR_RELEASE)\\src\\ChessQuick.o: src\\ChessQuick.cpp
-	$(CXX) $(CFLAGS_RELEASE) $(INC_RELEASE) -c src\\ChessQuick.cpp -o $(OBJDIR_RELEASE)\\src\\ChessQuick.o
-
-$(OBJDIR_RELEASE)\\src\\ChessPetty.o: src\\ChessPetty.cpp
-	$(CXX) $(CFLAGS_RELEASE) $(INC_RELEASE) -c src\\ChessPetty.cpp -o $(OBJDIR_RELEASE)\\src\\ChessPetty.o
+$(OBJDIR_RELEASE)\\src\\CardGameBasicRummy.o: src\\CardGameBasicRummy.cpp
+	$(CXX) $(CFLAGS_RELEASE) $(INC_RELEASE) -c src\\CardGameBasicRummy.cpp -o $(OBJDIR_RELEASE)\\src\\CardGameBasicRummy.o
 
 $(OBJDIR_RELEASE)\\src\\ChessLosAlamos.o: src\\ChessLosAlamos.cpp
 	$(CXX) $(CFLAGS_RELEASE) $(INC_RELEASE) -c src\\ChessLosAlamos.cpp -o $(OBJDIR_RELEASE)\\src\\ChessLosAlamos.o
@@ -233,8 +245,8 @@ $(OBJDIR_RELEASE)\\src\\ChessGame.o: src\\ChessGame.cpp
 $(OBJDIR_RELEASE)\\src\\ChessElena.o: src\\ChessElena.cpp
 	$(CXX) $(CFLAGS_RELEASE) $(INC_RELEASE) -c src\\ChessElena.cpp -o $(OBJDIR_RELEASE)\\src\\ChessElena.o
 
-$(OBJDIR_RELEASE)\\src\\Client.o: src\\Client.cpp
-	$(CXX) $(CFLAGS_RELEASE) $(INC_RELEASE) -c src\\Client.cpp -o $(OBJDIR_RELEASE)\\src\\Client.o
+$(OBJDIR_RELEASE)\\src\\ChessBaby.o: src\\ChessBaby.cpp
+	$(CXX) $(CFLAGS_RELEASE) $(INC_RELEASE) -c src\\ChessBaby.cpp -o $(OBJDIR_RELEASE)\\src\\ChessBaby.o
 
 $(OBJDIR_RELEASE)\\src\\ChessAttack.o: src\\ChessAttack.cpp
 	$(CXX) $(CFLAGS_RELEASE) $(INC_RELEASE) -c src\\ChessAttack.cpp -o $(OBJDIR_RELEASE)\\src\\ChessAttack.o
@@ -245,6 +257,12 @@ $(OBJDIR_RELEASE)\\src\\Chess.o: src\\Chess.cpp
 $(OBJDIR_RELEASE)\\src\\CardGameWar.o: src\\CardGameWar.cpp
 	$(CXX) $(CFLAGS_RELEASE) $(INC_RELEASE) -c src\\CardGameWar.cpp -o $(OBJDIR_RELEASE)\\src\\CardGameWar.o
 
+$(OBJDIR_RELEASE)\\src\\CardGameGoFish.o: src\\CardGameGoFish.cpp
+	$(CXX) $(CFLAGS_RELEASE) $(INC_RELEASE) -c src\\CardGameGoFish.cpp -o $(OBJDIR_RELEASE)\\src\\CardGameGoFish.o
+
+$(OBJDIR_RELEASE)\\src\\ChessPetty.o: src\\ChessPetty.cpp
+	$(CXX) $(CFLAGS_RELEASE) $(INC_RELEASE) -c src\\ChessPetty.cpp -o $(OBJDIR_RELEASE)\\src\\ChessPetty.o
+
 $(OBJDIR_RELEASE)\\src\\CardGame.o: src\\CardGame.cpp
 	$(CXX) $(CFLAGS_RELEASE) $(INC_RELEASE) -c src\\CardGame.cpp -o $(OBJDIR_RELEASE)\\src\\CardGame.o
 
@@ -254,11 +272,20 @@ $(OBJDIR_RELEASE)\\src\\Card.o: src\\Card.cpp
 $(OBJDIR_RELEASE)\\src\\BoardGame.o: src\\BoardGame.cpp
 	$(CXX) $(CFLAGS_RELEASE) $(INC_RELEASE) -c src\\BoardGame.cpp -o $(OBJDIR_RELEASE)\\src\\BoardGame.o
 
+$(OBJDIR_RELEASE)\\src\\Blackboard.o: src\\Blackboard.cpp
+	$(CXX) $(CFLAGS_RELEASE) $(INC_RELEASE) -c src\\Blackboard.cpp -o $(OBJDIR_RELEASE)\\src\\Blackboard.o
+
+$(OBJDIR_RELEASE)\\src\\AllowedMoves.o: src\\AllowedMoves.cpp
+	$(CXX) $(CFLAGS_RELEASE) $(INC_RELEASE) -c src\\AllowedMoves.cpp -o $(OBJDIR_RELEASE)\\src\\AllowedMoves.o
+
+$(OBJDIR_RELEASE)\\src\\AIPlayer.o: src\\AIPlayer.cpp
+	$(CXX) $(CFLAGS_RELEASE) $(INC_RELEASE) -c src\\AIPlayer.cpp -o $(OBJDIR_RELEASE)\\src\\AIPlayer.o
+
 $(OBJDIR_RELEASE)\\main.o: main.cpp
 	$(CXX) $(CFLAGS_RELEASE) $(INC_RELEASE) -c main.cpp -o $(OBJDIR_RELEASE)\\main.o
 
-$(OBJDIR_RELEASE)\\src\\LinearGame.o: src\\LinearGame.cpp
-	$(CXX) $(CFLAGS_RELEASE) $(INC_RELEASE) -c src\\LinearGame.cpp -o $(OBJDIR_RELEASE)\\src\\LinearGame.o
+$(OBJDIR_RELEASE)\\src\\Hand.o: src\\Hand.cpp
+	$(CXX) $(CFLAGS_RELEASE) $(INC_RELEASE) -c src\\Hand.cpp -o $(OBJDIR_RELEASE)\\src\\Hand.o
 
 $(OBJDIR_RELEASE)\\src\\TTT.o: src\\TTT.cpp
 	$(CXX) $(CFLAGS_RELEASE) $(INC_RELEASE) -c src\\TTT.cpp -o $(OBJDIR_RELEASE)\\src\\TTT.o
@@ -272,23 +299,23 @@ $(OBJDIR_RELEASE)\\src\\Server.o: src\\Server.cpp
 $(OBJDIR_RELEASE)\\src\\Reversi.o: src\\Reversi.cpp
 	$(CXX) $(CFLAGS_RELEASE) $(INC_RELEASE) -c src\\Reversi.cpp -o $(OBJDIR_RELEASE)\\src\\Reversi.o
 
+$(OBJDIR_RELEASE)\\src\\PlayingCards.o: src\\PlayingCards.cpp
+	$(CXX) $(CFLAGS_RELEASE) $(INC_RELEASE) -c src\\PlayingCards.cpp -o $(OBJDIR_RELEASE)\\src\\PlayingCards.o
+
 $(OBJDIR_RELEASE)\\src\\Player.o: src\\Player.cpp
 	$(CXX) $(CFLAGS_RELEASE) $(INC_RELEASE) -c src\\Player.cpp -o $(OBJDIR_RELEASE)\\src\\Player.o
 
 $(OBJDIR_RELEASE)\\src\\NetworkPlayer.o: src\\NetworkPlayer.cpp
 	$(CXX) $(CFLAGS_RELEASE) $(INC_RELEASE) -c src\\NetworkPlayer.cpp -o $(OBJDIR_RELEASE)\\src\\NetworkPlayer.o
 
-$(OBJDIR_RELEASE)\\src\\Minimax.o: src\\Minimax.cpp
-	$(CXX) $(CFLAGS_RELEASE) $(INC_RELEASE) -c src\\Minimax.cpp -o $(OBJDIR_RELEASE)\\src\\Minimax.o
-
 $(OBJDIR_RELEASE)\\src\\Logger.o: src\\Logger.cpp
 	$(CXX) $(CFLAGS_RELEASE) $(INC_RELEASE) -c src\\Logger.cpp -o $(OBJDIR_RELEASE)\\src\\Logger.o
 
+$(OBJDIR_RELEASE)\\src\\LinearGame.o: src\\LinearGame.cpp
+	$(CXX) $(CFLAGS_RELEASE) $(INC_RELEASE) -c src\\LinearGame.cpp -o $(OBJDIR_RELEASE)\\src\\LinearGame.o
+
 $(OBJDIR_RELEASE)\\src\\Human.o: src\\Human.cpp
 	$(CXX) $(CFLAGS_RELEASE) $(INC_RELEASE) -c src\\Human.cpp -o $(OBJDIR_RELEASE)\\src\\Human.o
-
-$(OBJDIR_RELEASE)\\src\\Hand.o: src\\Hand.cpp
-	$(CXX) $(CFLAGS_RELEASE) $(INC_RELEASE) -c src\\Hand.cpp -o $(OBJDIR_RELEASE)\\src\\Hand.o
 
 $(OBJDIR_RELEASE)\\src\\GameVocabulary.o: src\\GameVocabulary.cpp
 	$(CXX) $(CFLAGS_RELEASE) $(INC_RELEASE) -c src\\GameVocabulary.cpp -o $(OBJDIR_RELEASE)\\src\\GameVocabulary.o
@@ -308,16 +335,30 @@ $(OBJDIR_RELEASE)\\src\\Deck.o: src\\Deck.cpp
 $(OBJDIR_RELEASE)\\src\\ConnectFour.o: src\\ConnectFour.cpp
 	$(CXX) $(CFLAGS_RELEASE) $(INC_RELEASE) -c src\\ConnectFour.cpp -o $(OBJDIR_RELEASE)\\src\\ConnectFour.o
 
+$(OBJDIR_RELEASE)\\src\\Client.o: src\\Client.cpp
+	$(CXX) $(CFLAGS_RELEASE) $(INC_RELEASE) -c src\\Client.cpp -o $(OBJDIR_RELEASE)\\src\\Client.o
+
+$(OBJDIR_RELEASE)\\src\\ChessSpeed.o: src\\ChessSpeed.cpp
+	$(CXX) $(CFLAGS_RELEASE) $(INC_RELEASE) -c src\\ChessSpeed.cpp -o $(OBJDIR_RELEASE)\\src\\ChessSpeed.o
+
+$(OBJDIR_RELEASE)\\src\\ChessQuick.o: src\\ChessQuick.cpp
+	$(CXX) $(CFLAGS_RELEASE) $(INC_RELEASE) -c src\\ChessQuick.cpp -o $(OBJDIR_RELEASE)\\src\\ChessQuick.o
+
+$(OBJDIR_RELEASE)\\__\\jsoncpp\\dist\\jsoncpp.o: ..\\jsoncpp\\dist\\jsoncpp.cpp
+	$(CXX) $(CFLAGS_RELEASE) $(INC_RELEASE) -c ..\\jsoncpp\\dist\\jsoncpp.cpp -o $(OBJDIR_RELEASE)\\__\\jsoncpp\\dist\\jsoncpp.o
+
 clean_release: 
 	cmd /c del /f $(OBJ_RELEASE) $(OUT_RELEASE)
 	cmd /c rd bin\\Release
 	cmd /c rd $(OBJDIR_RELEASE)\\src
 	cmd /c rd $(OBJDIR_RELEASE)
+	cmd /c rd $(OBJDIR_RELEASE)\\__\\jsoncpp\\dist
 
 before_debug_windows: 
 	cmd /c if not exist bin\\Debug md bin\\Debug
 	cmd /c if not exist $(OBJDIR_DEBUG_WINDOWS)\\src md $(OBJDIR_DEBUG_WINDOWS)\\src
 	cmd /c if not exist $(OBJDIR_DEBUG_WINDOWS) md $(OBJDIR_DEBUG_WINDOWS)
+	cmd /c if not exist $(OBJDIR_DEBUG_WINDOWS)\\__\\jsoncpp\\dist md $(OBJDIR_DEBUG_WINDOWS)\\__\\jsoncpp\\dist
 
 after_debug_windows: 
 
@@ -326,17 +367,8 @@ debug_windows: before_debug_windows out_debug_windows after_debug_windows
 out_debug_windows: before_debug_windows $(OBJ_DEBUG_WINDOWS) $(DEP_DEBUG_WINDOWS)
 	$(LD) $(LIBDIR_DEBUG_WINDOWS) -o $(OUT_DEBUG_WINDOWS) $(OBJ_DEBUG_WINDOWS)  $(LDFLAGS_DEBUG_WINDOWS) $(LIB_DEBUG_WINDOWS)
 
-$(OBJDIR_DEBUG_WINDOWS)\\src\\ChessBaby.o: src\\ChessBaby.cpp
-	$(CXX) $(CFLAGS_DEBUG_WINDOWS) $(INC_DEBUG_WINDOWS) -c src\\ChessBaby.cpp -o $(OBJDIR_DEBUG_WINDOWS)\\src\\ChessBaby.o
-
-$(OBJDIR_DEBUG_WINDOWS)\\src\\ChessSpeed.o: src\\ChessSpeed.cpp
-	$(CXX) $(CFLAGS_DEBUG_WINDOWS) $(INC_DEBUG_WINDOWS) -c src\\ChessSpeed.cpp -o $(OBJDIR_DEBUG_WINDOWS)\\src\\ChessSpeed.o
-
-$(OBJDIR_DEBUG_WINDOWS)\\src\\ChessQuick.o: src\\ChessQuick.cpp
-	$(CXX) $(CFLAGS_DEBUG_WINDOWS) $(INC_DEBUG_WINDOWS) -c src\\ChessQuick.cpp -o $(OBJDIR_DEBUG_WINDOWS)\\src\\ChessQuick.o
-
-$(OBJDIR_DEBUG_WINDOWS)\\src\\ChessPetty.o: src\\ChessPetty.cpp
-	$(CXX) $(CFLAGS_DEBUG_WINDOWS) $(INC_DEBUG_WINDOWS) -c src\\ChessPetty.cpp -o $(OBJDIR_DEBUG_WINDOWS)\\src\\ChessPetty.o
+$(OBJDIR_DEBUG_WINDOWS)\\src\\CardGameBasicRummy.o: src\\CardGameBasicRummy.cpp
+	$(CXX) $(CFLAGS_DEBUG_WINDOWS) $(INC_DEBUG_WINDOWS) -c src\\CardGameBasicRummy.cpp -o $(OBJDIR_DEBUG_WINDOWS)\\src\\CardGameBasicRummy.o
 
 $(OBJDIR_DEBUG_WINDOWS)\\src\\ChessLosAlamos.o: src\\ChessLosAlamos.cpp
 	$(CXX) $(CFLAGS_DEBUG_WINDOWS) $(INC_DEBUG_WINDOWS) -c src\\ChessLosAlamos.cpp -o $(OBJDIR_DEBUG_WINDOWS)\\src\\ChessLosAlamos.o
@@ -353,8 +385,8 @@ $(OBJDIR_DEBUG_WINDOWS)\\src\\ChessGame.o: src\\ChessGame.cpp
 $(OBJDIR_DEBUG_WINDOWS)\\src\\ChessElena.o: src\\ChessElena.cpp
 	$(CXX) $(CFLAGS_DEBUG_WINDOWS) $(INC_DEBUG_WINDOWS) -c src\\ChessElena.cpp -o $(OBJDIR_DEBUG_WINDOWS)\\src\\ChessElena.o
 
-$(OBJDIR_DEBUG_WINDOWS)\\src\\Client.o: src\\Client.cpp
-	$(CXX) $(CFLAGS_DEBUG_WINDOWS) $(INC_DEBUG_WINDOWS) -c src\\Client.cpp -o $(OBJDIR_DEBUG_WINDOWS)\\src\\Client.o
+$(OBJDIR_DEBUG_WINDOWS)\\src\\ChessBaby.o: src\\ChessBaby.cpp
+	$(CXX) $(CFLAGS_DEBUG_WINDOWS) $(INC_DEBUG_WINDOWS) -c src\\ChessBaby.cpp -o $(OBJDIR_DEBUG_WINDOWS)\\src\\ChessBaby.o
 
 $(OBJDIR_DEBUG_WINDOWS)\\src\\ChessAttack.o: src\\ChessAttack.cpp
 	$(CXX) $(CFLAGS_DEBUG_WINDOWS) $(INC_DEBUG_WINDOWS) -c src\\ChessAttack.cpp -o $(OBJDIR_DEBUG_WINDOWS)\\src\\ChessAttack.o
@@ -365,6 +397,12 @@ $(OBJDIR_DEBUG_WINDOWS)\\src\\Chess.o: src\\Chess.cpp
 $(OBJDIR_DEBUG_WINDOWS)\\src\\CardGameWar.o: src\\CardGameWar.cpp
 	$(CXX) $(CFLAGS_DEBUG_WINDOWS) $(INC_DEBUG_WINDOWS) -c src\\CardGameWar.cpp -o $(OBJDIR_DEBUG_WINDOWS)\\src\\CardGameWar.o
 
+$(OBJDIR_DEBUG_WINDOWS)\\src\\CardGameGoFish.o: src\\CardGameGoFish.cpp
+	$(CXX) $(CFLAGS_DEBUG_WINDOWS) $(INC_DEBUG_WINDOWS) -c src\\CardGameGoFish.cpp -o $(OBJDIR_DEBUG_WINDOWS)\\src\\CardGameGoFish.o
+
+$(OBJDIR_DEBUG_WINDOWS)\\src\\ChessPetty.o: src\\ChessPetty.cpp
+	$(CXX) $(CFLAGS_DEBUG_WINDOWS) $(INC_DEBUG_WINDOWS) -c src\\ChessPetty.cpp -o $(OBJDIR_DEBUG_WINDOWS)\\src\\ChessPetty.o
+
 $(OBJDIR_DEBUG_WINDOWS)\\src\\CardGame.o: src\\CardGame.cpp
 	$(CXX) $(CFLAGS_DEBUG_WINDOWS) $(INC_DEBUG_WINDOWS) -c src\\CardGame.cpp -o $(OBJDIR_DEBUG_WINDOWS)\\src\\CardGame.o
 
@@ -374,11 +412,20 @@ $(OBJDIR_DEBUG_WINDOWS)\\src\\Card.o: src\\Card.cpp
 $(OBJDIR_DEBUG_WINDOWS)\\src\\BoardGame.o: src\\BoardGame.cpp
 	$(CXX) $(CFLAGS_DEBUG_WINDOWS) $(INC_DEBUG_WINDOWS) -c src\\BoardGame.cpp -o $(OBJDIR_DEBUG_WINDOWS)\\src\\BoardGame.o
 
+$(OBJDIR_DEBUG_WINDOWS)\\src\\Blackboard.o: src\\Blackboard.cpp
+	$(CXX) $(CFLAGS_DEBUG_WINDOWS) $(INC_DEBUG_WINDOWS) -c src\\Blackboard.cpp -o $(OBJDIR_DEBUG_WINDOWS)\\src\\Blackboard.o
+
+$(OBJDIR_DEBUG_WINDOWS)\\src\\AllowedMoves.o: src\\AllowedMoves.cpp
+	$(CXX) $(CFLAGS_DEBUG_WINDOWS) $(INC_DEBUG_WINDOWS) -c src\\AllowedMoves.cpp -o $(OBJDIR_DEBUG_WINDOWS)\\src\\AllowedMoves.o
+
+$(OBJDIR_DEBUG_WINDOWS)\\src\\AIPlayer.o: src\\AIPlayer.cpp
+	$(CXX) $(CFLAGS_DEBUG_WINDOWS) $(INC_DEBUG_WINDOWS) -c src\\AIPlayer.cpp -o $(OBJDIR_DEBUG_WINDOWS)\\src\\AIPlayer.o
+
 $(OBJDIR_DEBUG_WINDOWS)\\main.o: main.cpp
 	$(CXX) $(CFLAGS_DEBUG_WINDOWS) $(INC_DEBUG_WINDOWS) -c main.cpp -o $(OBJDIR_DEBUG_WINDOWS)\\main.o
 
-$(OBJDIR_DEBUG_WINDOWS)\\src\\LinearGame.o: src\\LinearGame.cpp
-	$(CXX) $(CFLAGS_DEBUG_WINDOWS) $(INC_DEBUG_WINDOWS) -c src\\LinearGame.cpp -o $(OBJDIR_DEBUG_WINDOWS)\\src\\LinearGame.o
+$(OBJDIR_DEBUG_WINDOWS)\\src\\Hand.o: src\\Hand.cpp
+	$(CXX) $(CFLAGS_DEBUG_WINDOWS) $(INC_DEBUG_WINDOWS) -c src\\Hand.cpp -o $(OBJDIR_DEBUG_WINDOWS)\\src\\Hand.o
 
 $(OBJDIR_DEBUG_WINDOWS)\\src\\TTT.o: src\\TTT.cpp
 	$(CXX) $(CFLAGS_DEBUG_WINDOWS) $(INC_DEBUG_WINDOWS) -c src\\TTT.cpp -o $(OBJDIR_DEBUG_WINDOWS)\\src\\TTT.o
@@ -392,23 +439,23 @@ $(OBJDIR_DEBUG_WINDOWS)\\src\\Server.o: src\\Server.cpp
 $(OBJDIR_DEBUG_WINDOWS)\\src\\Reversi.o: src\\Reversi.cpp
 	$(CXX) $(CFLAGS_DEBUG_WINDOWS) $(INC_DEBUG_WINDOWS) -c src\\Reversi.cpp -o $(OBJDIR_DEBUG_WINDOWS)\\src\\Reversi.o
 
+$(OBJDIR_DEBUG_WINDOWS)\\src\\PlayingCards.o: src\\PlayingCards.cpp
+	$(CXX) $(CFLAGS_DEBUG_WINDOWS) $(INC_DEBUG_WINDOWS) -c src\\PlayingCards.cpp -o $(OBJDIR_DEBUG_WINDOWS)\\src\\PlayingCards.o
+
 $(OBJDIR_DEBUG_WINDOWS)\\src\\Player.o: src\\Player.cpp
 	$(CXX) $(CFLAGS_DEBUG_WINDOWS) $(INC_DEBUG_WINDOWS) -c src\\Player.cpp -o $(OBJDIR_DEBUG_WINDOWS)\\src\\Player.o
 
 $(OBJDIR_DEBUG_WINDOWS)\\src\\NetworkPlayer.o: src\\NetworkPlayer.cpp
 	$(CXX) $(CFLAGS_DEBUG_WINDOWS) $(INC_DEBUG_WINDOWS) -c src\\NetworkPlayer.cpp -o $(OBJDIR_DEBUG_WINDOWS)\\src\\NetworkPlayer.o
 
-$(OBJDIR_DEBUG_WINDOWS)\\src\\Minimax.o: src\\Minimax.cpp
-	$(CXX) $(CFLAGS_DEBUG_WINDOWS) $(INC_DEBUG_WINDOWS) -c src\\Minimax.cpp -o $(OBJDIR_DEBUG_WINDOWS)\\src\\Minimax.o
-
 $(OBJDIR_DEBUG_WINDOWS)\\src\\Logger.o: src\\Logger.cpp
 	$(CXX) $(CFLAGS_DEBUG_WINDOWS) $(INC_DEBUG_WINDOWS) -c src\\Logger.cpp -o $(OBJDIR_DEBUG_WINDOWS)\\src\\Logger.o
 
+$(OBJDIR_DEBUG_WINDOWS)\\src\\LinearGame.o: src\\LinearGame.cpp
+	$(CXX) $(CFLAGS_DEBUG_WINDOWS) $(INC_DEBUG_WINDOWS) -c src\\LinearGame.cpp -o $(OBJDIR_DEBUG_WINDOWS)\\src\\LinearGame.o
+
 $(OBJDIR_DEBUG_WINDOWS)\\src\\Human.o: src\\Human.cpp
 	$(CXX) $(CFLAGS_DEBUG_WINDOWS) $(INC_DEBUG_WINDOWS) -c src\\Human.cpp -o $(OBJDIR_DEBUG_WINDOWS)\\src\\Human.o
-
-$(OBJDIR_DEBUG_WINDOWS)\\src\\Hand.o: src\\Hand.cpp
-	$(CXX) $(CFLAGS_DEBUG_WINDOWS) $(INC_DEBUG_WINDOWS) -c src\\Hand.cpp -o $(OBJDIR_DEBUG_WINDOWS)\\src\\Hand.o
 
 $(OBJDIR_DEBUG_WINDOWS)\\src\\GameVocabulary.o: src\\GameVocabulary.cpp
 	$(CXX) $(CFLAGS_DEBUG_WINDOWS) $(INC_DEBUG_WINDOWS) -c src\\GameVocabulary.cpp -o $(OBJDIR_DEBUG_WINDOWS)\\src\\GameVocabulary.o
@@ -428,16 +475,30 @@ $(OBJDIR_DEBUG_WINDOWS)\\src\\Deck.o: src\\Deck.cpp
 $(OBJDIR_DEBUG_WINDOWS)\\src\\ConnectFour.o: src\\ConnectFour.cpp
 	$(CXX) $(CFLAGS_DEBUG_WINDOWS) $(INC_DEBUG_WINDOWS) -c src\\ConnectFour.cpp -o $(OBJDIR_DEBUG_WINDOWS)\\src\\ConnectFour.o
 
+$(OBJDIR_DEBUG_WINDOWS)\\src\\Client.o: src\\Client.cpp
+	$(CXX) $(CFLAGS_DEBUG_WINDOWS) $(INC_DEBUG_WINDOWS) -c src\\Client.cpp -o $(OBJDIR_DEBUG_WINDOWS)\\src\\Client.o
+
+$(OBJDIR_DEBUG_WINDOWS)\\src\\ChessSpeed.o: src\\ChessSpeed.cpp
+	$(CXX) $(CFLAGS_DEBUG_WINDOWS) $(INC_DEBUG_WINDOWS) -c src\\ChessSpeed.cpp -o $(OBJDIR_DEBUG_WINDOWS)\\src\\ChessSpeed.o
+
+$(OBJDIR_DEBUG_WINDOWS)\\src\\ChessQuick.o: src\\ChessQuick.cpp
+	$(CXX) $(CFLAGS_DEBUG_WINDOWS) $(INC_DEBUG_WINDOWS) -c src\\ChessQuick.cpp -o $(OBJDIR_DEBUG_WINDOWS)\\src\\ChessQuick.o
+
+$(OBJDIR_DEBUG_WINDOWS)\\__\\jsoncpp\\dist\\jsoncpp.o: ..\\jsoncpp\\dist\\jsoncpp.cpp
+	$(CXX) $(CFLAGS_DEBUG_WINDOWS) $(INC_DEBUG_WINDOWS) -c ..\\jsoncpp\\dist\\jsoncpp.cpp -o $(OBJDIR_DEBUG_WINDOWS)\\__\\jsoncpp\\dist\\jsoncpp.o
+
 clean_debug_windows: 
 	cmd /c del /f $(OBJ_DEBUG_WINDOWS) $(OUT_DEBUG_WINDOWS)
 	cmd /c rd bin\\Debug
 	cmd /c rd $(OBJDIR_DEBUG_WINDOWS)\\src
 	cmd /c rd $(OBJDIR_DEBUG_WINDOWS)
+	cmd /c rd $(OBJDIR_DEBUG_WINDOWS)\\__\\jsoncpp\\dist
 
 before_release_windows: 
 	cmd /c if not exist bin\\Release md bin\\Release
 	cmd /c if not exist $(OBJDIR_RELEASE_WINDOWS)\\src md $(OBJDIR_RELEASE_WINDOWS)\\src
 	cmd /c if not exist $(OBJDIR_RELEASE_WINDOWS) md $(OBJDIR_RELEASE_WINDOWS)
+	cmd /c if not exist $(OBJDIR_RELEASE_WINDOWS)\\__\\jsoncpp\\dist md $(OBJDIR_RELEASE_WINDOWS)\\__\\jsoncpp\\dist
 
 after_release_windows: 
 
@@ -446,17 +507,8 @@ release_windows: before_release_windows out_release_windows after_release_window
 out_release_windows: before_release_windows $(OBJ_RELEASE_WINDOWS) $(DEP_RELEASE_WINDOWS)
 	$(LD) $(LIBDIR_RELEASE_WINDOWS) -o $(OUT_RELEASE_WINDOWS) $(OBJ_RELEASE_WINDOWS)  $(LDFLAGS_RELEASE_WINDOWS) $(LIB_RELEASE_WINDOWS)
 
-$(OBJDIR_RELEASE_WINDOWS)\\src\\ChessBaby.o: src\\ChessBaby.cpp
-	$(CXX) $(CFLAGS_RELEASE_WINDOWS) $(INC_RELEASE_WINDOWS) -c src\\ChessBaby.cpp -o $(OBJDIR_RELEASE_WINDOWS)\\src\\ChessBaby.o
-
-$(OBJDIR_RELEASE_WINDOWS)\\src\\ChessSpeed.o: src\\ChessSpeed.cpp
-	$(CXX) $(CFLAGS_RELEASE_WINDOWS) $(INC_RELEASE_WINDOWS) -c src\\ChessSpeed.cpp -o $(OBJDIR_RELEASE_WINDOWS)\\src\\ChessSpeed.o
-
-$(OBJDIR_RELEASE_WINDOWS)\\src\\ChessQuick.o: src\\ChessQuick.cpp
-	$(CXX) $(CFLAGS_RELEASE_WINDOWS) $(INC_RELEASE_WINDOWS) -c src\\ChessQuick.cpp -o $(OBJDIR_RELEASE_WINDOWS)\\src\\ChessQuick.o
-
-$(OBJDIR_RELEASE_WINDOWS)\\src\\ChessPetty.o: src\\ChessPetty.cpp
-	$(CXX) $(CFLAGS_RELEASE_WINDOWS) $(INC_RELEASE_WINDOWS) -c src\\ChessPetty.cpp -o $(OBJDIR_RELEASE_WINDOWS)\\src\\ChessPetty.o
+$(OBJDIR_RELEASE_WINDOWS)\\src\\CardGameBasicRummy.o: src\\CardGameBasicRummy.cpp
+	$(CXX) $(CFLAGS_RELEASE_WINDOWS) $(INC_RELEASE_WINDOWS) -c src\\CardGameBasicRummy.cpp -o $(OBJDIR_RELEASE_WINDOWS)\\src\\CardGameBasicRummy.o
 
 $(OBJDIR_RELEASE_WINDOWS)\\src\\ChessLosAlamos.o: src\\ChessLosAlamos.cpp
 	$(CXX) $(CFLAGS_RELEASE_WINDOWS) $(INC_RELEASE_WINDOWS) -c src\\ChessLosAlamos.cpp -o $(OBJDIR_RELEASE_WINDOWS)\\src\\ChessLosAlamos.o
@@ -473,8 +525,8 @@ $(OBJDIR_RELEASE_WINDOWS)\\src\\ChessGame.o: src\\ChessGame.cpp
 $(OBJDIR_RELEASE_WINDOWS)\\src\\ChessElena.o: src\\ChessElena.cpp
 	$(CXX) $(CFLAGS_RELEASE_WINDOWS) $(INC_RELEASE_WINDOWS) -c src\\ChessElena.cpp -o $(OBJDIR_RELEASE_WINDOWS)\\src\\ChessElena.o
 
-$(OBJDIR_RELEASE_WINDOWS)\\src\\Client.o: src\\Client.cpp
-	$(CXX) $(CFLAGS_RELEASE_WINDOWS) $(INC_RELEASE_WINDOWS) -c src\\Client.cpp -o $(OBJDIR_RELEASE_WINDOWS)\\src\\Client.o
+$(OBJDIR_RELEASE_WINDOWS)\\src\\ChessBaby.o: src\\ChessBaby.cpp
+	$(CXX) $(CFLAGS_RELEASE_WINDOWS) $(INC_RELEASE_WINDOWS) -c src\\ChessBaby.cpp -o $(OBJDIR_RELEASE_WINDOWS)\\src\\ChessBaby.o
 
 $(OBJDIR_RELEASE_WINDOWS)\\src\\ChessAttack.o: src\\ChessAttack.cpp
 	$(CXX) $(CFLAGS_RELEASE_WINDOWS) $(INC_RELEASE_WINDOWS) -c src\\ChessAttack.cpp -o $(OBJDIR_RELEASE_WINDOWS)\\src\\ChessAttack.o
@@ -485,6 +537,12 @@ $(OBJDIR_RELEASE_WINDOWS)\\src\\Chess.o: src\\Chess.cpp
 $(OBJDIR_RELEASE_WINDOWS)\\src\\CardGameWar.o: src\\CardGameWar.cpp
 	$(CXX) $(CFLAGS_RELEASE_WINDOWS) $(INC_RELEASE_WINDOWS) -c src\\CardGameWar.cpp -o $(OBJDIR_RELEASE_WINDOWS)\\src\\CardGameWar.o
 
+$(OBJDIR_RELEASE_WINDOWS)\\src\\CardGameGoFish.o: src\\CardGameGoFish.cpp
+	$(CXX) $(CFLAGS_RELEASE_WINDOWS) $(INC_RELEASE_WINDOWS) -c src\\CardGameGoFish.cpp -o $(OBJDIR_RELEASE_WINDOWS)\\src\\CardGameGoFish.o
+
+$(OBJDIR_RELEASE_WINDOWS)\\src\\ChessPetty.o: src\\ChessPetty.cpp
+	$(CXX) $(CFLAGS_RELEASE_WINDOWS) $(INC_RELEASE_WINDOWS) -c src\\ChessPetty.cpp -o $(OBJDIR_RELEASE_WINDOWS)\\src\\ChessPetty.o
+
 $(OBJDIR_RELEASE_WINDOWS)\\src\\CardGame.o: src\\CardGame.cpp
 	$(CXX) $(CFLAGS_RELEASE_WINDOWS) $(INC_RELEASE_WINDOWS) -c src\\CardGame.cpp -o $(OBJDIR_RELEASE_WINDOWS)\\src\\CardGame.o
 
@@ -494,11 +552,20 @@ $(OBJDIR_RELEASE_WINDOWS)\\src\\Card.o: src\\Card.cpp
 $(OBJDIR_RELEASE_WINDOWS)\\src\\BoardGame.o: src\\BoardGame.cpp
 	$(CXX) $(CFLAGS_RELEASE_WINDOWS) $(INC_RELEASE_WINDOWS) -c src\\BoardGame.cpp -o $(OBJDIR_RELEASE_WINDOWS)\\src\\BoardGame.o
 
+$(OBJDIR_RELEASE_WINDOWS)\\src\\Blackboard.o: src\\Blackboard.cpp
+	$(CXX) $(CFLAGS_RELEASE_WINDOWS) $(INC_RELEASE_WINDOWS) -c src\\Blackboard.cpp -o $(OBJDIR_RELEASE_WINDOWS)\\src\\Blackboard.o
+
+$(OBJDIR_RELEASE_WINDOWS)\\src\\AllowedMoves.o: src\\AllowedMoves.cpp
+	$(CXX) $(CFLAGS_RELEASE_WINDOWS) $(INC_RELEASE_WINDOWS) -c src\\AllowedMoves.cpp -o $(OBJDIR_RELEASE_WINDOWS)\\src\\AllowedMoves.o
+
+$(OBJDIR_RELEASE_WINDOWS)\\src\\AIPlayer.o: src\\AIPlayer.cpp
+	$(CXX) $(CFLAGS_RELEASE_WINDOWS) $(INC_RELEASE_WINDOWS) -c src\\AIPlayer.cpp -o $(OBJDIR_RELEASE_WINDOWS)\\src\\AIPlayer.o
+
 $(OBJDIR_RELEASE_WINDOWS)\\main.o: main.cpp
 	$(CXX) $(CFLAGS_RELEASE_WINDOWS) $(INC_RELEASE_WINDOWS) -c main.cpp -o $(OBJDIR_RELEASE_WINDOWS)\\main.o
 
-$(OBJDIR_RELEASE_WINDOWS)\\src\\LinearGame.o: src\\LinearGame.cpp
-	$(CXX) $(CFLAGS_RELEASE_WINDOWS) $(INC_RELEASE_WINDOWS) -c src\\LinearGame.cpp -o $(OBJDIR_RELEASE_WINDOWS)\\src\\LinearGame.o
+$(OBJDIR_RELEASE_WINDOWS)\\src\\Hand.o: src\\Hand.cpp
+	$(CXX) $(CFLAGS_RELEASE_WINDOWS) $(INC_RELEASE_WINDOWS) -c src\\Hand.cpp -o $(OBJDIR_RELEASE_WINDOWS)\\src\\Hand.o
 
 $(OBJDIR_RELEASE_WINDOWS)\\src\\TTT.o: src\\TTT.cpp
 	$(CXX) $(CFLAGS_RELEASE_WINDOWS) $(INC_RELEASE_WINDOWS) -c src\\TTT.cpp -o $(OBJDIR_RELEASE_WINDOWS)\\src\\TTT.o
@@ -512,23 +579,23 @@ $(OBJDIR_RELEASE_WINDOWS)\\src\\Server.o: src\\Server.cpp
 $(OBJDIR_RELEASE_WINDOWS)\\src\\Reversi.o: src\\Reversi.cpp
 	$(CXX) $(CFLAGS_RELEASE_WINDOWS) $(INC_RELEASE_WINDOWS) -c src\\Reversi.cpp -o $(OBJDIR_RELEASE_WINDOWS)\\src\\Reversi.o
 
+$(OBJDIR_RELEASE_WINDOWS)\\src\\PlayingCards.o: src\\PlayingCards.cpp
+	$(CXX) $(CFLAGS_RELEASE_WINDOWS) $(INC_RELEASE_WINDOWS) -c src\\PlayingCards.cpp -o $(OBJDIR_RELEASE_WINDOWS)\\src\\PlayingCards.o
+
 $(OBJDIR_RELEASE_WINDOWS)\\src\\Player.o: src\\Player.cpp
 	$(CXX) $(CFLAGS_RELEASE_WINDOWS) $(INC_RELEASE_WINDOWS) -c src\\Player.cpp -o $(OBJDIR_RELEASE_WINDOWS)\\src\\Player.o
 
 $(OBJDIR_RELEASE_WINDOWS)\\src\\NetworkPlayer.o: src\\NetworkPlayer.cpp
 	$(CXX) $(CFLAGS_RELEASE_WINDOWS) $(INC_RELEASE_WINDOWS) -c src\\NetworkPlayer.cpp -o $(OBJDIR_RELEASE_WINDOWS)\\src\\NetworkPlayer.o
 
-$(OBJDIR_RELEASE_WINDOWS)\\src\\Minimax.o: src\\Minimax.cpp
-	$(CXX) $(CFLAGS_RELEASE_WINDOWS) $(INC_RELEASE_WINDOWS) -c src\\Minimax.cpp -o $(OBJDIR_RELEASE_WINDOWS)\\src\\Minimax.o
-
 $(OBJDIR_RELEASE_WINDOWS)\\src\\Logger.o: src\\Logger.cpp
 	$(CXX) $(CFLAGS_RELEASE_WINDOWS) $(INC_RELEASE_WINDOWS) -c src\\Logger.cpp -o $(OBJDIR_RELEASE_WINDOWS)\\src\\Logger.o
 
+$(OBJDIR_RELEASE_WINDOWS)\\src\\LinearGame.o: src\\LinearGame.cpp
+	$(CXX) $(CFLAGS_RELEASE_WINDOWS) $(INC_RELEASE_WINDOWS) -c src\\LinearGame.cpp -o $(OBJDIR_RELEASE_WINDOWS)\\src\\LinearGame.o
+
 $(OBJDIR_RELEASE_WINDOWS)\\src\\Human.o: src\\Human.cpp
 	$(CXX) $(CFLAGS_RELEASE_WINDOWS) $(INC_RELEASE_WINDOWS) -c src\\Human.cpp -o $(OBJDIR_RELEASE_WINDOWS)\\src\\Human.o
-
-$(OBJDIR_RELEASE_WINDOWS)\\src\\Hand.o: src\\Hand.cpp
-	$(CXX) $(CFLAGS_RELEASE_WINDOWS) $(INC_RELEASE_WINDOWS) -c src\\Hand.cpp -o $(OBJDIR_RELEASE_WINDOWS)\\src\\Hand.o
 
 $(OBJDIR_RELEASE_WINDOWS)\\src\\GameVocabulary.o: src\\GameVocabulary.cpp
 	$(CXX) $(CFLAGS_RELEASE_WINDOWS) $(INC_RELEASE_WINDOWS) -c src\\GameVocabulary.cpp -o $(OBJDIR_RELEASE_WINDOWS)\\src\\GameVocabulary.o
@@ -548,11 +615,24 @@ $(OBJDIR_RELEASE_WINDOWS)\\src\\Deck.o: src\\Deck.cpp
 $(OBJDIR_RELEASE_WINDOWS)\\src\\ConnectFour.o: src\\ConnectFour.cpp
 	$(CXX) $(CFLAGS_RELEASE_WINDOWS) $(INC_RELEASE_WINDOWS) -c src\\ConnectFour.cpp -o $(OBJDIR_RELEASE_WINDOWS)\\src\\ConnectFour.o
 
+$(OBJDIR_RELEASE_WINDOWS)\\src\\Client.o: src\\Client.cpp
+	$(CXX) $(CFLAGS_RELEASE_WINDOWS) $(INC_RELEASE_WINDOWS) -c src\\Client.cpp -o $(OBJDIR_RELEASE_WINDOWS)\\src\\Client.o
+
+$(OBJDIR_RELEASE_WINDOWS)\\src\\ChessSpeed.o: src\\ChessSpeed.cpp
+	$(CXX) $(CFLAGS_RELEASE_WINDOWS) $(INC_RELEASE_WINDOWS) -c src\\ChessSpeed.cpp -o $(OBJDIR_RELEASE_WINDOWS)\\src\\ChessSpeed.o
+
+$(OBJDIR_RELEASE_WINDOWS)\\src\\ChessQuick.o: src\\ChessQuick.cpp
+	$(CXX) $(CFLAGS_RELEASE_WINDOWS) $(INC_RELEASE_WINDOWS) -c src\\ChessQuick.cpp -o $(OBJDIR_RELEASE_WINDOWS)\\src\\ChessQuick.o
+
+$(OBJDIR_RELEASE_WINDOWS)\\__\\jsoncpp\\dist\\jsoncpp.o: ..\\jsoncpp\\dist\\jsoncpp.cpp
+	$(CXX) $(CFLAGS_RELEASE_WINDOWS) $(INC_RELEASE_WINDOWS) -c ..\\jsoncpp\\dist\\jsoncpp.cpp -o $(OBJDIR_RELEASE_WINDOWS)\\__\\jsoncpp\\dist\\jsoncpp.o
+
 clean_release_windows: 
 	cmd /c del /f $(OBJ_RELEASE_WINDOWS) $(OUT_RELEASE_WINDOWS)
 	cmd /c rd bin\\Release
 	cmd /c rd $(OBJDIR_RELEASE_WINDOWS)\\src
 	cmd /c rd $(OBJDIR_RELEASE_WINDOWS)
+	cmd /c rd $(OBJDIR_RELEASE_WINDOWS)\\__\\jsoncpp\\dist
 
 .PHONY: before_debug after_debug clean_debug before_release after_release clean_release before_debug_windows after_debug_windows clean_debug_windows before_release_windows after_release_windows clean_release_windows
 
