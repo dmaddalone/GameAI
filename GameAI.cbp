@@ -41,6 +41,7 @@ TODO: Basic Rummy
 					<Add option="-Wall" />
 					<Add option="-g" />
 					<Add directory="include" />
+					<Add directory="../jsoncpp/dist" />
 				</Compiler>
 			</Target>
 			<Target title="Release">
@@ -54,6 +55,7 @@ TODO: Basic Rummy
 					<Add option="-Wextra" />
 					<Add option="-Wall" />
 					<Add directory="include" />
+					<Add directory="../jsoncpp/dist" />
 				</Compiler>
 				<Linker>
 					<Add option="-s" />
@@ -71,6 +73,7 @@ TODO: Basic Rummy
 					<Add option="-Wall" />
 					<Add option="-g" />
 					<Add directory="include" />
+					<Add directory="../jsoncpp/dist" />
 				</Compiler>
 				<Linker>
 					<Add option="-lws2_32" />
@@ -88,6 +91,7 @@ TODO: Basic Rummy
 					<Add option="-Wextra" />
 					<Add option="-Wall" />
 					<Add directory="include" />
+					<Add directory="../jsoncpp/dist" />
 				</Compiler>
 				<Linker>
 					<Add option="-s" />
