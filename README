@@ -1,4 +1,4 @@
-GameAI v0.8.6 October 21, 2015
+GameAI v0.8.6 November 19, 2015
 
 CONTENTS
 ---------------------------------------
@@ -40,9 +40,12 @@ Installation
 Requirements:
 * C+11 compiler
 * Make utility
+* open-source-parsers/jsoncpp
 
-1) Install source code (see File Manifest below) to a folder.
-2) Run make using GameAI.cbp.mak.* where * is the operating system.  Targets
+1) Download and install jsonspp (https://github.com/open-source-parsers/jsoncpp).  
+   Follow the instructions on generating an amalgamated source and header.
+2) Install source code (see File Manifest below) to a folder on the same level as jsoncpp.
+3) Run make using GameAI.cbp.mak.* where * is the operating system.  Targets
    include debug and release for Linux operating systems and debug_windows and 
    release_windows for Windows operating systems.
 
