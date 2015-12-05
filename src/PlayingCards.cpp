@@ -537,7 +537,7 @@ bool PlayingCards::JsonDeserialization(const Json::Value jCards, std::string &sE
 
     m_vCards.clear();
 
-    for (Json::ValueIterator it = jCards.begin(); it != jCards.end(); ++it)
+    for (Json::ValueConstIterator it = jCards.begin(); it != jCards.end(); ++it)
     {
         jCard = (*it);
         if (cCard.JsonDeserialization(jCard.toStyledString(), sErrorMessage))
