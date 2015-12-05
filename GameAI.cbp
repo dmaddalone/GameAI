@@ -36,12 +36,7 @@ TODO: Basic Rummy
 				<Option compiler="gcc" />
 				<Option parameters="-1 human  -2 human -g rummy" />
 				<Compiler>
-					<Add option="-std=c++11" />
-					<Add option="-Wextra" />
-					<Add option="-Wall" />
 					<Add option="-g" />
-					<Add directory="include" />
-					<Add directory="../jsoncpp/dist" />
 				</Compiler>
 			</Target>
 			<Target title="Release">
@@ -51,11 +46,6 @@ TODO: Basic Rummy
 				<Option compiler="gcc" />
 				<Compiler>
 					<Add option="-O2" />
-					<Add option="-std=c++11" />
-					<Add option="-Wextra" />
-					<Add option="-Wall" />
-					<Add directory="include" />
-					<Add directory="../jsoncpp/dist" />
 				</Compiler>
 				<Linker>
 					<Add option="-s" />
@@ -68,12 +58,7 @@ TODO: Basic Rummy
 				<Option compiler="gcc" />
 				<Option parameters="-1 ai -2 human -g rummy " />
 				<Compiler>
-					<Add option="-std=c++11" />
-					<Add option="-Wextra" />
-					<Add option="-Wall" />
 					<Add option="-g" />
-					<Add directory="include" />
-					<Add directory="../jsoncpp/dist" />
 				</Compiler>
 				<Linker>
 					<Add option="-lws2_32" />
@@ -87,11 +72,6 @@ TODO: Basic Rummy
 				<Option parameters="-1 human -2 human -g rummy" />
 				<Compiler>
 					<Add option="-O2" />
-					<Add option="-std=c++11" />
-					<Add option="-Wextra" />
-					<Add option="-Wall" />
-					<Add directory="include" />
-					<Add directory="../jsoncpp/dist" />
 				</Compiler>
 				<Linker>
 					<Add option="-s" />
@@ -100,7 +80,12 @@ TODO: Basic Rummy
 			</Target>
 		</Build>
 		<Compiler>
+			<Add option="-std=c++11" />
+			<Add option="-Wextra" />
+			<Add option="-Wall" />
 			<Add option="-fexceptions" />
+			<Add directory="include" />
+			<Add directory="../jsoncpp/dist" />
 		</Compiler>
 		<Unit filename="../jsoncpp/dist/json/json.h" />
 		<Unit filename="../jsoncpp/dist/jsoncpp.cpp" />
